@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession, signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, forbidden, unauthorized } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function DashboardPage() {
@@ -10,10 +10,12 @@ export default function DashboardPage() {
 
     useEffect(() => {
         if (status === 'authenticated' && session.user?.role === 'admin') {
-            router.replace('/unauthorized');
+            // router.replace('/unauthorized');
+            forbidden()
         }
         if (status === 'unauthenticated') {
-            router.replace('/login');
+            // router.replace('/login');
+            unauthorized()
         }
     }, [status, session, router]);
 

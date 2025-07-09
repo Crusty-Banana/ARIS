@@ -1,12 +1,12 @@
 import { auth } from '@/lib/auth';
-import { redirect } from 'next/navigation';
+import { forbidden, unauthorized } from 'next/navigation';
 
 export type Role = 'user' | 'admin';
 
 export async function requireAuth() {
     const session = await auth();
     if (!session) {
-        redirect('/login');
+        unauthorized()
     }
     return session
 }
@@ -16,12 +16,12 @@ export async function requireRole(requireRole: Role | Role[]) {
     const role = session.user.role as Role;
     if (typeof requireRole === 'string') {
         if (role !== requireRole) {
-            redirect('/unauthorized')
+            forbidden()
         }
     }
     if (typeof requireRole === 'object') {
         if (!requireRole.includes(role)) {
-            redirect('/unauthorized')
+            forbidden()
         }
     }
 
