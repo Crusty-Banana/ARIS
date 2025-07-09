@@ -11,17 +11,23 @@ export async function requireAuth() {
     return session
 }
 
-export async function requireRole(requireRole: Role) {
+export async function requireRole(requireRole: Role | Role[]) {
     const session = await requireAuth();
     const role = session.user.role as Role;
-
-    if (role !== requireRole) {
-        redirect('/unauthorized')
+    if (typeof requireRole === 'string') {
+        if (role !== requireRole) {
+            redirect('/unauthorized')
+        }
+    }
+    if (typeof requireRole === 'object') {
+        if (!requireRole.includes(role)) {
+            redirect('/unauthorized')
+        }
     }
 
     return session
 }
 
 export function canAccess(role: Role, requireRole: Role) {
-    return role = requireRole;
+    return role === requireRole;
 }
