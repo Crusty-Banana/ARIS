@@ -12,7 +12,7 @@ export const UserSchema = z.object({
 
 export type User = z.infer<typeof UserSchema>;
 
-const AllergySchema = z.object({
+export const AllergySchema = z.object({
     _id: z.instanceof(ObjectId).optional(),
     name: z.string(),
     symptoms: z.array(z.string()),
