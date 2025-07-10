@@ -6,7 +6,7 @@ import { UserSchema } from '@/lib/schema';
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { name, email, password } = UserSchema.parse(body);
+        const { firstName, lastName, email, password } = UserSchema.parse(body);
 
         const client = await clientPromise;
         const db = client.db();
@@ -23,9 +23,11 @@ export async function POST(req: NextRequest) {
         const hashedPassword = await hash(password, 10);
 
         await db.collection('users').insertOne({
-            name,
+            firstName,
+            lastName,
             email,
             password: hashedPassword,
+            role: 'user',
         });
 
         return NextResponse.json(
