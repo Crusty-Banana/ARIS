@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function RegisterPage() {
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -19,7 +20,7 @@ export default function RegisterPage() {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ firstName, lastName, email, password }),
       });
 
       if (res.ok) {
@@ -44,16 +45,32 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
-              htmlFor="name"
+              htmlFor="firstName"
               className="text-sm font-medium text-gray-700"
             >
-              Full Name
+              First Name
             </label>
             <input
-              id="name"
+              id="firstName"
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
+              className="w-full px-3 py-2 mt-1 border rounded-md"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="lastName"
+              className="text-sm font-medium text-gray-700"
+            >
+              Last Name
+            </label>
+            <input
+              id="lastName"
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
               required
               className="w-full px-3 py-2 mt-1 border rounded-md"
             />

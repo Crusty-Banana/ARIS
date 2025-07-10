@@ -1,10 +1,23 @@
 'use client';
 
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import Link from 'next/link';
 
 export default function Home() {
   const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      if (session?.user?.role === 'admin') {
+        router.push('/admin/dashboard');
+      } else {
+        router.push('/user/dashboard');
+      }
+    }
+  }, [session, status, router]);
 
   if (status === 'loading') {
     return (
@@ -14,43 +27,30 @@ export default function Home() {
     );
   }
 
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 text-center bg-white rounded-lg shadow-md">
-        {session ? (
-          <>
-            <h1 className="text-2xl font-bold">
-              Welcome, {session.user?.name}!
-            </h1>
-            <p>You are logged in.</p>
-            <button
-              onClick={() => signOut()}
-              className="w-full px-4 py-2 mt-4 font-bold text-white bg-red-500 rounded-md hover:bg-red-600"
+  if (status === 'unauthenticated') {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="w-full max-w-md p-8 space-y-6 text-center bg-white rounded-lg shadow-md">
+          <h1 className="text-2xl font-bold">Welcome!</h1>
+          <p>You are not logged in.</p>
+          <div className="flex justify-center space-x-4">
+            <Link
+              href="/login"
+              className="px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-600"
             >
-              Logout
-            </button>
-          </>
-        ) : (
-          <>
-            <h1 className="text-2xl font-bold">Welcome!</h1>
-            <p>You are not logged in.</p>
-            <div className="flex justify-center space-x-4">
-              <Link
-                href="/login"
-                className="px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-600"
-              >
-                Login
-              </Link>
-              <Link
-                href="/register"
-                className="px-4 py-2 font-bold text-white bg-green-500 rounded-md hover:bg-green-600"
-              >
-                Register
-              </Link>
-            </div>
-          </>
-        )}
+              Login
+            </Link>
+            <Link
+              href="/register"
+              className="px-4 py-2 font-bold text-white bg-green-500 rounded-md hover:bg-green-600"
+            >
+              Register
+            </Link>
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return null;
 }
