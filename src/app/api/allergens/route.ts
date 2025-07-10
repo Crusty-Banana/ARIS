@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
-import { AllergySchema } from '@/lib/schema';
+import { AllergenSchema } from '@/lib/schema';
 import { getToken } from 'next-auth/jwt';
 
 export async function POST(req: NextRequest) {
@@ -12,15 +12,15 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const allergyData = AllergySchema.parse(body);
+        const allergenData = AllergenSchema.parse(body);
 
         const client = await clientPromise;
         const db = client.db();
 
-        const result = await db.collection('allergies').insertOne(allergyData);
+        const result = await db.collection('allergens').insertOne(allergenData);
 
         return NextResponse.json(
-            { message: 'Allergy added successfully', allergyId: result.insertedId },
+            { message: 'Allergen added successfully', allergenId: result.insertedId },
             { status: 201 }
         );
     } catch (error) {
@@ -46,9 +46,9 @@ export async function GET(req: NextRequest) {
         const client = await clientPromise;
         const db = client.db();
 
-        const allergies = await db.collection('allergies').find({}).toArray();
+        const allergens = await db.collection('allergens').find({}).toArray();
 
-        return NextResponse.json(allergies, { status: 200 });
+        return NextResponse.json(allergens, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {

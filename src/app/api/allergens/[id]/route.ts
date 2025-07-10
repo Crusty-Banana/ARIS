@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
-import { AllergySchema } from '@/lib/schema';
+import { AllergenSchema } from '@/lib/schema';
 import { getToken } from 'next-auth/jwt';
 import { ObjectId } from 'mongodb';
 
@@ -19,28 +19,28 @@ export async function GET(
 
         if (!ObjectId.isValid(id)) {
             return NextResponse.json(
-                { message: 'Invalid Allergy ID' },
+                { message: 'Invalid Allergen ID' },
                 { status: 400 }
             );
         }
 
         const client = await clientPromise;
         const db = client.db();
-        const allergyId = new ObjectId(id);
+        const allergenId = new ObjectId(id);
 
-        const result = await db.collection('allergies')
-            .findOne({ _id: allergyId });
+        const result = await db.collection('allergens')
+            .findOne({ _id: allergenId });
 
         if (!result) {
             return NextResponse.json(
-                { message: 'Allergy not found' },
+                { message: 'Allergen not found' },
                 { status: 404 }
             );
         }
 
-        const parsedAllergy = AllergySchema.parse(result);
+        const parsedAllergen = AllergenSchema.parse(result);
         return NextResponse.json(
-            { allergen: parsedAllergy },
+            { allergen: parsedAllergen },
             { status: 200 }
         );
     } catch (error) {
@@ -71,26 +71,26 @@ export async function PUT(
 
         if (!ObjectId.isValid(id)) {
             return NextResponse.json(
-                { message: 'Invalid Allergy ID' },
+                { message: 'Invalid Allergen ID' },
                 { status: 400 }
             );
         }
 
         const body = await req.json();
-        const allergyData = AllergySchema.parse(body);
+        const allergenData = AllergenSchema.parse(body);
 
         const client = await clientPromise;
         const db = client.db();
-        const allergyId = new ObjectId(id);
+        const allergenId = new ObjectId(id);
 
-        const result = await db.collection('allergies').updateOne(
-            { _id: allergyId },
-            { $set: allergyData }
+        const result = await db.collection('allergens').updateOne(
+            { _id: allergenId },
+            { $set: allergenData }
         );
 
         if (!result) {
             return NextResponse.json(
-                { message: 'Allergy not found' },
+                { message: 'Allergen not found' },
                 { status: 404 }
             );
         }
@@ -126,27 +126,27 @@ export async function DELETE(
 
         if (!ObjectId.isValid(id)) {
             return NextResponse.json(
-                { message: 'Invalid Allergy ID' },
+                { message: 'Invalid Allergen ID' },
                 { status: 400 }
             );
         }
 
         const client = await clientPromise;
         const db = client.db();
-        const allergyId = new ObjectId(id);
+        const allergenId = new ObjectId(id);
 
-        const result = await db.collection('allergies')
-            .deleteOne({ _id: allergyId });
+        const result = await db.collection('allergens')
+            .deleteOne({ _id: allergenId });
 
         if (result.deletedCount === 0) {
             return NextResponse.json(
-                { message: 'Allergy not found' },
+                { message: 'Allergen not found' },
                 { status: 404 }
             );
         }
 
         return NextResponse.json(
-            { message: 'Allergy deleted successfully' },
+            { message: 'Allergen deleted successfully' },
             { status: 200 }
         );
     } catch (error) {
