@@ -19,7 +19,7 @@ export const LoginSchema = z.object({
 export type User = z.infer<typeof UserSchema>;
 
 export const AllergenSchema = z.object({
-    _id: z.instanceof(ObjectId),
+    _id: z.instanceof(ObjectId).optional(),
     name: z.string(),
     type: z.enum(['inhale', 'eat', 'inject', 'touch']),
     class: z.enum(['molecular', 'general', 'medicine']),
