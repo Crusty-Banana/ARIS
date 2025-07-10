@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Allergen, PAP } from '@/lib/schema';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export default function AllergenDetailsPage({
   params,
@@ -12,6 +13,7 @@ export default function AllergenDetailsPage({
   const { data: session } = useSession();
   const [allergen, setAllergen] = useState<Allergen | null>(null);
   const [pap, setPap] = useState<PAP | null>(null);
+  const router = useRouter();
 
   const fetchAllergen = useCallback(async () => {
     try {
@@ -82,6 +84,12 @@ export default function AllergenDetailsPage({
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-2xl p-8 space-y-6 bg-white rounded-lg shadow-md">
+        <button
+          onClick={() => router.back()}
+          className="px-4 py-2 font-bold text-white bg-gray-500 rounded-md hover:bg-gray-600"
+        >
+          Back
+        </button>
         <h1 className="text-3xl font-bold">{allergen.name}</h1>
         <p>
           <strong>Symptoms:</strong> {allergen.symptoms.join(', ')}

@@ -84,10 +84,32 @@ export default function UserDashboard() {
     }
   };
 
+  const handleRemoveFromPap = async (allergenId: ObjectId) => {
+    if (pap && session) {
+      const updatedAllergens = pap.allergens.filter(
+        (allergen) => String(allergen.allergenId) !== String(allergenId)
+      );
+      try {
+        const response = await fetch('/api/pap', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...pap, allergens: updatedAllergens }),
+        });
+        if (response.ok) {
+          fetchPap();
+        } else {
+          console.error('Failed to update PAP');
+        }
+      } catch (error) {
+        console.error('An error occurred while updating PAP:', error);
+      }
+    }
+  };
+
   const handleSeverityChange = async (allergenId: ObjectId, degree: number) => {
     if (pap && session) {
       const updatedAllergens = pap.allergens.map((allergen) =>
-        allergen.allergenId === allergenId ? { ...allergen, degree } : allergen
+        String(allergen.allergenId) === String(allergenId) ? { ...allergen, degree } : allergen
       );
       try {
         const response = await fetch('/api/pap', {
@@ -109,9 +131,6 @@ export default function UserDashboard() {
   const handleTogglePublic = async () => {
     if (pap && session) {
       try {
-        console.log("aaaa", {...pap})
-        console.log("bbbb", pap)
-        console.log("cccc", { ...pap, allowPublic: !pap.allowPublic })
         const response = await fetch('/api/pap', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -168,7 +187,7 @@ export default function UserDashboard() {
 
 
   const isAllergenInPap = (allergenId: ObjectId) => {
-    return pap?.allergens.some((a) => a.allergenId === allergenId);
+    return pap?.allergens.some((a) => String(a.allergenId) === String(allergenId));
   };
 
   return (
@@ -230,7 +249,6 @@ export default function UserDashboard() {
               <div>
                 <strong>Date of Birth:</strong>{' '}
                 <input type="date" value={pap.doB ? new Date(pap.doB).toISOString().split('T')[0] : ''} onChange={handleDobChange} />
-                 {!pap.doB && <span>To be set</span>}
               </div>
               <div>
                 <strong>Gender:</strong>{' '}
@@ -258,7 +276,7 @@ export default function UserDashboard() {
             <div className="space-y-4 mt-4">
               {pap.allergens.map((userAllergen) => {
                 const allergenDetails = allergens.find(
-                  (a) => a._id === userAllergen.allergenId
+                  (a) => String(a._id) === String(userAllergen.allergenId)
                 );
                 if (!allergenDetails) return null;
 
@@ -267,7 +285,15 @@ export default function UserDashboard() {
                     key={String(userAllergen.allergenId)}
                     className="p-4 border rounded-md"
                   >
-                    <h4 className="font-bold">{allergenDetails.name}</h4>
+                    <div className="flex justify-between items-center">
+                      <h4 className="font-bold">{allergenDetails.name}</h4>
+                      <button
+                        onClick={() => handleRemoveFromPap(userAllergen.allergenId)}
+                        className="px-2 py-1 text-sm text-white bg-red-500 rounded-md hover:bg-red-600"
+                      >
+                        Remove
+                      </button>
+                    </div>
                     <p>
                       <strong>Symptoms:</strong>{' '}
                       {allergenDetails.symptoms.join(', ')}
