@@ -16,7 +16,7 @@
         * `201 Created`: User registered successfully.
         * `400 Bad Request`: User already exists.
         * `500 Internal Server Error`: An error occurred.
-* **`POST /api/auth/login`**: Logs in a user.
+* **`POST /api/auth/login`**: Logs in a user. (Handled by NextAuth)
     * **Request Body:**
         ```json
         {
@@ -27,7 +27,7 @@
     * **Responses:**
         * `200 OK`: Successful login.
         * `401 Unauthorized`: Invalid email or password.
-* **`GET /api/auth/signout`**: Logs out a user.
+* **`GET /api/auth/signout`**: Logs out a user. (Handled by NextAuth)
 * **`GET /api/auth/session`**: Gets the current session.
     * **Responses:**
         * `200 OK`: Returns the session object.
@@ -108,16 +108,49 @@
         * `404 Not Found`: If the allergy with the specified ID is not found.
         * `500 Internal Server Error`: An error occurred.
 
+### Personal Allergy Profile (PAP)
+
+* **`GET /api/pap`**: Retrieves the Personal Allergy Profile for the authenticated user.
+    * **Responses:**
+        * `200 OK`: Returns the user's PAP object.
+        * `401 Unauthorized`: If the user is not authenticated.
+        * `404 Not Found`: If the user's PAP is not found.
+        * `500 Internal Server Error`: An error occurred.
+
+* **`PUT /api/pap`**: Updates the Personal Allergy Profile for the authenticated user.
+    * **Request Body (example):**
+        ```json
+        {
+          "gender": "male",
+          "doB": "1990-01-01T00:00:00.000Z",
+          "allergies": [
+            {
+              "name": "Peanuts",
+              "symptoms": ["Hives", "Swelling"],
+              "treatment": "Epinephrine",
+              "firstAid": "Administer EpiPen",
+              "allergens": ["Peanuts"]
+            }
+          ]
+        }
+        ```
+    * **Responses:**
+        * `200 OK`: PAP updated successfully.
+        * `401 Unauthorized`: If the user is not authenticated.
+        * `404 Not Found`: If the user's PAP is not found.
+        * `500 Internal Server Error`: An error occurred.
+
 ## Database
 
 The application uses MongoDB to store user and allergy data. The database schemas are defined in `src/lib/schema.ts` using Zod.
 
 ### Collections
 
-The database has two main collections:
+The database has three main collections:
 
 * `users`
 * `allergies`
+* `paps`
 
 ### Schemas
 
@@ -125,36 +158,36 @@ The database has two main collections:
 
 The `UserSchema` defines the structure for user documents in the `users` collection.
 
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `_id` | ObjectId | Unique identifier for the user (optional). |
-| `firstName` | string | The user's first name (required). |
-| `lastName` | string | The user's last name (required). |
-| `role` | enum | The user's role, which can be 'admin' or 'user' (defaults to 'user'). |
-| `email` | string | The user's email address (required, must be a valid email). |
-| `password` | string | The user's password (required, must be at least 6 characters). |
+| Field       | Type           | Description                                                              |
+| :---------- | :------------- | :----------------------------------------------------------------------- |
+| `_id`       | ObjectId       | Unique identifier for the user (optional).                               |
+| `firstName` | string         | The user's first name (required).                                        |
+| `lastName`  | string         | The user's last name (required).                                         |
+| `role`      | enum           | The user's role, which can be 'admin' or 'user' (defaults to 'user').    |
+| `email`     | string         | The user's email address (required, must be a valid email).              |
+| `password`  | string         | The user's password (required, must be at least 6 characters).           |
 
 #### Allergy Schema
 
 The `AllergySchema` defines the structure for allergy documents in the `allergies` collection.
 
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `_id` | ObjectId | Unique identifier for the allergy (optional). |
-| `name` | string | The name of the allergy. |
-| `symptoms` | array of strings | A list of symptoms associated with the allergy. |
-| `treatment` | string | The recommended treatment for the allergy. |
-| `firstAid` | string | First aid instructions for the allergy. |
-| `allergens` | array of strings | A list of allergens that can trigger the allergy. |
+| Field      | Type             | Description                                          |
+| :--------- | :--------------- | :--------------------------------------------------- |
+| `_id`      | ObjectId         | Unique identifier for the allergy (optional).        |
+| `name`     | string           | The name of the allergy.                             |
+| `symptoms` | array of strings | A list of symptoms associated with the allergy.      |
+| `treatment`| string           | The recommended treatment for the allergy.           |
+| `firstAid` | string           | First aid instructions for the allergy.              |
+| `allergens`| array of strings | A list of allergens that can trigger the allergy.    |
 
 #### PAP Schema (Personal Allergy Profile)
 
-The `PAPSchema` defines the structure for a user's personal allergy profile.
+The `PAPSchema` defines the structure for a user's personal allergy profile in the `paps` collection.
 
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `_id` | ObjectId | Unique identifier for the PAP (optional). |
-| `userId` | string | The ID of the user this profile belongs to. |
-| `gender` | enum | The user's gender ('male', 'female', or 'other'). |
-| `doB` | date | The user's date of birth (optional). |
-| `allergies` | array of AllergySchema | A list of allergies the user has. |
+| Field     | Type                | Description                                                          |
+| :-------- | :------------------ | :------------------------------------------------------------------- |
+| `_id`     | ObjectId            | Unique identifier for the PAP (optional).                            |
+| `userId`  | ObjectId            | The ID of the user this profile belongs to.                          |
+| `gender`  | enum                | The user's gender ('male', 'female', or 'other'), nullable.          |
+| `doB`     | date                | The user's date of birth (optional, nullable).                       |
+| `allergies`| array of AllergySchema | A list of allergies the user has (defaults to an empty array).     |
