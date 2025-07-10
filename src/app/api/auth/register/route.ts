@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hash } from 'bcryptjs';
 import clientPromise from '@/lib/mongodb';
-import { UserSchema } from '@/lib/schema';
+import { UserSchema, PAPSchema } from '@/lib/schema';
 
 export async function POST(req: NextRequest) {
     try {
@@ -22,13 +22,18 @@ export async function POST(req: NextRequest) {
 
         const hashedPassword = await hash(password, 10);
 
-        await db.collection('users').insertOne({
+        const newUser = await db.collection('users').insertOne({
             firstName,
             lastName,
             email,
             password: hashedPassword,
             role: 'user',
         });
+
+        await db.collection('paps').insertOne(
+            PAPSchema.parse({ userId: newUser.insertedId })
+        );
+
 
         return NextResponse.json(
             { message: 'User registered successfully' },

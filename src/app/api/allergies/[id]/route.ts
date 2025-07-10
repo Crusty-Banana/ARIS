@@ -95,12 +95,8 @@ export async function PUT(
             );
         }
 
-        const parsedAllergy = AllergySchema.parse(result);
         return NextResponse.json(
-            {
-                message: 'Allergen updated successfully',
-                allergy: parsedAllergy,
-            },
+            { message: 'Allergen updated successfully' },
             { status: 200 }
         );
     } catch (error) {

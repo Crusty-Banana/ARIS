@@ -25,10 +25,10 @@ export type Allergy = z.infer<typeof AllergySchema>;
 
 export const PAPSchema = z.object({
     _id: z.instanceof(ObjectId).optional(),
-    userId: z.string(),
-    gender: z.enum(['male', 'female', 'other']),
-    doB: z.date().optional(),
-    allergies: z.array(AllergySchema),
+    userId: z.instanceof(ObjectId),
+    gender: z.enum(['male', 'female', 'other']).nullable().default(null),
+    doB: z.date().nullable().default(null),
+    allergies: z.array(AllergySchema).default([]),
 });
 
 export type PAP = z.infer<typeof PAPSchema>;
