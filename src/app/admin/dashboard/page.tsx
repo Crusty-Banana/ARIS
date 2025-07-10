@@ -2,65 +2,62 @@
 
 import { useSession, signOut } from 'next-auth/react';
 import { useState, useEffect, FormEvent } from 'react';
-import { Allergy } from '@/lib/schema';
+import { Allergen } from '@/lib/schema';
 
 export default function AdminDashboard() {
   const { data: session } = useSession();
-  const [allergyName, setAllergyName] = useState('');
+  const [allergenName, setAllergenName] = useState('');
   const [symptoms, setSymptoms] = useState('');
   const [treatment, setTreatment] = useState('');
   const [firstAid, setFirstAid] = useState('');
-  const [allergens, setAllergens] = useState('');
   const [message, setMessage] = useState('');
-  const [allergyList, setAllergyList] = useState<Allergy[]>([]);
+  const [allergenList, setAllergenList] = useState<Allergen[]>([]);
 
-  const fetchAllergies = async () => {
+  const fetchAllergens = async () => {
     try {
-      const response = await fetch('/api/allergies');
+      const response = await fetch('/api/allergens');
       if (response.ok) {
         const data = await response.json();
-        setAllergyList(data);
+        setAllergenList(data);
       }
     } catch (error) {
-      console.error('Failed to fetch allergies:', error);
+      console.error('Failed to fetch allergens:', error);
     }
   };
 
   useEffect(() => {
-    fetchAllergies();
+    fetchAllergens();
   }, []);
 
-  const handleAddAllergy = async (e: FormEvent) => {
+  const handleAddAllergen = async (e: FormEvent) => {
     e.preventDefault();
     setMessage('');
 
     try {
-      const response = await fetch('/api/allergies', {
+      const response = await fetch('/api/allergens', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: allergyName,
+          name: allergenName,
           symptoms: symptoms.split(',').map(s => s.trim()),
           treatment,
           firstAid,
-          allergens: allergens.split(',').map(s => s.trim()),
         }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setMessage('Allergy added successfully!');
+        setMessage('Allergen added successfully!');
         // Clear form
-        setAllergyName('');
+        setAllergenName('');
         setSymptoms('');
         setTreatment('');
         setFirstAid('');
-        setAllergens('');
         // Refresh the list
-        fetchAllergies();
+        fetchAllergens();
       } else {
-        setMessage(data.message || 'Failed to add allergy');
+        setMessage(data.message || 'Failed to add allergen');
       }
     } catch (error) {
         if (error instanceof Error) {
@@ -90,15 +87,15 @@ export default function AdminDashboard() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h2 className="text-xl font-bold mb-4">Add New Allergy</h2>
-              <form onSubmit={handleAddAllergy} className="space-y-4">
+              <h2 className="text-xl font-bold mb-4">Add New Allergen</h2>
+              <form onSubmit={handleAddAllergen} className="space-y-4">
                 <div>
-                  <label htmlFor="allergyName" className="text-sm font-medium text-gray-700">Allergy Name</label>
+                  <label htmlFor="allergenName" className="text-sm font-medium text-gray-700">Allergen Name</label>
                   <input
-                    id="allergyName"
+                    id="allergenName"
                     type="text"
-                    value={allergyName}
-                    onChange={(e) => setAllergyName(e.target.value)}
+                    value={allergenName}
+                    onChange={(e) => setAllergenName(e.target.value)}
                     required
                     className="w-full px-3 py-2 mt-1 border rounded-md"
                   />
@@ -133,35 +130,24 @@ export default function AdminDashboard() {
                     className="w-full px-3 py-2 mt-1 border rounded-md"
                   />
                 </div>
-                <div>
-                  <label htmlFor="allergens" className="text-sm font-medium text-gray-700">Allergens (comma-separated)</label>
-                  <input
-                    id="allergens"
-                    type="text"
-                    value={allergens}
-                    onChange={(e) => setAllergens(e.target.value)}
-                    className="w-full px-3 py-2 mt-1 border rounded-md"
-                  />
-                </div>
                 {message && <p className="text-sm text-center text-green-500">{message}</p>}
                 <button
                   type="submit"
                   className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-600"
                 >
-                  Add Allergy
+                  Add Allergen
                 </button>
               </form>
             </div>
             <div>
-                <h2 className="text-xl font-bold mb-4">Allergy List</h2>
+                <h2 className="text-xl font-bold mb-4">Allergen List</h2>
                 <div className="space-y-2">
-                    {allergyList.map((allergy) => (
-                        <div key={allergy.name} className="p-4 border rounded-md">
-                            <h3 className="font-bold">{allergy.name}</h3>
-                            <p><strong>Symptoms:</strong> {allergy.symptoms.join(', ')}</p>
-                            <p><strong>Treatment:</strong> {allergy.treatment}</p>
-                            <p><strong>First Aid:</strong> {allergy.firstAid}</p>
-                            <p><strong>Allergens:</strong> {allergy.allergens.join(', ')}</p>
+                    {allergenList.map((allergen) => (
+                        <div key={allergen.name} className="p-4 border rounded-md">
+                            <h3 className="font-bold">{allergen.name}</h3>
+                            <p><strong>Symptoms:</strong> {allergen.symptoms.join(', ')}</p>
+                            <p><strong>Treatment:</strong> {allergen.treatment}</p>
+                            <p><strong>First Aid:</strong> {allergen.firstAid}</p>
                         </div>
                     ))}
                 </div>
