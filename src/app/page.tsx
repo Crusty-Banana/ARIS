@@ -35,13 +35,13 @@ export default function Home() {
           <p>You are not logged in.</p>
           <div className="flex justify-center space-x-4">
             <Link
-              href="/login"
+              href="/auth/login"
               className="px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-600"
             >
               Login
             </Link>
             <Link
-              href="/register"
+              href="/auth/register"
               className="px-4 py-2 font-bold text-white bg-green-500 rounded-md hover:bg-green-600"
             >
               Register

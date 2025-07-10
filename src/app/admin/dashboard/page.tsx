@@ -12,7 +12,7 @@ export default function AdminDashboard() {
         <p>Welcome, {session?.user?.firstName} {session?.user?.lastName}!</p>
         <p>You have the role of: <strong>{session?.user?.role}</strong></p>
         <button
-          onClick={() => signOut({ callbackUrl: '/login' })}
+          onClick={() => signOut({ callbackUrl: '/auth/login' })}
           className="w-full px-4 py-2 mt-4 font-bold text-white bg-red-500 rounded-md hover:bg-red-600"
         >
           Logout
