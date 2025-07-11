@@ -66,3 +66,21 @@ export const UserUpdateSchema = z.object({
 });
 
 export type UserUpdate = z.infer<typeof UserUpdateSchema>;
+
+export const PersonalAllergenSchema = AllergenSchema.pick({
+    name: true,
+    symptoms: true,
+    treatment: true,
+    firstAid: true,
+}).extend({ degree: z.number().min(1).max(5).optional() });
+
+export type PersonalAllergen = z.infer<typeof PersonalAllergenSchema>;
+
+export const PublicPAPSchema = PAPSchema.pick({
+    doB: true,
+    gender: true,
+}).extend({
+    allergens: z.array(PersonalAllergenSchema).nullable(),
+});
+
+export type PublicPAP = z.infer<typeof PublicPAPSchema>;
