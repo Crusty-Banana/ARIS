@@ -20,12 +20,12 @@ export async function GET(req: NextRequest) {
         const client = await clientPromise;
         const db = client.db();
 
-        if (!ObjectId.isValid(token.id)) {
-            return NextResponse.json(
-                { message: 'Invalid User ID' },
-                { status: 400 }
-            );
-        }
+        // if (!ObjectId.isValid(token.id)) {
+        //     return NextResponse.json(
+        //         { message: 'Invalid User ID' },
+        //         { status: 400 }
+        //     );
+        // }
 
         // 1. Get the user's PAP to find their allergens
         const pap = await db.collection('paps').findOne({ userId: new ObjectId(token.id) });

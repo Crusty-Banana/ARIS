@@ -194,6 +194,21 @@
         * `404 Not Found`: If the allergy with the specified ID is not found.
         * `500 Internal Server Error`: An error occurred.
 
+### Cross allergens 
+
+* **`GET /api/cross`**: Gets a list of all cross allergens of the current user.
+    * **Responses:**
+        * `200 OK`: Returns an array of allergy objects.
+        * `401 Unauthorized`: If the user is not authenticated.
+        * `500 Internal Server Error`: An error occurred.
+* **`GET /api/cross/{id}`**: Retrieves a specific cross allergens of an allergen by its ID.
+    * **Parameters:**
+        * `id` (string, required): The ID of the allergen to retrieve.
+    * **Responses:**
+        * `200 OK`: Returns the allergen object in an array.
+        * `400 Bad Request`: If the provided ID is invalid.
+        * `404 Not Found`: If the allergy with the specified ID is not found.
+        * `500 Internal Server Error`: An error occurred.
 
 ## Database
 
