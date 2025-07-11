@@ -10,6 +10,7 @@ export default function UserDashboard() {
   const { data: session } = useSession();
   const [pap, setPap] = useState<PAP | null>(null);
   const [allergens, setAllergens] = useState<Allergen[]>([]);
+  const [crossAllergens, setCrossAllergens] = useState<Allergen[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState<Allergen[]>([]);
 
@@ -43,9 +44,24 @@ export default function UserDashboard() {
     }
   };
 
+  const fetchCrossAllergens = async () => {
+    try {
+      const response = await fetch('/api/cross');
+      if (response.ok) {
+        const data = await response.json();
+        setCrossAllergens(data);
+      } else {
+        console.error('Failed to fetch cross allergens');
+      }
+    } catch (error) {
+      console.error('An error occurred while fetching cross allergens:', error);
+    }
+  };
+
   useEffect(() => {
     fetchPap();
     fetchAllergens();
+    fetchCrossAllergens()
   }, [fetchPap]);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,6 +91,7 @@ export default function UserDashboard() {
         });
         if (response.ok) {
           fetchPap();
+          fetchCrossAllergens();
         } else {
           console.error('Failed to update PAP');
         }
@@ -97,6 +114,7 @@ export default function UserDashboard() {
         });
         if (response.ok) {
           fetchPap();
+          fetchCrossAllergens();
         } else {
           console.error('Failed to update PAP');
         }
@@ -324,6 +342,18 @@ export default function UserDashboard() {
                   </div>
                 );
               })}
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow">
+                <h3 className="text-xl font-semibold mb-2">Potential Cross-Allergens</h3>
+                {crossAllergens.length > 0 ? (
+                    <>
+                        <p className="text-sm text-gray-600 mb-2">Based on your allergies, you might be sensitive to:</p>
+                        <ul className="list-disc pl-5">
+                            {/* ✅ FIX: Convert ObjectId to string for the key prop */}
+                            {crossAllergens.map((allergen) => <li key={String(allergen._id)}>{allergen.name}</li>)}
+                        </ul>
+                    </>
+                ) : <p>No potential cross-allergens found.</p>}
             </div>
           </div>
         )}
