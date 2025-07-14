@@ -11,6 +11,7 @@ export const UserSchema = z.object({
 });
 
 export type User = z.infer<typeof UserSchema>;
+export type UserInfo = Pick<User, "firstName" | "lastName">;
 
 export const AllergenSchema = z.object({
     _id: z.instanceof(ObjectId).optional(),
@@ -40,13 +41,14 @@ export const PAPSchema = z.object({
         .array(
             z.object({
                 allergenId: z.instanceof(ObjectId),
-                degree: z.number(),
+                degree: z.number().min(1).max(5),
             }),
         )
         .default([]),
 });
 
 export type PAP = z.infer<typeof PAPSchema>;
+export type PAPAllergen = z.infer<typeof PAPSchema>["allergens"][number];
 
 export const UserUpdateSchema = z.object({
     firstName: z

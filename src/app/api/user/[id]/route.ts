@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { UserUpdateSchema } from "@/lib/schema";
+import { UserUpdateSchema, UserUpdate } from "@/lib/schema";
 import { getToken } from "next-auth/jwt";
 import { ObjectId } from "mongodb";
 import { ZodError } from "zod";
 export async function PUT(
     req: NextRequest,
-    { params }: { params: { id: string } },
+    { params }: { params: Promise<{ id: string }> },
 ): Promise<NextResponse> {
     try {
         const token = await getToken({ req });
@@ -37,7 +37,7 @@ export async function PUT(
         const db = client.db();
         const userId = new ObjectId(id);
 
-        const updateData: any = { ...rest };
+        const updateData: UserUpdate = { ...rest };
 
         const result = await db
             .collection("users")

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
+import { ObjectId, WithId, Document } from "mongodb";
 import { ZodError } from "zod";
-import { PublicPAPSchema } from "@/lib/schema";
+import { PublicPAPSchema, PAPAllergen } from "@/lib/schema";
 
 export async function GET(
     req: NextRequest,
-    { params }: { params: { publicId: string } },
+    { params }: { params: Promise<{ publicId: string }> },
 ) {
     try {
         const { publicId } = await params;
@@ -36,22 +36,27 @@ export async function GET(
         const allergens = await db
             .collection("allergens")
             .find({
-                _id: { $in: pap.allergens.map((a: any) => a.allergenId) },
+                _id: {
+                    $in: pap.allergens.map((a: PAPAllergen) => a.allergenId),
+                },
             })
             .toArray();
 
-        const populatedAllergens = pap.allergens.map((userAllergen: any) => {
-            const allergenDetails = allergens.find(
-                (a: any) => String(a._id) === String(userAllergen.allergenId),
-            );
-            return {
-                name: allergenDetails ? allergenDetails.name : "Unknown",
-                degree: userAllergen.degree,
-                symptoms: allergenDetails ? allergenDetails.symptoms : [],
-                treatment: allergenDetails ? allergenDetails.treatment : "",
-                firstAid: allergenDetails ? allergenDetails.firstAid : "",
-            };
-        });
+        const populatedAllergens = pap.allergens.map(
+            (userAllergen: PAPAllergen) => {
+                const allergenDetails = allergens.find(
+                    (a: WithId<Document>) =>
+                        String(a._id) === String(userAllergen.allergenId),
+                );
+                return {
+                    name: allergenDetails ? allergenDetails.name : "Unknown",
+                    degree: userAllergen.degree,
+                    symptoms: allergenDetails ? allergenDetails.symptoms : [],
+                    treatment: allergenDetails ? allergenDetails.treatment : "",
+                    firstAid: allergenDetails ? allergenDetails.firstAid : "",
+                };
+            },
+        );
 
         const publicPap = PublicPAPSchema.parse({
             gender: pap.gender,
