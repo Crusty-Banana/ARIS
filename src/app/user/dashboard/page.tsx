@@ -76,6 +76,7 @@ const AllergyProfile = () => {
     const [allergens, setAllergens] = useState<Allergen[]>([]);
     const [crossAllergens, setCrossAllergens] = useState<Allergen[]>([]);
     const [isPublicView, setIsPublicView] = useState(false);
+    const [selectedAllergen, setSelectedAllergen] = useState<Allergen | null>(null);
 
     const fetchPap = useCallback(async () => {
       if (session) {
@@ -174,6 +175,15 @@ const AllergyProfile = () => {
         }
     };
 
+    const handleShowAllergenDetails = (allergen: Allergen) => {
+        setSelectedAllergen(allergen);
+    };
+
+    const handleCloseModal = () => {
+        setSelectedAllergen(null);
+    };
+
+
     return (
         <div>
             <div className="flex justify-between items-center mb-4">
@@ -203,12 +213,19 @@ const AllergyProfile = () => {
                     <AddAllergySection
                         pap={pap}
                         allergens={allergens}
-                        onAdd={handleAddToPap}
+                        onAdd={handleShowAllergenDetails}
                     />
                     <CrossAllergySection crossAllergens={crossAllergens} isPublicView={isPublicView} onAdd={handleAddToPap} />
                 </div>
                 
             </div>
+            {selectedAllergen && (
+                <AllergenDetailsModal
+                    allergen={selectedAllergen}
+                    onClose={handleCloseModal}
+                    onAdd={handleAddToPap}
+                />
+            )}
         </div>
     );
 };
@@ -317,7 +334,7 @@ const CrossAllergySection = ({ crossAllergens, isPublicView, onAdd}: { crossAlle
 };
 
 // Section to Add Allergies (for Patient) with Autocomplete
-const AddAllergySection = ({ pap, allergens, onAdd }: { pap: PAP | null, allergens: Allergen[], onAdd: (allergenId: ObjectId) => void }) => {
+const AddAllergySection = ({ pap, allergens, onAdd }: { pap: PAP | null, allergens: Allergen[], onAdd: (allergen: Allergen) => void }) => {
     const [inputValue, setInputValue] = useState('');
     const [suggestions, setSuggestions] = useState<Allergen[]>([]);
     const wrapperRef = useRef(null);
@@ -353,8 +370,8 @@ const AddAllergySection = ({ pap, allergens, onAdd }: { pap: PAP | null, allerge
         }
     };
 
-    const handleAddAllergy = (allergen: Allergen) => {
-        onAdd(allergen._id!);
+    const handleSelectAllergy = (allergen: Allergen) => {
+        onAdd(allergen);
         setInputValue('');
         setSuggestions([]);
     };
@@ -372,13 +389,13 @@ const AddAllergySection = ({ pap, allergens, onAdd }: { pap: PAP | null, allerge
                 />
                 {suggestions.length > 0 && (
                     <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg mt-1 max-h-48 overflow-y-auto shadow-lg">
-                        {suggestions.map(allergy => (
+                        {suggestions.map(allergen => (
                             <li
-                                key={String(allergy._id)}
-                                onClick={() => handleAddAllergy(allergy)}
+                                key={String(allergen._id)}
+                                onClick={() => handleSelectAllergy(allergen)}
                                 className="px-4 py-2 hover:bg-blue-50 cursor-pointer text-sm text-gray-700"
                             >
-                                {allergy.name}
+                                {allergen.name}
                             </li>
                         ))}
                     </ul>
@@ -387,6 +404,34 @@ const AddAllergySection = ({ pap, allergens, onAdd }: { pap: PAP | null, allerge
              {availableAllergies.length === 0 && (
                 <p className="text-gray-500 text-sm mt-4">All available allergies have been added to your profile.</p>
             )}
+        </div>
+    );
+};
+
+const AllergenDetailsModal = ({ allergen, onClose, onAdd }: { allergen: Allergen, onClose: () => void, onAdd: (allergenId: ObjectId) => void }) => {
+    const handleAddClick = () => {
+        if (allergen._id) {
+            onAdd(allergen._id);
+        }
+        onClose();
+    };
+
+    return (
+        <div className="fixed inset-0 bg-gray-800/25 flex items-center justify-center z-50" onClick={onClose}>
+            <div className="bg-white p-8 rounded-lg shadow-2xl max-w-lg w-full" onClick={(e) => e.stopPropagation()}>
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-bold text-gray-800">{allergen.name}</h2>
+                    <button onClick={onClose} className="text-gray-500 hover:text-gray-700">&times;</button>
+                </div>
+                <div className="text-sm text-gray-600 space-y-2">
+                    <p><strong className="font-medium text-gray-800">Symptoms:</strong> {allergen.symptoms.join(', ')}</p>
+                    <p><strong className="font-medium text-gray-800">Treatment:</strong> {allergen.treatment}</p>
+                    <p><strong className="font-medium text-gray-800">First Aid:</strong> {allergen.firstAid}</p>
+                </div>
+                <div className="mt-6 flex justify-end">
+                    <button onClick={handleAddClick} className="px-6 py-2 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">Add to My Profile</button>
+                </div>
+            </div>
         </div>
     );
 };
