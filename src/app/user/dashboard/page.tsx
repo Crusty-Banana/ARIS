@@ -1,363 +1,377 @@
 'use client';
 
 import { useSession, signOut } from 'next-auth/react';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Allergen, PAP } from '@/lib/schema';
-import Link from 'next/link';
 import { ObjectId } from 'mongodb';
+import {Eye, EyeOff, AlertTriangle} from 'lucide-react';
 
-export default function UserDashboard() {
-  const { data: session } = useSession();
-  const [pap, setPap] = useState<PAP | null>(null);
-  const [allergens, setAllergens] = useState<Allergen[]>([]);
-  const [crossAllergens, setCrossAllergens] = useState<Allergen[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [suggestions, setSuggestions] = useState<Allergen[]>([]);
+// Allergy Profile Component
+export default function AllergyProfile() {
+    const { data: session } = useSession();
+    const [pap, setPap] = useState<PAP | null>(null);
+    const [allergens, setAllergens] = useState<Allergen[]>([]);
+    const [crossAllergens, setCrossAllergens] = useState<Allergen[]>([]);
+    const [isPublicView, setIsPublicView] = useState(false);
+    const [selectedAllergen, setSelectedAllergen] = useState<Allergen | null>(null);
 
-  const fetchPap = useCallback(async () => {
-    if (session) {
+    const fetchPap = useCallback(async () => {
+      if (session) {
+        try {
+          const response = await fetch('/api/pap');
+          if (response.ok) {
+            const data = await response.json();
+            setPap(data);
+          } else {
+            console.error('Failed to fetch PAP');
+          }
+        } catch (error) {
+          console.error('An error occurred while fetching PAP:', error);
+        }
+      }
+    }, [session]);
+
+    const fetchAllergens = async () => {
       try {
-        const response = await fetch('/api/pap');
+        const response = await fetch('/api/allergens');
         if (response.ok) {
           const data = await response.json();
-          setPap(data);
+          setAllergens(data);
         } else {
-          console.error('Failed to fetch PAP');
+          console.error('Failed to fetch allergens');
         }
       } catch (error) {
-        console.error('An error occurred while fetching PAP:', error);
+        console.error('An error occurred while fetching allergens:', error);
       }
-    }
-  }, [session]);
+    };
 
-  const fetchAllergens = async () => {
-    try {
-      const response = await fetch('/api/allergens');
-      if (response.ok) {
-        const data = await response.json();
-        setAllergens(data);
-      } else {
-        console.error('Failed to fetch allergens');
-      }
-    } catch (error) {
-      console.error('An error occurred while fetching allergens:', error);
-    }
-  };
-
-  const fetchCrossAllergens = async () => {
-    try {
-      const response = await fetch('/api/cross');
-      if (response.ok) {
-        const data = await response.json();
-        setCrossAllergens(data);
-      } else {
-        console.error('Failed to fetch cross allergens');
-      }
-    } catch (error) {
-      console.error('An error occurred while fetching cross allergens:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchPap();
-    fetchAllergens();
-    fetchCrossAllergens()
-  }, [fetchPap]);
-
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setSearchTerm(value);
-    if (value) {
-      const filteredSuggestions = allergens.filter((allergen) =>
-        allergen.name.toLowerCase().includes(value.toLowerCase())
-      );
-      setSuggestions(filteredSuggestions);
-    } else {
-      setSuggestions([]);
-    }
-  };
-
-  const handleAddToPap = async (allergenId: ObjectId) => {
-    if (pap && session) {
-      const updatedAllergens = [
-        ...pap.allergens,
-        { allergenId: allergenId, degree: 1 },
-      ];
+    const fetchCrossAllergens = async () => {
       try {
-        const response = await fetch('/api/pap', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...pap, allergens: updatedAllergens }),
-        });
+        const response = await fetch('/api/cross');
         if (response.ok) {
-          fetchPap();
-          fetchCrossAllergens();
+          const data = await response.json();
+          setCrossAllergens(data);
         } else {
-          console.error('Failed to update PAP');
+          console.error('Failed to fetch cross allergens');
         }
       } catch (error) {
-        console.error('An error occurred while updating PAP:', error);
+        console.error('An error occurred while fetching cross allergens:', error);
       }
-    }
-  };
+    };
 
-  const handleRemoveFromPap = async (allergenId: ObjectId) => {
-    if (pap && session) {
-      const updatedAllergens = pap.allergens.filter(
-        (allergen) => String(allergen.allergenId) !== String(allergenId)
-      );
-      try {
-        const response = await fetch('/api/pap', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...pap, allergens: updatedAllergens }),
-        });
-        if (response.ok) {
-          fetchPap();
-          fetchCrossAllergens();
-        } else {
-          console.error('Failed to update PAP');
+    useEffect(() => {
+      fetchPap();
+      fetchAllergens();
+      fetchCrossAllergens();
+    }, [fetchPap]);
+
+    const handleAddToPap = async (allergenId: ObjectId) => {
+        if (pap && session) {
+            const updatedAllergens = [
+                ...pap.allergens,
+                { allergenId: allergenId, degree: 1 },
+            ];
+            try {
+                const response = await fetch('/api/pap', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ...pap, allergens: updatedAllergens }),
+                });
+                if (response.ok) {
+                    fetchPap();
+                    fetchCrossAllergens();
+                } else {
+                    console.error('Failed to update PAP');
+                }
+            } catch (error) {
+                console.error('An error occurred while updating PAP:', error);
+            }
         }
-      } catch (error) {
-        console.error('An error occurred while updating PAP:', error);
-      }
-    }
-  };
+    };
 
-  const handleSeverityChange = async (allergenId: ObjectId, degree: number) => {
-    if (pap && session) {
-      const updatedAllergens = pap.allergens.map((allergen) =>
-        String(allergen.allergenId) === String(allergenId) ? { ...allergen, degree } : allergen
-      );
-      try {
-        const response = await fetch('/api/pap', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...pap, allergens: updatedAllergens }),
-        });
-        if (response.ok) {
-          fetchPap();
-        } else {
-          console.error('Failed to update PAP');
+    const handleRemoveFromPap = async (allergenId: ObjectId) => {
+        if (pap && session) {
+            const updatedAllergens = pap.allergens.filter(
+                (allergen) => String(allergen.allergenId) !== String(allergenId)
+            );
+            try {
+                const response = await fetch('/api/pap', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ...pap, allergens: updatedAllergens }),
+                });
+                if (response.ok) {
+                    fetchPap();
+                    fetchCrossAllergens();
+                } else {
+                    console.error('Failed to update PAP');
+                }
+            } catch (error) {
+                console.error('An error occurred while updating PAP:', error);
+            }
         }
-      } catch (error) {
-        console.error('An error occurred while updating PAP:', error);
-      }
-    }
-  };
+    };
 
-  const handleTogglePublic = async () => {
-    if (pap && session) {
-      try {
-        const response = await fetch('/api/pap', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...pap, allowPublic: !pap.allowPublic }),
-        });
-        if (response.ok) {
-          fetchPap();
-        } else {
-          console.error('Failed to update PAP');
-        }
-      } catch (error) {
-        console.error('An error occurred while updating PAP:', error);
-      }
-    }
-  };
+    const handleShowAllergenDetails = (allergen: Allergen) => {
+        setSelectedAllergen(allergen);
+    };
 
-  const handleGenderChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (pap && session) {
-        try {
+    const handleCloseModal = () => {
+        setSelectedAllergen(null);
+    };
+
+
+    return (
+        <div className="w-full max-w-6xl min-h-screen p-8 space-y-6 bg-white rounded-lg shadow-md">
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-semibold text-gray-700">My Profile</h2>
+                <button onClick={() => setIsPublicView(!isPublicView)} className="flex items-center space-x-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-50 transition">
+                    {isPublicView ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    <span>{isPublicView ? 'Switch to Private View' : 'Switch to Public View'}</span>
+                </button>
+            </div>
+            <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md mb-6" role="alert">
+                <p className="font-bold flex items-center"><AlertTriangle className="w-5 h-5 mr-2"/>{isPublicView ? 'Public View' : 'Private View'}</p>
+                <p className="text-sm">{isPublicView ? 'This is how others see your profile. It only shows symptoms and first aid information.' : 'This is your private view. It includes all details about your allergies.'}</p>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2">
+                    {pap && (
+                        <PatientAllergyList
+                            pap={pap}
+                            allergens={allergens}
+                            isPublicView={isPublicView}
+                            onRemove={handleRemoveFromPap}
+                            onUpdate={fetchPap}
+                        />
+                    )}
+                </div>
+                <div>
+                    <AddAllergySection
+                        pap={pap}
+                        allergens={allergens}
+                        onAdd={handleShowAllergenDetails}
+                    />
+                    <CrossAllergySection crossAllergens={crossAllergens} isPublicView={isPublicView} onAdd={handleAddToPap} />
+                </div>
+                
+            </div>
+            {selectedAllergen && (
+                <AllergenDetailsModal
+                    allergen={selectedAllergen}
+                    onClose={handleCloseModal}
+                    onAdd={handleAddToPap}
+                />
+            )}
+        </div>
+    );
+};
+
+
+// Patient's Allergy List
+const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove, onUpdate }: { pap: PAP, allergens: Allergen[], isPublicView: boolean, onRemove: (allergenId: ObjectId) => void, onUpdate: () => void}, ) => {
+    const handleSeverityChange = async (allergenId: ObjectId, degree: number) => {
+        if (pap) {
+          const updatedAllergens = pap.allergens.map((allergen) =>
+            String(allergen.allergenId) === String(allergenId) ? { ...allergen, degree } : allergen
+          );
+          try {
             const response = await fetch('/api/pap', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...pap, gender: e.target.value }),
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ ...pap, allergens: updatedAllergens }),
             });
             if (response.ok) {
-                fetchPap();
+              onUpdate(); 
             } else {
                 console.error('Failed to update PAP');
             }
-        } catch (error) {
+          } catch (error) {
             console.error('An error occurred while updating PAP:', error);
+          }
         }
-    }
-  };
+      };
 
-  const handleDobChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (pap && session) {
-        try {
-            const response = await fetch('/api/pap', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...pap, doB: new Date(e.target.value) }),
-            });
-            if (response.ok) {
-                fetchPap();
-            } else {
-                console.error('Failed to update PAP');
+    return (
+        <div className="bg-white p-6 rounded-xl shadow-lg">
+            <h3 className="font-bold text-lg mb-4 text-gray-800">My Known Allergies</h3>
+            <div className="space-y-4">
+                {pap.allergens.length > 0 ? pap.allergens.map((userAllergen) => {
+                    const allergenDetails = allergens.find(
+                        (a) => String(a._id) === String(userAllergen.allergenId)
+                    );
+                    if (!allergenDetails) return null;
+
+                    return (
+                        <div key={String(userAllergen.allergenId)} className="border border-gray-200 rounded-lg p-4">
+                            <div className="flex justify-between items-start">
+                                <h4 className="font-semibold text-blue-600 text-lg">{allergenDetails.name}</h4>
+                                {!isPublicView && (
+                                    <button onClick={() => onRemove(userAllergen.allergenId)} className="text-red-500 hover:text-red-700 text-sm font-medium">Remove</button>
+                                )}
+                            </div>
+                            <div className="mt-2 text-sm text-gray-600">
+                                <p><strong className="font-medium text-gray-800">Symptoms:</strong> {allergenDetails.symptoms.join(', ')}</p>
+                                <p className={isPublicView ? 'mt-1' : 'hidden'}><strong className="font-medium text-gray-800">Causes Symptom:</strong> {allergenDetails.name}</p>
+                                <p className="mt-1"><strong className="font-medium text-gray-800">{isPublicView ? 'First Aid' : 'Treatment'}:</strong> {isPublicView ? allergenDetails.firstAid : allergenDetails.treatment}</p>
+                            </div>
+                            {!isPublicView && (
+                                <div className="mt-2">
+                                    <label>Severity:</label>
+                                    <input
+                                        type="range"
+                                        min="1"
+                                        max="5"
+                                        value={userAllergen.degree}
+                                        onChange={(e) =>
+                                            handleSeverityChange(
+                                                userAllergen.allergenId,
+                                                parseInt(e.target.value)
+                                            )
+                                        }
+                                        className="w-full"
+                                    />
+                                    <span>{userAllergen.degree}</span>
+                                </div>
+                            )}
+                        </div>
+                    );
+                }) : <p className="text-gray-500">You haven't added any allergies yet.</p>}
+            </div>
+        </div>
+    );
+};
+
+const CrossAllergySection = ({ crossAllergens, isPublicView, onAdd}: { crossAllergens: Allergen[], isPublicView: boolean, onAdd: (allergenId: ObjectId) => void  }) => {
+    return (
+        <div className="bg-white p-6 rounded-xl shadow-lg mt-8">
+            <h3 className="font-bold text-lg mb-4 text-gray-800">Potential Cross-Allergens</h3>
+            {crossAllergens.length > 0 ? (
+                <>
+                    <p className="text-sm text-gray-600 mb-2">Based on your allergies, you might be sensitive to:</p>
+                    <div className="space-y-4">
+                        {crossAllergens.map((allergen) => <div key={String(allergen._id)} className="border border-gray-200 rounded-lg p-4">
+                            <div className="flex justify-between items-start">
+                                <h4 className="font-semibold text-blue-600 text-lg">{allergen.name}</h4>
+                                {!isPublicView && allergen._id && (<button onClick={() => onAdd(allergen._id!)} 
+                                    className="text-green-500 hover:text-green-700 text-sm font-medium">Add</button>
+                                )}
+                            </div>
+                            <div className="mt-2 text-sm text-gray-600">
+                                <p><strong className="font-medium text-gray-800">Symptoms:</strong> {allergen.symptoms.join(', ')}</p>
+                                <p className={isPublicView ? 'mt-1' : 'hidden'}><strong className="font-medium text-gray-800">Causes Symptom:</strong> {allergen.name}</p>
+                                <p className="mt-1"><strong className="font-medium text-gray-800">{isPublicView ? 'First Aid' : 'Treatment'}:</strong> {isPublicView ? allergen.firstAid : allergen.treatment}</p>
+                            </div>
+                        </div>)}
+                    </div>
+                </>
+            ) : <p className="text-gray-500">No potential cross-allergens found.</p>}
+        </div>
+    );
+};
+
+// Section to Add Allergies (for Patient) with Autocomplete
+const AddAllergySection = ({ pap, allergens, onAdd }: { pap: PAP | null, allergens: Allergen[], onAdd: (allergen: Allergen) => void }) => {
+    const [inputValue, setInputValue] = useState('');
+    const [suggestions, setSuggestions] = useState<Allergen[]>([]);
+    const wrapperRef = useRef(null);
+
+    const availableAllergies = allergens.filter(dbAllergy =>
+        !pap?.allergens.some(myAllergy => String(myAllergy.allergenId) === String(dbAllergy._id))
+    );
+
+    // Close suggestions when clicking outside
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (wrapperRef.current && !(wrapperRef.current as any).contains(event.target)) {
+                setSuggestions([]);
             }
-        } catch (error) {
-            console.error('An error occurred while updating PAP:', error);
         }
-    }
-  };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [wrapperRef]);
 
 
-  const isAllergenInPap = (allergenId: ObjectId) => {
-    return pap?.allergens.some((a) => String(a.allergenId) === String(allergenId));
-  };
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setInputValue(value);
+        if (value.trim().length > 0) {
+            const filteredSuggestions = availableAllergies.filter(allergen =>
+                allergen.name.toLowerCase().includes(value.toLowerCase())
+            );
+            setSuggestions(filteredSuggestions);
+        } else {
+            setSuggestions([]);
+        }
+    };
 
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-      <div className="w-full max-w-4xl p-8 space-y-6 bg-white rounded-lg shadow-md">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold">User Dashboard</h1>
-            <p>
-              Welcome, {session?.user?.firstName} {session?.user?.lastName}!
-            </p>
-            <p>
-              You have the role of: <strong>{session?.user?.role}</strong>
-            </p>
-          </div>
-          <button
-            onClick={() => signOut({ callbackUrl: '/auth/login' })}
-            className="w-full max-w-xs px-4 py-2 mt-4 font-bold text-white bg-red-500 rounded-md hover:bg-red-600"
-          >
-            Logout
-          </button>
+    const handleSelectAllergy = (allergen: Allergen) => {
+        onAdd(allergen);
+        setInputValue('');
+        setSuggestions([]);
+    };
+
+    return (
+        <div className="bg-white p-6 rounded-xl shadow-lg">
+            <h3 className="font-bold text-lg mb-4 text-gray-800">Add Allergy to Profile</h3>
+            <div className="relative" ref={wrapperRef}>
+                <input
+                    type="text"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    placeholder="Type to search for an allergy..."
+                    className="w-full p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                />
+                {suggestions.length > 0 && (
+                    <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg mt-1 max-h-48 overflow-y-auto shadow-lg">
+                        {suggestions.map(allergen => (
+                            <li
+                                key={String(allergen._id)}
+                                onClick={() => handleSelectAllergy(allergen)}
+                                className="px-4 py-2 hover:bg-blue-50 cursor-pointer text-sm text-gray-700"
+                            >
+                                {allergen.name}
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+             {availableAllergies.length === 0 && (
+                <p className="text-gray-500 text-sm mt-4">All available allergies have been added to your profile.</p>
+            )}
         </div>
+    );
+};
 
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search for allergens..."
-            value={searchTerm}
-            onChange={handleSearch}
-            className="w-full p-2 border rounded-md"
-          />
-          {suggestions.length > 0 && (
-            <ul className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg">
-              {suggestions.map((allergen) => (
-                <li
-                  key={String(allergen._id)}
-                  className="p-2 hover:bg-gray-200 cursor-pointer flex justify-between items-center"
-                >
-                  <Link href={`/allergens/${allergen._id}`} className="flex-grow">
-                    {allergen.name}
-                  </Link>
-                  <button
-                    onClick={() => handleAddToPap(allergen._id!)}
-                    disabled={isAllergenInPap(allergen._id!)}
-                    className="ml-4 px-2 py-1 text-sm text-white bg-green-500 rounded-md hover:bg-green-600 disabled:bg-gray-400"
-                  >
-                    +
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+const AllergenDetailsModal = ({ allergen, onClose, onAdd }: { allergen: Allergen, onClose: () => void, onAdd: (allergenId: ObjectId) => void }) => {
+    const handleAddClick = () => {
+        if (allergen._id) {
+            onAdd(allergen._id);
+        }
+        onClose();
+    };
+
+    return (
+        <div className="fixed inset-0 bg-gray-800/25 flex items-center justify-center z-50" onClick={onClose}>
+            <div className="bg-white p-8 rounded-lg shadow-2xl max-w-lg w-full" onClick={(e) => e.stopPropagation()}>
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-bold text-gray-800">{allergen.name}</h2>
+                    <button onClick={onClose} className="text-gray-500 hover:text-gray-700">&times;</button>
+                </div>
+                <div className="text-sm text-gray-600 space-y-2">
+                    <p><strong className="font-medium text-gray-800">Symptoms:</strong> {allergen.symptoms.join(', ')}</p>
+                    <p><strong className="font-medium text-gray-800">Treatment:</strong> {allergen.treatment}</p>
+                    <p><strong className="font-medium text-gray-800">First Aid:</strong> {allergen.firstAid}</p>
+                </div>
+                <div className="mt-6 flex justify-end">
+                    <button onClick={handleAddClick} className="px-6 py-2 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">Add to My Profile</button>
+                </div>
+            </div>
         </div>
+    );
+};
 
-        {pap && (
-          <div className="mt-6">
-            <h2 className="text-xl font-bold">Personal Allergy Profile</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-              <div>
-                <strong>Date of Birth:</strong>{' '}
-                <input type="date" value={pap.doB ? new Date(pap.doB).toISOString().split('T')[0] : ''} onChange={handleDobChange} />
-              </div>
-              <div>
-                <strong>Gender:</strong>{' '}
-                <select value={pap.gender || ''} onChange={handleGenderChange}>
-                    <option value="">None</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                </select>
-              </div>
-              <div className="flex items-center">
-                <strong>Allow Public:</strong>
-                <label className="switch ml-2">
-                  <input
-                    type="checkbox"
-                    checked={pap.allowPublic}
-                    onChange={handleTogglePublic}
-                  />
-                  <span className="slider round"></span>
-                </label>
-              </div>
-            </div>
 
-            <h3 className="text-lg font-bold mt-6">My Allergens</h3>
-            <div className="space-y-4 mt-4">
-              {pap.allergens.map((userAllergen) => {
-                const allergenDetails = allergens.find(
-                  (a) => String(a._id) === String(userAllergen.allergenId)
-                );
-                if (!allergenDetails) return null;
 
-                return (
-                  <div
-                    key={String(userAllergen.allergenId)}
-                    className="p-4 border rounded-md"
-                  >
-                    <div className="flex justify-between items-center">
-                      <h4 className="font-bold">{allergenDetails.name}</h4>
-                      <button
-                        onClick={() => handleRemoveFromPap(userAllergen.allergenId)}
-                        className="px-2 py-1 text-sm text-white bg-red-500 rounded-md hover:bg-red-600"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                    <p>
-                      <strong>Symptoms:</strong>{' '}
-                      {allergenDetails.symptoms.join(', ')}
-                    </p>
-                    <p>
-                      <strong>Treatment:</strong> {allergenDetails.treatment}
-                    </p>
-                    <p>
-                      <strong>First Aid:</strong> {allergenDetails.firstAid}
-                    </p>
-                    <div className="mt-2">
-                      <label>Severity:</label>
-                      <input
-                        type="range"
-                        min="1"
-                        max="5"
-                        value={userAllergen.degree}
-                        onChange={(e) =>
-                          handleSeverityChange(
-                            userAllergen.allergenId,
-                            parseInt(e.target.value)
-                          )
-                        }
-                        className="w-full"
-                      />
-                      <span>{userAllergen.degree}</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow">
-                <h3 className="text-xl font-semibold mb-2">Potential Cross-Allergens</h3>
-                {crossAllergens.length > 0 ? (
-                    <>
-                        <p className="text-sm text-gray-600 mb-2">Based on your allergies, you might be sensitive to:</p>
-                        <ul className="list-disc pl-5">
-                            {/* ✅ FIX: Convert ObjectId to string for the key prop */}
-                            {crossAllergens.map((allergen) => <li key={String(allergen._id)}>{allergen.name}</li>)}
-                        </ul>
-                    </>
-                ) : <p>No potential cross-allergens found.</p>}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
