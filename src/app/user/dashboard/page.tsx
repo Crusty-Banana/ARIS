@@ -4,73 +4,10 @@ import { useSession, signOut } from 'next-auth/react';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Allergen, PAP } from '@/lib/schema';
 import { ObjectId } from 'mongodb';
-import { ShieldCheck, Plus, MessageSquare, Image as ImageIcon, User, LogOut, Eye, EyeOff, AlertTriangle, HelpCircle } from 'lucide-react';
-
-// Main Dashboard Component
-
-// Header Component
-interface HeaderProps {
-  username: string;
-  onLogout: () => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ username, onLogout }) => (
-    <header className="bg-white shadow-md">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-                <div className="flex items-center space-x-3">
-                    <ShieldCheck className="w-8 h-8 text-blue-500" />
-                    <h1 className="text-xl font-bold text-gray-800">AL-1S - Your Allergy Man</h1>
-                </div>
-                <div className="flex items-center space-x-4">
-                    <span className="text-sm font-medium text-gray-600 capitalize bg-gray-100 px-3 py-1 rounded-full flex items-center">
-                        <User className="w-4 h-4 mr-2" />
-                        {username}
-                    </span>
-                    <button onClick={onLogout} className="flex items-center text-sm text-gray-500 hover:text-red-500 transition-colors">
-                        <LogOut className="w-5 h-5 mr-1" />
-                        Logout
-                    </button>
-                </div>
-            </div>
-        </div>
-    </header>
-);
-
-export default function UserDashboard() {
-  const { data: session } = useSession();
-
-  return (
-    <div className="bg-gray-50 min-h-screen">
-      <Header username={`${session?.user?.firstName} ${session?.user?.lastName}`} onLogout={() => signOut({ callbackUrl: '/auth/login' })}  />
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-        <div className="w-full max-w-6xl p-8 space-y-6 bg-white rounded-lg shadow-md">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-bold">User Dashboard</h1>
-              <p>
-                Welcome, {session?.user?.firstName} {session?.user?.lastName}!
-              </p>
-              <p>
-                You have the role of: <strong>{session?.user?.role}</strong>
-              </p>
-            </div>
-            {/* <button
-              onClick={() => signOut({ callbackUrl: '/auth/login' })}
-              className="w-full max-w-xs px-4 py-2 mt-4 font-bold text-white bg-red-500 rounded-md hover:bg-red-600"
-            >
-              Logout
-            </button> */}
-          </div>
-          <AllergyProfile />
-        </div>
-      </div>
-    </div>
-  );
-}
+import {Eye, EyeOff, AlertTriangle} from 'lucide-react';
 
 // Allergy Profile Component
-const AllergyProfile = () => {
+export default function AllergyProfile() {
     const { data: session } = useSession();
     const [pap, setPap] = useState<PAP | null>(null);
     const [allergens, setAllergens] = useState<Allergen[]>([]);
@@ -185,7 +122,7 @@ const AllergyProfile = () => {
 
 
     return (
-        <div>
+        <div className="w-full max-w-6xl min-h-screen p-8 space-y-6 bg-white rounded-lg shadow-md">
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-semibold text-gray-700">My Profile</h2>
                 <button onClick={() => setIsPublicView(!isPublicView)} className="flex items-center space-x-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-50 transition">
@@ -435,3 +372,6 @@ const AllergenDetailsModal = ({ allergen, onClose, onAdd }: { allergen: Allergen
         </div>
     );
 };
+
+
+
