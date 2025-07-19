@@ -3,6 +3,9 @@ import { NextResponse } from "next/server"
 
 export default withAuth(
     function middleware(req) {
+        if (req.nextUrl.pathname === "/user") {
+            return NextResponse.redirect(new URL("/user/dashboard", req.url));
+        }
         if (req.nextUrl.pathname.startsWith("/admin") && req.nextauth.token?.role !== "admin") {
             return NextResponse.rewrite(
                 new URL("/denied", req.url)

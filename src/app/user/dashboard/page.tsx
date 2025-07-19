@@ -120,6 +120,11 @@ export default function AllergyProfile() {
         setSelectedAllergen(null);
     };
 
+    const isAllergenInPap = (allergenId?: ObjectId) => {
+        if (!allergenId) return false;
+        return pap?.allergens.some(a => String(a.allergenId) === String(allergenId));
+    }
+
 
     return (
         <div className="w-full max-w-6xl min-h-screen p-8 space-y-6 bg-white rounded-lg shadow-md">
@@ -143,6 +148,7 @@ export default function AllergyProfile() {
                             isPublicView={isPublicView}
                             onRemove={handleRemoveFromPap}
                             onUpdate={fetchPap}
+                            onShowDetails={handleShowAllergenDetails}
                         />
                     )}
                 </div>
@@ -152,7 +158,12 @@ export default function AllergyProfile() {
                         allergens={allergens}
                         onAdd={handleShowAllergenDetails}
                     />
-                    <CrossAllergySection crossAllergens={crossAllergens} isPublicView={isPublicView} onAdd={handleAddToPap} />
+                    <CrossAllergySection 
+                        crossAllergens={crossAllergens} 
+                        isPublicView={isPublicView} 
+                        onAdd={handleAddToPap}
+                        onShowDetails={handleShowAllergenDetails} 
+                    />
                 </div>
                 
             </div>
@@ -161,6 +172,7 @@ export default function AllergyProfile() {
                     allergen={selectedAllergen}
                     onClose={handleCloseModal}
                     onAdd={handleAddToPap}
+                    isInPap={isAllergenInPap(selectedAllergen._id)!}
                 />
             )}
         </div>
@@ -169,7 +181,7 @@ export default function AllergyProfile() {
 
 
 // Patient's Allergy List
-const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove, onUpdate }: { pap: PAP, allergens: Allergen[], isPublicView: boolean, onRemove: (allergenId: ObjectId) => void, onUpdate: () => void}, ) => {
+const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove, onUpdate, onShowDetails }: { pap: PAP, allergens: Allergen[], isPublicView: boolean, onRemove: (allergenId: ObjectId) => void, onUpdate: () => void, onShowDetails: (allergen: Allergen) => void}, ) => {
     const handleSeverityChange = async (allergenId: ObjectId, degree: number) => {
         if (pap) {
           const updatedAllergens = pap.allergens.map((allergen) =>
@@ -203,11 +215,11 @@ const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove, onUpdate }
                     if (!allergenDetails) return null;
 
                     return (
-                        <div key={String(userAllergen.allergenId)} className="border border-gray-200 rounded-lg p-4">
+                        <div key={String(userAllergen.allergenId)} className="border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-gray-50" onClick={() => onShowDetails(allergenDetails)}>
                             <div className="flex justify-between items-start">
                                 <h4 className="font-semibold text-blue-600 text-lg">{allergenDetails.name}</h4>
                                 {!isPublicView && (
-                                    <button onClick={() => onRemove(userAllergen.allergenId)} className="text-red-500 hover:text-red-700 text-sm font-medium">Remove</button>
+                                    <button onClick={(e) => { e.stopPropagation(); onRemove(userAllergen.allergenId)}} className="text-red-500 hover:text-red-700 text-sm font-medium">Remove</button>
                                 )}
                             </div>
                             <div className="mt-2 text-sm text-gray-600">
@@ -223,6 +235,7 @@ const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove, onUpdate }
                                         min="1"
                                         max="5"
                                         value={userAllergen.degree}
+                                        onClick={(e) => e.stopPropagation()}
                                         onChange={(e) =>
                                             handleSeverityChange(
                                                 userAllergen.allergenId,
@@ -242,7 +255,7 @@ const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove, onUpdate }
     );
 };
 
-const CrossAllergySection = ({ crossAllergens, isPublicView, onAdd}: { crossAllergens: Allergen[], isPublicView: boolean, onAdd: (allergenId: ObjectId) => void  }) => {
+const CrossAllergySection = ({ crossAllergens, isPublicView, onAdd, onShowDetails}: { crossAllergens: Allergen[], isPublicView: boolean, onAdd: (allergenId: ObjectId) => void, onShowDetails: (allergen: Allergen) => void }) => {
     return (
         <div className="bg-white p-6 rounded-xl shadow-lg mt-8">
             <h3 className="font-bold text-lg mb-4 text-gray-800">Potential Cross-Allergens</h3>
@@ -250,10 +263,10 @@ const CrossAllergySection = ({ crossAllergens, isPublicView, onAdd}: { crossAlle
                 <>
                     <p className="text-sm text-gray-600 mb-2">Based on your allergies, you might be sensitive to:</p>
                     <div className="space-y-4">
-                        {crossAllergens.map((allergen) => <div key={String(allergen._id)} className="border border-gray-200 rounded-lg p-4">
+                        {crossAllergens.map((allergen) => <div key={String(allergen._id)} className="border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-gray-50" onClick={() => onShowDetails(allergen)}>
                             <div className="flex justify-between items-start">
                                 <h4 className="font-semibold text-blue-600 text-lg">{allergen.name}</h4>
-                                {!isPublicView && allergen._id && (<button onClick={() => onAdd(allergen._id!)} 
+                                {!isPublicView && allergen._id && (<button onClick={(e) => { e.stopPropagation(); onAdd(allergen._id!)}} 
                                     className="text-green-500 hover:text-green-700 text-sm font-medium">Add</button>
                                 )}
                             </div>
@@ -345,9 +358,9 @@ const AddAllergySection = ({ pap, allergens, onAdd }: { pap: PAP | null, allerge
     );
 };
 
-const AllergenDetailsModal = ({ allergen, onClose, onAdd }: { allergen: Allergen, onClose: () => void, onAdd: (allergenId: ObjectId) => void }) => {
+const AllergenDetailsModal = ({ allergen, onClose, onAdd, isInPap }: { allergen: Allergen, onClose: () => void, onAdd: (allergenId: ObjectId) => void, isInPap: boolean }) => {
     const handleAddClick = () => {
-        if (allergen._id) {
+        if (allergen._id && !isInPap) {
             onAdd(allergen._id);
         }
         onClose();
@@ -366,12 +379,11 @@ const AllergenDetailsModal = ({ allergen, onClose, onAdd }: { allergen: Allergen
                     <p><strong className="font-medium text-gray-800">First Aid:</strong> {allergen.firstAid}</p>
                 </div>
                 <div className="mt-6 flex justify-end">
-                    <button onClick={handleAddClick} className="px-6 py-2 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">Add to My Profile</button>
+                    {!isInPap &&
+                        <button onClick={handleAddClick} className="px-6 py-2 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">Add to My Profile</button>
+                    }
                 </div>
             </div>
         </div>
     );
 };
-
-
-
