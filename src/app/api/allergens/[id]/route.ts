@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { AllergenSchema } from "@/modules/business-types";
+import { Allergen } from "@/modules/business-types";
 import { getToken } from "next-auth/jwt";
 import { ObjectId } from "mongodb";
 import { getDb } from "@/modules/mongodb";
@@ -41,7 +41,7 @@ export async function GET(
             );
         }
 
-        const parsedAllergen = AllergenSchema.parse(result);
+        const parsedAllergen = Allergen.parse(result);
         return NextResponse.json({ allergen: parsedAllergen }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
@@ -76,7 +76,7 @@ export async function PUT(
         }
 
         const body = await req.json();
-        const allergenData = AllergenSchema.parse(body);
+        const allergenData = Allergen.parse(body);
 
         const db = await getDb();
         const allergenId = new ObjectId(id);

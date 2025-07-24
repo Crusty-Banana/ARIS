@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { AllergenSchema } from '@/modules/business-types';
+import { AddAllergen$Params } from '@/modules/commands/AddAllergen/typing';
 import { getToken } from 'next-auth/jwt';
 import { getDb } from '@/modules/mongodb';
+import { handler$AddAllergen } from '@/modules/commands/AddAllergen/handler';
 
 export async function POST(req: NextRequest) {
     try {
@@ -12,11 +13,14 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const allergenData = AllergenSchema.parse(body);
+        const parsedBody = AddAllergen$Params.safeParse(body);
 
+        if (!parsedBody.success) {
+            return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
+        }
         const db = await getDb();
 
-        const result = await db.collection('allergens').insertOne(allergenData);
+        const result = await handler$AddAllergen(db, parsedBody.data);
 
         return NextResponse.json(
             { message: 'Allergen added successfully', allergenId: result.insertedId },

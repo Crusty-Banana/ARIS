@@ -18,19 +18,17 @@ export const User = z.object({
     password: z.string().min(6, "Password must be at least 6 characters"),
     role: Role,
 });
-
 export type User = z.infer<typeof User>;
 export type UserInfo = Pick<User, "firstName" | "lastName">;
 
-export const AllergenSchema = z.object({
-    _id: z.instanceof(ObjectId).optional(),
+export const Allergen = z.object({
+    id: ObjectIdAsHexString,
     name: z.string().min(1, "Allergen name is required"),
     symptoms: z.array(z.string()).min(1, "At least one symptom is required"),
-    treatment: z.string().optional(),
-    firstAid: z.string().optional(),
+    treatment: z.string().default(""),
+    firstAid: z.string().default(""),
 });
-
-export type Allergen = z.infer<typeof AllergenSchema>;
+export type Allergen = z.infer<typeof Allergen>;
 
 export const AllergySchema = z.object({
     name: z.string().min(1, "Allergy name is required"),
@@ -78,7 +76,7 @@ export const UserUpdateSchema = z.object({
 
 export type UserUpdate = z.infer<typeof UserUpdateSchema>;
 
-export const PersonalAllergenSchema = AllergenSchema.pick({
+export const PersonalAllergenSchema = Allergen.pick({
     name: true,
     symptoms: true,
     treatment: true,
