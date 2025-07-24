@@ -45,7 +45,7 @@ export async function GET(req: NextRequest) {
         const pap = await db
             .collection("paps")
             .findOne({ userId: new ObjectId(token.id) });
-        console.log(pap);
+
         if (!pap) {
             return NextResponse.json(
                 { message: "Personal Allergy Profile not found" },
