@@ -3,6 +3,8 @@ import { AddAllergen$Params } from '@/modules/commands/AddAllergen/typing';
 import { getToken } from 'next-auth/jwt';
 import { getDb } from '@/modules/mongodb';
 import { handler$AddAllergen } from '@/modules/commands/AddAllergen/handler';
+import { handler$GetAllergens } from '@/modules/commands/GetAllergens/handler';
+import { GetAllergens$Params } from '@/modules/commands/GetAllergens/typing';
 
 export async function POST(req: NextRequest) {
     try {
@@ -46,9 +48,15 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
+        const searchParams = Object.fromEntries(req.nextUrl.searchParams);
+        const parsedBody = GetAllergens$Params.safeParse(searchParams);
+        if (!parsedBody.success) {
+            return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
+        }
+
         const db = await getDb();
 
-        const allergens = await db.collection('allergens').find({}).toArray();
+        const { allergens } = await handler$GetAllergens(db, parsedBody.data);
 
         return NextResponse.json(allergens, { status: 200 });
     } catch (error) {

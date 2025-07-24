@@ -4,6 +4,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useState, useEffect, FormEvent } from 'react';
 import { Allergen } from '@/modules/business-types';
 import { httpPost$AddAllergen } from '@/modules/commands/AddAllergen/fetcher';
+import { httpGet$GetAllergens } from '@/modules/commands/GetAllergens/fetcher';
 
 export default function AdminDashboard() {
   const { data: session } = useSession();
@@ -16,11 +17,8 @@ export default function AdminDashboard() {
 
   const fetchAllergens = async () => {
     try {
-      const response = await fetch('/api/allergens');
-      if (response.ok) {
-        const data = await response.json();
-        setAllergenList(data);
-      }
+      const { allergens } = await httpGet$GetAllergens('/api/allergens', {});
+      setAllergenList(allergens);
     } catch (error) {
       console.error('Failed to fetch allergens:', error);
     }

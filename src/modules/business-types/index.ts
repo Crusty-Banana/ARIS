@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { z } from "zod";
 
 export const ObjectIdAsHexString = z.string().regex(/^[0-9a-f]{24}$/);
@@ -32,22 +31,22 @@ export type Allergen = z.infer<typeof Allergen>;
 
 export const AllergySchema = z.object({
     name: z.string().min(1, "Allergy name is required"),
-    allergensId: z.array(z.instanceof(ObjectId)).default([]),
+    allergensId: z.array(ObjectIdAsHexString).default([]),
 });
 
 export type Allergy = z.infer<typeof AllergySchema>;
 
 export const PAPSchema = z.object({
-    _id: z.instanceof(ObjectId).optional(),
-    userId: z.instanceof(ObjectId),
-    publicId: z.instanceof(ObjectId).default(() => new ObjectId()),
+    _id: ObjectIdAsHexString,
+    userId: ObjectIdAsHexString,
+    publicId: ObjectIdAsHexString.optional(),
     allowPublic: z.boolean().default(true),
     gender: z.enum(["male", "female", "other"]).nullable().default(null),
     doB: z.date().nullable().default(null),
     allergens: z
         .array(
             z.object({
-                allergenId: z.instanceof(ObjectId),
+                allergenId: ObjectIdAsHexString,
                 degree: z.number().min(1).max(5),
             }),
         )
