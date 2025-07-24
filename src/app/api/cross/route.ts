@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
 import { getToken } from 'next-auth/jwt';
 import { ObjectId } from 'mongodb';
+import { getDb } from '@/modules/mongodb';
 
 // It's a good practice to define an interface for the shape of your data.
 interface AllergenInPap {
@@ -17,8 +17,7 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
-        const client = await clientPromise;
-        const db = client.db();
+        const db = await getDb();
 
         // if (!ObjectId.isValid(token.id)) {
         //     return NextResponse.json(
@@ -46,7 +45,7 @@ export async function GET(req: NextRequest) {
         relatedAllergies.forEach(allergy => {
             allergy.allergensId.forEach((allergenId: ObjectId) => {
                 const allergenIdStr = allergenId.toString();
-                
+
                 if (!userAllergenIds.some((id: ObjectId) => id.toString() === allergenIdStr)) {
                     crossAllergenIds.add(allergenIdStr);
                 }

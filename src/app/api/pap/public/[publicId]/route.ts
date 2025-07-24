@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
 import { ObjectId, WithId, Document } from "mongodb";
 import { ZodError } from "zod";
 import { PublicPAPSchema, PAPAllergen } from "@/lib/schema";
+import { getDb } from "@/modules/mongodb";
 
 export async function GET(
     req: NextRequest,
@@ -18,8 +18,7 @@ export async function GET(
             );
         }
 
-        const client = await clientPromise;
-        const db = client.db();
+        const db = await getDb();
         const papId = new ObjectId(publicId);
 
         const pap = await db

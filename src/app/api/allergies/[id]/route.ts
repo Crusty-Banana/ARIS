@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
 import { AllergySchema } from '@/lib/schema';
 import { getToken } from 'next-auth/jwt';
 import { ObjectId } from 'mongodb';
+import { getDb } from '@/modules/mongodb';
 
 export async function GET(
     req: NextRequest,
@@ -24,8 +24,7 @@ export async function GET(
             );
         }
 
-        const client = await clientPromise;
-        const db = client.db();
+        const db = await getDb();
         const allergyId = new ObjectId(id);
 
         const result = await db.collection('allergies')
@@ -80,7 +79,7 @@ export async function PUT(
         // Convert string IDs to ObjectIds before validation
         if (body.allergensId && Array.isArray(body.allergensId)) {
             body.allergensId = body.allergensId.map((id: string) => {
-                if(ObjectId.isValid(id)) {
+                if (ObjectId.isValid(id)) {
                     return new ObjectId(id)
                 }
                 // Throw an error or handle invalid IDs as you see fit
@@ -89,8 +88,7 @@ export async function PUT(
         }
         const allergyData = AllergySchema.parse(body);
 
-        const client = await clientPromise;
-        const db = client.db();
+        const db = await getDb();
         const allergyId = new ObjectId(id);
 
         const result = await db.collection('allergies').updateOne(
@@ -141,8 +139,7 @@ export async function DELETE(
             );
         }
 
-        const client = await clientPromise;
-        const db = client.db();
+        const db = await getDb();
         const allergyId = new ObjectId(id);
 
         const result = await db.collection('allergies')

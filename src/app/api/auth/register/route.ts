@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hash } from 'bcryptjs';
-import clientPromise from '@/lib/mongodb';
 import { UserSchema, PAPSchema } from '@/lib/schema';
+import { getDb } from '@/modules/mongodb';
 
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
         const { firstName, lastName, email, password } = UserSchema.parse(body);
 
-        const client = await clientPromise;
-        const db = client.db();
+        const db = await getDb();
 
         const existingUser = await db.collection('users').findOne({ email });
 

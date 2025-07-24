@@ -1,7 +1,7 @@
 import NextAuth, { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { compare } from 'bcryptjs';
-import clientPromise from '@/lib/mongodb';
+import { getDb } from '@/modules/mongodb';
 
 export const authOptions: AuthOptions = {
     providers: [
@@ -16,8 +16,7 @@ export const authOptions: AuthOptions = {
                     return null;
                 }
 
-                const client = await clientPromise;
-                const db = client.db();
+                const db = await getDb();
 
                 const user = await db
                     .collection('users')

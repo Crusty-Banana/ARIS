@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
 import { getToken } from "next-auth/jwt";
 import { ObjectId } from "mongodb";
 
 import { z } from "zod";
+import { getDb } from "@/modules/mongodb";
 
 export const UpdatePAPSchema = z.object({
     allowPublic: z.boolean().default(true),
@@ -32,8 +32,7 @@ export async function GET(req: NextRequest) {
             );
         }
 
-        const client = await clientPromise;
-        const db = client.db();
+        const db = await getDb();
 
         if (!ObjectId.isValid(token.id)) {
             return NextResponse.json(
@@ -85,8 +84,7 @@ export async function PUT(req: NextRequest) {
 
         const papData = UpdatePAPSchema.parse(body);
 
-        const client = await clientPromise;
-        const db = client.db();
+        const db = await getDb();
 
         if (!ObjectId.isValid(token.id)) {
             return NextResponse.json(

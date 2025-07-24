@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
 import { AllergySchema } from '@/lib/schema';
 import { getToken } from 'next-auth/jwt';
 import { ObjectId } from 'mongodb';
+import { getDb } from '@/modules/mongodb';
 
 export async function POST(req: NextRequest) {
     try {
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
         // Convert string IDs to ObjectIds before validation
         if (body.allergensId && Array.isArray(body.allergensId)) {
             body.allergensId = body.allergensId.map((id: string) => {
-                if(ObjectId.isValid(id)) {
+                if (ObjectId.isValid(id)) {
                     return new ObjectId(id)
                 }
                 // Throw an error or handle invalid IDs as you see fit
@@ -27,8 +27,7 @@ export async function POST(req: NextRequest) {
 
         const allergyData = AllergySchema.parse(body);
 
-        const client = await clientPromise;
-        const db = client.db();
+        const db = await getDb();
 
         const result = await db.collection('allergies').insertOne(allergyData);
 
@@ -56,8 +55,7 @@ export async function GET() {
         //     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         // }
 
-        const client = await clientPromise;
-        const db = client.db();
+        const db = await getDb();
 
         const allergies = await db.collection('allergies').find({}).toArray();
 

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
 import { AllergenSchema } from '@/lib/schema';
 import { getToken } from 'next-auth/jwt';
+import { getDb } from '@/modules/mongodb';
 
 export async function POST(req: NextRequest) {
     try {
@@ -14,8 +14,7 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         const allergenData = AllergenSchema.parse(body);
 
-        const client = await clientPromise;
-        const db = client.db();
+        const db = await getDb();
 
         const result = await db.collection('allergens').insertOne(allergenData);
 
@@ -43,8 +42,7 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
-        const client = await clientPromise;
-        const db = client.db();
+        const db = await getDb();
 
         const allergens = await db.collection('allergens').find({}).toArray();
 

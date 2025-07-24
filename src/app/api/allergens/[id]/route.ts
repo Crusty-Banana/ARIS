@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
 import { AllergenSchema } from "@/lib/schema";
 import { getToken } from "next-auth/jwt";
 import { ObjectId } from "mongodb";
+import { getDb } from "@/modules/mongodb";
 
 export async function GET(
     req: NextRequest,
@@ -27,8 +27,7 @@ export async function GET(
             );
         }
 
-        const client = await clientPromise;
-        const db = client.db();
+        const db = await getDb();
         const allergenId = new ObjectId(id);
 
         const result = await db
@@ -79,8 +78,7 @@ export async function PUT(
         const body = await req.json();
         const allergenData = AllergenSchema.parse(body);
 
-        const client = await clientPromise;
-        const db = client.db();
+        const db = await getDb();
         const allergenId = new ObjectId(id);
 
         const result = await db
@@ -130,8 +128,7 @@ export async function DELETE(
             );
         }
 
-        const client = await clientPromise;
-        const db = client.db();
+        const db = await getDb();
         const allergenId = new ObjectId(id);
 
         const result = await db

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
 import { UserUpdateSchema, UserUpdate } from "@/lib/schema";
 import { getToken } from "next-auth/jwt";
 import { ObjectId } from "mongodb";
 import { ZodError } from "zod";
+import { getDb } from "@/modules/mongodb";
 export async function PUT(
     req: NextRequest,
     { params }: { params: Promise<{ id: string }> },
@@ -33,8 +33,7 @@ export async function PUT(
         const body = await req.json();
         const { ...rest } = UserUpdateSchema.parse(body);
 
-        const client = await clientPromise;
-        const db = client.db();
+        const db = await getDb();
         const userId = new ObjectId(id);
 
         const updateData: UserUpdate = { ...rest };
