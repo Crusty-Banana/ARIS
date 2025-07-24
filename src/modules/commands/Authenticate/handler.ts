@@ -28,7 +28,7 @@ export function handler$Authenticate(
 
                     if (user && (await compare(credentials.password, user.password))) {
                         return {
-                            id: user._id.toString(),
+                            id: user._id.toHexString(),
                             email: user.email,
                             firstName: user.firstName,
                             lastName: user.lastName,

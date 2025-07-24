@@ -9,12 +9,7 @@ export async function POST(req: NextRequest) {
         const parsedBody = Register$Params.safeParse(body);
 
         if (!parsedBody.success) {
-            return NextResponse.json(
-                {
-                    error: parsedBody.error.message || "invalid params",
-                },
-                { status: 400 }
-            );
+            return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
         }
 
         const db = await getDb();
