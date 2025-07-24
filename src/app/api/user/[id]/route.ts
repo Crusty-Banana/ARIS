@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UserUpdateSchema, UserUpdate } from "@/lib/schema";
+import { UserUpdateSchema, UserUpdate } from "@/modules/business-types";
 import { getToken } from "next-auth/jwt";
 import { ObjectId } from "mongodb";
 import { ZodError } from "zod";

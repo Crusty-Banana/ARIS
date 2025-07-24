@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useState, useEffect, FormEvent } from 'react';
-import { Allergy } from '@/lib/schema';
+import { Allergy } from '@/modules/business-types';
 import { ObjectId } from 'mongodb';
 
 type AllergyWithId = Allergy & { _id?: ObjectId };

@@ -2,7 +2,7 @@
 
 import { useSession, signOut } from 'next-auth/react';
 import { useState, useEffect, FormEvent } from 'react';
-import { Allergen } from '@/lib/schema';
+import { Allergen } from '@/modules/business-types';
 
 export default function AdminDashboard() {
   const { data: session } = useSession();

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Allergen, PAP } from "@/lib/schema";
+import { Allergen, PAP } from "@/modules/business-types";
 import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
 

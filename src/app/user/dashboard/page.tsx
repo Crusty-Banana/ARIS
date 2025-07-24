@@ -2,7 +2,7 @@
 
 import { useSession, signOut } from 'next-auth/react';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Allergen, PAP } from '@/lib/schema';
+import { Allergen, PAP } from '@/modules/business-types';
 import { ObjectId } from 'mongodb';
 import {Eye, EyeOff, AlertTriangle} from 'lucide-react';
 

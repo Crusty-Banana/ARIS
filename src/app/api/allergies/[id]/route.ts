@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { AllergySchema } from '@/lib/schema';
+import { AllergySchema } from '@/modules/business-types';
 import { getToken } from 'next-auth/jwt';
 import { ObjectId } from 'mongodb';
 import { getDb } from '@/modules/mongodb';

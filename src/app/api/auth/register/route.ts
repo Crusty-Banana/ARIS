@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hash } from 'bcryptjs';
-import { UserSchema, PAPSchema } from '@/lib/schema';
+import { UserSchema, PAPSchema } from '@/modules/business-types';
 import { getDb } from '@/modules/mongodb';
 
 export async function POST(req: NextRequest) {

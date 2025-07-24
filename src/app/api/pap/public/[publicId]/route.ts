@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ObjectId, WithId, Document } from "mongodb";
 import { ZodError } from "zod";
-import { PublicPAPSchema, PAPAllergen } from "@/lib/schema";
+import { PublicPAPSchema, PAPAllergen } from "@/modules/business-types";
 import { getDb } from "@/modules/mongodb";
 
 export async function GET(
