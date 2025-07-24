@@ -1,16 +1,25 @@
 import { ObjectId } from "mongodb";
 import { z } from "zod";
 
-export const UserSchema = z.object({
-    _id: z.instanceof(ObjectId).optional(),
+export const ObjectIdAsHexString = z.string().regex(/^[0-9a-f]{24}$/);
+export type ObjectIdAsHexString = z.infer<typeof ObjectIdAsHexString>;
+
+export const UnixTimestamp = z.number().max(2199023255551); // milliseconds
+export type UnixTimestamp = z.infer<typeof UnixTimestamp>;
+
+export const Role = z.enum(["admin", "user"]).default("user");
+export type Role = z.infer<typeof Role>;
+
+export const User = z.object({
+    id: ObjectIdAsHexString,
     firstName: z.string().min(1, "First name is required"),
     lastName: z.string().min(1, "Last name is required"),
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
-    role: z.enum(["admin", "user"]).default("user"),
+    role: Role,
 });
 
-export type User = z.infer<typeof UserSchema>;
+export type User = z.infer<typeof User>;
 export type UserInfo = Pick<User, "firstName" | "lastName">;
 
 export const AllergenSchema = z.object({
