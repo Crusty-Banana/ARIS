@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { httpPost$Register } from '@/modules/commands/Authenticate/fetcher';
 
 export default function RegisterPage() {
   const [firstName, setFirstName] = useState('');
@@ -17,11 +18,7 @@ export default function RegisterPage() {
     setError('');
 
     try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, lastName, email, password }),
-      });
+      const res = await httpPost$Register("/api/auth/register", { firstName, lastName, email, password });
 
       if (res.ok) {
         router.push('/auth/login');
