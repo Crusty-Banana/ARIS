@@ -12,7 +12,7 @@ export type ServerEnv = z.infer<typeof ServerEnv>;
 
 export const SERVER_ENV = ServerEnv.parse({
     ...CLIENT_ENV,
-    MONGODB_URI: decodeURIComponent(process.env.MONGODB_URI__ENCODED || ""),
+    MONGODB_URI: process.env.MONGODB_URI,
     MONGODB_DBNAME: process.env.MONGODB_DBNAME,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
