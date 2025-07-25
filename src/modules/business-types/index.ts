@@ -56,7 +56,7 @@ export const PAP = z.object({
 export type PAP = z.infer<typeof PAP>;
 export type PAPAllergen = z.infer<typeof PAP>["allergens"][number];
 
-export const UserUpdateSchema = z.object({
+export const UserUpdate = z.object({
     firstName: z
         .string()
         .min(1, "First name is required")
@@ -73,22 +73,22 @@ export const UserUpdateSchema = z.object({
         .optional(),
 });
 
-export type UserUpdate = z.infer<typeof UserUpdateSchema>;
+export type UserUpdate = z.infer<typeof UserUpdate>;
 
-export const PersonalAllergenSchema = Allergen.pick({
+export const PersonalAllergen = Allergen.pick({
     name: true,
     symptoms: true,
     treatment: true,
     firstAid: true,
 }).extend({ degree: z.number().min(1).max(5).optional() });
 
-export type PersonalAllergen = z.infer<typeof PersonalAllergenSchema>;
+export type PersonalAllergen = z.infer<typeof PersonalAllergen>;
 
-export const PublicPAPSchema = PAP.pick({
+export const PublicPAP = PAP.pick({
     doB: true,
     gender: true,
 }).extend({
-    allergens: z.array(PersonalAllergenSchema).nullable(),
+    allergens: z.array(PersonalAllergen).nullable(),
 });
 
-export type PublicPAP = z.infer<typeof PublicPAPSchema>;
+export type PublicPAP = z.infer<typeof PublicPAP>;
