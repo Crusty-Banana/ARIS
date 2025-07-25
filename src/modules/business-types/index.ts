@@ -29,19 +29,19 @@ export const Allergen = z.object({
 });
 export type Allergen = z.infer<typeof Allergen>;
 
-export const AllergySchema = z.object({
+export const Allergy = z.object({
     name: z.string().min(1, "Allergy name is required"),
     allergensId: z.array(ObjectIdAsHexString).default([]),
 });
 
-export type Allergy = z.infer<typeof AllergySchema>;
+export type Allergy = z.infer<typeof Allergy>;
 
-export const PAPSchema = z.object({
-    _id: ObjectIdAsHexString,
+export const PAP = z.object({
+    id: ObjectIdAsHexString,
     userId: ObjectIdAsHexString,
     publicId: ObjectIdAsHexString.optional(),
-    allowPublic: z.boolean().default(true),
-    gender: z.enum(["male", "female", "other"]).nullable().default(null),
+    allowPublic: z.boolean(),
+    gender: z.enum(["male", "female", "other"]).nullable(),
     doB: z.date().nullable().default(null),
     allergens: z
         .array(
@@ -53,8 +53,8 @@ export const PAPSchema = z.object({
         .default([]),
 });
 
-export type PAP = z.infer<typeof PAPSchema>;
-export type PAPAllergen = z.infer<typeof PAPSchema>["allergens"][number];
+export type PAP = z.infer<typeof PAP>;
+export type PAPAllergen = z.infer<typeof PAP>["allergens"][number];
 
 export const UserUpdateSchema = z.object({
     firstName: z
@@ -84,7 +84,7 @@ export const PersonalAllergenSchema = Allergen.pick({
 
 export type PersonalAllergen = z.infer<typeof PersonalAllergenSchema>;
 
-export const PublicPAPSchema = PAPSchema.pick({
+export const PublicPAPSchema = PAP.pick({
     doB: true,
     gender: true,
 }).extend({

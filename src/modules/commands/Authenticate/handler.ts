@@ -4,7 +4,7 @@ import { compare, hash } from 'bcryptjs';
 import { Db } from "mongodb";
 import { Register$Params } from "./typing";
 import { NextResponse } from "next/server";
-import { PAPSchema } from "@/modules/business-types";
+import { handler$AddPAP } from "../AddPAP/handler";
 
 export function handler$Authenticate(
     db: Db
@@ -96,8 +96,9 @@ export async function handler$Register(
         role: 'user',
     });
 
-    await db.collection('paps').insertOne(
-        PAPSchema.parse({ userId: newUser.insertedId })
+    await handler$AddPAP(
+        db,
+        { userId: newUser.insertedId.toHexString() }
     );
 
     return NextResponse.json(
