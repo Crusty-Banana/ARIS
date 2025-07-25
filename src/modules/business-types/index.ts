@@ -30,6 +30,7 @@ export const Allergen = z.object({
 export type Allergen = z.infer<typeof Allergen>;
 
 export const Allergy = z.object({
+    id: ObjectIdAsHexString,
     name: z.string().min(1, "Allergy name is required"),
     allergensId: z.array(ObjectIdAsHexString).default([]),
 });

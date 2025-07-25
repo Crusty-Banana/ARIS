@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { AllergySchema } from '@/modules/business-types';
 import { getToken } from 'next-auth/jwt';
-import { ObjectId } from 'mongodb';
 import { getDb } from '@/modules/mongodb';
+import { AddAllergy$Params } from '@/modules/commands/AddAllergy/typing';
+import { handler$AddAllergy } from '@/modules/commands/AddAllergy/handler';
 
 export async function POST(req: NextRequest) {
     try {
@@ -13,26 +13,16 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-
-        // Convert string IDs to ObjectIds before validation
-        if (body.allergensId && Array.isArray(body.allergensId)) {
-            body.allergensId = body.allergensId.map((id: string) => {
-                if (ObjectId.isValid(id)) {
-                    return new ObjectId(id)
-                }
-                // Throw an error or handle invalid IDs as you see fit
-                throw new Error(`Invalid ObjectId format: ${id}`);
-            });
+        const parsedBody = AddAllergy$Params.safeParse(body);
+        if (!parsedBody.success) {
+            return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
         }
 
-        const allergyData = AllergySchema.parse(body);
-
         const db = await getDb();
-
-        const result = await db.collection('allergies').insertOne(allergyData);
+        const allergyId = await handler$AddAllergy(db, parsedBody.data);
 
         return NextResponse.json(
-            { message: 'Allergy added successfully', allergyId: result.insertedId },
+            { message: 'Allergy added successfully', allergyId },
             { status: 201 }
         );
     } catch (error) {
