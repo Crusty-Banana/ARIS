@@ -56,25 +56,6 @@ export const PAP = z.object({
 export type PAP = z.infer<typeof PAP>;
 export type PAPAllergen = z.infer<typeof PAP>["allergens"][number];
 
-export const UserUpdate = z.object({
-    firstName: z
-        .string()
-        .min(1, "First name is required")
-        .regex(/^[a-zA-Z]+$/, {
-            message: "Name must contain only alphabetical characters.",
-        })
-        .optional(),
-    lastName: z
-        .string()
-        .min(1, "First name is required")
-        .regex(/^[a-zA-Z]+$/, {
-            message: "Name must contain only alphabetical characters.",
-        })
-        .optional(),
-});
-
-export type UserUpdate = z.infer<typeof UserUpdate>;
-
 export const PersonalAllergen = Allergen.pick({
     name: true,
     symptoms: true,
