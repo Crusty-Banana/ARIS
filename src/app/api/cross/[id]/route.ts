@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
+import { getDb } from '@/modules/mongodb';
 
 export async function GET(
     req: NextRequest,
@@ -16,8 +16,7 @@ export async function GET(
             );
         }
 
-        const client = await clientPromise;
-        const db = client.db();
+        const db = await getDb();
         const allergenId = new ObjectId(id);
 
         // 1. Find all allergy categories that contain the specified allergen

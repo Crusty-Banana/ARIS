@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
-import { AllergySchema } from '@/lib/schema';
 import { getToken } from 'next-auth/jwt';
-import { ObjectId } from 'mongodb';
+import { getDb } from '@/modules/mongodb';
+import { GetAllergies$Params } from '@/modules/commands/GetAllergies/typing';
+import { handler$GetAllergies } from '@/modules/commands/GetAllergies/handler';
+import { handler$DeleteAllergy } from '@/modules/commands/DeleteAllergy/handler';
+import { DeleteAllergy$Params } from '@/modules/commands/DeleteAllergy/typing';
+import { handler$UpdateAllergy } from '@/modules/commands/UpdateAllergy/handler';
+import { UpdateAllergy$Params } from '@/modules/commands/UpdateAllergy/typing';
 
 export async function GET(
     req: NextRequest,
@@ -16,33 +20,20 @@ export async function GET(
         // }
 
         const { id } = await params;
-
-        if (!ObjectId.isValid(id)) {
-            return NextResponse.json(
-                { message: 'Invalid Allergy ID' },
-                { status: 400 }
-            );
+        const searchParams = Object.fromEntries(req.nextUrl.searchParams);
+        const parsedBody = GetAllergies$Params.safeParse({ ...searchParams, id });
+        if (!parsedBody.success) {
+            return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
         }
 
-        const client = await clientPromise;
-        const db = client.db();
-        const allergyId = new ObjectId(id);
+        const db = await getDb();
 
-        const result = await db.collection('allergies')
-            .findOne({ _id: allergyId });
-
-        if (!result) {
-            return NextResponse.json(
-                { message: 'Allergy not found' },
-                { status: 404 }
-            );
+        const { allergies } = await handler$GetAllergies(db, parsedBody.data);
+        if (allergies.length === 0) {
+            return NextResponse.json({ message: "Allergies not found" }, { status: 404 });
         }
 
-        const parsedAllergy = AllergySchema.parse(result);
-        return NextResponse.json(
-            { allergy: parsedAllergy },
-            { status: 200 }
-        );
+        return NextResponse.json({ allergen: allergies[0] }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {
@@ -67,36 +58,15 @@ export async function PUT(
         }
 
         const { id } = await params;
-
-        if (!ObjectId.isValid(id)) {
-            return NextResponse.json(
-                { message: 'Invalid Allergy ID' },
-                { status: 400 }
-            );
-        }
-
         const body = await req.json();
 
-        // Convert string IDs to ObjectIds before validation
-        if (body.allergensId && Array.isArray(body.allergensId)) {
-            body.allergensId = body.allergensId.map((id: string) => {
-                if(ObjectId.isValid(id)) {
-                    return new ObjectId(id)
-                }
-                // Throw an error or handle invalid IDs as you see fit
-                throw new Error(`Invalid ObjectId format: ${id}`);
-            });
+        const parsedBody = UpdateAllergy$Params.safeParse({ ...body, id })
+        if (!parsedBody.success) {
+            return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
         }
-        const allergyData = AllergySchema.parse(body);
 
-        const client = await clientPromise;
-        const db = client.db();
-        const allergyId = new ObjectId(id);
-
-        const result = await db.collection('allergies').updateOne(
-            { _id: allergyId },
-            { $set: allergyData }
-        );
+        const db = await getDb();
+        const result = await handler$UpdateAllergy(db, parsedBody.data);
 
         if (!result) {
             return NextResponse.json(
@@ -133,20 +103,14 @@ export async function DELETE(
         }
 
         const { id } = await params;
-
-        if (!ObjectId.isValid(id)) {
-            return NextResponse.json(
-                { message: 'Invalid Allergy ID' },
-                { status: 400 }
-            );
+        const parsedBody = DeleteAllergy$Params.safeParse({ id })
+        if (!parsedBody.success) {
+            return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
         }
 
-        const client = await clientPromise;
-        const db = client.db();
-        const allergyId = new ObjectId(id);
+        const db = await getDb();
 
-        const result = await db.collection('allergies')
-            .deleteOne({ _id: allergyId });
+        const result = await handler$DeleteAllergy(db, { id });
 
         if (result.deletedCount === 0) {
             return NextResponse.json(

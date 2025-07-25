@@ -1,44 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { hash } from 'bcryptjs';
-import clientPromise from '@/lib/mongodb';
-import { UserSchema, PAPSchema } from '@/lib/schema';
+import { getDb } from '@/modules/mongodb';
+import { handler$Register } from '@/modules/commands/Authenticate/handler';
+import { Register$Params } from '@/modules/commands/Authenticate/typing';
 
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { firstName, lastName, email, password } = UserSchema.parse(body);
+        const parsedBody = Register$Params.safeParse(body);
 
-        const client = await clientPromise;
-        const db = client.db();
-
-        const existingUser = await db.collection('users').findOne({ email });
-
-        if (existingUser) {
-            return NextResponse.json(
-                { message: 'User already exists' },
-                { status: 400 }
-            );
+        if (!parsedBody.success) {
+            return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
         }
 
-        const hashedPassword = await hash(password, 10);
+        const db = await getDb();
 
-        const newUser = await db.collection('users').insertOne({
-            firstName,
-            lastName,
-            email,
-            password: hashedPassword,
-            role: 'user',
-        });
+        const response = await handler$Register(db, parsedBody.data);
 
-        await db.collection('paps').insertOne(
-            PAPSchema.parse({ userId: newUser.insertedId })
-        );
-
-
-        return NextResponse.json(
-            { message: 'User registered successfully' },
-            { status: 201 }
-        );
+        return response;
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {

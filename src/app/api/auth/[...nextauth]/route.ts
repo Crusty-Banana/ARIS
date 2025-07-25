@@ -1,69 +1,8 @@
-import NextAuth, { AuthOptions } from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import { compare } from 'bcryptjs';
-import clientPromise from '@/lib/mongodb';
+import { handler$Authenticate } from '@/modules/commands/Authenticate/handler';
+import { getDb } from '@/modules/mongodb';
 
-export const authOptions: AuthOptions = {
-    providers: [
-        CredentialsProvider({
-            name: 'Credentials',
-            credentials: {
-                email: { label: 'Email', type: 'email' },
-                password: { label: 'Password', type: 'password' },
-            },
-            async authorize(credentials) {
-                if (!credentials?.email || !credentials.password) {
-                    return null;
-                }
+const db = await getDb();
 
-                const client = await clientPromise;
-                const db = client.db();
-
-                const user = await db
-                    .collection('users')
-                    .findOne({ email: credentials.email });
-
-                if (user && (await compare(credentials.password, user.password))) {
-                    return {
-                        id: user._id.toString(),
-                        email: user.email,
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        role: user.role,
-                    };
-                }
-                return null;
-            },
-        }),
-    ],
-    session: {
-        strategy: 'jwt' as const,
-    },
-    callbacks: {
-        async jwt({ token, user }) {
-            if (user) {
-                token.id = user.id;
-                token.role = user.role;
-                token.firstName = user.firstName;
-                token.lastName = user.lastName;
-            }
-            return token;
-        },
-        async session({ session, token }) {
-            if (session.user) {
-                session.user.id = token.id;
-                session.user.role = token.role;
-                session.user.firstName = token.firstName;
-                session.user.lastName = token.lastName;
-            }
-            return session;
-        },
-    },
-    pages: {
-        signIn: '/auth/login',
-    },
-};
-
-const handler = NextAuth(authOptions);
+const handler = handler$Authenticate(db);
 
 export { handler as GET, handler as POST };

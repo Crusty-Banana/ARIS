@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
-import { UserUpdateSchema, UserUpdate } from "@/lib/schema";
 import { getToken } from "next-auth/jwt";
-import { ObjectId } from "mongodb";
 import { ZodError } from "zod";
+import { getDb } from "@/modules/mongodb";
+import { UpdateUser$Params } from "@/modules/commands/UpdateUser/typing";
+import { handler$UpdateUser } from "@/modules/commands/UpdateUser/handler";
 export async function PUT(
     req: NextRequest,
     { params }: { params: Promise<{ id: string }> },
@@ -23,25 +23,15 @@ export async function PUT(
             return NextResponse.json({ message: "Forbidden" }, { status: 403 });
         }
 
-        if (!ObjectId.isValid(id)) {
-            return NextResponse.json(
-                { message: "Invalid User ID" },
-                { status: 400 },
-            );
+        const body = await req.json();
+        const parsedBody = UpdateUser$Params.safeParse({ ...body, id });
+
+        if (!parsedBody.success) {
+            return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
         }
 
-        const body = await req.json();
-        const { ...rest } = UserUpdateSchema.parse(body);
-
-        const client = await clientPromise;
-        const db = client.db();
-        const userId = new ObjectId(id);
-
-        const updateData: UserUpdate = { ...rest };
-
-        const result = await db
-            .collection("users")
-            .updateOne({ _id: userId }, { $set: updateData });
+        const db = await getDb();
+        const result = await handler$UpdateUser(db, parsedBody.data)
 
         if (result.matchedCount === 0) {
             return NextResponse.json(

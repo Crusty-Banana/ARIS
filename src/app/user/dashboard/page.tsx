@@ -1,10 +1,12 @@
 'use client';
 
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Allergen, PAP } from '@/lib/schema';
-import { ObjectId } from 'mongodb';
+import { Allergen, PAP } from '@/modules/business-types';
 import {Eye, EyeOff, AlertTriangle} from 'lucide-react';
+import { httpGet$GetAllergens } from '@/modules/commands/GetAllergens/fetcher';
+import { httpPut$UpdatePAP } from '@/modules/commands/UpdatePAP/fetcher';
+import { httpGet$GetPAP } from '@/modules/commands/GetPAP/fetcher';
 
 // Allergy Profile Component
 export default function AllergyProfile() {
@@ -18,12 +20,11 @@ export default function AllergyProfile() {
     const fetchPap = useCallback(async () => {
       if (session) {
         try {
-          const response = await fetch('/api/pap');
-          if (response.ok) {
-            const data = await response.json();
-            setPap(data);
+          const { pap, message } = await httpGet$GetPAP('/api/pap');
+          if (pap) {
+            setPap(pap);
           } else {
-            console.error('Failed to fetch PAP');
+            console.error('Cannot fetch PAP.', message);
           }
         } catch (error) {
           console.error('An error occurred while fetching PAP:', error);
@@ -33,13 +34,8 @@ export default function AllergyProfile() {
 
     const fetchAllergens = async () => {
       try {
-        const response = await fetch('/api/allergens');
-        if (response.ok) {
-          const data = await response.json();
-          setAllergens(data);
-        } else {
-          console.error('Failed to fetch allergens');
-        }
+        const { allergens } = await httpGet$GetAllergens('/api/allergens', {});
+        setAllergens(allergens);
       } catch (error) {
         console.error('An error occurred while fetching allergens:', error);
       }
@@ -65,47 +61,37 @@ export default function AllergyProfile() {
       fetchCrossAllergens();
     }, [fetchPap]);
 
-    const handleAddToPap = async (allergenId: ObjectId) => {
+    const handleAddToPap = async (allergenId: string) => {
         if (pap && session) {
             const updatedAllergens = [
                 ...pap.allergens,
                 { allergenId: allergenId, degree: 1 },
             ];
             try {
-                const response = await fetch('/api/pap', {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ...pap, allergens: updatedAllergens }),
-                });
-                if (response.ok) {
-                    fetchPap();
-                    fetchCrossAllergens();
-                } else {
-                    console.error('Failed to update PAP');
-                }
+                await httpPut$UpdatePAP(
+                    '/api/pap',
+                    { allergens: updatedAllergens },
+                )
+                fetchPap();
+                fetchCrossAllergens();
             } catch (error) {
                 console.error('An error occurred while updating PAP:', error);
             }
         }
     };
 
-    const handleRemoveFromPap = async (allergenId: ObjectId) => {
+    const handleRemoveFromPap = async (allergenId: string) => {
         if (pap && session) {
             const updatedAllergens = pap.allergens.filter(
                 (allergen) => String(allergen.allergenId) !== String(allergenId)
             );
             try {
-                const response = await fetch('/api/pap', {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ...pap, allergens: updatedAllergens }),
-                });
-                if (response.ok) {
-                    fetchPap();
-                    fetchCrossAllergens();
-                } else {
-                    console.error('Failed to update PAP');
-                }
+                await httpPut$UpdatePAP(
+                    '/api/pap',
+                    { allergens: updatedAllergens },
+                )
+                fetchPap();
+                fetchCrossAllergens();
             } catch (error) {
                 console.error('An error occurred while updating PAP:', error);
             }
@@ -169,23 +155,18 @@ export default function AllergyProfile() {
 
 
 // Patient's Allergy List
-const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove, onUpdate }: { pap: PAP, allergens: Allergen[], isPublicView: boolean, onRemove: (allergenId: ObjectId) => void, onUpdate: () => void}, ) => {
-    const handleSeverityChange = async (allergenId: ObjectId, degree: number) => {
+const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove, onUpdate }: { pap: PAP, allergens: Allergen[], isPublicView: boolean, onRemove: (allergenId: string) => void, onUpdate: () => void}, ) => {
+    const handleSeverityChange = async (allergenId: string, degree: number) => {
         if (pap) {
           const updatedAllergens = pap.allergens.map((allergen) =>
             String(allergen.allergenId) === String(allergenId) ? { ...allergen, degree } : allergen
           );
           try {
-            const response = await fetch('/api/pap', {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ ...pap, allergens: updatedAllergens }),
-            });
-            if (response.ok) {
-              onUpdate(); 
-            } else {
-                console.error('Failed to update PAP');
-            }
+            await httpPut$UpdatePAP(
+                '/api/pap',
+                { allergens: updatedAllergens },
+            )
+            onUpdate(); 
           } catch (error) {
             console.error('An error occurred while updating PAP:', error);
           }
@@ -198,12 +179,12 @@ const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove, onUpdate }
             <div className="space-y-4">
                 {pap.allergens.length > 0 ? pap.allergens.map((userAllergen) => {
                     const allergenDetails = allergens.find(
-                        (a) => String(a._id) === String(userAllergen.allergenId)
+                        (a) => a.id === String(userAllergen.allergenId)
                     );
                     if (!allergenDetails) return null;
 
                     return (
-                        <div key={String(userAllergen.allergenId)} className="border border-gray-200 rounded-lg p-4">
+                        <div key={userAllergen.allergenId} className="border border-gray-200 rounded-lg p-4">
                             <div className="flex justify-between items-start">
                                 <h4 className="font-semibold text-blue-600 text-lg">{allergenDetails.name}</h4>
                                 {!isPublicView && (
@@ -236,13 +217,13 @@ const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove, onUpdate }
                             )}
                         </div>
                     );
-                }) : <p className="text-gray-500">You haven't added any allergies yet.</p>}
+                }) : <p className="text-gray-500">You haven&apos;t added any allergies yet.</p>}
             </div>
         </div>
     );
 };
 
-const CrossAllergySection = ({ crossAllergens, isPublicView, onAdd}: { crossAllergens: Allergen[], isPublicView: boolean, onAdd: (allergenId: ObjectId) => void  }) => {
+const CrossAllergySection = ({ crossAllergens, isPublicView, onAdd}: { crossAllergens: Allergen[], isPublicView: boolean, onAdd: (allergenId: string) => void  }) => {
     return (
         <div className="bg-white p-6 rounded-xl shadow-lg mt-8">
             <h3 className="font-bold text-lg mb-4 text-gray-800">Potential Cross-Allergens</h3>
@@ -250,10 +231,10 @@ const CrossAllergySection = ({ crossAllergens, isPublicView, onAdd}: { crossAlle
                 <>
                     <p className="text-sm text-gray-600 mb-2">Based on your allergies, you might be sensitive to:</p>
                     <div className="space-y-4">
-                        {crossAllergens.map((allergen) => <div key={String(allergen._id)} className="border border-gray-200 rounded-lg p-4">
+                        {crossAllergens.map((allergen) => <div key={allergen.id} className="border border-gray-200 rounded-lg p-4">
                             <div className="flex justify-between items-start">
                                 <h4 className="font-semibold text-blue-600 text-lg">{allergen.name}</h4>
-                                {!isPublicView && allergen._id && (<button onClick={() => onAdd(allergen._id!)} 
+                                {!isPublicView && allergen.id && (<button onClick={() => onAdd(allergen.id!)} 
                                     className="text-green-500 hover:text-green-700 text-sm font-medium">Add</button>
                                 )}
                             </div>
@@ -277,7 +258,7 @@ const AddAllergySection = ({ pap, allergens, onAdd }: { pap: PAP | null, allerge
     const wrapperRef = useRef(null);
 
     const availableAllergies = allergens.filter(dbAllergy =>
-        !pap?.allergens.some(myAllergy => String(myAllergy.allergenId) === String(dbAllergy._id))
+        !pap?.allergens.some(myAllergy => String(myAllergy.allergenId) === dbAllergy.id)
     );
 
     // Close suggestions when clicking outside
@@ -328,7 +309,7 @@ const AddAllergySection = ({ pap, allergens, onAdd }: { pap: PAP | null, allerge
                     <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg mt-1 max-h-48 overflow-y-auto shadow-lg">
                         {suggestions.map(allergen => (
                             <li
-                                key={String(allergen._id)}
+                                key={allergen.id}
                                 onClick={() => handleSelectAllergy(allergen)}
                                 className="px-4 py-2 hover:bg-blue-50 cursor-pointer text-sm text-gray-700"
                             >
@@ -345,10 +326,10 @@ const AddAllergySection = ({ pap, allergens, onAdd }: { pap: PAP | null, allerge
     );
 };
 
-const AllergenDetailsModal = ({ allergen, onClose, onAdd }: { allergen: Allergen, onClose: () => void, onAdd: (allergenId: ObjectId) => void }) => {
+const AllergenDetailsModal = ({ allergen, onClose, onAdd }: { allergen: Allergen, onClose: () => void, onAdd: (allergenId: string) => void }) => {
     const handleAddClick = () => {
-        if (allergen._id) {
-            onAdd(allergen._id);
+        if (allergen.id) {
+            onAdd(allergen.id);
         }
         onClose();
     };

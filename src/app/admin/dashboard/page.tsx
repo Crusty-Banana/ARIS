@@ -2,7 +2,9 @@
 
 import { useSession, signOut } from 'next-auth/react';
 import { useState, useEffect, FormEvent } from 'react';
-import { Allergen } from '@/lib/schema';
+import { Allergen } from '@/modules/business-types';
+import { httpPost$AddAllergen } from '@/modules/commands/AddAllergen/fetcher';
+import { httpGet$GetAllergens } from '@/modules/commands/GetAllergens/fetcher';
 
 export default function AdminDashboard() {
   const { data: session } = useSession();
@@ -15,11 +17,8 @@ export default function AdminDashboard() {
 
   const fetchAllergens = async () => {
     try {
-      const response = await fetch('/api/allergens');
-      if (response.ok) {
-        const data = await response.json();
-        setAllergenList(data);
-      }
+      const { allergens } = await httpGet$GetAllergens('/api/allergens', {});
+      setAllergenList(allergens);
     } catch (error) {
       console.error('Failed to fetch allergens:', error);
     }
@@ -34,16 +33,12 @@ export default function AdminDashboard() {
     setMessage('');
 
     try {
-      const response = await fetch('/api/allergens', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: allergenName,
-          symptoms: symptoms.split(',').map(s => s.trim()),
-          treatment,
-          firstAid,
-        }),
-      });
+      const response = await httpPost$AddAllergen('/api/allergens', {
+        name: allergenName,
+        symptoms: symptoms.split(',').map(s => s.trim()),
+        treatment,
+        firstAid,
+      })
 
       const data = await response.json();
 

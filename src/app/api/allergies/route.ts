@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
-import { AllergySchema } from '@/lib/schema';
 import { getToken } from 'next-auth/jwt';
-import { ObjectId } from 'mongodb';
+import { getDb } from '@/modules/mongodb';
+import { AddAllergy$Params } from '@/modules/commands/AddAllergy/typing';
+import { handler$AddAllergy } from '@/modules/commands/AddAllergy/handler';
+import { GetAllergies$Params } from '@/modules/commands/GetAllergies/typing';
+import { handler$GetAllergies } from '@/modules/commands/GetAllergies/handler';
 
 export async function POST(req: NextRequest) {
     try {
@@ -13,27 +15,16 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-
-        // Convert string IDs to ObjectIds before validation
-        if (body.allergensId && Array.isArray(body.allergensId)) {
-            body.allergensId = body.allergensId.map((id: string) => {
-                if(ObjectId.isValid(id)) {
-                    return new ObjectId(id)
-                }
-                // Throw an error or handle invalid IDs as you see fit
-                throw new Error(`Invalid ObjectId format: ${id}`);
-            });
+        const parsedBody = AddAllergy$Params.safeParse(body);
+        if (!parsedBody.success) {
+            return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
         }
 
-        const allergyData = AllergySchema.parse(body);
-
-        const client = await clientPromise;
-        const db = client.db();
-
-        const result = await db.collection('allergies').insertOne(allergyData);
+        const db = await getDb();
+        const allergyId = await handler$AddAllergy(db, parsedBody.data);
 
         return NextResponse.json(
-            { message: 'Allergy added successfully', allergyId: result.insertedId },
+            { message: 'Allergy added successfully', allergyId },
             { status: 201 }
         );
     } catch (error) {
@@ -48,7 +39,7 @@ export async function POST(req: NextRequest) {
     }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     try {
         // const token = await getToken({ req });
 
@@ -56,12 +47,17 @@ export async function GET() {
         //     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         // }
 
-        const client = await clientPromise;
-        const db = client.db();
+        const searchParams = Object.fromEntries(req.nextUrl.searchParams);
+        const parsedBody = GetAllergies$Params.safeParse(searchParams);
+        if (!parsedBody.success) {
+            return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
+        }
 
-        const allergies = await db.collection('allergies').find({}).toArray();
+        const db = await getDb();
 
-        return NextResponse.json(allergies, { status: 200 });
+        const { allergies } = await handler$GetAllergies(db, parsedBody.data);
+
+        return NextResponse.json({ allergies }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {

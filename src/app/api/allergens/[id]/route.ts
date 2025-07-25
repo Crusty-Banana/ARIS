@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
-import { AllergenSchema } from "@/lib/schema";
 import { getToken } from "next-auth/jwt";
-import { ObjectId } from "mongodb";
+import { getDb } from "@/modules/mongodb";
+import { handler$GetAllergens } from "@/modules/commands/GetAllergens/handler";
+import { GetAllergens$Params } from "@/modules/commands/GetAllergens/typing";
+import { handler$UpdateAllergen } from "@/modules/commands/UpdateAllergen/handler";
+import { UpdateAllergen$Params } from "@/modules/commands/UpdateAllergen/typing";
+import { handler$DeleteAllergen } from "@/modules/commands/DeleteAllergen/handler";
+import { DeleteAllergen$Params } from "@/modules/commands/DeleteAllergen/typing";
 
 export async function GET(
     req: NextRequest,
@@ -10,40 +14,25 @@ export async function GET(
 ) {
     try {
         const token = await getToken({ req });
-
         if (!token) {
-            return NextResponse.json(
-                { message: "Unauthorized" },
-                { status: 401 },
-            );
+            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         }
 
         const { id } = await params;
-
-        if (!ObjectId.isValid(id)) {
-            return NextResponse.json(
-                { message: "Invalid Allergen ID" },
-                { status: 400 },
-            );
+        const searchParams = Object.fromEntries(req.nextUrl.searchParams);
+        const parsedBody = GetAllergens$Params.safeParse({ ...searchParams, id });
+        if (!parsedBody.success) {
+            return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
         }
 
-        const client = await clientPromise;
-        const db = client.db();
-        const allergenId = new ObjectId(id);
+        const db = await getDb()
 
-        const result = await db
-            .collection("allergens")
-            .findOne({ _id: allergenId });
-
-        if (!result) {
-            return NextResponse.json(
-                { message: "Allergen not found" },
-                { status: 404 },
-            );
+        const { allergens } = await handler$GetAllergens(db, parsedBody.data);
+        if (allergens.length === 0) {
+            return NextResponse.json({ message: "Allergen not found" }, { status: 404 });
         }
 
-        const parsedAllergen = AllergenSchema.parse(result);
-        return NextResponse.json({ allergen: parsedAllergen }, { status: 200 });
+        return NextResponse.json({ allergen: allergens[0] }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {
@@ -61,43 +50,26 @@ export async function PUT(
         const token = await getToken({ req });
 
         if (!token || token.role !== "admin") {
-            return NextResponse.json(
-                { message: "Unauthorized" },
-                { status: 401 },
-            );
+            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         }
 
         const { id } = await params;
 
-        if (!ObjectId.isValid(id)) {
-            return NextResponse.json(
-                { message: "Invalid Allergen ID" },
-                { status: 400 },
-            );
+        const body = await req.json();
+        const parsedBody = UpdateAllergen$Params.safeParse({ ...body, id });
+        if (!parsedBody.success) {
+            return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
         }
 
-        const body = await req.json();
-        const allergenData = AllergenSchema.parse(body);
+        const db = await getDb();
 
-        const client = await clientPromise;
-        const db = client.db();
-        const allergenId = new ObjectId(id);
-
-        const result = await db
-            .collection("allergens")
-            .updateOne({ _id: allergenId }, { $set: allergenData });
+        const result = await handler$UpdateAllergen(db, parsedBody.data);
 
         if (!result) {
-            return NextResponse.json(
-                { message: "Allergen not found" },
-                { status: 404 },
-            );
+            return NextResponse.json({ message: "Allergen not found" }, { status: 404 });
         }
 
-        return NextResponse.json(
-            { message: "Allergen updated successfully" },
-            { status: 200 },
-        );
+        return NextResponse.json({ message: "Allergen updated successfully" }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {
@@ -115,40 +87,25 @@ export async function DELETE(
         const token = await getToken({ req });
 
         if (!token || token.role !== "admin") {
-            return NextResponse.json(
-                { message: "Unauthorized" },
-                { status: 401 },
-            );
+            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         }
+
 
         const { id } = await params;
-
-        if (!ObjectId.isValid(id)) {
-            return NextResponse.json(
-                { message: "Invalid Allergen ID" },
-                { status: 400 },
-            );
+        const parsedBody = DeleteAllergen$Params.safeParse({ id });
+        if (!parsedBody.success) {
+            return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
         }
 
-        const client = await clientPromise;
-        const db = client.db();
-        const allergenId = new ObjectId(id);
+        const db = await getDb();
 
-        const result = await db
-            .collection("allergens")
-            .deleteOne({ _id: allergenId });
+        const result = await handler$DeleteAllergen(db, parsedBody.data);
 
         if (result.deletedCount === 0) {
-            return NextResponse.json(
-                { message: "Allergen not found" },
-                { status: 404 },
-            );
+            return NextResponse.json({ message: "Allergen not found" }, { status: 404 });
         }
 
-        return NextResponse.json(
-            { message: "Allergen deleted successfully" },
-            { status: 200 },
-        );
+        return NextResponse.json({ message: "Allergen updated successfully" }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {

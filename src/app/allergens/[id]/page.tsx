@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Allergen, PAP } from "@/lib/schema";
+import { Allergen, PAP } from "@/modules/business-types";
 import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
+import { httpGet$GetAllergens } from "@/modules/commands/GetAllergens/fetcher";
+import { httpGet$GetPAP } from "@/modules/commands/GetPAP/fetcher";
+import { httpPut$UpdatePAP } from "@/modules/commands/UpdatePAP/fetcher";
 
 export default function AllergenDetailsPage() {
     const { data: session } = useSession();
@@ -14,10 +17,9 @@ export default function AllergenDetailsPage() {
 
     const fetchAllergen = useCallback(async () => {
         try {
-            const response = await fetch(`/api/allergens/${params.id}`);
-            if (response.ok) {
-                const data = await response.json();
-                setAllergen(data.allergen);
+            const {allergens} = await httpGet$GetAllergens(`/api/allergens/${params.id}`, {});
+            if (allergens) {
+                setAllergen(allergens[0]);
             } else {
                 console.error("Failed to fetch allergen");
             }
@@ -29,12 +31,11 @@ export default function AllergenDetailsPage() {
     const fetchPap = useCallback(async () => {
         if (session) {
             try {
-                const response = await fetch("/api/pap");
-                if (response.ok) {
-                    const data = await response.json();
-                    setPap(data);
+                const { pap, message } = await httpGet$GetPAP("/api/pap");
+                if (pap) {
+                    setPap(pap);
                 } else {
-                    console.error("Failed to fetch PAP");
+                    console.error("Failed to fetch PAP", message);
                 }
             } catch (error) {
                 console.error("An error occurred while fetching PAP:", error);
@@ -51,22 +52,13 @@ export default function AllergenDetailsPage() {
         if (allergen && pap && session) {
             const updatedAllergens = [
                 ...pap.allergens,
-                { allergenId: allergen._id, degree: 1 },
+                { allergenId: allergen.id, degree: 1 },
             ];
             try {
-                const response = await fetch("/api/pap", {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        ...pap,
-                        allergens: updatedAllergens,
-                    }),
+                await httpPut$UpdatePAP("/api/pap", {
+                    allergens: updatedAllergens,
                 });
-                if (response.ok) {
-                    fetchPap();
-                } else {
-                    console.error("Failed to update PAP");
-                }
+                fetchPap();
             } catch (error) {
                 console.error("An error occurred while updating PAP:", error);
             }
@@ -74,7 +66,7 @@ export default function AllergenDetailsPage() {
     };
 
     const isAllergenInPap = () => {
-        return pap?.allergens.some((a) => a.allergenId === allergen?._id);
+        return pap?.allergens.some((a) => a.allergenId === allergen?.id);
     };
 
     if (!allergen) {

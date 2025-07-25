@@ -2,10 +2,9 @@
 
 import { useSession } from 'next-auth/react';
 import { useState, useEffect, FormEvent } from 'react';
-import { Allergy } from '@/lib/schema';
-import { ObjectId } from 'mongodb';
-
-type AllergyWithId = Allergy & { _id?: ObjectId };
+import { Allergy, ObjectIdAsHexString } from '@/modules/business-types';
+import { httpGet$GetAllergies } from '@/modules/commands/GetAllergies/fetcher';
+import { httpDelete$DeleteAllergy } from '@/modules/commands/DeleteAllergy/fetcher';
 
 export default function AdminAllergiesPage() {
   const { data: session } = useSession();
@@ -15,21 +14,20 @@ export default function AdminAllergiesPage() {
   const [allergensId, setAllergensId] = useState('');
   
   // State for editing
-  const [editingAllergy, setEditingAllergy] = useState<AllergyWithId | null>(null);
+  const [editingAllergy, setEditingAllergy] = useState<Allergy | null>(null);
 
   // State for messages and lists
   const [message, setMessage] = useState('');
-  const [allergyList, setAllergyList] = useState<AllergyWithId[]>([]);
+  const [allergyList, setAllergyList] = useState<Allergy[]>([]);
 
   /**
    * Fetches all allergies from the API and updates the state.
    */
   const fetchAllergies = async () => {
     try {
-      const response = await fetch('/api/allergies');
-      if (response.ok) {
-        const data = await response.json();
-        setAllergyList(data);
+      const {allergies} = await httpGet$GetAllergies('/api/allergies', {});
+      if (allergies) {
+        setAllergyList(allergies);
       } else {
         console.error('Failed to fetch allergies');
         setMessage('Failed to load allergies.');
@@ -64,7 +62,7 @@ export default function AdminAllergiesPage() {
     e.preventDefault();
     setMessage('');
 
-    const url = editingAllergy ? `/api/allergies/${editingAllergy._id}` : '/api/allergies';
+    const url = editingAllergy ? `/api/allergies/${editingAllergy.id}` : '/api/allergies';
     const method = editingAllergy ? 'PUT' : 'POST';
 
     const body = {
@@ -99,7 +97,7 @@ export default function AdminAllergiesPage() {
    * Sets the form fields to the values of the allergy to be edited.
    * @param {AllergyWithId} allergy - The allergy object to edit.
    */
-  const handleEdit = (allergy: AllergyWithId) => {
+  const handleEdit = (allergy: Allergy) => {
     setEditingAllergy(allergy);
     setName(allergy.name);
     setAllergensId(Array.isArray(allergy.allergensId) ? allergy.allergensId.join(', ') : '');
@@ -110,7 +108,7 @@ export default function AdminAllergiesPage() {
    * Handles the deletion of an allergy.
    * @param {ObjectId | undefined} id - The ID of the allergy to delete.
    */
-  const handleDelete = async (id?: ObjectId) => {
+  const handleDelete = async (id?: ObjectIdAsHexString) => {
     if (!id) return;
     
     if (!confirm('Are you sure you want to delete this allergy?')) {
@@ -118,18 +116,9 @@ export default function AdminAllergiesPage() {
     }
 
     try {
-      const response = await fetch(`/api/allergies/${id}`, {
-        method: 'DELETE',
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setMessage('Allergy deleted successfully!');
+        const {message} = await httpDelete$DeleteAllergy(`/api/allergies/${id}`);
+        setMessage(message);
         fetchAllergies(); // Refresh the list
-      } else {
-        setMessage(data.message || 'Failed to delete allergy');
-      }
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred.';
         setMessage(`An error occurred: ${errorMessage}`);
@@ -204,7 +193,7 @@ export default function AdminAllergiesPage() {
         <div className="space-y-4">
           {allergyList.length > 0 ? (
             allergyList.map((allergy) => (
-              <div key={allergy._id?.toString()} className="bg-white p-4 border border-gray-200 rounded-lg shadow-sm flex justify-between items-center">
+              <div key={allergy.id?.toString()} className="bg-white p-4 border border-gray-200 rounded-lg shadow-sm flex justify-between items-center">
                 <div>
                   <h3 className="font-bold text-lg text-gray-800">{allergy.name}</h3>
                   <p className="text-sm text-gray-600">
@@ -213,7 +202,7 @@ export default function AdminAllergiesPage() {
                 </div>
                 <div className="flex space-x-2">
                   <button onClick={() => handleEdit(allergy)} className="px-4 py-1 text-sm text-white bg-yellow-500 rounded-md hover:bg-yellow-600 transition-colors">Edit</button>
-                  <button onClick={() => handleDelete(allergy._id)} className="px-4 py-1 text-sm text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors">Delete</button>
+                  <button onClick={() => handleDelete(allergy.id)} className="px-4 py-1 text-sm text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors">Delete</button>
                 </div>
               </div>
             ))

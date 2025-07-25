@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
-import { ObjectId, WithId, Document } from "mongodb";
 import { ZodError } from "zod";
-import { PublicPAPSchema, PAPAllergen } from "@/lib/schema";
+import { getDb } from "@/modules/mongodb";
+import { handler$GetPublicPAP } from "@/modules/commands/GetPublicPAP/handler";
+import { GetPublicPAP$Params } from "@/modules/commands/GetPublicPAP/typing";
 
 export async function GET(
     req: NextRequest,
@@ -10,61 +10,22 @@ export async function GET(
 ) {
     try {
         const { publicId } = await params;
-
-        if (!ObjectId.isValid(publicId)) {
-            return NextResponse.json(
-                { message: "Invalid PAP ID" },
-                { status: 400 },
-            );
+        const parsedBody = GetPublicPAP$Params.safeParse({ publicId });
+        if (!parsedBody.success) {
+            return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
         }
 
-        const client = await clientPromise;
-        const db = client.db();
-        const papId = new ObjectId(publicId);
+        const db = await getDb();
+        const publicPAP = await handler$GetPublicPAP(db, parsedBody.data);
 
-        const pap = await db
-            .collection("paps")
-            .findOne({ publicId: papId, allowPublic: true });
-
-        if (!pap) {
+        if (!publicPAP) {
             return NextResponse.json(
-                { message: "PAP not found or is private" },
+                { message: "Public PAP not found or is private" },
                 { status: 404 },
             );
         }
 
-        const allergens = await db
-            .collection("allergens")
-            .find({
-                _id: {
-                    $in: pap.allergens.map((a: PAPAllergen) => a.allergenId),
-                },
-            })
-            .toArray();
-
-        const populatedAllergens = pap.allergens.map(
-            (userAllergen: PAPAllergen) => {
-                const allergenDetails = allergens.find(
-                    (a: WithId<Document>) =>
-                        String(a._id) === String(userAllergen.allergenId),
-                );
-                return {
-                    name: allergenDetails ? allergenDetails.name : "Unknown",
-                    degree: userAllergen.degree,
-                    symptoms: allergenDetails ? allergenDetails.symptoms : [],
-                    treatment: allergenDetails ? allergenDetails.treatment : "",
-                    firstAid: allergenDetails ? allergenDetails.firstAid : "",
-                };
-            },
-        );
-
-        const publicPap = PublicPAPSchema.parse({
-            gender: pap.gender,
-            doB: pap.doB,
-            allergens: populatedAllergens,
-        });
-
-        return NextResponse.json(publicPap, { status: 200 });
+        return NextResponse.json({ publicPAP }, { status: 200 });
     } catch (error) {
         if (error instanceof ZodError) {
             return NextResponse.json(
