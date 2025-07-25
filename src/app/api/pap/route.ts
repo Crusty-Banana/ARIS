@@ -1,25 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { ObjectId } from "mongodb";
 
-import { z } from "zod";
 import { getDb } from "@/modules/mongodb";
-
-export const UpdatePAPSchema = z.object({
-    allowPublic: z.boolean().default(true),
-    gender: z.enum(["male", "female", "other"]).nullable().default(null),
-    doB: z.date().nullable().default(null),
-    allergens: z
-        .array(
-            z.object({
-                allergenId: z.instanceof(ObjectId),
-                degree: z.number(),
-            }),
-        )
-        .default([]),
-});
-
-export type UpdatePAP = z.infer<typeof UpdatePAPSchema>;
+import { handler$UpdatePAP } from "@/modules/commands/UpdatePAP/handler";
+import { UpdatePAP$Params } from "@/modules/commands/UpdatePAP/typing";
+import { handler$GetPAP } from "@/modules/commands/GetPAP/handler";
+import { GetPAP$Params } from "@/modules/commands/GetPAP/typing";
 
 export async function GET(req: NextRequest) {
     try {
@@ -32,18 +18,14 @@ export async function GET(req: NextRequest) {
             );
         }
 
-        const db = await getDb();
-
-        if (!ObjectId.isValid(token.id)) {
-            return NextResponse.json(
-                { message: "Invalid User ID" },
-                { status: 400 },
-            );
+        const userId = token.id;
+        const parsedBody = GetPAP$Params.safeParse({ userId });
+        if (!parsedBody.success) {
+            return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
         }
 
-        const pap = await db
-            .collection("paps")
-            .findOne({ userId: new ObjectId(token.id) });
+        const db = await getDb();
+        const pap = await handler$GetPAP(db, parsedBody.data);
 
         if (!pap) {
             return NextResponse.json(
@@ -51,8 +33,7 @@ export async function GET(req: NextRequest) {
                 { status: 404 },
             );
         }
-
-        return NextResponse.json(pap, { status: 200 });
+        return NextResponse.json({ pap }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {
@@ -73,29 +54,21 @@ export async function PUT(req: NextRequest) {
             );
         }
 
+        const userId = token.id;
         const body = await req.json();
-        body.doB = new Date(body.doB);
-        body.allergens = body.allergens.map(
-            (allergen: { allergenId: string; degree: number }) => ({
-                allergenId: new ObjectId(allergen.allergenId),
-                degree: allergen.degree,
-            }),
-        );
+        const parsedBody = UpdatePAP$Params.safeParse({
+            ...body,
+            ...(body.doB ? { doB: new Date(body.doB) } : {}),
+            userId,
+        });
 
-        const papData = UpdatePAPSchema.parse(body);
+        if (!parsedBody.success) {
+            return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
+        }
 
         const db = await getDb();
 
-        if (!ObjectId.isValid(token.id)) {
-            return NextResponse.json(
-                { message: "Invalid User ID" },
-                { status: 400 },
-            );
-        }
-
-        const result = await db
-            .collection("paps")
-            .updateOne({ userId: new ObjectId(token.id) }, { $set: papData });
+        const result = await handler$UpdatePAP(db, parsedBody.data);
 
         if (result.matchedCount === 0) {
             return NextResponse.json(

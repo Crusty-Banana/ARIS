@@ -5,6 +5,8 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Allergen, PAP } from '@/modules/business-types';
 import {Eye, EyeOff, AlertTriangle} from 'lucide-react';
 import { httpGet$GetAllergens } from '@/modules/commands/GetAllergens/fetcher';
+import { httpPut$UpdatePAP } from '@/modules/commands/UpdatePAP/fetcher';
+import { httpGet$GetPAP } from '@/modules/commands/GetPAP/fetcher';
 
 // Allergy Profile Component
 export default function AllergyProfile() {
@@ -18,12 +20,11 @@ export default function AllergyProfile() {
     const fetchPap = useCallback(async () => {
       if (session) {
         try {
-          const response = await fetch('/api/pap');
-          if (response.ok) {
-            const data = await response.json();
-            setPap(data);
+          const { pap, message } = await httpGet$GetPAP('/api/pap');
+          if (pap) {
+            setPap(pap);
           } else {
-            console.error('Failed to fetch PAP');
+            console.error('Cannot fetch PAP.', message);
           }
         } catch (error) {
           console.error('An error occurred while fetching PAP:', error);
@@ -67,17 +68,12 @@ export default function AllergyProfile() {
                 { allergenId: allergenId, degree: 1 },
             ];
             try {
-                const response = await fetch('/api/pap', {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ...pap, allergens: updatedAllergens }),
-                });
-                if (response.ok) {
-                    fetchPap();
-                    fetchCrossAllergens();
-                } else {
-                    console.error('Failed to update PAP');
-                }
+                await httpPut$UpdatePAP(
+                    '/api/pap',
+                    { allergens: updatedAllergens },
+                )
+                fetchPap();
+                fetchCrossAllergens();
             } catch (error) {
                 console.error('An error occurred while updating PAP:', error);
             }
@@ -90,17 +86,12 @@ export default function AllergyProfile() {
                 (allergen) => String(allergen.allergenId) !== String(allergenId)
             );
             try {
-                const response = await fetch('/api/pap', {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ...pap, allergens: updatedAllergens }),
-                });
-                if (response.ok) {
-                    fetchPap();
-                    fetchCrossAllergens();
-                } else {
-                    console.error('Failed to update PAP');
-                }
+                await httpPut$UpdatePAP(
+                    '/api/pap',
+                    { allergens: updatedAllergens },
+                )
+                fetchPap();
+                fetchCrossAllergens();
             } catch (error) {
                 console.error('An error occurred while updating PAP:', error);
             }
@@ -171,16 +162,11 @@ const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove, onUpdate }
             String(allergen.allergenId) === String(allergenId) ? { ...allergen, degree } : allergen
           );
           try {
-            const response = await fetch('/api/pap', {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ ...pap, allergens: updatedAllergens }),
-            });
-            if (response.ok) {
-              onUpdate(); 
-            } else {
-                console.error('Failed to update PAP');
-            }
+            await httpPut$UpdatePAP(
+                '/api/pap',
+                { allergens: updatedAllergens },
+            )
+            onUpdate(); 
           } catch (error) {
             console.error('An error occurred while updating PAP:', error);
           }

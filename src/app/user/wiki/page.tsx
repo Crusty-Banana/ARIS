@@ -4,6 +4,8 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect, useCallback } from 'react';
 import { Allergen, PAP } from '@/modules/business-types';
 import { httpGet$GetAllergens } from '@/modules/commands/GetAllergens/fetcher';
+import { httpPut$UpdatePAP } from '@/modules/commands/UpdatePAP/fetcher';
+import { httpGet$GetPAP } from '@/modules/commands/GetPAP/fetcher';
 
 /**
  * Main page component for the Allergy Wiki.
@@ -17,10 +19,11 @@ export default function WikiPage() {
     const fetchPap = useCallback(async () => {
         if (session) {
             try {
-                const response = await fetch('/api/pap');
-                if (response.ok) {
-                    const data = await response.json();
-                    setPap(data);
+                const { pap } = await httpGet$GetPAP('/api/pap');
+                if (pap) {
+                    setPap(pap);
+                } else {
+                    console.error('Cannot fetch PAP.');
                 }
             } catch (error) {
                 console.error('An error occurred while fetching PAP:', error);
@@ -45,16 +48,11 @@ export default function WikiPage() {
     const handleUpdatePap = async (updatedAllergens :{ allergenId: string; degree: number }[]) => {
         if (pap && session) {
             try {
-                const response = await fetch('/api/pap', {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ...pap, allergens: updatedAllergens }),
-                });
-                if (response.ok) {
-                    fetchPap(); // Re-fetch PAP to update state
-                } else {
-                    console.error('Failed to update PAP');
-                }
+                await httpPut$UpdatePAP(
+                    '/api/pap',
+                    { allergens: updatedAllergens },
+                )
+                fetchPap(); // Re-fetch PAP to update state
             } catch (error) {
                 console.error('An error occurred while updating PAP:', error);
             }
