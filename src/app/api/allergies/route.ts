@@ -3,6 +3,8 @@ import { getToken } from 'next-auth/jwt';
 import { getDb } from '@/modules/mongodb';
 import { AddAllergy$Params } from '@/modules/commands/AddAllergy/typing';
 import { handler$AddAllergy } from '@/modules/commands/AddAllergy/handler';
+import { GetAllergies$Params } from '@/modules/commands/GetAllergies/typing';
+import { handler$GetAllergies } from '@/modules/commands/GetAllergies/handler';
 
 export async function POST(req: NextRequest) {
     try {
@@ -37,7 +39,7 @@ export async function POST(req: NextRequest) {
     }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     try {
         // const token = await getToken({ req });
 
@@ -45,11 +47,17 @@ export async function GET() {
         //     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         // }
 
+        const searchParams = Object.fromEntries(req.nextUrl.searchParams);
+        const parsedBody = GetAllergies$Params.safeParse(searchParams);
+        if (!parsedBody.success) {
+            return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
+        }
+
         const db = await getDb();
 
-        const allergies = await db.collection('allergies').find({}).toArray();
+        const { allergies } = await handler$GetAllergies(db, parsedBody.data);
 
-        return NextResponse.json(allergies, { status: 200 });
+        return NextResponse.json({ allergies }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {

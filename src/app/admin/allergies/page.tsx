@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect, FormEvent } from 'react';
 import { Allergy } from '@/modules/business-types';
 import { ObjectId } from 'mongodb';
+import { httpGet$GetAllergies } from '@/modules/commands/GetAllergies/fetcher';
 
 type AllergyWithId = Allergy & { _id?: ObjectId };
 
@@ -26,10 +27,9 @@ export default function AdminAllergiesPage() {
    */
   const fetchAllergies = async () => {
     try {
-      const response = await fetch('/api/allergies');
-      if (response.ok) {
-        const data = await response.json();
-        setAllergyList(data);
+      const {allergies} = await httpGet$GetAllergies('/api/allergies', {});
+      if (allergies) {
+        setAllergyList(allergies);
       } else {
         console.error('Failed to fetch allergies');
         setMessage('Failed to load allergies.');
