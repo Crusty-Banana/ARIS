@@ -22,10 +22,11 @@ export type UserInfo = Pick<User, "firstName" | "lastName">;
 
 export const Allergen = z.object({
     id: ObjectIdAsHexString,
+    type: z.enum(["food", "drug", "respiratory"]),
     name: z.string().min(1, "Allergen name is required"),
-    symptoms: z.array(z.string()).min(1, "At least one symptom is required"),
-    treatment: z.string().default(""),
-    firstAid: z.string().default(""),
+    symptomsId: z.array(ObjectIdAsHexString).min(1, "At least one symptom is required"),
+    prevalence: z.number().min(1).max(5).default(1),
+    description: z.string().default(""),
 });
 export type Allergen = z.infer<typeof Allergen>;
 
@@ -48,13 +49,26 @@ export const PAP = z.object({
         .array(
             z.object({
                 allergenId: ObjectIdAsHexString,
-                degree: z.number().min(1).max(5),
+                discoveryDate: UnixTimestamp,
+                discoveryMethod: z.enum(["Clinical symptoms", "Paraclinical tests"]),
+                severity: z.number().min(1).max(5),
+                symptomsId: z.array(ObjectIdAsHexString).min(1),
             }),
         )
         .default([]),
 });
 
 export type PAP = z.infer<typeof PAP>;
+
+export const Symptom = z.object({
+    id: ObjectIdAsHexString,
+    name: z.string().min(1, "Symptom name is required"),
+    severity: z.number().min(1).max(3),
+    prevalence: z.number().min(1).max(5).default(1),
+    treatment: z.string().default(""),
+});
+export type Symptom = z.infer<typeof Symptom>;
+
 export type PAPAllergen = z.infer<typeof PAP>["allergens"][number];
 
 export const PersonalAllergen = Allergen.pick({
