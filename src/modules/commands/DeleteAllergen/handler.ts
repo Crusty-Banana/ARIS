@@ -1,4 +1,4 @@
-import { Db } from "mongodb";
+import { Db, ObjectId } from "mongodb";
 import { DeleteAllergen$Params } from "./typing";
 
 export async function handler$DeleteAllergen(
@@ -6,6 +6,6 @@ export async function handler$DeleteAllergen(
     params: DeleteAllergen$Params
 ) {
     const { id } = params;
-    const result = await db.collection('allergens').deleteOne({ id });
+    const result = await db.collection('allergens').deleteOne({ _id: new ObjectId(id) });
     return result;
 }

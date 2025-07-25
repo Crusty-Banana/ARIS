@@ -1,4 +1,4 @@
-import { Db } from "mongodb";
+import { Db, ObjectId } from "mongodb";
 import { UpdateAllergen$Params } from "./typing";
 
 export async function handler$UpdateAllergen(
@@ -8,7 +8,7 @@ export async function handler$UpdateAllergen(
     const { id, ...allergenData } = params;
     const result = await db
         .collection("allergens")
-        .updateOne({ id: id }, { $set: allergenData });
+        .updateOne({ _id: new ObjectId(id) }, { $set: allergenData });
 
     return result;
 }
