@@ -13,16 +13,14 @@ export async function handler$GetCrossAllergenFromUserID(
     if (!result || !result.allergens || result.allergens.length === 0) {
         return []
     }
-    
     const userAllergenIds = result.allergens.map((allergen: { allergenId: ObjectId, degree: number }) => (
-        allergen.allergenId.toHexString()
+        allergen.allergenId
     ));
-
     // 2. Find all allergy categories that contain any of the user's allergens
     const relatedAllergies = await db.collection('allergies').find({
         allergensId: { $in: userAllergenIds }
     }).toArray();
-
+    
     // 3. Collect all unique allergen IDs from these categories, excluding the user's own allergens
     const crossAllergenIds = new Set<string>();
     relatedAllergies.forEach(allergy => {
@@ -34,7 +32,6 @@ export async function handler$GetCrossAllergenFromUserID(
             }
         });
     });
-
     const uniqueCrossAllergenIds = Array.from(crossAllergenIds).map(id => ObjectId.createFromHexString(id));
 
     // 4. Fetch the details of the cross-allergens
@@ -48,6 +45,5 @@ export async function handler$GetCrossAllergenFromUserID(
             ...doc,
         });
     });
-
     return allergens;
 }

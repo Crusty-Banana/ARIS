@@ -73,9 +73,9 @@ export type PAPAllergen = z.infer<typeof PAP>["allergens"][number];
 
 export const PersonalAllergen = Allergen.pick({
     name: true,
-    symptoms: true,
-    treatment: true,
-    firstAid: true,
+    symptomsId: true,
+    // treatment: true,
+    // firstAid: true,
 }).extend({ degree: z.number().min(1).max(5).optional() });
 
 export type PersonalAllergen = z.infer<typeof PersonalAllergen>;

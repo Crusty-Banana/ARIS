@@ -239,7 +239,7 @@ const CrossAllergySection = ({ crossAllergens, isPublicView, onAdd}: { crossAlle
                                 )}
                             </div>
                             <div className="mt-2 text-sm text-gray-600">
-                                <p><strong className="font-medium text-gray-800">Symptoms:</strong> {allergen.symptoms.join(', ')}</p>
+                                <p><strong className="font-medium text-gray-800">Symptoms:</strong> {allergen.symptomsId.join(', ')}</p>
                                 <p className={isPublicView ? 'mt-1' : 'hidden'}><strong className="font-medium text-gray-800">Causes Symptom:</strong> {allergen.name}</p>
                                 <p className="mt-1"><strong className="font-medium text-gray-800">{isPublicView ? 'First Aid' : 'Treatment'}:</strong> {isPublicView ? allergen.firstAid : allergen.treatment}</p>
                             </div>

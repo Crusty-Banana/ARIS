@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
         }
 
         const userId = token.id;
-        const parsedBody = GetCrossAllergenFromUserID$Params.safeParse({ userId });
+        const parsedBody = GetCrossAllergenFromUserID$Params.safeParse({ "userID": userId });
         if (!parsedBody.success) {
             return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
         }
