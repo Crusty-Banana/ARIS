@@ -1,6 +1,8 @@
 import { Db, ObjectId } from "mongodb";
 import { GetPAP$Params } from "./typing";
-import { PAP } from "@/modules/business-types";
+import { PAP, ObjectIdAsHexString, UnixTimestamp } from "@/modules/business-types";
+import { z } from "zod";
+
 
 export async function handler$GetPAP(
     db: Db,
@@ -12,15 +14,23 @@ export async function handler$GetPAP(
     if (!result) {
         return null;
     }
-
     const pap = PAP.parse({
         ...result,
         id: result._id.toHexString(),
         userId: result.userId.toHexString(),
         publicId: result.publicId ? result.publicId.toHexString() : null,
-        allergens: result.allergens.map((allergen: { allergenId: ObjectId, degree: number }) => ({
+        allergens: result.allergens.map((allergen: {
+                        allergenId: ObjectId,
+                        discoveryDate: UnixTimestamp,
+                        discoveryMethod: String,
+                        severity: number,
+                        symptomsId: Array<String>,
+                    }) => ({
             allergenId: allergen.allergenId.toHexString(),
-            degree: allergen.degree,
+            severity: allergen.severity,
+            discoveryDate: allergen.discoveryDate,
+            discoveryMethod: allergen.discoveryMethod,
+            symptomsId: allergen.symptomsId,
         })),
     });
     return pap;

@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-import { ObjectId } from 'mongodb';
 import { getDb } from '@/modules/mongodb';
+import { handler$GetCrossAllergenFromUserID } from "@/modules/commands/GetCrossAllergenFromUserID/handler";
+import { GetCrossAllergenFromUserID$Params } from "@/modules/commands/GetCrossAllergenFromUserID/typing";
 
-// It's a good practice to define an interface for the shape of your data.
-interface AllergenInPap {
-    allergenId: ObjectId;
-    degree: number;
-}
 
 export async function GET(req: NextRequest) {
     try {
@@ -17,47 +13,14 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
-        const db = await getDb();
-
-        // if (!ObjectId.isValid(token.id)) {
-        //     return NextResponse.json(
-        //         { message: 'Invalid User ID' },
-        //         { status: 400 }
-        //     );
-        // }
-
-        // 1. Get the user's PAP to find their allergens
-        const pap = await db.collection('paps').findOne({ userId: new ObjectId(token.id) });
-
-        if (!pap || !pap.allergens || pap.allergens.length === 0) {
-            return NextResponse.json([], { status: 200 }); // No allergens in PAP, so no cross-allergens
+        const userId = token.id;
+        const parsedBody = GetCrossAllergenFromUserID$Params.safeParse({ "userID": userId });
+        if (!parsedBody.success) {
+            return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
         }
 
-        const userAllergenIds = pap.allergens.map((a: AllergenInPap) => a.allergenId);
-
-        // 2. Find all allergy categories that contain any of the user's allergens
-        const relatedAllergies = await db.collection('allergies').find({
-            allergensId: { $in: userAllergenIds }
-        }).toArray();
-
-        // 3. Collect all unique allergen IDs from these categories, excluding the user's own allergens
-        const crossAllergenIds = new Set<string>();
-        relatedAllergies.forEach(allergy => {
-            allergy.allergensId.forEach((allergenId: ObjectId) => {
-                const allergenIdStr = allergenId.toString();
-
-                if (!userAllergenIds.some((id: ObjectId) => id.toString() === allergenIdStr)) {
-                    crossAllergenIds.add(allergenIdStr);
-                }
-            });
-        });
-
-        const uniqueCrossAllergenIds = Array.from(crossAllergenIds).map(id => new ObjectId(id));
-
-        // 4. Fetch the details of the cross-allergens
-        const crossAllergens = await db.collection('allergens').find({
-            _id: { $in: uniqueCrossAllergenIds }
-        }).toArray();
+        const db = await getDb();
+        const crossAllergens = await handler$GetCrossAllergenFromUserID(db, parsedBody.data);
 
         return NextResponse.json(crossAllergens, { status: 200 });
     } catch (error) {
