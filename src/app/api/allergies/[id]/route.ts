@@ -33,7 +33,7 @@ export async function GET(
             return NextResponse.json({ message: "Allergies not found" }, { status: 404 });
         }
 
-        return NextResponse.json({ allergen: allergies[0] }, { status: 200 });
+        return NextResponse.json({ alleries: allergies, message: "Allergy retrieved successfully" }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {
@@ -66,9 +66,9 @@ export async function PUT(
         }
 
         const db = await getDb();
-        const result = await handler$UpdateAllergy(db, parsedBody.data);
+        const { result } = await handler$UpdateAllergy(db, parsedBody.data);
 
-        if (!result) {
+        if (result.modifiedCount != 1) {
             return NextResponse.json(
                 { message: 'Allergy not found' },
                 { status: 404 }
@@ -110,7 +110,7 @@ export async function DELETE(
 
         const db = await getDb();
 
-        const result = await handler$DeleteAllergy(db, { id });
+        const { result } = await handler$DeleteAllergy(db, { id });
 
         if (result.deletedCount === 0) {
             return NextResponse.json(

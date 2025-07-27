@@ -36,7 +36,7 @@ export default function AuthPage() {
       })
 
       if (result?.ok) {
-        router.push("/")
+        router.push("/dashboard")
       } else {
         alert("Login failed. Please check your credentials.")
       }

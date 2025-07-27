@@ -15,5 +15,5 @@ export async function handler$UpdateAllergy(
             }
         });
 
-    return result;
+    return { result };
 }

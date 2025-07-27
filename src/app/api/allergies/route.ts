@@ -21,10 +21,10 @@ export async function POST(req: NextRequest) {
         }
 
         const db = await getDb();
-        const allergyId = await handler$AddAllergy(db, parsedBody.data);
+        const { insertedId } = await handler$AddAllergy(db, parsedBody.data);
 
         return NextResponse.json(
-            { message: 'Allergy added successfully', allergyId },
+            { message: 'Allergy added successfully', allergyId: insertedId },
             { status: 201 }
         );
     } catch (error) {
@@ -57,7 +57,7 @@ export async function GET(req: NextRequest) {
 
         const { allergies } = await handler$GetAllergies(db, parsedBody.data);
 
-        return NextResponse.json({ allergies }, { status: 200 });
+        return NextResponse.json({ allergies, message: "Allergies retrieved successfully" }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {

@@ -11,6 +11,9 @@ export async function httpPut$UpdateAllergen(
     });
     const text = await response.text();
     const data = JSON.parse(text);
-    const result = UpdateAllergen$Result.parse(data);
+    const result = UpdateAllergen$Result.parse({
+        success: response.ok,
+        ...data
+    });
     return result;
 }

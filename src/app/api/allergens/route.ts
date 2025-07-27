@@ -18,14 +18,14 @@ export async function POST(req: NextRequest) {
         const parsedBody = AddAllergen$Params.safeParse(body);
 
         if (!parsedBody.success) {
-            return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
+            return NextResponse.json({ message: parsedBody.error.message || "invalid params" }, { status: 400 });
         }
         const db = await getDb();
 
-        const result = await handler$AddAllergen(db, parsedBody.data);
+        const { insertedId } = await handler$AddAllergen(db, parsedBody.data);
 
         return NextResponse.json(
-            { message: 'Allergen added successfully', allergenId: result.insertedId },
+            { message: 'Allergen added successfully', allergenId: insertedId },
             { status: 201 }
         );
     } catch (error) {
@@ -51,14 +51,14 @@ export async function GET(req: NextRequest) {
         const searchParams = Object.fromEntries(req.nextUrl.searchParams);
         const parsedBody = GetAllergens$Params.safeParse(searchParams);
         if (!parsedBody.success) {
-            return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
+            return NextResponse.json({ message: parsedBody.error.message || "invalid params" }, { status: 400 });
         }
 
         const db = await getDb();
 
         const { allergens } = await handler$GetAllergens(db, parsedBody.data);
 
-        return NextResponse.json(allergens, { status: 200 });
+        return NextResponse.json({ allergens, message: 'Allergens retrieved successfully' }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {

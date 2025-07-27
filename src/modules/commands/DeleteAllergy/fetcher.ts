@@ -8,6 +8,9 @@ export async function httpDelete$DeleteAllergy(
     });
     const text = await response.text();
     const data = JSON.parse(text);
-    const result = DeleteAllergy$Result.parse(data);
+    const result = DeleteAllergy$Result.parse({
+        success: response.ok,
+        ...data
+    });
     return result;
 }
