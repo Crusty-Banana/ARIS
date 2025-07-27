@@ -1,56 +1,18 @@
-'use client';
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import Link from 'next/link';
-
-export default function Home() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (status === 'authenticated') {
-      if (session?.user?.role === 'admin') {
-        router.push('/admin/dashboard');
-      } else {
-        router.push('/user/dashboard');
-      }
-    }
-  }, [session, status, router]);
-
-  if (status === 'loading') {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p>Loading...</p>
+export default function HomePage() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-cyan-400 via-cyan-500 to-blue-600 flex items-center justify-center p-4">
+      <div className="text-center text-white">
+        <h1 className="text-4xl font-bold mb-4">Welcome to ARIS</h1>
+        <p className="text-xl mb-8 opacity-90">Allergen Reporting & Information System</p>
+        <Link href="/dashboard">
+          <Button className="bg-white text-cyan-600 hover:bg-gray-100 font-medium px-8 py-3 text-lg">
+            Get Started
+          </Button>
+        </Link>
       </div>
-    );
-  }
-
-  if (status === 'unauthenticated') {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="w-full max-w-md p-8 space-y-6 text-center bg-white rounded-lg shadow-md">
-          <h1 className="text-2xl font-bold">Welcome!</h1>
-          <p>You are not logged in.</p>
-          <div className="flex justify-center space-x-4">
-            <Link
-              href="/auth/login"
-              className="px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-600"
-            >
-              Login
-            </Link>
-            <Link
-              href="/auth/register"
-              className="px-4 py-2 font-bold text-white bg-green-500 rounded-md hover:bg-green-600"
-            >
-              Register
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return null;
+    </div>
+  )
 }
