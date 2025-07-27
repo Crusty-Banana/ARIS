@@ -13,8 +13,8 @@ export async function handler$UpdatePAP(
                 ...PAPdata,
                 ...(allergens ? {
                     allergens: allergens.map(allergen => ({
-                        allergenId: new ObjectId(allergen.allergenId),
-                        degree: allergen.degree,
+                        ...allergen,
+                        allergenId: new ObjectId(allergen.allergenId)
                     }))
                 } : {})
             }

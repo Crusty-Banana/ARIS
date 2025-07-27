@@ -8,6 +8,8 @@ import { httpGet$GetAllergens } from '@/modules/commands/GetAllergens/fetcher';
 import { httpPut$UpdatePAP } from '@/modules/commands/UpdatePAP/fetcher';
 import { httpGet$GetPAP } from '@/modules/commands/GetPAP/fetcher';
 
+type DiscoveryMethod = "Clinical symptoms" | "Paraclinical tests";
+
 // Allergy Profile Component
 export default function AllergyProfile() {
     const { data: session } = useSession();
@@ -63,10 +65,18 @@ export default function AllergyProfile() {
 
     const handleAddToPap = async (allergenId: string) => {
         if (pap && session) {
+            console.log("ALLERGENS", pap.allergens)
             const updatedAllergens = [
                 ...pap.allergens,
-                { allergenId: allergenId, degree: 1 },
+                { 
+                    allergenId: allergenId,
+                    discoveryDate: 1753502456,
+                    discoveryMethod: "Paraclinical tests" as DiscoveryMethod,
+                    severity: 1,
+                    symptomsId: ["6884b5063ca95cfdf500239b"] as Array<string> 
+                },
             ];
+            console.log("ALLERGENS", updatedAllergens)
             try {
                 await httpPut$UpdatePAP(
                     '/api/pap',
@@ -155,23 +165,7 @@ export default function AllergyProfile() {
 
 
 // Patient's Allergy List
-const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove, onUpdate }: { pap: PAP, allergens: Allergen[], isPublicView: boolean, onRemove: (allergenId: string) => void, onUpdate: () => void}, ) => {
-    const handleSeverityChange = async (allergenId: string, degree: number) => {
-        if (pap) {
-          const updatedAllergens = pap.allergens.map((allergen) =>
-            String(allergen.allergenId) === String(allergenId) ? { ...allergen, degree } : allergen
-          );
-          try {
-            await httpPut$UpdatePAP(
-                '/api/pap',
-                { allergens: updatedAllergens },
-            )
-            onUpdate(); 
-          } catch (error) {
-            console.error('An error occurred while updating PAP:', error);
-          }
-        }
-      };
+const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove}: { pap: PAP, allergens: Allergen[], isPublicView: boolean, onRemove: (allergenId: string) => void, onUpdate: () => void}, ) => {
 
     return (
         <div className="bg-white p-6 rounded-xl shadow-lg">
@@ -192,9 +186,9 @@ const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove, onUpdate }
                                 )}
                             </div>
                             <div className="mt-2 text-sm text-gray-600">
-                                <p><strong className="font-medium text-gray-800">Symptoms:</strong> {allergenDetails.symptoms.join(', ')}</p>
+                                <p><strong className="font-medium text-gray-800">Symptoms:</strong> {allergenDetails.symptomsId.join(', ')}</p>
                                 <p className={isPublicView ? 'mt-1' : 'hidden'}><strong className="font-medium text-gray-800">Causes Symptom:</strong> {allergenDetails.name}</p>
-                                <p className="mt-1"><strong className="font-medium text-gray-800">{isPublicView ? 'First Aid' : 'Treatment'}:</strong> {isPublicView ? allergenDetails.firstAid : allergenDetails.treatment}</p>
+                                {/* <p className="mt-1"><strong className="font-medium text-gray-800">{isPublicView ? 'First Aid' : 'Treatment'}:</strong> {isPublicView ? userAllergen. : allergenDetails.treatment}</p> */}
                             </div>
                             {!isPublicView && (
                                 <div className="mt-2">
@@ -203,16 +197,16 @@ const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove, onUpdate }
                                         type="range"
                                         min="1"
                                         max="5"
-                                        value={userAllergen.degree}
-                                        onChange={(e) =>
-                                            handleSeverityChange(
-                                                userAllergen.allergenId,
-                                                parseInt(e.target.value)
-                                            )
-                                        }
+                                        value={userAllergen.severity}
+                                        // onChange={(e) =>
+                                        //     handleSeverityChange(
+                                        //         userAllergen.allergenId,
+                                        //         parseInt(e.target.value)
+                                        //     )
+                                        // }
                                         className="w-full"
                                     />
-                                    <span>{userAllergen.degree}</span>
+                                    <span>{userAllergen.severity}</span>
                                 </div>
                             )}
                         </div>
@@ -239,9 +233,9 @@ const CrossAllergySection = ({ crossAllergens, isPublicView, onAdd}: { crossAlle
                                 )}
                             </div>
                             <div className="mt-2 text-sm text-gray-600">
-                                <p><strong className="font-medium text-gray-800">Symptoms:</strong> {allergen.symptoms.join(', ')}</p>
+                                <p><strong className="font-medium text-gray-800">Symptoms:</strong> {allergen.symptomsId.join(', ')}</p>
                                 <p className={isPublicView ? 'mt-1' : 'hidden'}><strong className="font-medium text-gray-800">Causes Symptom:</strong> {allergen.name}</p>
-                                <p className="mt-1"><strong className="font-medium text-gray-800">{isPublicView ? 'First Aid' : 'Treatment'}:</strong> {isPublicView ? allergen.firstAid : allergen.treatment}</p>
+                                {/* <p className="mt-1"><strong className="font-medium text-gray-800">{isPublicView ? 'First Aid' : 'Treatment'}:</strong> {isPublicView ? allergen.firstAid : allergen.treatment}</p> */}
                             </div>
                         </div>)}
                     </div>
@@ -342,9 +336,10 @@ const AllergenDetailsModal = ({ allergen, onClose, onAdd }: { allergen: Allergen
                     <button onClick={onClose} className="text-gray-500 hover:text-gray-700">&times;</button>
                 </div>
                 <div className="text-sm text-gray-600 space-y-2">
-                    <p><strong className="font-medium text-gray-800">Symptoms:</strong> {allergen.symptoms.join(', ')}</p>
-                    <p><strong className="font-medium text-gray-800">Treatment:</strong> {allergen.treatment}</p>
-                    <p><strong className="font-medium text-gray-800">First Aid:</strong> {allergen.firstAid}</p>
+                    <p><strong className="font-medium text-gray-800">Symptoms:</strong> {allergen.symptomsId.join(', ')}</p>
+                    <p><strong className="font-medium text-gray-800">Type:</strong> {allergen.type}</p>
+                    <p><strong className="font-medium text-gray-800">Description:</strong> {allergen.description}</p>
+                    <p><strong className="font-medium text-gray-800">Description:</strong> {allergen.description}</p>
                 </div>
                 <div className="mt-6 flex justify-end">
                     <button onClick={handleAddClick} className="px-6 py-2 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">Add to My Profile</button>
