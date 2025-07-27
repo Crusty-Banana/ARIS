@@ -67,12 +67,11 @@ export default function AuthPage() {
     try {
       const res = await httpPost$Register("/api/auth/register", { firstName, lastName, email, password })
 
-      if (res.ok) {
+      if (res.success) {
         setIsLogin(true)
         alert("Account created successfully! Please sign in.")
       } else {
-        const data = await res.json();
-        alert(data.message || "Registration failed. Please try again.")
+        alert(res.message || "Registration failed. Please try again.")
       }
     } catch (error) {
       console.error("Registration error:", error)
