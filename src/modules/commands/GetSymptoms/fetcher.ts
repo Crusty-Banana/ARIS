@@ -13,14 +13,8 @@ export async function httpGet$GetSymptoms(
     const response = await fetch(url + "?" + searchParams.toString());
     const text = await response.text();
     const data = JSON.parse(text);
-    if (!response.ok) {
-        return GetSymptoms$Result.parse({
-            success: false,
-            ...data
-        });
-    }
     const result = GetSymptoms$Result.parse({
-        success: true,
+        success: response.ok,
         ...data
     });
     return result;

@@ -1,17 +1,17 @@
-import { AddSymptom$Params, AddSymptom$Result } from "./typing";
+import { UpdateSymptom$Result, UpdateSymptomFetcher$Params } from "./typing";
 
-export async function httpPost$AddSymptom(
+export async function httpPut$UpdateAllergen(
     url: string,
-    params: AddSymptom$Params
+    params: UpdateSymptomFetcher$Params
 ) {
     const response = await fetch(url, {
-        method: 'POST',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(params),
     });
     const text = await response.text();
     const data = JSON.parse(text);
-    const result = AddSymptom$Result.parse({
+    const result = UpdateSymptom$Result.parse({
         success: response.ok,
         ...data
     });
