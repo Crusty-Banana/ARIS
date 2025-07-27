@@ -74,16 +74,13 @@ export function handler$Authenticate(
 export async function handler$Register(
     db: Db,
     params: Register$Params
-): Promise<NextResponse> {
+) {
     const { firstName, lastName, email, password } = params;
 
     const existingUser = await db.collection('users').findOne({ email });
 
     if (existingUser) {
-        return NextResponse.json(
-            { message: 'User already exists' },
-            { status: 400 }
-        );
+        throw new Error('User already exists');
     }
 
     const hashedPassword = await hash(password, 10);
@@ -101,8 +98,5 @@ export async function handler$Register(
         { userId: newUser.insertedId.toHexString() }
     );
 
-    return NextResponse.json(
-        { message: 'User registered successfully' },
-        { status: 201 }
-    );
+    return;
 }

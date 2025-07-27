@@ -9,14 +9,17 @@ export async function POST(req: NextRequest) {
         const parsedBody = Register$Params.safeParse(body);
 
         if (!parsedBody.success) {
-            return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
+            return NextResponse.json({ message: parsedBody.error.message || "invalid params" }, { status: 400 });
         }
 
         const db = await getDb();
 
-        const response = await handler$Register(db, parsedBody.data);
+        await handler$Register(db, parsedBody.data);
 
-        return response;
+        return NextResponse.json(
+            { message: 'User registered successfully' },
+            { status: 201 }
+        );
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {
