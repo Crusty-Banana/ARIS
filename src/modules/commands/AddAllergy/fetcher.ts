@@ -11,6 +11,9 @@ export async function httpPost$AddAllergy(
     });
     const text = await response.text();
     const data = JSON.parse(text);
-    const result = AddAllergy$Result.parse(data);
+    const result = AddAllergy$Result.parse({
+        success: response.ok,
+        ...data
+    });
     return result;
 }

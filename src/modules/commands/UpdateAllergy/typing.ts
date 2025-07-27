@@ -12,6 +12,7 @@ export const UpdateAllergyFetcher$Params = UpdateAllergy$Params.omit({ id: true 
 export type UpdateAllergyFetcher$Params = z.infer<typeof UpdateAllergyFetcher$Params>;
 
 export const UpdateAllergy$Result = z.object({
+    success: z.boolean(),
     message: z.string(),
 });
 export type UpdateAllergy$Result = z.infer<typeof UpdateAllergy$Result>;

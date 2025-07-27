@@ -32,7 +32,7 @@ export async function GET(
             return NextResponse.json({ message: "Symptom not found" }, { status: 404 });
         }
 
-        return NextResponse.json({ symptom: symptoms[0], message: "Symptom fetched successfully." }, { status: 200 });
+        return NextResponse.json({ symptoms: symptoms, message: "Symptom fetched successfully." }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {

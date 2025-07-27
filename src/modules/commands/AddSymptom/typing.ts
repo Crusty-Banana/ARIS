@@ -6,6 +6,7 @@ export type AddSymptom$Params = z.infer<typeof AddSymptom$Params>;
 
 export const AddSymptom$Result = z.object({
     success: z.boolean(),
+    message: z.string(),
     insertedId: z.string().optional(),
 })
 export type AddSymptom$Result = z.infer<typeof AddSymptom$Result>;

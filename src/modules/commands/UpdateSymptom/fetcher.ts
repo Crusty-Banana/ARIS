@@ -1,6 +1,6 @@
 import { UpdateSymptom$Result, UpdateSymptomFetcher$Params } from "./typing";
 
-export async function httpPut$UpdateAllergen(
+export async function httpPut$UpdateSymptom(
     url: string,
     params: UpdateSymptomFetcher$Params
 ) {

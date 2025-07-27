@@ -10,5 +10,5 @@ export async function handler$AddAllergy(
         name,
         allergensId: allergensId.map(id => new ObjectId(id))
     })
-    return insertedId;
+    return { insertedId: insertedId.toHexString() };
 }
