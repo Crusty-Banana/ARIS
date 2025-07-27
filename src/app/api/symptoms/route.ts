@@ -1,0 +1,72 @@
+import { NextRequest, NextResponse } from 'next/server';
+// import { AddAllergen$Params } from '@/modules/commands/AddAllergen/typing';
+import { getToken } from 'next-auth/jwt';
+import { getDb } from '@/modules/mongodb';
+// import { handler$AddAllergen } from '@/modules/commands/AddAllergen/handler';
+import { handler$GetSymptoms } from '@/modules/commands/GetSymptoms/handler';
+import { GetSymptoms$Params } from '@/modules/commands/GetSymptoms/typing';
+
+// export async function POST(req: NextRequest) {
+//     try {
+//         const token = await getToken({ req });
+
+//         if (!token || token.role !== 'admin') {
+//             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+//         }
+
+//         const body = await req.json();
+//         const parsedBody = AddAllergen$Params.safeParse(body);
+
+//         if (!parsedBody.success) {
+//             return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
+//         }
+//         const db = await getDb();
+
+//         const result = await handler$AddAllergen(db, parsedBody.data);
+
+//         return NextResponse.json(
+//             { message: 'Allergen added successfully', allergenId: result.insertedId },
+//             { status: 201 }
+//         );
+//     } catch (error) {
+//         let message = "An error occurred";
+//         if (error instanceof Error) {
+//             message += `: ${error.message}`;
+//         }
+//         return NextResponse.json(
+//             { message },
+//             { status: 500 }
+//         );
+//     }
+// }
+
+export async function GET(req: NextRequest) {
+    try {
+        const token = await getToken({ req });
+
+        if (!token) {
+            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+        }
+
+        const searchParams = Object.fromEntries(req.nextUrl.searchParams);
+        const parsedBody = GetSymptoms$Params.safeParse(searchParams);
+        if (!parsedBody.success) {
+            return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
+        }
+
+        const db = await getDb();
+
+        const { Symptoms } = await handler$GetSymptoms(db, parsedBody.data);
+
+        return NextResponse.json(Symptoms, { status: 200 });
+    } catch (error) {
+        let message = "An error occurred";
+        if (error instanceof Error) {
+            message += `: ${error.message}`;
+        }
+        return NextResponse.json(
+            { message },
+            { status: 500 }
+        );
+    }
+}
