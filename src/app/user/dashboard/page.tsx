@@ -65,13 +65,18 @@ export default function AllergyProfile() {
 
     const handleAddToPap = async (allergenId: string) => {
         if (pap && session) {
+            console.log("ALLERGENS", pap.allergens)
             const updatedAllergens = [
                 ...pap.allergens,
-                { allergenId: allergenId,discoveryDate: 0,
-                discoveryMethod: "Paraclinical tests" as DiscoveryMethod,
-                severity: 1,
-                symptomsId: [""] },
+                { 
+                    allergenId: allergenId,
+                    discoveryDate: 1753502456,
+                    discoveryMethod: "Paraclinical tests" as DiscoveryMethod,
+                    severity: 1,
+                    symptomsId: ["6884b5063ca95cfdf500239b"] as Array<string> 
+                },
             ];
+            console.log("ALLERGENS", updatedAllergens)
             try {
                 await httpPut$UpdatePAP(
                     '/api/pap',
