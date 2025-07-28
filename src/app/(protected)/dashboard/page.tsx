@@ -1,0 +1,25 @@
+'use client';
+
+import { useSession } from 'next-auth/react';
+import AdminDashboard from './_components/AdminDashboard/page';
+import AuthPage from '@/components/authen-page';
+
+export default function Home() {
+  const { data: session, status } = useSession();
+
+  if (status === "unauthenticated") {
+    return <AuthPage />;
+  }
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
+  return (session?.user?.role === 'admin') ? (
+    <AdminDashboard/>
+  ) : (
+    <div>
+        user dashboard
+    </div>
+  );
+}

@@ -13,6 +13,9 @@ export async function httpGet$GetAllergens(
     const response = await fetch(url + "?" + searchParams.toString());
     const text = await response.text();
     const data = JSON.parse(text);
-    const result = GetAllergens$Result.parse({ allergens: data });
+    const result = GetAllergens$Result.parse({
+        success: response.ok,
+        ...data
+    });
     return result;
 }

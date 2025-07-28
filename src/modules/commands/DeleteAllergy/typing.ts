@@ -8,6 +8,7 @@ export const DeleteAllergy$Params = z.object({
 export type DeleteAllergy$Params = z.infer<typeof DeleteAllergy$Params>;
 
 export const DeleteAllergy$Result = z.object({
+    success: z.boolean(),
     message: z.string(),
 });
 

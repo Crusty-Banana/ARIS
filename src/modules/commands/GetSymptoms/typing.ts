@@ -10,7 +10,9 @@ export const GetSymptoms$Params = z.object({
 export type GetSymptoms$Params = z.infer<typeof GetSymptoms$Params>;
 
 export const GetSymptoms$Result = z.object({
-    symptoms: z.array(Symptom)
+    success: z.boolean(),
+    message: z.string(),
+    symptoms: z.array(Symptom).optional(),
 });
 
 export type GetSymptoms$Result = z.infer<typeof GetSymptoms$Result>;

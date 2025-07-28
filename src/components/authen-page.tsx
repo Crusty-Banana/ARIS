@@ -36,7 +36,7 @@ export default function AuthPage() {
       })
 
       if (result?.ok) {
-        router.push("/")
+        router.push("/dashboard")
       } else {
         alert("Login failed. Please check your credentials.")
       }
@@ -87,7 +87,7 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cyan-400 via-cyan-500 to-blue-600 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+    <div className="flex-grow bg-gradient-to-br from-cyan-400 via-cyan-500 to-blue-600 flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div className="w-full max-w-sm sm:max-w-md">
         <Card className="backdrop-blur-sm bg-white/95 shadow-2xl border-0">
           <CardHeader className="space-y-1 text-center">

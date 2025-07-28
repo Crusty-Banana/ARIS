@@ -10,6 +10,8 @@ export const GetAllergens$Params = z.object({
 export type GetAllergens$Params = z.infer<typeof GetAllergens$Params>;
 
 export const GetAllergens$Result = z.object({
+    success: z.boolean(),
+    message: z.string(),
     allergens: z.array(Allergen)
 });
 

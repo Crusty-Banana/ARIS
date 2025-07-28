@@ -22,7 +22,7 @@ export async function GET(
         const searchParams = Object.fromEntries(req.nextUrl.searchParams);
         const parsedBody = GetAllergens$Params.safeParse({ ...searchParams, id });
         if (!parsedBody.success) {
-            return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
+            return NextResponse.json({ message: parsedBody.error.message || "invalid params" }, { status: 400 });
         }
 
         const db = await getDb()
@@ -32,7 +32,7 @@ export async function GET(
             return NextResponse.json({ message: "Allergen not found" }, { status: 404 });
         }
 
-        return NextResponse.json({ allergen: allergens[0] }, { status: 200 });
+        return NextResponse.json({ allergens: allergens, message: "Allergen retrieved successfully" }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {
@@ -58,15 +58,15 @@ export async function PUT(
         const body = await req.json();
         const parsedBody = UpdateAllergen$Params.safeParse({ ...body, id });
         if (!parsedBody.success) {
-            return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
+            return NextResponse.json({ message: parsedBody.error.message || "invalid params" }, { status: 400 });
         }
 
         const db = await getDb();
 
-        const result = await handler$UpdateAllergen(db, parsedBody.data);
+        const { result } = await handler$UpdateAllergen(db, parsedBody.data);
 
-        if (!result) {
-            return NextResponse.json({ message: "Allergen not found" }, { status: 404 });
+        if (result.modifiedCount != 1) {
+            return NextResponse.json({ message: "Allergen not found." }, { status: 404 });
         }
 
         return NextResponse.json({ message: "Allergen updated successfully" }, { status: 200 });
@@ -94,18 +94,18 @@ export async function DELETE(
         const { id } = await params;
         const parsedBody = DeleteAllergen$Params.safeParse({ id });
         if (!parsedBody.success) {
-            return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
+            return NextResponse.json({ message: parsedBody.error.message || "invalid params" }, { status: 400 });
         }
 
         const db = await getDb();
 
-        const result = await handler$DeleteAllergen(db, parsedBody.data);
+        const { result } = await handler$DeleteAllergen(db, parsedBody.data);
 
         if (result.deletedCount === 0) {
             return NextResponse.json({ message: "Allergen not found" }, { status: 404 });
         }
 
-        return NextResponse.json({ message: "Allergen updated successfully" }, { status: 200 });
+        return NextResponse.json({ message: "Allergen deleted successfully" }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {

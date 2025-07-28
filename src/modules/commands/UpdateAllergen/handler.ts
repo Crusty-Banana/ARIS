@@ -10,5 +10,5 @@ export async function handler$UpdateAllergen(
         .collection("allergens")
         .updateOne({ _id: new ObjectId(id) }, { $set: allergenData });
 
-    return result;
+    return { result };
 }

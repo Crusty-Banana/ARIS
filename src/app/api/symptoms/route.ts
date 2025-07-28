@@ -1,44 +1,45 @@
-import { NextRequest, NextResponse } from 'next/server';
-// import { AddAllergen$Params } from '@/modules/commands/AddAllergen/typing';
-import { getToken } from 'next-auth/jwt';
-import { getDb } from '@/modules/mongodb';
-// import { handler$AddAllergen } from '@/modules/commands/AddAllergen/handler';
-import { handler$GetSymptoms } from '@/modules/commands/GetSymptoms/handler';
-import { GetSymptoms$Params } from '@/modules/commands/GetSymptoms/typing';
+import { handler$AddSymptom } from "@/modules/commands/AddSymptom/handlers";
+import { AddSymptom$Params } from "@/modules/commands/AddSymptom/typing";
+import { handler$GetSymptoms } from "@/modules/commands/GetSymptoms/handler";
+import { GetSymptoms$Params } from "@/modules/commands/GetSymptoms/typing";
+import { getDb } from "@/modules/mongodb";
+import { getToken } from "next-auth/jwt";
+import { NextRequest, NextResponse } from "next/server";
 
-// export async function POST(req: NextRequest) {
-//     try {
-//         const token = await getToken({ req });
+export async function POST(req: NextRequest) {
+    try {
+        const token = await getToken({ req });
 
-//         if (!token || token.role !== 'admin') {
-//             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-//         }
+        if (!token || token.role !== 'admin') {
+            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+        }
 
-//         const body = await req.json();
-//         const parsedBody = AddAllergen$Params.safeParse(body);
+        const body = await req.json();
+        const parsedBody = AddSymptom$Params.safeParse(body);
 
-//         if (!parsedBody.success) {
-//             return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
-//         }
-//         const db = await getDb();
+        if (!parsedBody.success) {
+            return NextResponse.json({ message: parsedBody.error.message || "invalid params" }, { status: 400 });
+        }
 
-//         const result = await handler$AddAllergen(db, parsedBody.data);
+        const db = await getDb();
+        const result = await handler$AddSymptom(db, parsedBody.data);
 
-//         return NextResponse.json(
-//             { message: 'Allergen added successfully', allergenId: result.insertedId },
-//             { status: 201 }
-//         );
-//     } catch (error) {
-//         let message = "An error occurred";
-//         if (error instanceof Error) {
-//             message += `: ${error.message}`;
-//         }
-//         return NextResponse.json(
-//             { message },
-//             { status: 500 }
-//         );
-//     }
-// }
+        return NextResponse.json(
+            { message: 'Symptom added successfully', symptomId: result.insertedId },
+            { status: 201 }
+        );
+    } catch (error) {
+        let message = "An error occurred";
+        if (error instanceof Error) {
+            message += `: ${error.message}`;
+        }
+        return NextResponse.json(
+            { message },
+            { status: 500 }
+        );
+
+    }
+}
 
 export async function GET(req: NextRequest) {
     try {
@@ -51,14 +52,13 @@ export async function GET(req: NextRequest) {
         const searchParams = Object.fromEntries(req.nextUrl.searchParams);
         const parsedBody = GetSymptoms$Params.safeParse(searchParams);
         if (!parsedBody.success) {
-            return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
+            return NextResponse.json({ messsage: parsedBody.error.message || "invalid params" }, { status: 400 });
         }
 
         const db = await getDb();
+        const { symptoms } = await handler$GetSymptoms(db, parsedBody.data);
 
-        const { Symptoms } = await handler$GetSymptoms(db, parsedBody.data);
-
-        return NextResponse.json(Symptoms, { status: 200 });
+        return NextResponse.json({ symptoms, message: "Symptoms fetched successfully." }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {
@@ -70,3 +70,4 @@ export async function GET(req: NextRequest) {
         );
     }
 }
+

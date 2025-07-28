@@ -7,5 +7,5 @@ export async function handler$DeleteAllergen(
 ) {
     const { id } = params;
     const result = await db.collection('allergens').deleteOne({ _id: new ObjectId(id) });
-    return result;
+    return { result };
 }

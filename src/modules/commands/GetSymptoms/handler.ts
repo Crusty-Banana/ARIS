@@ -33,14 +33,12 @@ export async function handler$GetSymptoms(
         .collection("symptoms")
         .aggregate([...sortTerm, ...filterTerm, ...pagingTerm])
         .toArray();
-    
-    console.log("UNPARSED", docs)
-    const Symptoms = docs.map((doc) => {
+
+    const symptoms = docs.map((doc) => {
         return Symptom.parse({
             id: doc._id.toHexString(),
             ...doc,
         });
     });
-    console.log("PARSED", Symptoms)
-    return { Symptoms };
+    return { symptoms };
 }

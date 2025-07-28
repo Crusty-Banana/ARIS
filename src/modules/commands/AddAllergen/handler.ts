@@ -5,6 +5,6 @@ export async function handler$AddAllergen(
     db: Db,
     params: AddAllergen$Params,
 ) {
-    const result = await db.collection('allergens').insertOne(params);
-    return result;
+    const { insertedId } = await db.collection('allergens').insertOne(params);
+    return { insertedId: insertedId.toHexString() };
 }

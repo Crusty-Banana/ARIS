@@ -1,8 +1,5 @@
 import { handler$Authenticate } from '@/modules/commands/Authenticate/handler';
-import { getDb } from '@/modules/mongodb';
 
-const db = await getDb();
-
-const handler = handler$Authenticate(db);
+const handler = handler$Authenticate();
 
 export { handler as GET, handler as POST };
