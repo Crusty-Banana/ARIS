@@ -158,17 +158,17 @@ export default function AdminDashboard() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cyan-100 via-blue-50 to-blue-100">
+    <div className="flex-grow bg-gradient-to-br from-cyan-100 via-blue-50 to-blue-100">
       <div className="container mx-auto p-6">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-800 mb-2">
-            Medical Admin Dashboard
+            Admin Dashboard
           </h1>
           <p className="text-gray-600">Manage symptoms, allergens, and allergies</p>
         </div>
 
         <Tabs defaultValue="symptoms" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-white/50 backdrop-blur-sm">
+          <TabsList className="grid w-full grid-cols-3 bg-white/50 backdrop-blur-sm">
             <TabsTrigger
               value="symptoms"
               className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-600 data-[state=active]:text-white"
@@ -186,12 +186,6 @@ export default function AdminDashboard() {
               className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-600 data-[state=active]:text-white"
             >
               Allergies
-            </TabsTrigger>
-            <TabsTrigger
-              value="view-data"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-600 data-[state=active]:text-white"
-            >
-              View Data
             </TabsTrigger>
           </TabsList>
 
@@ -236,9 +230,6 @@ export default function AdminDashboard() {
             />
           </TabsContent>
 
-          <TabsContent value="view-data">
-            <DataTables symptoms={symptoms} allergens={allergens} allergies={allergies} />
-          </TabsContent>
         </Tabs>
 
         {/* Detail Modals */}

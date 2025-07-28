@@ -1,6 +1,4 @@
-import AuthPage from '@/components/authen-page';
-import { authOptions } from '@/modules/authentication/authConfig';
-import { getServerSession } from "next-auth/next";
+import Header from '@/components/header';
 import React from 'react';
 
 export default async function Layout({
@@ -8,14 +6,12 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  const data = await getServerSession(authOptions);
-  console.log(data);
-  
-  return (data) ? (
-    <React.Fragment>
-      {children}
-    </React.Fragment>
-  ):(
-    <AuthPage></AuthPage>
+  return (
+    <div className='flex flex-col h-screen'>
+      <Header />
+      <div className='flex flex-grow'>
+        {children}
+      </div>
+    </div>
   );
 }
