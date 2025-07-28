@@ -11,7 +11,7 @@ export const UpdatePAP$Params = z.object({
             allergenId: ObjectIdAsHexString,
             discoveryDate: UnixTimestamp.nullable().optional(),
             discoveryMethod: DiscoveryMethod.optional(),
-            symptomsId: z.array(ObjectIdAsHexString).min(1).optional(),
+            symptomsId: z.array(ObjectIdAsHexString).optional(),
         }),
     ).optional(),
 });
