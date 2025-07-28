@@ -76,7 +76,7 @@ export default function UserDashboard() {
     }
   }
   const handleProfileUpdate = async (updateData: UpdatePAPFetcher$Params) => {
-    const data = await httpPut$UpdatePAP('/api/PAP', updateData);
+    const data = await httpPut$UpdatePAP('/api/pap', updateData);
     if (data.success) {
       await fetchPAP();
     } else {

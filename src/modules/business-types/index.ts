@@ -57,7 +57,6 @@ export const PAP = z.object({
                 allergenId: ObjectIdAsHexString,
                 discoveryDate: UnixTimestamp.nullable().default(null),
                 discoveryMethod: DiscoveryMethod,
-                severity: z.number().min(1).max(3),
                 symptomsId: z.array(ObjectIdAsHexString).min(1),
             }),
         )

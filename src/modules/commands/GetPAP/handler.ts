@@ -23,11 +23,9 @@ export async function handler$GetPAP(
             allergenId: ObjectId,
             discoveryDate: UnixTimestamp | null,
             discoveryMethod: string,
-            severity: number,
             symptomsId: ObjectId[],
         }) => ({
             allergenId: allergen.allergenId.toHexString(),
-            severity: allergen.severity,
             discoveryDate: allergen.discoveryDate,
             discoveryMethod: allergen.discoveryMethod,
             symptomsId: allergen.symptomsId.map((symptomId: ObjectId) => symptomId.toHexString()),
