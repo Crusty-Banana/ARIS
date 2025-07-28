@@ -15,9 +15,9 @@ export async function GET(
             return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
         }
         const db = await getDb();
-        const crossAllergens = await handler$GetCrossAllergenFromAllergenID(db, parsedBody.data);
+        const { crossAllergens } = await handler$GetCrossAllergenFromAllergenID(db, parsedBody.data);
 
-        return NextResponse.json(crossAllergens, { status: 200 });
+        return NextResponse.json({ crossAllergens, message: "Cross allergens fetched successfully" }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {

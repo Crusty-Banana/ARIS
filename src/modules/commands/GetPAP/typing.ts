@@ -1,4 +1,4 @@
-import { ObjectIdAsHexString, UnixTimestamp } from "@/modules/business-types";
+import { DiscoveryMethod, ObjectIdAsHexString, UnixTimestamp } from "@/modules/business-types";
 import z from "zod";
 
 export const GetPAP$Params = z.object({
@@ -21,7 +21,7 @@ export const DisplayPAP = z.object({
             severity: z.number().min(1).max(3),
             type: z.enum(["food", "drug", "respiratory"]),
             discoveryDate: UnixTimestamp.nullable(),
-            discoveryMethod: z.enum(["Clinical symptoms", "Paraclinical tests"]),
+            discoveryMethod: DiscoveryMethod,
             symptoms: z.array(z.object({
                 symptomId: ObjectIdAsHexString,
                 name: z.string(),
@@ -38,7 +38,7 @@ export type DisplayPAP = z.infer<typeof DisplayPAP>;
 export const GetPAP$Result = z.object({
     success: z.boolean(),
     message: z.string().optional(),
-    pap: DisplayPAP.optional(),
+    PAP: DisplayPAP.optional(),
 });
 
 export type GetPAP$Result = z.infer<typeof GetPAP$Result>;

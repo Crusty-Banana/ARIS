@@ -1,22 +1,30 @@
-import { ObjectIdAsHexString, UnixTimestamp } from "@/modules/business-types";
+import { DiscoveryMethod, ObjectIdAsHexString, UnixTimestamp } from "@/modules/business-types";
 import z from "zod";
 
 export const UpdatePAP$Params = z.object({
     userId: ObjectIdAsHexString,
     allowPublic: z.boolean().optional(),
-    gender: z.enum(["male", "female", "other"]).optional(),
-    doB: UnixTimestamp.optional(),
+    gender: z.enum(["male", "female", "other"]).nullable().optional(),
+    doB: UnixTimestamp.nullable().optional(),
     allergens: z.array(
         z.object({
             allergenId: ObjectIdAsHexString,
-            discoveryDate: UnixTimestamp.optional(),
-            discoveryMethod: z.enum(["Clinical symptoms", "Paraclinical tests"]).optional(),
+            discoveryDate: UnixTimestamp.nullable().optional(),
+            discoveryMethod: DiscoveryMethod.optional(),
             symptomsId: z.array(ObjectIdAsHexString).min(1).optional(),
         }),
     ).optional(),
 });
 
 export type UpdatePAP$Params = z.infer<typeof UpdatePAP$Params>;
+
+export const UpdatePAPAllergens$Params = UpdatePAP$Params.pick({
+    allergens: true,
+})
+export type UpdatePAPAllergens$Params = z.infer<typeof UpdatePAPAllergens$Params>;
+
+export const UpdatePAPAllergen$Params = UpdatePAP$Params.shape.allergens.unwrap().element;
+export type UpdatePAPAllergen$Params = z.infer<typeof UpdatePAPAllergen$Params>;
 
 export const UpdatePAPFetcher$Params = UpdatePAP$Params.omit({
     userId: true,

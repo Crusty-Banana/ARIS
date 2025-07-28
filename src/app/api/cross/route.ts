@@ -20,9 +20,9 @@ export async function GET(req: NextRequest) {
         }
 
         const db = await getDb();
-        const crossAllergens = await handler$GetCrossAllergenFromUserID(db, parsedBody.data);
+        const { crossAllergens } = await handler$GetCrossAllergenFromUserID(db, parsedBody.data);
 
-        return NextResponse.json(crossAllergens, { status: 200 });
+        return NextResponse.json({ crossAllergens, message: "Cross allergens fetched successfully" }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {

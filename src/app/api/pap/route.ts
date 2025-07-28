@@ -25,15 +25,15 @@ export async function GET(req: NextRequest) {
         }
 
         const db = await getDb();
-        const { pap } = await handler$GetPAP(db, parsedBody.data);
+        const { PAP } = await handler$GetPAP(db, parsedBody.data);
 
-        if (!pap) {
+        if (!PAP) {
             return NextResponse.json(
                 { message: "Personal Allergy Profile not found" },
                 { status: 404 },
             );
         }
-        return NextResponse.json({ pap, message: "Personal Allergy Profile found" }, { status: 200 });
+        return NextResponse.json({ PAP, message: "Personal Allergy Profile found" }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {

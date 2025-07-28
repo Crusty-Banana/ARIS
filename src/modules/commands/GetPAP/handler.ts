@@ -114,5 +114,5 @@ export async function handler$GetPAP(
         ...pap,
         allergens: populatedAllergens,
     });
-    return { pap: displayPAP };
+    return { PAP: displayPAP };
 }
