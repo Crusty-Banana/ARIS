@@ -14,7 +14,8 @@ export async function handler$UpdatePAP(
                 ...(allergens ? {
                     allergens: allergens.map(allergen => ({
                         ...allergen,
-                        allergenId: new ObjectId(allergen.allergenId)
+                        allergenId: new ObjectId(allergen.allergenId),
+                        ...(allergen.symptomsId ? { symptomsId: allergen.symptomsId.map(symptomId => new ObjectId(symptomId)) } : {}),
                     }))
                 } : {})
             }

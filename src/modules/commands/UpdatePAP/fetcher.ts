@@ -11,6 +11,9 @@ export async function httpPut$UpdatePAP(
     });
     const text = await response.text();
     const data = JSON.parse(text);
-    const result = UpdatePAP$Result.parse(data);
+    const result = UpdatePAP$Result.parse({
+        success: response.ok,
+        ...data
+    });
     return result;
 }

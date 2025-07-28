@@ -1,4 +1,4 @@
-import { ObjectIdAsHexString } from "@/modules/business-types";
+import { ObjectIdAsHexString, UnixTimestamp } from "@/modules/business-types";
 import z from "zod";
 
 export const GetPAP$Params = z.object({
@@ -12,7 +12,7 @@ export const DisplayPAP = z.object({
     userId: ObjectIdAsHexString,
     publicId: ObjectIdAsHexString,
     gender: z.enum(["male", "female", "other"]).nullable(),
-    doB: z.date().nullable().default(null),
+    doB: UnixTimestamp.nullable(),
     allowPublic: z.boolean(),
     allergens: z.array(
         z.object({
@@ -20,7 +20,7 @@ export const DisplayPAP = z.object({
             name: z.string(),
             severity: z.number().min(1).max(3),
             type: z.enum(["food", "drug", "respiratory"]),
-            discoveryDate: z.number(),
+            discoveryDate: UnixTimestamp.nullable(),
             discoveryMethod: z.enum(["Clinical symptoms", "Paraclinical tests"]),
             symptoms: z.array(z.object({
                 symptomId: ObjectIdAsHexString,

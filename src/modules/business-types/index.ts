@@ -44,12 +44,12 @@ export const PAP = z.object({
     publicId: ObjectIdAsHexString.optional(),
     allowPublic: z.boolean(),
     gender: z.enum(["male", "female", "other"]).nullable(),
-    doB: z.date().nullable().default(null),
+    doB: UnixTimestamp.nullable().default(null),
     allergens: z
         .array(
             z.object({
                 allergenId: ObjectIdAsHexString,
-                discoveryDate: UnixTimestamp,
+                discoveryDate: UnixTimestamp.nullable().default(null),
                 discoveryMethod: z.enum(["Clinical symptoms", "Paraclinical tests"]),
                 severity: z.number().min(1).max(3),
                 symptomsId: z.array(ObjectIdAsHexString).min(1),

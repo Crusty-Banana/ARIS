@@ -58,7 +58,6 @@ export async function PUT(req: NextRequest) {
         const body = await req.json();
         const parsedBody = UpdatePAP$Params.safeParse({
             ...body,
-            ...(body.doB ? { doB: new Date(body.doB) } : {}),
             userId,
         });
 
