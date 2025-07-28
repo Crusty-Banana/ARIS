@@ -56,7 +56,6 @@ export async function GET(req: NextRequest) {
         }
 
         const db = await getDb();
-
         const { symptoms } = await handler$GetSymptoms(db, parsedBody.data);
 
         return NextResponse.json({ symptoms, message: "Symptoms fetched successfully." }, { status: 200 });
@@ -71,3 +70,4 @@ export async function GET(req: NextRequest) {
         );
     }
 }
+

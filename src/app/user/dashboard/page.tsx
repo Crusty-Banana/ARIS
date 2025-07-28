@@ -2,29 +2,42 @@
 
 import { useSession } from 'next-auth/react';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Allergen, PAP } from '@/modules/business-types';
+import { Allergen, PAP, Symptom } from '@/modules/business-types';
 import {Eye, EyeOff, AlertTriangle} from 'lucide-react';
 import { httpGet$GetAllergens } from '@/modules/commands/GetAllergens/fetcher';
+import { httpGet$GetSymptoms } from '@/modules/commands/GetSymptoms/fetcher';
 import { httpPut$UpdatePAP } from '@/modules/commands/UpdatePAP/fetcher';
 import { httpGet$GetPAP } from '@/modules/commands/GetPAP/fetcher';
 
 type DiscoveryMethod = "Clinical symptoms" | "Paraclinical tests";
+
+// Data structure for adding a new allergy to the user's profile
+interface NewUserAllergyData {
+    allergenId: string;
+    discoveryDate: number;
+    discoveryMethod: DiscoveryMethod;
+    symptomsId: string[];
+    severity: number;
+}
+
 
 // Allergy Profile Component
 export default function AllergyProfile() {
     const { data: session } = useSession();
     const [pap, setPap] = useState<PAP | null>(null);
     const [allergens, setAllergens] = useState<Allergen[]>([]);
+    const [symptoms, setSymptoms] = useState<Symptom[]>([]);
     const [crossAllergens, setCrossAllergens] = useState<Allergen[]>([]);
     const [isPublicView, setIsPublicView] = useState(false);
-    const [selectedAllergen, setSelectedAllergen] = useState<Allergen | null>(null);
+    // State to manage the allergen being added and the modal's visibility
+    const [allergenToAdd, setAllergenToAdd] = useState<Allergen | null>(null);
 
     const fetchPap = useCallback(async () => {
       if (session) {
         try {
-          const { pap, message } = await httpGet$GetPAP('/api/pap');
-          if (pap) {
-            setPap(pap);
+          const { pap: fetchedPap, message } = await httpGet$GetPAP('/api/pap');
+          if (fetchedPap) {
+            setPap(fetchedPap);
           } else {
             console.error('Cannot fetch PAP.', message);
           }
@@ -34,60 +47,75 @@ export default function AllergyProfile() {
       }
     }, [session]);
 
-    const fetchAllergens = async () => {
-      try {
-        const { allergens } = await httpGet$GetAllergens('/api/allergens', {});
-        setAllergens(allergens);
-      } catch (error) {
-        console.error('An error occurred while fetching allergens:', error);
-      }
-    };
+    useEffect(() => {
+        const fetchAllData = async () => {
+            try {
+                // Fetch all static data concurrently
+                const [allergenData, symptomData] = await Promise.all([
+                    httpGet$GetAllergens('/api/allergens', {}),
+                    httpGet$GetSymptoms('/api/symptoms', {})
+                ]);
+                setAllergens(allergenData.allergens);
+                setSymptoms(symptomData.symptoms);
+            } catch (error) {
+                console.error('An error occurred while fetching initial data:', error);
+            }
+        };
 
-    const fetchCrossAllergens = async () => {
-      try {
-        const response = await fetch('/api/cross');
-        if (response.ok) {
-          const data = await response.json();
-          setCrossAllergens(data);
-        } else {
-          console.error('Failed to fetch cross allergens');
-        }
-      } catch (error) {
-        console.error('An error occurred while fetching cross allergens:', error);
-      }
-    };
+        fetchAllData();
+    }, []);
 
     useEffect(() => {
-      fetchPap();
-      fetchAllergens();
-      fetchCrossAllergens();
-    }, [fetchPap]);
+        const fetchDynamicData = async () => {
+            if (session) {
+                await fetchPap();
+            }
+        };
+        fetchDynamicData();
+    }, [session, fetchPap]);
 
-    const handleAddToPap = async (allergenId: string) => {
+    useEffect(() => {
+        // Fetches cross allergens whenever the user's PAP changes
+        const fetchCrossAllergens = async () => {
+          if (pap) {
+            try {
+              const response = await fetch('/api/cross'); // This API should internally use the user's PAP
+              if (response.ok) {
+                const data = await response.json();
+                setCrossAllergens(data);
+              } else {
+                console.error('Failed to fetch cross allergens');
+              }
+            } catch (error) {
+              console.error('An error occurred while fetching cross allergens:', error);
+            }
+          }
+        };
+
+        fetchCrossAllergens();
+    }, [pap]);
+
+
+    // This function now opens the modal to collect details
+    const handleInitiateAdd = (allergen: Allergen) => {
+        setAllergenToAdd(allergen);
+    };
+
+    // This function receives the detailed data from the modal and updates the PAP
+    const handleConfirmAddToPap = async (newData: NewUserAllergyData) => {
         if (pap && session) {
-            console.log("ALLERGENS", pap.allergens)
-            const updatedAllergens = [
-                ...pap.allergens,
-                { 
-                    allergenId: allergenId,
-                    discoveryDate: 1753502456,
-                    discoveryMethod: "Paraclinical tests" as DiscoveryMethod,
-                    severity: 1,
-                    symptomsId: ["6884b5063ca95cfdf500239b"] as Array<string> 
-                },
-            ];
-            console.log("ALLERGENS", updatedAllergens)
+            const updatedAllergens = [...pap.allergens, newData];
             try {
                 await httpPut$UpdatePAP(
                     '/api/pap',
                     { allergens: updatedAllergens },
-                )
-                fetchPap();
-                fetchCrossAllergens();
+                );
+                fetchPap(); // Refetch to update the UI
             } catch (error) {
                 console.error('An error occurred while updating PAP:', error);
             }
         }
+        setAllergenToAdd(null); // Close the modal on success
     };
 
     const handleRemoveFromPap = async (allergenId: string) => {
@@ -101,21 +129,15 @@ export default function AllergyProfile() {
                     { allergens: updatedAllergens },
                 )
                 fetchPap();
-                fetchCrossAllergens();
             } catch (error) {
                 console.error('An error occurred while updating PAP:', error);
             }
         }
     };
 
-    const handleShowAllergenDetails = (allergen: Allergen) => {
-        setSelectedAllergen(allergen);
-    };
-
     const handleCloseModal = () => {
-        setSelectedAllergen(null);
+        setAllergenToAdd(null);
     };
-
 
     return (
         <div className="w-full max-w-6xl min-h-screen p-8 space-y-6 bg-white rounded-lg shadow-md">
@@ -136,6 +158,7 @@ export default function AllergyProfile() {
                         <PatientAllergyList
                             pap={pap}
                             allergens={allergens}
+                            symptoms={symptoms}
                             isPublicView={isPublicView}
                             onRemove={handleRemoveFromPap}
                             onUpdate={fetchPap}
@@ -146,26 +169,34 @@ export default function AllergyProfile() {
                     <AddAllergySection
                         pap={pap}
                         allergens={allergens}
-                        onAdd={handleShowAllergenDetails}
+                        onAdd={handleInitiateAdd} // Changed to open modal
                     />
-                    <CrossAllergySection crossAllergens={crossAllergens} isPublicView={isPublicView} onAdd={handleAddToPap} />
+                    <CrossAllergySection 
+                        crossAllergens={crossAllergens}
+                        symptoms={symptoms} 
+                        isPublicView={isPublicView} 
+                        onAdd={handleInitiateAdd} // Changed to open modal
+                    />
                 </div>
-                
             </div>
-            {selectedAllergen && (
-                <AllergenDetailsModal
-                    allergen={selectedAllergen}
+
+            {/* Render the new modal for adding an allergen */}
+            {allergenToAdd && (
+                <AddAllergyModal
+                    allergen={allergenToAdd}
+                    allSymptoms={symptoms}
                     onClose={handleCloseModal}
-                    onAdd={handleAddToPap}
+                    onSubmit={handleConfirmAddToPap}
                 />
             )}
         </div>
     );
 };
 
+// --- Child Components remain largely the same, but with updated props ---
 
-// Patient's Allergy List
-const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove}: { pap: PAP, allergens: Allergen[], isPublicView: boolean, onRemove: (allergenId: string) => void, onUpdate: () => void}, ) => {
+// Patient's Allergy List (No major changes needed)
+const PatientAllergyList = ({ pap, allergens, symptoms, isPublicView, onRemove}: { pap: PAP, allergens: Allergen[], symptoms: Symptom[], isPublicView: boolean, onRemove: (allergenId: string) => void, onUpdate: () => void}, ) => {
 
     return (
         <div className="bg-white p-6 rounded-xl shadow-lg">
@@ -176,6 +207,9 @@ const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove}: { pap: PA
                         (a) => a.id === String(userAllergen.allergenId)
                     );
                     if (!allergenDetails) return null;
+                    const symptomDetails = userAllergen.symptomsId.map((symptomID) => {
+                        return symptoms.find((a) => a.id === String(symptomID))
+                    })
 
                     return (
                         <div key={userAllergen.allergenId} className="border border-gray-200 rounded-lg p-4">
@@ -186,9 +220,23 @@ const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove}: { pap: PA
                                 )}
                             </div>
                             <div className="mt-2 text-sm text-gray-600">
-                                <p><strong className="font-medium text-gray-800">Symptoms:</strong> {allergenDetails.symptomsId.join(', ')}</p>
-                                <p className={isPublicView ? 'mt-1' : 'hidden'}><strong className="font-medium text-gray-800">Causes Symptom:</strong> {allergenDetails.name}</p>
-                                {/* <p className="mt-1"><strong className="font-medium text-gray-800">{isPublicView ? 'First Aid' : 'Treatment'}:</strong> {isPublicView ? userAllergen. : allergenDetails.treatment}</p> */}
+                                <p className="space-y-2">
+                                    <strong className="font-medium text-gray-800">Symptoms:</strong>
+                                    {symptomDetails.map((symptomDetail) => (
+                                        <div key={symptomDetail!.id} className="border border-gray-200 rounded-lg p-4 ">
+                                            <p className="mt-1"><strong className="font-medium text-gray-800">{'Name'}:</strong> {symptomDetail!.name}</p>
+                                            <p className="mt-1"><strong className="font-medium text-gray-800">{'Treatment'}:</strong> {symptomDetail!.treatment}</p>
+                                        </div>
+                                    ))}
+                                </p>
+                                <p className={isPublicView ? 'mt-1' : 'hidden'}>
+                                    <strong className="font-medium text-gray-800">Causes Symptom:</strong> {allergenDetails.name}
+                                </p>
+                                <p className={isPublicView ? 'hidden' : 'mt-1'}>
+                                    <strong className="font-medium text-gray-800">Prevalence:</strong> {allergenDetails.prevalence}/5 <br />
+                                    <strong className="font-medium text-gray-800">Discovery Date:</strong> {new Date(userAllergen.discoveryDate * 1000).toLocaleDateString()} <br />
+                                    <strong className="font-medium text-gray-800">Discovery Method:</strong> {userAllergen.discoveryMethod} <br />
+                                </p>
                             </div>
                             {!isPublicView && (
                                 <div className="mt-2">
@@ -196,14 +244,9 @@ const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove}: { pap: PA
                                     <input
                                         type="range"
                                         min="1"
-                                        max="5"
+                                        max="3"
                                         value={userAllergen.severity}
-                                        // onChange={(e) =>
-                                        //     handleSeverityChange(
-                                        //         userAllergen.allergenId,
-                                        //         parseInt(e.target.value)
-                                        //     )
-                                        // }
+                                        readOnly
                                         className="w-full"
                                     />
                                     <span>{userAllergen.severity}</span>
@@ -217,7 +260,8 @@ const PatientAllergyList = ({ pap, allergens, isPublicView, onRemove}: { pap: PA
     );
 };
 
-const CrossAllergySection = ({ crossAllergens, isPublicView, onAdd}: { crossAllergens: Allergen[], isPublicView: boolean, onAdd: (allergenId: string) => void  }) => {
+// Cross Allergy Section (No major changes needed)
+const CrossAllergySection = ({ crossAllergens, symptoms, isPublicView, onAdd}: { crossAllergens: Allergen[], symptoms: Symptom[], isPublicView: boolean, onAdd: (allergen: Allergen) => void  }) => {
     return (
         <div className="bg-white p-6 rounded-xl shadow-lg mt-8">
             <h3 className="font-bold text-lg mb-4 text-gray-800">Potential Cross-Allergens</h3>
@@ -225,19 +269,25 @@ const CrossAllergySection = ({ crossAllergens, isPublicView, onAdd}: { crossAlle
                 <>
                     <p className="text-sm text-gray-600 mb-2">Based on your allergies, you might be sensitive to:</p>
                     <div className="space-y-4">
-                        {crossAllergens.map((allergen) => <div key={allergen.id} className="border border-gray-200 rounded-lg p-4">
-                            <div className="flex justify-between items-start">
-                                <h4 className="font-semibold text-blue-600 text-lg">{allergen.name}</h4>
-                                {!isPublicView && allergen.id && (<button onClick={() => onAdd(allergen.id!)} 
-                                    className="text-green-500 hover:text-green-700 text-sm font-medium">Add</button>
-                                )}
+                        {crossAllergens.map((allergen) => {
+                            const possibleSymptomNames = allergen.symptomsId.map((symptomID) => {
+                                const result = symptoms.find((a) => a.id === String(symptomID))
+                                return result ? result.name : ""
+                            })
+                            return <div key={allergen.id} className="border border-gray-200 rounded-lg p-4">
+                                <div className="flex justify-between items-start">
+                                    <h4 className="font-semibold text-blue-600 text-lg">{allergen.name}</h4>
+                                    {!isPublicView && allergen.id && (<button onClick={() => onAdd(allergen)} 
+                                        className="text-green-500 hover:text-green-700 text-sm font-medium">Add</button>
+                                    )}
+                                </div>
+                                <div className="mt-2 text-sm text-gray-600">
+                                    <p><strong className="font-medium text-gray-800">Possible symptoms:</strong> {possibleSymptomNames.join(', ')}</p>
+                                    <p className={isPublicView ? 'mt-1' : 'hidden'}><strong className="font-medium text-gray-800">Causes Symptom:</strong> {allergen.name}</p>
+                                </div>
                             </div>
-                            <div className="mt-2 text-sm text-gray-600">
-                                <p><strong className="font-medium text-gray-800">Symptoms:</strong> {allergen.symptomsId.join(', ')}</p>
-                                <p className={isPublicView ? 'mt-1' : 'hidden'}><strong className="font-medium text-gray-800">Causes Symptom:</strong> {allergen.name}</p>
-                                {/* <p className="mt-1"><strong className="font-medium text-gray-800">{isPublicView ? 'First Aid' : 'Treatment'}:</strong> {isPublicView ? allergen.firstAid : allergen.treatment}</p> */}
-                            </div>
-                        </div>)}
+                        }
+                        )}
                     </div>
                 </>
             ) : <p className="text-gray-500">No potential cross-allergens found.</p>}
@@ -245,7 +295,8 @@ const CrossAllergySection = ({ crossAllergens, isPublicView, onAdd}: { crossAlle
     );
 };
 
-// Section to Add Allergies (for Patient) with Autocomplete
+
+// AddAllergySection (No major changes needed)
 const AddAllergySection = ({ pap, allergens, onAdd }: { pap: PAP | null, allergens: Allergen[], onAdd: (allergen: Allergen) => void }) => {
     const [inputValue, setInputValue] = useState('');
     const [suggestions, setSuggestions] = useState<Allergen[]>([]);
@@ -283,7 +334,7 @@ const AddAllergySection = ({ pap, allergens, onAdd }: { pap: PAP | null, allerge
     };
 
     const handleSelectAllergy = (allergen: Allergen) => {
-        onAdd(allergen);
+        onAdd(allergen); // Trigger the modal in the parent
         setInputValue('');
         setSuggestions([]);
     };
@@ -320,34 +371,120 @@ const AddAllergySection = ({ pap, allergens, onAdd }: { pap: PAP | null, allerge
     );
 };
 
-const AllergenDetailsModal = ({ allergen, onClose, onAdd }: { allergen: Allergen, onClose: () => void, onAdd: (allergenId: string) => void }) => {
-    const handleAddClick = () => {
-        if (allergen.id) {
-            onAdd(allergen.id);
+const AddAllergyModal = ({ allergen, allSymptoms, onClose, onSubmit }: {
+    allergen: Allergen;
+    allSymptoms: Symptom[];
+    onClose: () => void;
+    onSubmit: (data: NewUserAllergyData) => void;
+}) => {
+    const [discoveryDate, setDiscoveryDate] = useState('');
+    const [discoveryMethod, setDiscoveryMethod] = useState<DiscoveryMethod>('Clinical symptoms');
+    const [selectedSymptomIds, setSelectedSymptomIds] = useState<string[]>([]);
+    const [error, setError] = useState<string | null>(null);
+
+    // Filter allSymptoms to only include those relevant to the current allergen
+    const relevantSymptoms = allSymptoms.filter(symptom => 
+        allergen.symptomsId.includes(symptom.id!)
+    );
+
+    const handleSymptomChange = (symptomId: string) => {
+        setSelectedSymptomIds(prev =>
+            prev.includes(symptomId)
+                ? prev.filter(id => id !== symptomId)
+                : [...prev, symptomId]
+        );
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        setError(null);
+
+        if (!discoveryDate || selectedSymptomIds.length === 0) {
+            setError("Please provide a discovery date and select at least one observed symptom.");
+            return;
         }
-        onClose();
+
+        const selectedSymptoms = allSymptoms.filter(s => selectedSymptomIds.includes(s.id!));
+        const maxSeverity = Math.max(...selectedSymptoms.map(s => s.severity), 1);
+        const discoveryTimestamp = Math.floor(new Date(discoveryDate).getTime() / 1000);
+
+        onSubmit({
+            allergenId: allergen.id!,
+            discoveryDate: discoveryTimestamp,
+            discoveryMethod,
+            symptomsId: selectedSymptomIds,
+            severity: maxSeverity,
+        });
     };
 
     return (
-        <div className="fixed inset-0 bg-gray-800/25 flex items-center justify-center z-50" onClick={onClose}>
-            <div className="bg-white p-8 rounded-lg shadow-2xl max-w-lg w-full" onClick={(e) => e.stopPropagation()}>
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-bold text-gray-800">{allergen.name}</h2>
-                    <button onClick={onClose} className="text-gray-500 hover:text-gray-700">&times;</button>
-                </div>
-                <div className="text-sm text-gray-600 space-y-2">
-                    <p><strong className="font-medium text-gray-800">Symptoms:</strong> {allergen.symptomsId.join(', ')}</p>
-                    <p><strong className="font-medium text-gray-800">Type:</strong> {allergen.type}</p>
-                    <p><strong className="font-medium text-gray-800">Description:</strong> {allergen.description}</p>
-                    <p><strong className="font-medium text-gray-800">Description:</strong> {allergen.description}</p>
-                </div>
-                <div className="mt-6 flex justify-end">
-                    <button onClick={handleAddClick} className="px-6 py-2 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">Add to My Profile</button>
-                </div>
+        <div className="fixed inset-0 bg-gray-800/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
+            <div className="bg-white p-8 rounded-xl shadow-2xl max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
+                <form onSubmit={handleSubmit}>
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-2xl font-bold text-gray-800">Add <span className="text-blue-600">{allergen.name}</span> to Profile</h2>
+                        <button type="button" onClick={onClose} className="text-gray-500 hover:text-gray-700 text-2xl font-bold">&times;</button>
+                    </div>
+                    
+                    <div className="space-y-6">
+                        {/* Discovery Info */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                             <div>
+                                <label htmlFor="discoveryDate" className="block text-sm font-medium text-gray-700 mb-1">Discovery Date</label>
+                                <input
+                                    id="discoveryDate"
+                                    type="date"
+                                    value={discoveryDate}
+                                    onChange={(e) => setDiscoveryDate(e.target.value)}
+                                    className="w-full p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="discoveryMethod" className="block text-sm font-medium text-gray-700 mb-1">Discovery Method</label>
+                                <select
+                                    id="discoveryMethod"
+                                    value={discoveryMethod}
+                                    onChange={(e) => setDiscoveryMethod(e.target.value as DiscoveryMethod)}
+                                    className="w-full p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                >
+                                    <option>Clinical symptoms</option>
+                                    <option>Paraclinical tests</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        {/* Symptom Selection */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Observed Symptoms</label>
+                            <div className="max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {relevantSymptoms.map(symptom => ( // Changed to iterate over relevantSymptoms
+                                    <div key={symptom.id} className="flex items-center">
+                                        <input
+                                            id={`symptom-${symptom.id}`}
+                                            type="checkbox"
+                                            checked={selectedSymptomIds.includes(symptom.id!)}
+                                            onChange={() => handleSymptomChange(symptom.id!)}
+                                            className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                        />
+                                        <label htmlFor={`symptom-${symptom.id}`} className="ml-3 text-sm text-gray-600">{symptom.name}</label>
+                                    </div>
+                                ))}
+                                {relevantSymptoms.length === 0 && (
+                                    <p className="text-gray-500 text-sm col-span-full">No potential symptoms are listed for this allergen.</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
+
+                    <div className="mt-8 flex justify-end space-x-4">
+                         <button type="button" onClick={onClose} className="px-6 py-2 font-semibold text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors">Cancel</button>
+                        <button type="submit" className="px-6 py-2 font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">Add to My Profile</button>
+                    </div>
+                </form>
             </div>
         </div>
     );
 };
-
-
-

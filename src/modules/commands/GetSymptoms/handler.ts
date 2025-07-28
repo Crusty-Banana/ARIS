@@ -40,6 +40,5 @@ export async function handler$GetSymptoms(
             ...doc,
         });
     });
-
     return { symptoms };
 }
