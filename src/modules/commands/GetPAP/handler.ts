@@ -32,6 +32,7 @@ export async function handler$GetPAP(
         })),
     });
 
+    console.log("hello");
     const resultAllergens = await db
         .collection("allergens")
         .find({

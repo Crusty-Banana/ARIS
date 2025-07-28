@@ -65,7 +65,7 @@ export function AddAllergenModal({
   }
 
   const handleSubmit = () => {
-    if (!selectedAllergen || selectedSymptoms.length === 0) return
+    if (!selectedAllergen) return
 
     onAddAllergen({
       allergenId: selectedAllergen.id,
@@ -206,7 +206,7 @@ export function AddAllergenModal({
         <div className="flex gap-2 pt-4 border-t">
           <Button
             onClick={handleSubmit}
-            disabled={!selectedAllergen || selectedSymptoms.length === 0}
+            disabled={!selectedAllergen}
             className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
           >
             Add Allergen

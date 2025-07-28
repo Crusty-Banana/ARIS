@@ -9,10 +9,10 @@ export type UnixTimestamp = z.infer<typeof UnixTimestamp>;
 export const Role = z.enum(["admin", "user"]).default("user");
 export type Role = z.infer<typeof Role>;
 
-export const DiscoveryMethod = z.enum(["Clinical symptoms", "Paraclinical tests", "Potential", ""]);
+export const DiscoveryMethod = z.enum(["Clinical symptoms", "Paraclinical tests", "Potential", ""]).default("");
 export type DiscoveryMethod = z.infer<typeof DiscoveryMethod>;
 
-export const Gender = z.enum(["male", "female", "other", ""]);
+export const Gender = z.enum(["male", "female", "other", ""]).default("");
 export type Gender = z.infer<typeof Gender>;
 
 export const User = z.object({
@@ -57,7 +57,7 @@ export const PAP = z.object({
                 allergenId: ObjectIdAsHexString,
                 discoveryDate: UnixTimestamp.nullable().default(null),
                 discoveryMethod: DiscoveryMethod,
-                symptomsId: z.array(ObjectIdAsHexString),
+                symptomsId: z.array(ObjectIdAsHexString).default([]),
             }),
         )
         .default([]),
