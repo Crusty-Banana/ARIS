@@ -69,22 +69,16 @@ export const Symptom = z.object({
 });
 export type Symptom = z.infer<typeof Symptom>;
 
-export type PAPAllergen = z.infer<typeof PAP>["allergens"][number];
-
-export const PersonalAllergen = Allergen.pick({
-    name: true,
-    symptomsId: true,
-    // treatment: true,
-    // firstAid: true,
-}).extend({ degree: z.number().min(1).max(5).optional() });
-
-export type PersonalAllergen = z.infer<typeof PersonalAllergen>;
-
-export const PublicPAP = PAP.pick({
-    doB: true,
-    gender: true,
-}).extend({
-    allergens: z.array(PersonalAllergen).nullable(),
-});
-
+export const PublicPAP = z.object({
+    id: ObjectIdAsHexString,
+    allergens: z
+        .array(
+            z.object({
+                allergenId: ObjectIdAsHexString,
+                severity: z.number().min(1).max(3),
+                symptomsId: z.array(ObjectIdAsHexString).min(1),
+            }),
+        )
+        .default([]),
+})
 export type PublicPAP = z.infer<typeof PublicPAP>;
