@@ -1,10 +1,9 @@
 "use client"
 
-import { use, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { SymptomDetailModal, AllergenDetailModal, AllergyDetailModal } from "@/components/detail-modals"
 import { SymptomList, AllergenList, AllergyList } from "@/components/item-lists"
-import { DataTables } from "@/components/data-tables"
 import { Allergen, Allergy, Symptom } from "@/modules/business-types"
 import { httpGet$GetSymptoms } from "@/modules/commands/GetSymptoms/fetcher"
 import { AddSymptom$Params } from "@/modules/commands/AddSymptom/typing"

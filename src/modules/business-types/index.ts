@@ -12,6 +12,9 @@ export type Role = z.infer<typeof Role>;
 export const DiscoveryMethod = z.enum(["Clinical symptoms", "Paraclinical tests", "Potential", ""]);
 export type DiscoveryMethod = z.infer<typeof DiscoveryMethod>;
 
+export const Gender = z.enum(["male", "female", "other", ""]);
+export type Gender = z.infer<typeof Gender>;
+
 export const User = z.object({
     id: ObjectIdAsHexString,
     firstName: z.string().min(1, "First name is required"),
@@ -46,7 +49,7 @@ export const PAP = z.object({
     userId: ObjectIdAsHexString,
     publicId: ObjectIdAsHexString.optional(),
     allowPublic: z.boolean(),
-    gender: z.enum(["male", "female", "other"]).nullable(),
+    gender: Gender,
     doB: UnixTimestamp.nullable().default(null),
     allergens: z
         .array(

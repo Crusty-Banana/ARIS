@@ -1,4 +1,4 @@
-import { DiscoveryMethod, ObjectIdAsHexString, UnixTimestamp } from "@/modules/business-types";
+import { DiscoveryMethod, Gender, ObjectIdAsHexString, UnixTimestamp } from "@/modules/business-types";
 import z from "zod";
 
 export const GetPAP$Params = z.object({
@@ -11,7 +11,7 @@ export const DisplayPAP = z.object({
     id: ObjectIdAsHexString,
     userId: ObjectIdAsHexString,
     publicId: ObjectIdAsHexString,
-    gender: z.enum(["male", "female", "other"]).nullable(),
+    gender: Gender,
     doB: UnixTimestamp.nullable(),
     allowPublic: z.boolean(),
     allergens: z.array(
@@ -34,6 +34,10 @@ export const DisplayPAP = z.object({
 })
 
 export type DisplayPAP = z.infer<typeof DisplayPAP>;
+
+export const DisplayPAPAllergen = DisplayPAP.shape.allergens.element;
+export type DisplayPAPAllergen = z.infer<typeof DisplayPAPAllergen>;
+
 
 export const GetPAP$Result = z.object({
     success: z.boolean(),

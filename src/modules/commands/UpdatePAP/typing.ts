@@ -1,10 +1,10 @@
-import { DiscoveryMethod, ObjectIdAsHexString, UnixTimestamp } from "@/modules/business-types";
+import { DiscoveryMethod, Gender, ObjectIdAsHexString, UnixTimestamp } from "@/modules/business-types";
 import z from "zod";
 
 export const UpdatePAP$Params = z.object({
     userId: ObjectIdAsHexString,
     allowPublic: z.boolean().optional(),
-    gender: z.enum(["male", "female", "other"]).nullable().optional(),
+    gender: Gender.optional(),
     doB: UnixTimestamp.nullable().optional(),
     allergens: z.array(
         z.object({

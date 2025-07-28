@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react';
 import AdminDashboard from './_components/AdminDashboard/page';
 import AuthPage from '@/components/authen-page';
+import UserDashboard from './_components/UserDashboard/page';
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -16,10 +17,8 @@ export default function Home() {
   }
 
   return (session?.user?.role === 'admin') ? (
-    <AdminDashboard/>
+    <AdminDashboard />
   ) : (
-    <div>
-        user dashboard
-    </div>
+    <UserDashboard />
   );
 }
