@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
         }
 
         const db = await getDb();
-        const pap = await handler$GetPAP(db, parsedBody.data);
+        const { pap } = await handler$GetPAP(db, parsedBody.data);
 
         if (!pap) {
             return NextResponse.json(
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
                 { status: 404 },
             );
         }
-        return NextResponse.json({ pap }, { status: 200 });
+        return NextResponse.json({ pap, message: "Personal Allergy Profile found" }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {
@@ -68,7 +68,7 @@ export async function PUT(req: NextRequest) {
 
         const db = await getDb();
 
-        const result = await handler$UpdatePAP(db, parsedBody.data);
+        const { result } = await handler$UpdatePAP(db, parsedBody.data);
 
         if (result.matchedCount === 0) {
             return NextResponse.json(

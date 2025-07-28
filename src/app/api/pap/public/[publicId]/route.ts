@@ -16,7 +16,7 @@ export async function GET(
         }
 
         const db = await getDb();
-        const publicPAP = await handler$GetPublicPAP(db, parsedBody.data);
+        const { publicPAP } = await handler$GetPublicPAP(db, parsedBody.data);
 
         if (!publicPAP) {
             return NextResponse.json(
@@ -25,7 +25,7 @@ export async function GET(
             );
         }
 
-        return NextResponse.json({ publicPAP }, { status: 200 });
+        return NextResponse.json({ publicPAP, message: "Public PAP found" }, { status: 200 });
     } catch (error) {
         if (error instanceof ZodError) {
             return NextResponse.json(

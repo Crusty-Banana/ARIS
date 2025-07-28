@@ -68,17 +68,3 @@ export const Symptom = z.object({
     treatment: z.string().default(""),
 });
 export type Symptom = z.infer<typeof Symptom>;
-
-export const PublicPAP = z.object({
-    id: ObjectIdAsHexString,
-    allergens: z
-        .array(
-            z.object({
-                allergenId: ObjectIdAsHexString,
-                severity: z.number().min(1).max(3),
-                symptomsId: z.array(ObjectIdAsHexString).min(1),
-            }),
-        )
-        .default([]),
-})
-export type PublicPAP = z.infer<typeof PublicPAP>;

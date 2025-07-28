@@ -6,6 +6,9 @@ export async function httpGet$GetPublicPAP(
     const response = await fetch(url);
     const text = await response.text();
     const data = JSON.parse(text);
-    const result = GetPublicPAP$Result.parse(data);
+    const result = GetPublicPAP$Result.parse({
+        ...data,
+        success: response.ok,
+    });
     return result;
 }

@@ -20,6 +20,6 @@ export async function handler$UpdatePAP(
             }
         }
     );
-    return result;
+    return { result };
 
 }
