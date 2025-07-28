@@ -160,11 +160,23 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
 
           <div>
             <label className="text-sm font-medium text-gray-700">Public Profile</label>
-            <div className="mt-1 p-2 bg-white rounded border flex items-center gap-2">
-              <Shield className="h-4 w-4 text-gray-400" />
-              <Badge variant={pAP.allowPublic ? "default" : "secondary"}>
-                {pAP.allowPublic ? "Public" : "Private"}
-              </Badge>
+            <div className="mt-1 p-2 bg-white rounded border flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Shield className="h-4 w-4 text-gray-400" />
+                <Badge variant={pAP.allowPublic ? "default" : "secondary"}>
+                  {pAP.allowPublic ? "Public" : "Private"}
+                </Badge>
+              </div>
+              {pAP.allowPublic && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.open(`/publicPAP/${pAP.publicId}`, "_blank")}
+                  className="ml-2 h-7 text-xs bg-transparent border-cyan-300 hover:bg-cyan-50"
+                >
+                  View Public Profile
+                </Button>
+              )}
             </div>
           </div>
         </CardContent>

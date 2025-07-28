@@ -29,7 +29,7 @@ export type PublicPAP = z.infer<typeof PublicPAP>
 
 export const GetPublicPAP$Result = z.object({
     success: z.boolean(),
-    message: z.string().optional(),
+    message: z.string(),
     publicPAP: PublicPAP.optional(),
 });
 
