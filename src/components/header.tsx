@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { signOut, useSession } from "next-auth/react"
 
 export default function Header() {
-    const { status } = useSession();
+  const { status } = useSession();
   const [language, setLanguage] = useState<"vi" | "en">("en")
 
   const toggleLanguage = () => {
