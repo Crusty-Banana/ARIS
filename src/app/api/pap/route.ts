@@ -25,15 +25,15 @@ export async function GET(req: NextRequest) {
         }
 
         const db = await getDb();
-        const pap = await handler$GetPAP(db, parsedBody.data);
+        const { PAP } = await handler$GetPAP(db, parsedBody.data);
 
-        if (!pap) {
+        if (!PAP) {
             return NextResponse.json(
                 { message: "Personal Allergy Profile not found" },
                 { status: 404 },
             );
         }
-        return NextResponse.json({ pap }, { status: 200 });
+        return NextResponse.json({ PAP, message: "Personal Allergy Profile found" }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {
@@ -58,7 +58,6 @@ export async function PUT(req: NextRequest) {
         const body = await req.json();
         const parsedBody = UpdatePAP$Params.safeParse({
             ...body,
-            ...(body.doB ? { doB: new Date(body.doB) } : {}),
             userId,
         });
 
@@ -68,7 +67,7 @@ export async function PUT(req: NextRequest) {
 
         const db = await getDb();
 
-        const result = await handler$UpdatePAP(db, parsedBody.data);
+        const { result } = await handler$UpdatePAP(db, parsedBody.data);
 
         if (result.matchedCount === 0) {
             return NextResponse.json(

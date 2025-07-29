@@ -15,7 +15,7 @@ export default function Header() {
   }
 
   return (
-    <header className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-4 shadow-lg">
+    <header className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-4 shadow-lg sticky top-0 z-10">
       <div className="flex items-center justify-between">
         {/* Left side - ARIS text */}
         <div className="text-white text-2xl font-bold">ARIS</div>

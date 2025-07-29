@@ -9,6 +9,12 @@ export type UnixTimestamp = z.infer<typeof UnixTimestamp>;
 export const Role = z.enum(["admin", "user"]).default("user");
 export type Role = z.infer<typeof Role>;
 
+export const DiscoveryMethod = z.enum(["Clinical symptoms", "Paraclinical tests", "Potential", ""]).default("");
+export type DiscoveryMethod = z.infer<typeof DiscoveryMethod>;
+
+export const Gender = z.enum(["male", "female", "other", ""]).default("");
+export type Gender = z.infer<typeof Gender>;
+
 export const User = z.object({
     id: ObjectIdAsHexString,
     firstName: z.string().min(1, "First name is required"),
@@ -43,16 +49,15 @@ export const PAP = z.object({
     userId: ObjectIdAsHexString,
     publicId: ObjectIdAsHexString.optional(),
     allowPublic: z.boolean(),
-    gender: z.enum(["male", "female", "other"]).nullable(),
-    doB: z.date().nullable().default(null),
+    gender: Gender,
+    doB: UnixTimestamp.nullable().default(null),
     allergens: z
         .array(
             z.object({
                 allergenId: ObjectIdAsHexString,
-                discoveryDate: UnixTimestamp,
-                discoveryMethod: z.enum(["Clinical symptoms", "Paraclinical tests"]),
-                severity: z.number().min(1).max(3),
-                symptomsId: z.array(ObjectIdAsHexString).min(1),
+                discoveryDate: UnixTimestamp.nullable().default(null),
+                discoveryMethod: DiscoveryMethod,
+                symptomsId: z.array(ObjectIdAsHexString).default([]),
             }),
         )
         .default([]),
@@ -68,23 +73,3 @@ export const Symptom = z.object({
     treatment: z.string().default(""),
 });
 export type Symptom = z.infer<typeof Symptom>;
-
-export type PAPAllergen = z.infer<typeof PAP>["allergens"][number];
-
-export const PersonalAllergen = Allergen.pick({
-    name: true,
-    symptomsId: true,
-    // treatment: true,
-    // firstAid: true,
-}).extend({ degree: z.number().min(1).max(5).optional() });
-
-export type PersonalAllergen = z.infer<typeof PersonalAllergen>;
-
-export const PublicPAP = PAP.pick({
-    doB: true,
-    gender: true,
-}).extend({
-    allergens: z.array(PersonalAllergen).nullable(),
-});
-
-export type PublicPAP = z.infer<typeof PublicPAP>;

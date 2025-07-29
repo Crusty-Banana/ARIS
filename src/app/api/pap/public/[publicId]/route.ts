@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ZodError } from "zod";
 import { getDb } from "@/modules/mongodb";
 import { handler$GetPublicPAP } from "@/modules/commands/GetPublicPAP/handler";
 import { GetPublicPAP$Params } from "@/modules/commands/GetPublicPAP/typing";
@@ -12,11 +11,11 @@ export async function GET(
         const { publicId } = await params;
         const parsedBody = GetPublicPAP$Params.safeParse({ publicId });
         if (!parsedBody.success) {
-            return NextResponse.json({ error: parsedBody.error.message || "invalid params" }, { status: 400 });
+            return NextResponse.json({ message: parsedBody.error.message || "invalid params" }, { status: 400 });
         }
 
         const db = await getDb();
-        const publicPAP = await handler$GetPublicPAP(db, parsedBody.data);
+        const { publicPAP } = await handler$GetPublicPAP(db, parsedBody.data);
 
         if (!publicPAP) {
             return NextResponse.json(
@@ -25,14 +24,8 @@ export async function GET(
             );
         }
 
-        return NextResponse.json({ publicPAP }, { status: 200 });
+        return NextResponse.json({ publicPAP, message: "Public PAP found" }, { status: 200 });
     } catch (error) {
-        if (error instanceof ZodError) {
-            return NextResponse.json(
-                { message: "Invalid request body", errors: error.errors },
-                { status: 400 },
-            );
-        }
         let message = "An error occurred";
         if (error instanceof Error) {
             message += `: ${error.message}`;

@@ -1,7 +1,6 @@
 import { Db, ObjectId } from "mongodb";
-import { GetPAP$Params } from "./typing";
-import { PAP, ObjectIdAsHexString, UnixTimestamp } from "@/modules/business-types";
-import { z } from "zod";
+import { DisplayPAP, GetPAP$Params } from "./typing";
+import { PAP, UnixTimestamp, Allergen, Symptom } from "@/modules/business-types";
 
 
 export async function handler$GetPAP(
@@ -9,29 +8,110 @@ export async function handler$GetPAP(
     params: GetPAP$Params
 ) {
     const { userId } = params;
-    const result = await db.collection("paps").findOne({ userId: new ObjectId(userId) });
+    const resultPap = await db.collection("paps").findOne({ userId: new ObjectId(userId) });
 
-    if (!result) {
-        return null;
+    if (!resultPap) {
+        return { publicPap: resultPap };
     }
+
     const pap = PAP.parse({
-        ...result,
-        id: result._id.toHexString(),
-        userId: result.userId.toHexString(),
-        publicId: result.publicId ? result.publicId.toHexString() : null,
-        allergens: result.allergens.map((allergen: {
-                        allergenId: ObjectId,
-                        discoveryDate: UnixTimestamp,
-                        discoveryMethod: String,
-                        severity: number,
-                        symptomsId: Array<String>,
-                    }) => ({
+        ...resultPap,
+        id: resultPap._id.toHexString(),
+        userId: resultPap.userId.toHexString(),
+        publicId: resultPap.publicId ? resultPap.publicId.toHexString() : null,
+        allergens: resultPap.allergens.map((allergen: {
+            allergenId: ObjectId,
+            discoveryDate: UnixTimestamp | null,
+            discoveryMethod: string,
+            symptomsId: ObjectId[],
+        }) => ({
             allergenId: allergen.allergenId.toHexString(),
-            severity: allergen.severity,
             discoveryDate: allergen.discoveryDate,
             discoveryMethod: allergen.discoveryMethod,
-            symptomsId: allergen.symptomsId,
+            symptomsId: allergen.symptomsId.map((symptomId: ObjectId) => symptomId.toHexString()),
         })),
     });
-    return pap;
+
+    console.log("hello");
+    const resultAllergens = await db
+        .collection("allergens")
+        .find({
+            _id: {
+                $in: pap.allergens.map(allergen => new ObjectId(allergen.allergenId)),
+            },
+        })
+        .toArray();
+
+    const allergens = resultAllergens.map((allergen) => {
+        return Allergen.parse({
+            ...allergen,
+            id: allergen._id.toHexString(),
+        });
+    })
+
+    const resultSymptoms = await db
+        .collection("symptoms")
+        .find({
+            _id: {
+                $in: pap.allergens.flatMap(allergen => allergen.symptomsId).map(symptomId => new ObjectId(symptomId)),
+            },
+        })
+        .toArray();
+
+    const symptoms = resultSymptoms.map((symptom) => {
+        return Symptom.parse({
+            ...symptom,
+            id: symptom._id.toHexString(),
+        });
+    })
+
+    const populatedAllergens = pap.allergens.map(
+        (userAllergen) => {
+            const allergenDetails = allergens.find(
+                (allergen) =>
+                    allergen.id === userAllergen.allergenId,
+            );
+
+            if (!allergenDetails) {
+                throw new Error("Allergen not found");
+            }
+
+            let allergenSeverity = 1;
+            const populatedSymptoms = userAllergen.symptomsId.map(
+                (symptomId) => {
+                    const symptomDetails = symptoms.find(
+                        (symptom) =>
+                            symptom.id === symptomId,
+                    );
+
+                    if (!symptomDetails) {
+                        throw new Error("Symptom not found");
+                    }
+                    allergenSeverity = Math.max(allergenSeverity, symptomDetails.severity);
+                    return {
+                        symptomId: symptomDetails.id,
+                        name: symptomDetails.name,
+                        severity: symptomDetails.severity,
+                        prevalence: symptomDetails.prevalence,
+                        treatment: symptomDetails.treatment
+                    };
+                }
+            );
+            return {
+                allergenId: userAllergen.allergenId,
+                discoveryDate: userAllergen.discoveryDate,
+                discoveryMethod: userAllergen.discoveryMethod,
+                name: allergenDetails.name,
+                type: allergenDetails.type,
+                severity: allergenSeverity,
+                symptoms: populatedSymptoms,
+            };
+        },
+    );
+
+    const displayPAP = DisplayPAP.parse({
+        ...pap,
+        allergens: populatedAllergens,
+    });
+    return { PAP: displayPAP };
 }

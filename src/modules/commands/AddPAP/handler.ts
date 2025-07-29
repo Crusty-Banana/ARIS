@@ -10,7 +10,7 @@ export async function handler$AddPAP(
         userId: new ObjectId(userId),
         publicId: new ObjectId(),
         allowPublic: true,
-        gender: null,
+        gender: "",
         doB: null,
         allergens: [],
     });

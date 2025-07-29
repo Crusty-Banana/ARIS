@@ -38,5 +38,5 @@ export async function handler$GetCrossAllergenFromAllergenID(
         });
     });
 
-    return allergens;
+    return { crossAllergens: allergens };
 }
