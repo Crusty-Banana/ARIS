@@ -152,7 +152,7 @@ export function AddAllergenModal({
                   </div>
                 </div>
 
-                <div>
+                {/* <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Personal Severity (1-3)</label>
                   <Select value={severity.toString()} onValueChange={(value) => setSeverity(Number.parseInt(value))}>
                     <SelectTrigger className="border-cyan-300 focus:border-cyan-500">
@@ -164,7 +164,7 @@ export function AddAllergenModal({
                       <SelectItem value="3">3 - Severe</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
+                </div> */}
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Discovery Date</label>
@@ -185,6 +185,7 @@ export function AddAllergenModal({
                     <SelectContent>
                       <SelectItem value="Clinical symptoms">Clinical symptoms</SelectItem>
                       <SelectItem value="Paraclinical tests">Paraclinical tests</SelectItem>
+                      <SelectItem value="Paraclinical tests">Potential</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
