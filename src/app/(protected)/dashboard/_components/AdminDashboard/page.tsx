@@ -26,8 +26,10 @@ import { httpDelete$DeleteAllergy } from "@/modules/commands/DeleteAllergy/fetch
 import { SymptomModal } from "@/components/symptom-modal"
 import { AllergenModal } from "@/components/allergen-modal"
 import { AllergyModal } from "@/components/allergy-modal"
+import { useRouter } from "next/navigation"
 
 export default function AdminDashboard() {
+
   const [symptoms, setSymptoms] = useState<Symptom[]>([])
 
   const [allergens, setAllergens] = useState<Allergen[]>([])
