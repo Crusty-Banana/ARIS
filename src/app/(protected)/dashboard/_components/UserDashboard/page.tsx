@@ -108,7 +108,7 @@ export default function UserDashboard() {
     fetchAllergies();
     fetchAllergens();
     fetchPotentialCrossAllergens();
-  }, [])
+  })
 
 
   return (

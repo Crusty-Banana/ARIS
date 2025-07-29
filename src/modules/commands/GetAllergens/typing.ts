@@ -12,7 +12,7 @@ export type GetAllergens$Params = z.infer<typeof GetAllergens$Params>;
 export const GetAllergens$Result = z.object({
     success: z.boolean(),
     message: z.string(),
-    allergens: z.array(Allergen)
+    allergens: z.array(Allergen).optional()
 });
 
 export type GetAllergens$Result = z.infer<typeof GetAllergens$Result>;

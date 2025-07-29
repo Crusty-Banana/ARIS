@@ -89,7 +89,10 @@ export function ScrollableSelect<T>({
               const isSelected = selectedItems.includes(itemId)
               return (
                 <div key={itemId} className="flex items-center space-x-2 p-2 hover:bg-cyan-50 rounded">
-                  <Checkbox id={itemId} checked={isSelected} onCheckedChange={(checked) => toggleItem(itemId)} />
+                  <Checkbox id={itemId} checked={isSelected} onCheckedChange={(checked) => {
+                    console.log(checked);
+                    toggleItem(itemId);
+                  }} />
                   <label htmlFor={itemId} className="text-sm cursor-pointer flex-1">
                     {getItemLabel(item)}
                   </label>

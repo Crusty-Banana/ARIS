@@ -48,7 +48,6 @@ async function connect(uri: string): Promise<MongoClient> {
     };
     setData(data);
     // run initialize database
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const db = (await data.clientPromise).db(SERVER_ENV.MONGODB_DBNAME);
     await initializeIndices(db);
     return await data.clientPromise;
@@ -86,5 +85,6 @@ export async function getDb(): Promise<Db> {
 }
 
 export async function initializeIndices(db: Db) {
+    if (db) { }
     // TODO: handle db
 }
