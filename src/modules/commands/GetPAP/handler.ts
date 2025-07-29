@@ -85,7 +85,7 @@ export async function handler$GetPAP(
                     );
 
                     if (!symptomDetails) {
-                        throw new Error("Symptom not found");
+                        throw new Error(`Symptom not found ${symptomId}`);
                     }
                     allergenSeverity = Math.max(allergenSeverity, symptomDetails.severity);
                     return {

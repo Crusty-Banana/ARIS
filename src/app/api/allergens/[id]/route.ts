@@ -56,6 +56,7 @@ export async function PUT(
         const { id } = await params;
 
         const body = await req.json();
+        console.log(body);
         const parsedBody = UpdateAllergen$Params.safeParse({ ...body, id });
         if (!parsedBody.success) {
             return NextResponse.json({ message: parsedBody.error.message || "invalid params" }, { status: 400 });
@@ -63,6 +64,7 @@ export async function PUT(
 
         const db = await getDb();
 
+        console.log(parsedBody.data);
         const { result } = await handler$UpdateAllergen(db, parsedBody.data);
 
         if (result.modifiedCount != 1) {

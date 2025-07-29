@@ -42,6 +42,7 @@ export function SymptomDetailModal({ symptom, open, onClose, onUpdate, onDelete 
       onUpdate(editData)
       setIsEditing(false)
       setEditData(null)
+      onClose()
     }
   }
 
@@ -203,6 +204,7 @@ export function AllergenDetailModal({
       onUpdate(editData)
       setIsEditing(false)
       setEditData(null)
+      onClose()
     }
   }
 
@@ -389,6 +391,7 @@ export function AllergyDetailModal({ allergy, allergens, open, onClose, onUpdate
       onUpdate(editData)
       setIsEditing(false)
       setEditData(null)
+      onClose()
     }
   }
 

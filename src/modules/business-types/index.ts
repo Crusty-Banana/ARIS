@@ -30,7 +30,7 @@ export const Allergen = z.object({
     id: ObjectIdAsHexString,
     type: z.enum(["food", "drug", "respiratory"]),
     name: z.string().min(1, "Allergen name is required"),
-    symptomsId: z.array(ObjectIdAsHexString).min(1, "At least one symptom is required"),
+    symptomsId: z.array(ObjectIdAsHexString),
     prevalence: z.number().min(1).max(5).default(1),
     description: z.string().default(""),
 });

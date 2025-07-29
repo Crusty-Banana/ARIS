@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { WikiSymptomList, WikiAllergenList, WikiAllergyList } from "./_components/wiki-lists"
 import { DisplayPAP } from "@/modules/commands/GetPAP/typing"
@@ -67,7 +67,7 @@ export default function UserDashboard() {
     }
   }
     
-  const fetchPAP = async () => {
+  const fetchPAP = useCallback(async () => {
     const data = await httpGet$GetPAP('api/pap');
     if (data.success) {
       setPAP(data.PAP!);
@@ -75,7 +75,7 @@ export default function UserDashboard() {
     } else {
       console.error(data.message);
     }
-  }
+  }, [])
   const handleProfileUpdate = async (updateData: UpdatePAPFetcher$Params) => {
     const data = await httpPut$UpdatePAP('/api/pap', updateData);
     if (data.success) {
@@ -107,8 +107,7 @@ export default function UserDashboard() {
     fetchSymptoms();
     fetchAllergies();
     fetchAllergens();
-    fetchPotentialCrossAllergens();
-  })
+  }, [fetchPAP])
 
 
   return (
