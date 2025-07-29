@@ -112,29 +112,32 @@ export default function UserDashboard() {
 
   return (
     <div className="flex-grow bg-gradient-to-br from-cyan-100 via-blue-50 to-blue-100">
-      <div className="container mx-auto p-6">
+      {/* RESPONSIVE CHANGE: Page padding smaller on mobile (p-4)*/}
+      <div className="container mx-auto p-4 md:p-6">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-800 mb-2 pb-1">
+          {/* RESPONSIVE CHANGE: Heading font size smaller on mobile*/}
+          <h1 className="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-800 mb-2 pb-1">
             User Dashboard
           </h1>
           <p className="text-gray-600">Manage your personal allergy profile and explore the allergy wiki</p>
         </div>
 
         <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 bg-white/50 backdrop-blur-sm">
+          <TabsList className="grid w-full grid-cols-2 bg-white/50 backdrop-blur-sm p-1 rounded-lg min-h-[56px] md:min-h-0">
             <TabsTrigger
               value="profile"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-600 data-[state=active]:text-white"
+              className="py-3 md:py-0 data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-600 data-[state=active]:text-white rounded-md"
             >
               Personal Allergy Profile
             </TabsTrigger>
             <TabsTrigger
               value="wiki"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-600 data-[state=active]:text-white"
+              className="py-3 md:py-0 data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-600 data-[state=active]:text-white rounded-md"
             >
               Allergy Wiki
             </TabsTrigger>
           </TabsList>
+
 
           <TabsContent value="profile">
             <PersonalAllergyProfile pAP={pAP} availableSymptoms={symptoms} potentialCrossAllergens={potentialCrossAllergens} availableAllergens={availableAllergens} onUpdate={handleProfileUpdate} />
@@ -147,7 +150,8 @@ export default function UserDashboard() {
             </div>
 
             <Tabs defaultValue="wiki-symptoms" className="space-y-4">
-              <TabsList className="bg-white/30">
+              {/* RESPONSIVE CHANGE: TabsList will wrap onto the next line on small screens */}
+              <TabsList className="h-auto flex flex-wrap justify-start bg-white/30 rounded-lg">
                 <TabsTrigger value="wiki-symptoms">Symptoms</TabsTrigger>
                 <TabsTrigger value="wiki-allergens">Allergens</TabsTrigger>
                 <TabsTrigger value="wiki-allergies">Allergies</TabsTrigger>

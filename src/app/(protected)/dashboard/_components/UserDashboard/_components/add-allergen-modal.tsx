@@ -95,12 +95,14 @@ export function AddAllergenModal({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh]">
+      <DialogContent className="max-w-3xl md:max-w-4xl lg:max-w-5xl max-h-[90vh]"> 
+        {/* Bigger screen */}
         <DialogHeader>
           <DialogTitle className="text-cyan-800">Add New Allergen</DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto">
+        {/* RESPONSIVE CHANGE: grid-cols-1 on mobile, grid-cols-2 on medium screens+ */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto">
           {/* Left Column - Allergen Selection */}
           <div className="space-y-4">
             <div>
@@ -117,26 +119,28 @@ export function AddAllergenModal({
             </div>
 
             <div className="border border-cyan-200 rounded-md max-h-64 overflow-y-auto">
-              {filteredAllergens.map((allergen) => (
-                <div
-                  key={allergen.id}
-                  className={`p-3 cursor-pointer hover:bg-cyan-50 border-b border-cyan-100 last:border-b-0 ${
-                    selectedAllergen?.id === allergen.id ? "bg-cyan-100" : ""
-                  }`}
-                  onClick={() => handleAllergenSelect(allergen)}
-                >
-                  <div className="font-medium text-cyan-800">{allergen.name}</div>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Badge className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}>
-                      {allergen.type}
-                    </Badge>
-                    <span className="text-xs text-gray-500">{allergen.symptomsId.length} symptoms</span>
+              {filteredAllergens.length > 0 ? (
+                filteredAllergens.map((allergen) => (
+                  <div
+                    key={allergen.id}
+                    className={`p-3 cursor-pointer hover:bg-cyan-50 border-b border-cyan-100 last:border-b-0 ${
+                      selectedAllergen?.id === allergen.id ? "bg-cyan-100" : ""
+                    }`}
+                    onClick={() => handleAllergenSelect(allergen)}
+                  >
+                    <div className="font-medium text-cyan-800">{allergen.name}</div>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Badge className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}>
+                        {allergen.type}
+                      </Badge>
+                      <span className="text-xs text-gray-500">{allergen.symptomsId.length} symptoms</span>
+                    </div>
                   </div>
-                </div>
-              ))}
-              {filteredAllergens.length === 0 && (
+                ))
+              ) : (
                 <div className="p-4 text-center text-gray-500">No allergens found</div>
               )}
+              {/* Fix because last method was troll */}
             </div>
           </div>
 
@@ -178,14 +182,18 @@ export function AddAllergenModal({
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Discovery Method</label>
-                  <Select value={discoveryMethod} onValueChange={(value) => setDiscoveryMethod(value as DiscoveryMethod)}>
+                  <Select
+                    value={discoveryMethod}
+                    onValueChange={(value: DiscoveryMethod) => setDiscoveryMethod(value as DiscoveryMethod)}
+                  >
                     <SelectTrigger className="border-cyan-300 focus:border-cyan-500">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Clinical symptoms">Clinical symptoms</SelectItem>
                       <SelectItem value="Paraclinical tests">Paraclinical tests</SelectItem>
-                      <SelectItem value="Paraclinical tests">Potential</SelectItem>
+                      {/* BUG FIX */}
+                      <SelectItem value="Potential">Potential</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
