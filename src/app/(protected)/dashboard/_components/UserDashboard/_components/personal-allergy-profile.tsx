@@ -1,6 +1,6 @@
 "use client"
 
-import {  useState } from "react"
+import {  useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -35,6 +35,14 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
     doB: pAP.doB,
     allowPublic: pAP.allowPublic,
   })
+
+  useEffect(() => {
+    setProfileData({
+      gender: pAP.gender,
+      doB: pAP.doB,
+      allowPublic: pAP.allowPublic,
+    });
+  }, [pAP]);
 
   const formatDate = (timestamp: number | null) => {
     if (!timestamp) return "Not specified"
@@ -78,7 +86,13 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
   }
 
   const handleAllergenUpdate = (allergenId: ObjectIdAsHexString, updates: Omit<UpdatePAPAllergen$Params, "allergenId">) => {
-    const allergensUpdate = pAP.allergens.map((allergen) => {
+    const pAPAllergens = pAP.allergens.map((allergen) => ({
+      allergenId: allergen.allergenId,
+      discoveryMethod: allergen.discoveryMethod,
+      discoveryDate: allergen.discoveryDate,
+      symptomsId: allergen.symptoms.map((symptom) => symptom.symptomId),
+    }))
+    const allergensUpdate = pAPAllergens.map((allergen) => {
       if (allergen.allergenId === allergenId) {
         return {
           ...allergen,
@@ -108,14 +122,20 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
   const handleQuickAddAllergen = (allergen: Allergen) => {
     handleAddAllergen({
       allergenId: allergen.id,
-      discoveryMethod: "" as DiscoveryMethod,
+      discoveryMethod: "Potential" as DiscoveryMethod,
       symptomsId: [],
     })
   }
 
   const handleDeleteAllergen = (allergenId: string) => {
     if (confirm("Are you sure you want to remove this allergen from your profile?")) {
-      const updatedAllergens = pAP.allergens.filter((allergen) => allergen.allergenId !== allergenId)
+      const pAPAllergens = pAP.allergens.map((allergen) => ({
+        allergenId: allergen.allergenId,
+        discoveryMethod: allergen.discoveryMethod,
+        discoveryDate: allergen.discoveryDate,
+        symptomsId: allergen.symptoms.map((symptom) => symptom.symptomId),
+      }))
+      const updatedAllergens = pAPAllergens.filter((allergen) => allergen.allergenId !== allergenId)
       onUpdate({ allergens: updatedAllergens })
     }
   }

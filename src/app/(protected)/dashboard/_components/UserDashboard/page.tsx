@@ -71,6 +71,7 @@ export default function UserDashboard() {
     const data = await httpGet$GetPAP('api/pap');
     if (data.success) {
       setPAP(data.PAP!);
+      fetchPotentialCrossAllergens();
     } else {
       console.error(data.message);
     }
