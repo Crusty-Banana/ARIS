@@ -63,7 +63,7 @@ export function WikiSymptomList({ symptoms }: WikiSymptomListProps) {
                 className="pl-10 border-cyan-300 focus:border-cyan-500"
               />
             </div>
-            <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
+            <Select value={sortBy} onValueChange={(value: SortOption) => setSortBy(value as SortOption)}>
               <SelectTrigger className="w-40 border-cyan-300 focus:border-cyan-500">
                 <SelectValue />
               </SelectTrigger>
@@ -238,7 +238,7 @@ export function WikiAllergenList({ allergens, symptoms, onQuickAdd, userAllergen
                 <SelectItem value="respiratory">Respiratory</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
+            <Select value={sortBy} onValueChange={(value: SortOption) => setSortBy(value as SortOption)}>
               <SelectTrigger className="w-40 border-cyan-300 focus:border-cyan-500">
                 <SelectValue />
               </SelectTrigger>
