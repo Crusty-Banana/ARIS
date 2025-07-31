@@ -24,15 +24,17 @@ export async function handler$GetPAP(
             discoveryDate: UnixTimestamp | null,
             discoveryMethod: string,
             symptomsId: ObjectId[],
+            underlyingMedCon: String[] | null
         }) => ({
             allergenId: allergen.allergenId.toHexString(),
             discoveryDate: allergen.discoveryDate,
             discoveryMethod: allergen.discoveryMethod,
             symptomsId: allergen.symptomsId.map((symptomId: ObjectId) => symptomId.toHexString()),
+            underlyingMedCon: allergen.underlyingMedCon
         })),
     });
 
-    console.log("hello");
+
     const resultAllergens = await db
         .collection("allergens")
         .find({
@@ -101,6 +103,7 @@ export async function handler$GetPAP(
                 allergenId: userAllergen.allergenId,
                 discoveryDate: userAllergen.discoveryDate,
                 discoveryMethod: userAllergen.discoveryMethod,
+                underlyingMedCon: userAllergen.underlyingMedCon,
                 name: allergenDetails.name,
                 type: allergenDetails.type,
                 severity: allergenSeverity,
@@ -113,5 +116,7 @@ export async function handler$GetPAP(
         ...pap,
         allergens: populatedAllergens,
     });
+
+    console.log(populatedAllergens)
     return { PAP: displayPAP };
 }

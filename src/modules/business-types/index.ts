@@ -58,6 +58,7 @@ export const PAP = z.object({
                 discoveryDate: UnixTimestamp.nullable().default(null),
                 discoveryMethod: DiscoveryMethod,
                 symptomsId: z.array(ObjectIdAsHexString).default([]),
+                underlyingMedCon: z.array(z.string()).default([])
             }),
         )
         .default([]),

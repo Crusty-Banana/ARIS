@@ -22,6 +22,7 @@ export const DisplayPAP = z.object({
             type: z.enum(["food", "drug", "respiratory"]),
             discoveryDate: UnixTimestamp.nullable(),
             discoveryMethod: DiscoveryMethod,
+            underlyingMedCon: z.array(z.string()).default([]),
             symptoms: z.array(z.object({
                 symptomId: ObjectIdAsHexString,
                 name: z.string(),

@@ -90,6 +90,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
       allergenId: allergen.allergenId,
       discoveryMethod: allergen.discoveryMethod,
       discoveryDate: allergen.discoveryDate,
+      underlyingMedCon: allergen.underlyingMedCon,
       symptomsId: allergen.symptoms.map((symptom) => symptom.symptomId),
     }))
     const allergensUpdate = pAPAllergens.map((allergen) => {
@@ -113,6 +114,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
         allergenId: allergen.allergenId,
         discoveryDate: allergen.discoveryDate,
         discoveryMethod: allergen.discoveryMethod,
+        underlyingMedCon: allergen.underlyingMedCon,
         symptomsId: allergen.symptoms.map(symptom => symptom.symptomId),
         })), allergenData]
   
@@ -124,6 +126,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
       allergenId: allergen.id,
       discoveryMethod: "Potential" as DiscoveryMethod,
       symptomsId: [],
+      underlyingMedCon: []
     })
   }
 
@@ -133,6 +136,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
         allergenId: allergen.allergenId,
         discoveryMethod: allergen.discoveryMethod,
         discoveryDate: allergen.discoveryDate,
+        underlyingMedCon: allergen.underlyingMedCon,
         symptomsId: allergen.symptoms.map((symptom) => symptom.symptomId),
       }))
       const updatedAllergens = pAPAllergens.filter((allergen) => allergen.allergenId !== allergenId)
