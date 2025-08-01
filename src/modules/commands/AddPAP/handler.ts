@@ -12,6 +12,7 @@ export async function handler$AddPAP(
         allowPublic: true,
         gender: "",
         doB: null,
+        underlyingMedCon: [],
         allergens: [],
     });
 }

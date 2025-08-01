@@ -19,6 +19,7 @@ export async function handler$GetPAP(
         id: resultPap._id.toHexString(),
         userId: resultPap.userId.toHexString(),
         publicId: resultPap.publicId ? resultPap.publicId.toHexString() : null,
+        underlyingMedCon: resultPap.underlyingMedCon,
         allergens: resultPap.allergens.map((allergen: {
             allergenId: ObjectId,
             discoveryDate: UnixTimestamp | null,
@@ -32,7 +33,7 @@ export async function handler$GetPAP(
         })),
     });
 
-    console.log("hello");
+
     const resultAllergens = await db
         .collection("allergens")
         .find({
@@ -113,5 +114,7 @@ export async function handler$GetPAP(
         ...pap,
         allergens: populatedAllergens,
     });
+
+    // console.log(populatedAllergens)
     return { PAP: displayPAP };
 }
