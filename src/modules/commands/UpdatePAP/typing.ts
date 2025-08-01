@@ -6,12 +6,13 @@ export const UpdatePAP$Params = z.object({
     allowPublic: z.boolean().optional(),
     gender: Gender.optional(),
     doB: UnixTimestamp.nullable().optional(),
+    underlyingMedCon: z.array(z.string()).optional(),
     allergens: z.array(
         z.object({
             allergenId: ObjectIdAsHexString,
             discoveryDate: UnixTimestamp.nullable().optional(),
             discoveryMethod: DiscoveryMethod.optional(),
-            underlyingMedCon: z.array(z.string()).optional(),
+            
             symptomsId: z.array(ObjectIdAsHexString).optional(),
         }),
     ).optional(),

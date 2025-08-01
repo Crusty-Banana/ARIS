@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Edit, Calendar, User, Shield, AlertTriangle, Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react"
+import { Edit, Calendar, User, Shield, AlertTriangle, Plus, Trash2, ChevronDown, ChevronUp, ClipboardList } from "lucide-react"
 import { ScrollableSelect } from "@/components/scrollable-select"
 import { AddAllergenModal } from "./add-allergen-modal"
 import { PotentialCrossAllergens } from "./potential-cross-allergens"
@@ -90,7 +90,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
       allergenId: allergen.allergenId,
       discoveryMethod: allergen.discoveryMethod,
       discoveryDate: allergen.discoveryDate,
-      underlyingMedCon: allergen.underlyingMedCon,
       symptomsId: allergen.symptoms.map((symptom) => symptom.symptomId),
     }))
     const allergensUpdate = pAPAllergens.map((allergen) => {
@@ -114,7 +113,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
         allergenId: allergen.allergenId,
         discoveryDate: allergen.discoveryDate,
         discoveryMethod: allergen.discoveryMethod,
-        underlyingMedCon: allergen.underlyingMedCon,
         symptomsId: allergen.symptoms.map(symptom => symptom.symptomId),
         })), allergenData]
   
@@ -126,7 +124,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
       allergenId: allergen.id,
       discoveryMethod: "Potential" as DiscoveryMethod,
       symptomsId: [],
-      underlyingMedCon: []
     })
   }
 
@@ -136,7 +133,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
         allergenId: allergen.allergenId,
         discoveryMethod: allergen.discoveryMethod,
         discoveryDate: allergen.discoveryDate,
-        underlyingMedCon: allergen.underlyingMedCon,
         symptomsId: allergen.symptoms.map((symptom) => symptom.symptomId),
       }))
       const updatedAllergens = pAPAllergens.filter((allergen) => allergen.allergenId !== allergenId)
@@ -183,8 +179,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
               Edit
             </Button>
           </div>
-
-          
         </CardTitle>
       </CardHeader>
 
@@ -261,7 +255,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                     key={allergen.allergenId}
                     className="bg-white/70 backdrop-blur-sm p-4 rounded-lg border border-cyan-200"
                   >
-                    {/* RESPONSIVE CHANGE: Stacks vertically on mobile */}
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-3">
                       <div className="flex-1">
                         <div className="flex items-center flex-wrap gap-2 mb-2">
@@ -306,7 +299,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                       </div>
                     </div>
 
-                    {/* Enhanced Symptom Display */}
                     <div>
                       <span className="text-sm font-medium text-gray-700 block mb-3">Associated Symptoms:</span>
                       <div className="space-y-3">
@@ -315,7 +307,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                             key={symptom.symptomId}
                             className="bg-gradient-to-r from-blue-50 to-indigo-50 p-3 rounded-lg border border-blue-200"
                           >
-                            {/* RESPONSIVE CHANGE: Stacks vertically on mobile */}
                             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2 gap-2">
                               <h4 className="font-medium text-blue-800">{symptom.name}</h4>
                               <div className="flex gap-1 flex-shrink-0">
@@ -372,6 +363,13 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
             userAllergenIds={pAP.allergens.map((a) => a.allergenId)}
             onQuickAdd={handleQuickAddAllergen}
           />
+          
+          {/* UPDATED: Calling the new component */}
+          <UnderlyingMedicalConditionsCard 
+            conditions={pAP.underlyingMedCon}
+            onUpdate={(updatedConditions) => onUpdate({ underlyingMedCon: updatedConditions })}
+          />
+
         </div>
       </div>
 
@@ -452,7 +450,75 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
   )
 }
 
-// (The AllergenEditModal component is unchanged as its layout is already responsive)
+//UnderlyingMedicalConditions section
+interface UnderlyingMedicalConditionsCardProps {
+    conditions: string[];
+    onUpdate: (newConditions: string[]) => void;
+}
+
+function UnderlyingMedicalConditionsCard({ conditions, onUpdate }: UnderlyingMedicalConditionsCardProps) {
+    const [newCondition, setNewCondition] = useState("");
+
+    const handleAddCondition = () => {
+        if (newCondition.trim() === "") return;
+        const updatedConditions = [...(conditions || []), newCondition.trim()];
+        onUpdate(updatedConditions);
+        setNewCondition(""); // Clear the input field
+    };
+
+    const handleRemoveCondition = (indexToRemove: number) => {
+        if (confirm("Are you sure you want to remove this medical condition?")) {
+            const updatedConditions = (conditions || []).filter((_, index) => index !== indexToRemove);
+            onUpdate(updatedConditions);
+        }
+    };
+
+    return (
+        <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
+            <CardHeader>
+                <CardTitle className="text-cyan-800 flex items-center gap-2">
+                    <ClipboardList className="h-5 w-5" />
+                    Underlying Medical Conditions
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <div className="space-y-2">
+                    {(conditions && conditions.length > 0) ? (
+                        conditions.map((condition, index) => (
+                            <div key={index} className="flex items-center justify-between bg-white/70 p-2 rounded-md border border-cyan-200">
+                                <span className="text-sm text-gray-800">{condition}</span>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleRemoveCondition(index)}
+                                    className="h-7 w-7 p-0 text-red-500 hover:bg-red-50 hover:text-red-600"
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-sm text-center text-gray-500 py-3">No conditions listed.</p>
+                    )}
+                </div>
+                <div className="flex items-center gap-2 pt-2 border-t border-cyan-200">
+                    <Input
+                        placeholder="Add a new condition..."
+                        value={newCondition}
+                        onChange={(e) => setNewCondition(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleAddCondition()}
+                        className="border-cyan-300 focus:border-cyan-500 bg-white/100"
+                    />
+                    <Button onClick={handleAddCondition} size="sm" variant="outline">
+                        Add
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
+
 interface AllergenEditModalProps {
   allergen: DisplayPAPAllergen
   availableSymptoms: Symptom[]

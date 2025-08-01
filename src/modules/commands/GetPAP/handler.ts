@@ -19,18 +19,17 @@ export async function handler$GetPAP(
         id: resultPap._id.toHexString(),
         userId: resultPap.userId.toHexString(),
         publicId: resultPap.publicId ? resultPap.publicId.toHexString() : null,
+        underlyingMedCon: resultPap.underlyingMedCon,
         allergens: resultPap.allergens.map((allergen: {
             allergenId: ObjectId,
             discoveryDate: UnixTimestamp | null,
             discoveryMethod: string,
             symptomsId: ObjectId[],
-            underlyingMedCon: String[] | null
         }) => ({
             allergenId: allergen.allergenId.toHexString(),
             discoveryDate: allergen.discoveryDate,
             discoveryMethod: allergen.discoveryMethod,
             symptomsId: allergen.symptomsId.map((symptomId: ObjectId) => symptomId.toHexString()),
-            underlyingMedCon: allergen.underlyingMedCon
         })),
     });
 
@@ -103,7 +102,6 @@ export async function handler$GetPAP(
                 allergenId: userAllergen.allergenId,
                 discoveryDate: userAllergen.discoveryDate,
                 discoveryMethod: userAllergen.discoveryMethod,
-                underlyingMedCon: userAllergen.underlyingMedCon,
                 name: allergenDetails.name,
                 type: allergenDetails.type,
                 severity: allergenSeverity,
@@ -117,6 +115,6 @@ export async function handler$GetPAP(
         allergens: populatedAllergens,
     });
 
-    console.log(populatedAllergens)
+    // console.log(populatedAllergens)
     return { PAP: displayPAP };
 }

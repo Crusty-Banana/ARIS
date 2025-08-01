@@ -14,6 +14,7 @@ export const DisplayPAP = z.object({
     gender: Gender,
     doB: UnixTimestamp.nullable(),
     allowPublic: z.boolean(),
+    underlyingMedCon: z.array(z.string()).default([]),
     allergens: z.array(
         z.object({
             allergenId: ObjectIdAsHexString,
@@ -22,7 +23,7 @@ export const DisplayPAP = z.object({
             type: z.enum(["food", "drug", "respiratory"]),
             discoveryDate: UnixTimestamp.nullable(),
             discoveryMethod: DiscoveryMethod,
-            underlyingMedCon: z.array(z.string()).default([]),
+            
             symptoms: z.array(z.object({
                 symptomId: ObjectIdAsHexString,
                 name: z.string(),

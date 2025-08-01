@@ -22,6 +22,7 @@ export default function UserDashboard() {
     doB: null,
     gender: "",
     allowPublic: false,
+    underlyingMedCon: [],
     allergens: [],
   })
   const [symptoms, setSymptoms] = useState<Symptom[]>([])
