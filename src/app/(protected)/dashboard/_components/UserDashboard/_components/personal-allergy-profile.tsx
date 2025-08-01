@@ -1,17 +1,17 @@
 "use client"
 
-import {  useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Edit, Calendar, User, Shield, AlertTriangle, Plus, Trash2, ChevronDown, ChevronUp, ClipboardList } from "lucide-react"
 import { ScrollableSelect } from "@/components/scrollable-select"
 import { AddAllergenModal } from "./add-allergen-modal"
 import { PotentialCrossAllergens } from "./potential-cross-allergens"
-import { Trash2 } from "lucide-react"
 import { DisplayPAP, DisplayPAPAllergen } from "@/modules/commands/GetPAP/typing"
 import { Allergen, DiscoveryMethod, Gender, ObjectIdAsHexString, Symptom } from "@/modules/business-types"
 import { UpdatePAPAllergen$Params, UpdatePAPFetcher$Params } from "@/modules/commands/UpdatePAP/typing"
@@ -28,6 +28,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
   const [isEditingProfile, setIsEditingProfile] = useState(false)
   const [editingAllergen, setEditingAllergen] = useState<string | null>(null)
   const [showAddAllergen, setShowAddAllergen] = useState(false)
+  const [isProfileCardExpanded, setIsProfileCardExpanded] = useState(false);
 
   const [profileData, setProfileData] = useState({
     gender: pAP.gender,
@@ -113,7 +114,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
         discoveryDate: allergen.discoveryDate,
         discoveryMethod: allergen.discoveryMethod,
         symptomsId: allergen.symptoms.map(symptom => symptom.symptomId),
-       })), allergenData]
+        })), allergenData]
   
     onUpdate({ allergens })
   }
@@ -143,14 +144,38 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
     <div className="space-y-6">
       {/* Profile Information */}
       <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
-        <CardHeader>
-          <CardTitle className="text-cyan-800 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <User className="h-5 w-5" />
-              Personal Information
-            </div>
-            <Button variant="outline" size="sm" onClick={() => setIsEditingProfile(true)} className="bg-transparent">
-              <Edit className="h-4 w-4 mr-2" />
+      <CardHeader>
+        <CardTitle className="text-cyan-800 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <User className="h-5 w-5" />
+            Personal Information
+          </div>
+          <div className="flex items-center gap-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsProfileCardExpanded(!isProfileCardExpanded)}
+              className="bg-transparent flex items-center"
+            >
+              {isProfileCardExpanded ? (
+                <>
+                  <ChevronUp className="h-4 w-4 mr-1" />
+                  Show Less
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="h-4 w-4 mr-1" />
+                  Show More
+                </>
+              )}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsEditingProfile(true)}
+              className="bg-transparent flex items-center"
+            >
+              <Edit className="h-4 w-4 mr-1" />
               Edit
             </Button>
           </div>
@@ -202,17 +227,26 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
             </div>
           </div>
         </CardContent>
-      </Card>
+      )}
+    </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* My Allergens */}
         <div className="lg:col-span-2">
           <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
-            <CardHeader>
+            <CardHeader className="flex justify-between items-start">
               <CardTitle className="text-cyan-800 flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5" />
                 My Allergens ({pAP.allergens.length})
               </CardTitle>
+
+              <Button
+                onClick={() => setShowAddAllergen(true)}
+                className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 h-9 px-3 text-sm lg:hidden"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Allergen
+              </Button>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -222,9 +256,8 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                     className="bg-white/70 backdrop-blur-sm p-4 rounded-lg border border-cyan-200"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-3">
-
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center flex-wrap gap-2 mb-2">
                           <h3 className="font-semibold text-cyan-800">{allergen.name}</h3>
                           <Badge className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}>
                             {allergen.type}
@@ -234,7 +267,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                           </Badge>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 mb-3">
                           <div>
                             <span className="text-sm font-medium text-gray-700">Discovery Date:</span>
                             <span className="ml-2 text-sm">{formatDate(allergen.discoveryDate)}</span>
@@ -246,7 +279,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                         </div>
                       </div>
 
-                      <div className="flex gap-2 ml-4">
+                      <div className="flex gap-2 sm:ml-4 flex-shrink-0">
                         <Button
                           variant="outline"
                           size="sm"
@@ -276,7 +309,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                           >
                             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2 gap-2">
                               <h4 className="font-medium text-blue-800">{symptom.name}</h4>
-                              <div className="flex gap-1">
+                              <div className="flex gap-1 flex-shrink-0">
                                 <Badge className={`${getSeverityColor(symptom.severity)} text-white text-xs`}>
                                   S: {symptom.severity}
                                 </Badge>
@@ -310,8 +343,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
 
         {/* Right Column */}
         <div className="space-y-6">
-          {/* Add Allergen Box */}
-          <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+          <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 hidden lg:block">
             <CardHeader>
               <CardTitle className="text-green-800 text-lg">Add New Allergen</CardTitle>
             </CardHeader>
@@ -326,7 +358,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
             </CardContent>
           </Card>
 
-          {/* Potential Cross-Allergens */}
           <PotentialCrossAllergens
             potentialAllergens={potentialCrossAllergens}
             userAllergenIds={pAP.allergens.map((a) => a.allergenId)}
@@ -351,7 +382,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
         onAddAllergen={handleAddAllergen}
       />
 
-      {/* Edit Profile Modal */}
       <Dialog open={isEditingProfile} onOpenChange={setIsEditingProfile}>
         <DialogContent className="max-w-md">
           <DialogHeader>
@@ -362,7 +392,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
               <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
               <Select
                 value={profileData.gender || ""}
-                onValueChange={(value) => setProfileData({ ...profileData, gender: value as Gender })}
+                onValueChange={(value: Gender) => setProfileData({ ...profileData, gender: value as Gender })}
               >
                 <SelectTrigger className="border-cyan-300 focus:border-cyan-500">
                   <SelectValue placeholder="Select gender" />
@@ -389,7 +419,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
               <label className="text-sm font-medium text-gray-700">Allow Public Profile</label>
               <Switch
                 checked={profileData.allowPublic}
-                onCheckedChange={(checked) => setProfileData({ ...profileData, allowPublic: checked })}
+                onCheckedChange={(checked: boolean) => setProfileData({ ...profileData, allowPublic: checked })}
               />
             </div>
 
@@ -408,7 +438,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
         </DialogContent>
       </Dialog>
 
-      {/* Edit Allergen Modal */}
       {editingAllergen && (
         <AllergenEditModal
           allergen={pAP.allergens.find((allergen) => allergen.allergenId === editingAllergen)!}
@@ -539,7 +568,7 @@ function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClose }: A
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Discovery Method</label>
-            <Select value={discoveryMethod} onValueChange={value => setDiscoveryMethod(value as DiscoveryMethod)}>
+            <Select value={discoveryMethod} onValueChange={(value: DiscoveryMethod) => setDiscoveryMethod(value as DiscoveryMethod)}>
               <SelectTrigger className="border-cyan-300 focus:border-cyan-500">
                 <SelectValue />
               </SelectTrigger>
