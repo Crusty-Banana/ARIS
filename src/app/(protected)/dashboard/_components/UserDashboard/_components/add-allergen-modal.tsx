@@ -95,12 +95,12 @@ export function AddAllergenModal({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh]">
+      <DialogContent className="max-w-3xl lg:max-w-5xl max-h-[90vh]">
         <DialogHeader>
           <DialogTitle className="text-cyan-800">Add New Allergen</DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto">
           {/* Left Column - Allergen Selection */}
           <div className="space-y-4">
             <div>

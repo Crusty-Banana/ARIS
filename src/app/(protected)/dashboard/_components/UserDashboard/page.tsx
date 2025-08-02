@@ -147,11 +147,11 @@ export default function UserDashboard() {
               <p className="text-gray-600">Browse comprehensive information about symptoms, allergens, and allergies</p>
             </div>
 
-            <Tabs defaultValue="wiki-symptoms" className="space-y-4">
+            <Tabs defaultValue="wiki-allergies" className="space-y-4">
               <TabsList className="bg-white/30">
-                <TabsTrigger value="wiki-symptoms">Symptoms</TabsTrigger>
-                <TabsTrigger value="wiki-allergens">Allergens</TabsTrigger>
                 <TabsTrigger value="wiki-allergies">Allergies</TabsTrigger>
+                <TabsTrigger value="wiki-allergens">Allergens</TabsTrigger>
+                <TabsTrigger value="wiki-symptoms">Symptoms</TabsTrigger>
               </TabsList>
 
               <TabsContent value="wiki-symptoms">

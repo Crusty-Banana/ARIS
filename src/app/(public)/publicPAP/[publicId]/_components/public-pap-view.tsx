@@ -164,6 +164,7 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
             <Shield className="h-4 w-4" />
             <p>Profile ID: {publicId}</p>
           </div>
+          <p><i>Note: This is a public profile, and thus does not include any personal information.</i></p>
         </div>
 
         <div className="space-y-8">
