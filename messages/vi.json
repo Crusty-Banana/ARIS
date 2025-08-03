@@ -1,0 +1,9 @@
+{
+    "adminDashboard": {
+        "title": "Admin Dashboard",
+        "description": "Quản lý dị ứng, dị nguyên và triệu chứng của dị ứng",
+        "symptoms": "Triệu chứng",
+        "allergens": "Dị nguyên",
+        "allergies": "Dị ứng"
+    }
+}

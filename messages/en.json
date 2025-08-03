@@ -1,0 +1,9 @@
+{
+    "adminDashboard": {
+        "title": "Admin Dashboard",
+        "description": "Manage allergens, allergies and symptoms",
+        "symptoms": "Symptoms",
+        "allergens": "Allergens",
+        "allergies": "Allergies"
+    }
+}

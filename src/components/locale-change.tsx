@@ -1,0 +1,52 @@
+'use client'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import { useEffect, useState } from "react";
+
+
+type Locale = 'vi' | 'en'
+
+const locales = [
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
+] as const
+
+export default function LocaleDropdown() {
+    const [currentLocale, setCurrentLocale] = useState<Locale>('en')
+
+    useEffect(() => {
+        const match = document.cookie.match(/(?:^|; )locale=([^;]*)/)
+        if (match && (match[1] === 'en' || match[1] === 'vi')) {
+            setCurrentLocale(match[1] as Locale)
+        }
+    }, [])
+
+    const changeLanguage = (locale: Locale) => {
+        document.cookie = `locale=${locale}; path=/; max-age=${60 * 60 * 24 * 365}`;
+        setCurrentLocale(locale);
+        window.location.reload();
+    }
+
+    return (
+        <Select value={currentLocale} onValueChange={(value: Locale) => changeLanguage(value)}>
+            <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select language" />
+            </SelectTrigger>
+            <SelectContent>
+                {locales.map((loc) => (
+                    <SelectItem key={loc.code} value={loc.code}>
+                        <div className="flex items-center gap-2">
+                            <span>{loc.flag}</span>
+                            <span>{loc.name}</span>
+                        </div>
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
+    )
+}
