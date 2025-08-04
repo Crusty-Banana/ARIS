@@ -70,6 +70,7 @@
         "treatmentPlaceholder": "Nhập thông tin điều trị"
     },
     "allergenModal": {
+        "": "",
         "addAllergen": "Thêm Dị nguyên",
         "addNewAllergen": "Thêm Dị nguyên Mới",
         "type": "Loại",
@@ -94,7 +95,7 @@
     "detailModals": {
         "symptomDetails": "Chi tiết Triệu chứng",
         "name": "Tên",
-        "severity": "Mức độ nghiêm trọng",
+        "severity": "Độ nghiêm trọng",
         "prevalence": "Mức độ phổ biến",
         "treatment": "Điều trị",
         "allergenDetails": "Chi tiết Dị nguyên",
@@ -152,7 +153,17 @@
         "noConditionsListed": "Không có bệnh lý nào được liệt kê.",
         "addConditionPlaceholder": "Thêm một bệnh lý mới...",
         "add": "Thêm",
-        "removeConditionConfirmation": "Bạn có chắc chắn muốn xóa tình trạng bệnh lý này không?"
+        "removeConditionConfirmation": "Bạn có chắc chắn muốn xóa tình trạng bệnh lý này không?",
+        "detailModals": {
+            "severity": "Độ nghiêm trọng",
+            "treatment": "Điều trị"
+        },
+        "clinicalSymptoms": "Triệu chứng lâm sàng",
+        "paraclinicalTests": "Xét nghiệm cận lâm sàng",
+        "potential": "Có khả năng",
+        "food": "Thực phẩm",
+        "drug": "Thuốc",
+        "respiratory": "Hô hấp"
     },
     "potentialCrossAllergens": {
         "title": "Dị nguyên chéo tiềm ẩn",
@@ -164,6 +175,9 @@
         "alreadyInAllergens": "Đã có trong dị nguyên của bạn"
     },
     "wikiLists": {
+        "potentialCrossAllergens": {
+            "alreadyInAllergens": "Đã có trong dị nguyên của bạn"
+        },
         "symptoms": "Triệu chứng",
         "allergens": "Dị nguyên",
         "allergies": "Dị ứng",
@@ -194,7 +208,8 @@
         "symptomDetails": "Chi tiết Triệu chứng",
         "allergenAddButton": "Thêm vào dị nguyên của tôi",
         "allergenAddButtonTitle": "Thêm vào dị nguyên của tôi",
-        "allergen(s) associated": "Dị nguyên liên quan"
+        "allergen(s) associated": "Dị nguyên liên quan",
+        "name": "Tên"
     },
     "publicPAPView": {
         "publicAllergyProfile": "Hồ sơ Dị ứng Công khai",
@@ -234,5 +249,28 @@
         "description": "Mô tả",
         "existingAllergies": "Dị ứng hiện có",
         "allergens": "Dị nguyên"
+    },
+    "addAllergenModal": {
+        "addNewAllergen": "Thêm Dị nguyên Mới",
+        "searchAllergen": "Tìm kiếm dị nguyên...",
+        "food": "Thực phẩm",
+        "drug": "Thuốc",
+        "respiratory": "Hô hấp",
+        "symptoms": "Triệu chứng",
+        "severity": "Độ nghiêm trọng",
+        "prevalence": "Độ phổ biến",
+        "treatment": "Điều trị",
+        "selectedAllergen": "Dị Nguyên đã chọn",
+        "addAllergen": "Thêm Dị Nguyên",
+        "discoveryDate": "Ngày phát hiện",
+        "discoveryMethod": "Phương pháp phát hiện",
+        "clinicalSymptoms": "Triệu chứng lâm sàng",
+        "paraclinicalTest": "Xét nghiệm cận lâm sàng",
+        "associatedSymptoms": "Các triệu chứng liên quan",
+        "potential": "Có khả năng",
+        "cancel": "Hủy bỏ"
+    },
+    "common": {
+        "searchItems": "Tìm kiếm triệu chứng..."
     }
 }

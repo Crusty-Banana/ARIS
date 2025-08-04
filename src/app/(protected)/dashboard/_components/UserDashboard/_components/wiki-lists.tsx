@@ -274,7 +274,7 @@ export function WikiAllergenList({ allergens, symptoms, onQuickAdd, userAllergen
                     <div className="font-medium text-cyan-800">{allergen.name}</div>
                     <div className="text-sm text-gray-600 flex items-center flex-wrap gap-2 mt-1">
                       <Badge className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}>
-                        {allergen.type}
+                        {t(allergen.type)}
                       </Badge>
                       <Badge
                         className={`${allergen.prevalence <= 2 ? "bg-green-500" : allergen.prevalence <= 3 ? "bg-yellow-500" : "bg-red-500"} text-white text-xs`}
@@ -354,7 +354,7 @@ export function WikiAllergenList({ allergens, symptoms, onQuickAdd, userAllergen
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">{t('type')}</label>
                   <Badge className={`${getTypeColor(selectedAllergen.type)} text-white capitalize`}>
-                    {selectedAllergen.type}
+                    {t(selectedAllergen.type)}
                   </Badge>
                 </div>
                 <div>

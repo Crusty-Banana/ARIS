@@ -296,7 +296,7 @@ export function AllergenDetailModal({
               <Badge
                 className={`${currentData.type === "food" ? "bg-blue-500" : currentData.type === "drug" ? "bg-purple-500" : "bg-green-500"} text-white capitalize`}
               >
-                {currentData.type}
+                {t(currentData.type)}
               </Badge>
             )}
           </div>

@@ -70,6 +70,7 @@
         "treatmentPlaceholder": "Enter treatment information"
     },
     "allergenModal": {
+        "": "",
         "addAllergen": "Add Allergen",
         "addNewAllergen": "Add New Allergen",
         "type": "Type",
@@ -152,7 +153,17 @@
         "noConditionsListed": "No conditions listed.",
         "addConditionPlaceholder": "Add a new condition...",
         "add": "Add",
-        "removeConditionConfirmation": "Are you sure you want to remove this medical condition?"
+        "removeConditionConfirmation": "Are you sure you want to remove this medical condition?",
+        "detailModals": {
+            "severity": "Severity",
+            "treatment": "Treatment"
+        },
+        "clinicalSymptoms": "Clinical Symptoms",
+        "paraclinicalTests": "Paraclinical Test",
+        "potential": "Potential",
+        "food": "Food",
+        "drug": "Drug",
+        "respiratory": "Respiratory"
     },
     "potentialCrossAllergens": {
         "title": "Potential Cross-Allergens",
@@ -164,6 +175,9 @@
         "alreadyInAllergens": "Already in your allergens"
     },
     "wikiLists": {
+        "potentialCrossAllergens": {
+            "alreadyInAllergens": "Already in your allergens"
+        },
         "symptoms": "Symptoms",
         "allergens": "Allergens",
         "allergies": "Allergies",
@@ -194,7 +208,8 @@
         "symptomDetails": "Symptom Details",
         "allergenAddButton": "Add to my allergens",
         "allergenAddButtonTitle": "Add to my allergens",
-        "allergen(s) associated": "Allergen(s) associated"
+        "allergen(s) associated": "Allergen(s) associated",
+        "name": "Name"
     },
     "publicPAPView": {
         "publicAllergyProfile": "Public Allergy Profile",
@@ -234,5 +249,28 @@
         "description": "Description",
         "existingAllergies": "Existing Allergies",
         "allergens": "Allergens"
+    },
+    "addAllergenModal": {
+        "addNewAllergen":"Add New Allergen",
+        "searchAllergen": "Search for allergens...",
+        "food":"Food",
+        "drug":"Drug",
+        "respiratory":"Respiratory",
+        "symptoms": "symptoms",
+        "severity": "Severity",
+        "prevalence": "Prevalence",
+        "treatment": "Treatment",
+        "selectedAllergen": "Selected Allergen",
+        "addAllergen": "Add Allergen",
+        "discoveryDate": "Discovery Date",
+        "discoveryMethod": "Discovery Method",
+        "clinicalSymptoms": "Clinical Symptoms",
+        "paraclinicalTest": "Paraclinical Test",
+        "associatedSymptoms":"Associated Symptoms",
+        "potential": "Potential",
+        "cancel": "Cancel"
+    },
+    "common": {
+        "searchItems": "Search items..."
     }
 }

@@ -262,7 +262,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                         <div className="flex items-center flex-wrap gap-2 mb-2">
                           <h3 className="font-semibold text-cyan-800">{allergen.name}</h3>
                           <Badge className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}>
-                            {allergen.type}
+                            {t(allergen.type)}
                           </Badge>
                           <Badge className={`${getSeverityColor(allergen.severity)} text-white text-xs`}>
                             {t('detailModals.severity')}: {allergen.severity}
@@ -276,7 +276,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                           </div>
                           <div>
                             <span className="text-sm font-medium text-gray-700">{t('discoveryMethod')}:</span>
-                            <span className="ml-2 text-sm">{allergen.discoveryMethod}</span>
+                            <span className="ml-2 text-sm">{allergen.discoveryMethod === "Clinical symptoms" ? t('clinicalSymptoms') : allergen.discoveryMethod === "Paraclinical tests" ? t('paraclinicalTests') : allergen.discoveryMethod === "Potential" ? t('potential') : ""}</span>
                           </div>
                         </div>
                       </div>
@@ -577,8 +577,8 @@ function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClose }: A
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Clinical symptoms">Clinical symptoms</SelectItem>
-                <SelectItem value="Paraclinical tests">Paraclinical tests</SelectItem>
+                <SelectItem value="Clinical symptoms">{t('clinicalSymptoms')}</SelectItem>
+                <SelectItem value="Paraclinical tests">{t('paraclinicalTests')}</SelectItem>
               </SelectContent>
             </Select>
           </div>

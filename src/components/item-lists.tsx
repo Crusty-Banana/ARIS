@@ -266,7 +266,7 @@ export function AllergenList({ allergens, symptoms, onItemClick, onEdit, onDelet
                   <div className="font-medium text-cyan-800">{allergen.name}</div>
                   <div className="text-sm text-gray-600 flex items-center gap-2 mt-1">
                     <Badge className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}>
-                      {allergen.type}
+                      {t(allergen.type)}
                     </Badge>
                     <Badge
                       className={`${allergen.prevalence <= 2 ? "bg-green-500" : allergen.prevalence <= 3 ? "bg-yellow-500" : "bg-red-500"} text-white text-xs`}
