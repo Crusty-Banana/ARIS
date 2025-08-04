@@ -6,7 +6,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 
 type Locale = 'vi' | 'en'
@@ -16,20 +17,20 @@ const locales = [
     { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
 ] as const
 
-export default function LocaleDropdown() {
-    const [currentLocale, setCurrentLocale] = useState<Locale>('en')
+const getInitialLocale = (): Locale => {
+    if (typeof document === 'undefined') return 'en'
+    const match = document.cookie.match(/(?:^|; )locale=([^;]*)/);
+    return (match && (match[1] === 'en' || match[1] === 'vi')) ? match[1] as Locale : 'en';
+}
 
-    useEffect(() => {
-        const match = document.cookie.match(/(?:^|; )locale=([^;]*)/)
-        if (match && (match[1] === 'en' || match[1] === 'vi')) {
-            setCurrentLocale(match[1] as Locale)
-        }
-    }, [])
+export default function LocaleDropdown() {
+    const [currentLocale, setCurrentLocale] = useState<Locale>(getInitialLocale())
+    const router = useRouter()
 
     const changeLanguage = (locale: Locale) => {
         document.cookie = `locale=${locale}; path=/; max-age=${60 * 60 * 24 * 365}`;
         setCurrentLocale(locale);
-        window.location.reload();
+        router.refresh(); // This will trigger a soft refresh of the page
     }
 
     return (

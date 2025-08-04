@@ -192,7 +192,7 @@ export default function AdminDashboard() {
 
           <TabsContent value="symptoms" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold text-cyan-800">Symptom Management</h2>
+              <h2 className="text-2xl font-semibold text-cyan-800">{t('symptom management')}</h2>
               <SymptomModal onAddSymptom={addSymptom} />
             </div>
             <SymptomList
@@ -205,7 +205,7 @@ export default function AdminDashboard() {
 
           <TabsContent value="allergens" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold text-cyan-800">Allergen Management</h2>
+              <h2 className="text-2xl font-semibold text-cyan-800">{t('allergen management')}</h2>
               <AllergenModal symptoms={symptoms} onAddAllergen={addAllergen} />
             </div>
             <AllergenList
@@ -219,7 +219,7 @@ export default function AdminDashboard() {
 
           <TabsContent value="allergies" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold text-cyan-800">Allergy Management</h2>
+              <h2 className="text-2xl font-semibold text-cyan-800">{t('allergy management')}</h2>
               <AllergyModal allergens={allergens} onAddAllergy={addAllergy} />
             </div>
             <AllergyList

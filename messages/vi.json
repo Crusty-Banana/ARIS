@@ -4,6 +4,21 @@
         "description": "Quản lý dị ứng, dị nguyên và triệu chứng của dị ứng",
         "symptoms": "Triệu chứng",
         "allergens": "Dị nguyên",
-        "allergies": "Dị ứng"
+        "allergies": "Dị ứng",
+        "symptom management": "Quản lý triệu chứng",
+        "allergy management": "Quản lý dị ứng",
+        "allergen management": "Quản lý dị nguyên"
+    },
+    "userDashboard": {
+        "title": "User Dashboard",
+        "description": "Quản lý hồ sơ dị ứng cá nhân của bạn, và tham khảo thêm về thông tin của các dị ứng",
+        "pap": "Hồ sơ dị ứng cá nhân",
+        "wiki": "Allergy wiki",
+        "wikiInfo": "Bách khoa toàn thư về thông tin dị ứng",
+        "wikiDescription": "Tra cứu những thông tin cụ thể về các loại dị ứng",
+        "allergies": "Dị ứng",
+        "allergens": "Dị nguyên",
+        "symptoms": "Triệu chứng",
+        "allergenAdded": "{allergenName} đã được cho vào danh sách dị nguyên của bạn!"
     }
 }
