@@ -5,8 +5,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from "@/components/ui/button"
 import { signOut, useSession } from "next-auth/react"
 import LocaleDropdown from "./locale-change"
+import { useTranslations } from "next-intl"
 
 export default function Header() {
+  const t = useTranslations('header');
   const { status } = useSession();
   /* const [language, setLanguage] = useState<"vi" | "en">("en")
 
@@ -44,7 +46,7 @@ export default function Header() {
               <DropdownMenuContent className="w-48" align="end">
                 <DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>
                   <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
+                  <span>{t('logout')}</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>)}

@@ -7,12 +7,14 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { AlertTriangle, User, Shield, Heart } from "lucide-react"
 import { PublicPAP } from "@/modules/commands/GetPublicPAP/typing"
 import { httpGet$GetPublicPAP } from "@/modules/commands/GetPublicPAP/fetcher"
+import { useTranslations } from "next-intl"
 
 interface PublicPAPViewProps {
   publicId: string
 }
 
 export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
+  const t = useTranslations('publicPAPView');
   const [profile, setProfile] = useState<PublicPAP | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -31,14 +33,14 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
 
       } catch (err) {
         console.log(err)
-        setError("Failed to load public profile")
+        setError(t('failedToLoadProfile'))
       } finally {
         setLoading(false)
       }
     }
 
     fetchProfile()
-  }, [publicId])
+  }, [publicId, t])
 
   const getSeverityColor = (severity: number) => {
     if (severity === 1) return "bg-green-500"
@@ -47,9 +49,9 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
   }
 
   const getSeverityLabel = (severity: number) => {
-    if (severity === 1) return "Mild"
-    if (severity === 2) return "Moderate"
-    return "Severe"
+    if (severity === 1) return t('mild')
+    if (severity === 2) return t('moderate')
+    return t('severe')
   }
 
   const getTypeColor = (type: string) => {
@@ -107,7 +109,7 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
           <Card className="max-w-md mx-auto mt-20">
             <CardContent className="text-center p-8">
               <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-              <h2 className="text-xl font-semibold text-gray-800 mb-2">Profile Not Found</h2>
+              <h2 className="text-xl font-semibold text-gray-800 mb-2">{t('profileNotFound')}</h2>
               <p className="text-gray-600">{error}</p>
             </CardContent>
           </Card>
@@ -123,8 +125,8 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
           <Card className="max-w-md mx-auto mt-20">
             <CardContent className="text-center p-8">
               <Shield className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h2 className="text-xl font-semibold text-gray-800 mb-2">Profile Not Available</h2>
-              <p className="text-gray-600">This profile may be private or does not exist.</p>
+              <h2 className="text-xl font-semibold text-gray-800 mb-2">{t('profileNotAvailable')}</h2>
+              <p className="text-gray-600">{t('profilePrivateOrNotExist')}</p>
             </CardContent>
           </Card>
         </div>
@@ -157,14 +159,14 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
           <div className="flex items-center gap-3 mb-4">
             <User className="h-8 w-8 text-cyan-600" />
             <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-800">
-              Public Allergy Profile
+              {t('publicAllergyProfile')}
             </h1>
           </div>
           <div className="flex items-center gap-2 text-gray-600">
             <Shield className="h-4 w-4" />
-            <p>Profile ID: {publicId}</p>
+            <p>{t('profileId', {publicId})}</p>
           </div>
-          <p><i>Note: This is a public profile, and thus does not include any personal information.</i></p>
+          <p><i>{t('notePublicProfile')}</i></p>
         </div>
 
         <div className="space-y-8">
@@ -173,9 +175,9 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
             <CardHeader>
               <CardTitle className="text-cyan-800 flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5" />
-                Allergens ({profile.allergens.length})
+                {t('allergens')} ({profile.allergens.length})
                 <Badge variant="secondary" className="ml-2">
-                  Sorted by Severity
+                  {t('sortedBySeverity')}
                 </Badge>
               </CardTitle>
             </CardHeader>
@@ -200,7 +202,7 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
 
                     <div>
                       <span className="text-sm font-medium text-gray-700 block mb-2">
-                        Associated Symptoms ({allergen.symptoms.length}):
+                        {t('associatedSymptoms')} ({allergen.symptoms.length}):
                       </span>
                       <div className="flex flex-wrap gap-2">
                         {allergen.symptoms
@@ -218,7 +220,7 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
                 {profile.allergens.length === 0 && (
                   <div className="text-center text-gray-500 py-8">
                     <Heart className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                    <p>No allergens recorded in this profile</p>
+                    <p>{t('noAllergensRecorded')}</p>
                   </div>
                 )}
               </div>
@@ -230,9 +232,9 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
             <CardHeader>
               <CardTitle className="text-orange-800 flex items-center gap-2">
                 <Heart className="h-5 w-5" />
-                All Symptoms & Treatments ({allSymptoms.length})
+                {t('allSymptomsAndTreatments')} ({allSymptoms.length})
                 <Badge variant="secondary" className="ml-2">
-                  Sorted by Severity
+                  {t('sortedBySeverity')}
                 </Badge>
               </CardTitle>
             </CardHeader>
@@ -251,7 +253,7 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
                     </div>
 
                     <div>
-                      <span className="text-sm font-medium text-gray-700 block mb-2">Treatment:</span>
+                      <span className="text-sm font-medium text-gray-700 block mb-2">{t('treatment')}:</span>
                       <div className="bg-gradient-to-r from-orange-50 to-yellow-50 p-3 rounded-md border border-orange-100">
                         <p className="text-gray-700 text-sm leading-relaxed">{symptom.treatment}</p>
                       </div>
@@ -262,7 +264,7 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
                 {allSymptoms.length === 0 && (
                   <div className="text-center text-gray-500 py-8">
                     <Heart className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                    <p>No symptoms recorded in this profile</p>
+                    <p>{t('noSymptomsRecorded')}</p>
                   </div>
                 )}
               </div>
@@ -272,8 +274,8 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
 
         {/* Footer */}
         <div className="mt-12 text-center text-gray-500 text-sm">
-          <p>This is a public allergy profile. Information is provided for awareness and emergency purposes.</p>
-          <p className="mt-1">Always consult healthcare professionals for medical advice.</p>
+          <p>{t('footerNote1')}</p>
+          <p className="mt-1">{t('footerNote2')}</p>
         </div>
       </div>
     </div>
