@@ -18,9 +18,9 @@ const locales = [
 ] as const
 
 const getInitialLocale = (): Locale => {
-    if (typeof document === 'undefined') return 'en'
+    if (typeof document === 'undefined') return 'vi'
     const match = document.cookie.match(/(?:^|; )locale=([^;]*)/);
-    return (match && (match[1] === 'en' || match[1] === 'vi')) ? match[1] as Locale : 'en';
+    return (match && (match[1] === 'en' || match[1] === 'vi')) ? match[1] as Locale : 'vi';
 }
 
 export default function LocaleDropdown() {
