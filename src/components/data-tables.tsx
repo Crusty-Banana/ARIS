@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Allergen, Allergy, Symptom } from "@/modules/business-types"
+import { useTranslations } from "next-intl"
 
 interface DataTablesProps {
   symptoms: Symptom[]
@@ -12,6 +13,7 @@ interface DataTablesProps {
 }
 
 export function DataTables({ symptoms, allergens, allergies }: DataTablesProps) {
+  const t = useTranslations('dataTables');
   const getSeverityColor = (severity: number) => {
     if (severity === 1) return "bg-green-500"
     if (severity === 2) return "bg-yellow-500"
@@ -42,16 +44,16 @@ export function DataTables({ symptoms, allergens, allergies }: DataTablesProps) 
       {/* Symptoms Table */}
       <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
         <CardHeader>
-          <CardTitle className="text-cyan-800">Existing Symptoms</CardTitle>
+          <CardTitle className="text-cyan-800">{t('existingSymptoms')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Severity</TableHead>
-                <TableHead>Prevalence</TableHead>
-                <TableHead>Treatment</TableHead>
+                <TableHead>{t('name')}</TableHead>
+                <TableHead>{t('severity')}</TableHead>
+                <TableHead>{t('prevalence')}</TableHead>
+                <TableHead>{t('treatment')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -77,17 +79,17 @@ export function DataTables({ symptoms, allergens, allergies }: DataTablesProps) 
       {/* Allergens Table */}
       <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
         <CardHeader>
-          <CardTitle className="text-cyan-800">Existing Allergens</CardTitle>
+          <CardTitle className="text-cyan-800">{t('existingAllergens')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Symptoms</TableHead>
-                <TableHead>Prevalence</TableHead>
-                <TableHead>Description</TableHead>
+                <TableHead>{t('name')}</TableHead>
+                <TableHead>{t('type')}</TableHead>
+                <TableHead>{t('symptoms')}</TableHead>
+                <TableHead>{t('prevalence')}</TableHead>
+                <TableHead>{t('description')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -125,14 +127,14 @@ export function DataTables({ symptoms, allergens, allergies }: DataTablesProps) 
       {/* Allergies Table */}
       <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
         <CardHeader>
-          <CardTitle className="text-cyan-800">Existing Allergies</CardTitle>
+          <CardTitle className="text-cyan-800">{t('existingAllergies')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Allergens</TableHead>
+                <TableHead>{t('name')}</TableHead>
+                <TableHead>{t('allergens')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

@@ -102,7 +102,7 @@ export default function UserDashboard() {
 
     await handleProfileUpdate({ allergens })
 
-    alert(`${inputAllergen.name} has been added to your allergens!`)
+    alert(t('allergenAdded', { allergenName: inputAllergen.name }))
   }
 
   useEffect(() => {

@@ -13,6 +13,7 @@ import { GradientSlider } from "./gradient-slider"
 import { ScrollableSelect } from "./scrollable-select"
 import { Symptom } from "@/modules/business-types"
 import { AddAllergen$Params } from "@/modules/commands/AddAllergen/typing"
+import { useTranslations } from "next-intl"
 
 interface AllergenModalProps {
   symptoms: Symptom[]
@@ -20,6 +21,7 @@ interface AllergenModalProps {
 }
 
 export function AllergenModal({ symptoms, onAddAllergen }: AllergenModalProps) {
+  const t = useTranslations('allergenModal');
   const [open, setOpen] = useState(false)
   const [type, setType] = useState<"food" | "drug" | "respiratory" | "">("")
   const [name, setName] = useState("")
@@ -51,36 +53,36 @@ export function AllergenModal({ symptoms, onAddAllergen }: AllergenModalProps) {
       <DialogTrigger asChild>
         <Button className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700">
           <Plus className="h-4 w-4 mr-2" />
-          Add Allergen
+          {t('addAllergen')}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-lg max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle className="text-cyan-800">Add New Allergen</DialogTitle>
+          <DialogTitle className="text-cyan-800">{t('addNewAllergen')}</DialogTitle>
         </DialogHeader>
         <div className="grid grid-cols-2 gap-4 max-h-[70vh] overflow-y-auto">
           <form onSubmit={handleSubmit} className="space-y-4 col-span-2">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('type')}</label>
                 <Select value={type} onValueChange={(value) => setType(value as "food" | "drug" | "respiratory" | "")}>
                   <SelectTrigger className="border-cyan-300 focus:border-cyan-500">
-                    <SelectValue placeholder="Select type" />
+                    <SelectValue placeholder={t('selectType')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="food">Food</SelectItem>
-                    <SelectItem value="drug">Drug</SelectItem>
-                    <SelectItem value="respiratory">Respiratory</SelectItem>
+                    <SelectItem value="food">{t('food')}</SelectItem>
+                    <SelectItem value="drug">{t('drug')}</SelectItem>
+                    <SelectItem value="respiratory">{t('respiratory')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('name')}</label>
                 <Input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter name"
+                  placeholder={t('enterName')}
                   required
                   className="border-cyan-300 focus:border-cyan-500"
                 />
@@ -95,22 +97,22 @@ export function AllergenModal({ symptoms, onAddAllergen }: AllergenModalProps) {
                   onSelectionChange={setSelectedSymptoms}
                   getItemId={(symptom: Symptom) => symptom.id}
                   getItemLabel={(symptom: Symptom) => symptom.name}
-                  label="Associated Symptoms"
+                  label={t('associatedSymptoms')}
                   maxHeight="max-h-32"
                 />
               </div>
 
               <div>
-                <GradientSlider value={prevalence} onValueChange={setPrevalence} min={1} max={5} label="Prevalence" />
+                <GradientSlider value={prevalence} onValueChange={setPrevalence} min={1} max={5} label={t('prevalence')} />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('description')}</label>
               <Textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Enter description"
+                placeholder={t('enterDescription')}
                 required
                 className="border-cyan-300 focus:border-cyan-500 min-h-[80px]"
               />
@@ -120,7 +122,7 @@ export function AllergenModal({ symptoms, onAddAllergen }: AllergenModalProps) {
               type="submit"
               className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
             >
-              Add Allergen
+              {t('addAllergen')}
             </Button>
           </form>
         </div>

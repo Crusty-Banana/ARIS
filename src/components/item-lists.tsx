@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Search, ArrowUp, ArrowDown, Edit, Trash2 } from "lucide-react"
 import { Allergen, Allergy, Symptom } from "@/modules/business-types"
+import { useTranslations } from "next-intl"
 
 type SortOption = "name" | "severity" | "prevalence"
 type SortDirection = "asc" | "desc"
@@ -22,6 +23,7 @@ interface SymptomListProps {
 }
 
 export function SymptomList({ symptoms, onItemClick, onEdit, onDelete }: SymptomListProps) {
+  const t = useTranslations('wikiLists');
   const [searchTerm, setSearchTerm] = useState("")
   const [sortBy, setSortBy] = useState<SortOption>("name")
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
@@ -50,7 +52,7 @@ export function SymptomList({ symptoms, onItemClick, onEdit, onDelete }: Symptom
 
   const handleDelete = (e: React.MouseEvent, id: string) => {
     e.stopPropagation()
-    if (confirm("Are you sure you want to delete this symptom?")) {
+    if (confirm(t('detailModals.areYouSureSymptom'))) {
       onDelete(id)
     }
   }
@@ -64,7 +66,7 @@ export function SymptomList({ symptoms, onItemClick, onEdit, onDelete }: Symptom
     <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
       <CardHeader>
         <CardTitle className="text-cyan-800 flex items-center justify-between">
-          Symptoms
+          {t('symptoms')}
           <Badge variant="secondary">{symptoms.length}</Badge>
         </CardTitle>
         <div className="flex gap-2">
@@ -73,7 +75,7 @@ export function SymptomList({ symptoms, onItemClick, onEdit, onDelete }: Symptom
             <Input
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search symptoms..."
+              placeholder={t('searchSymptoms')}
               className="pl-10 border-cyan-300 focus:border-cyan-500"
             />
           </div>
@@ -82,9 +84,9 @@ export function SymptomList({ symptoms, onItemClick, onEdit, onDelete }: Symptom
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="name">Sort by Name</SelectItem>
-              <SelectItem value="severity">Sort by Severity</SelectItem>
-              <SelectItem value="prevalence">Sort by Prevalence</SelectItem>
+              <SelectItem value="name">{t('sortByName')}</SelectItem>
+              <SelectItem value="severity">{t('sortBySeverity')}</SelectItem>
+              <SelectItem value="prevalence">{t('sortByPrevalence')}</SelectItem>
             </SelectContent>
           </Select>
           <Button variant="outline" size="sm" onClick={toggleSortDirection} className="px-3 bg-transparent">
@@ -107,12 +109,12 @@ export function SymptomList({ symptoms, onItemClick, onEdit, onDelete }: Symptom
                     <Badge
                       className={`${symptom.severity === 1 ? "bg-green-500" : symptom.severity === 2 ? "bg-yellow-500" : "bg-red-500"} text-white text-xs`}
                     >
-                      Severity: {symptom.severity}
+                      {t('severity')}: {symptom.severity}
                     </Badge>
                     <Badge
                       className={`${symptom.prevalence <= 2 ? "bg-green-500" : symptom.prevalence <= 3 ? "bg-yellow-500" : "bg-red-500"} text-white text-xs`}
                     >
-                      Prevalence: {symptom.prevalence}
+                      {t('prevalence')}: {symptom.prevalence}
                     </Badge>
                   </div>
                 </div>
@@ -138,7 +140,7 @@ export function SymptomList({ symptoms, onItemClick, onEdit, onDelete }: Symptom
             </div>
           ))}
           {filteredAndSortedSymptoms.length === 0 && (
-            <div className="text-center text-gray-500 py-4">No symptoms found</div>
+            <div className="text-center text-gray-500 py-4">{t('noSymptomsFound')}</div>
           )}
         </div>
       </CardContent>
@@ -155,6 +157,7 @@ interface AllergenListProps {
 }
 
 export function AllergenList({ allergens, symptoms, onItemClick, onEdit, onDelete }: AllergenListProps) {
+  const t = useTranslations('wikiLists');
   const [searchTerm, setSearchTerm] = useState("")
   const [sortBy, setSortBy] = useState<SortOption>("name")
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
@@ -198,7 +201,7 @@ export function AllergenList({ allergens, symptoms, onItemClick, onEdit, onDelet
 
   const handleDelete = (e: React.MouseEvent, id: string) => {
     e.stopPropagation()
-    if (confirm("Are you sure you want to delete this allergen?")) {
+    if (confirm(t('detailModals.areYouSureAllergen'))) {
       onDelete(id)
     }
   }
@@ -212,7 +215,7 @@ export function AllergenList({ allergens, symptoms, onItemClick, onEdit, onDelet
     <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
       <CardHeader>
         <CardTitle className="text-cyan-800 flex items-center justify-between">
-          Allergens
+          {t('allergens')}
           <Badge variant="secondary">{allergens.length}</Badge>
         </CardTitle>
         <div className="flex gap-2">
@@ -221,7 +224,7 @@ export function AllergenList({ allergens, symptoms, onItemClick, onEdit, onDelet
             <Input
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search allergens..."
+              placeholder={t('searchAllergens')}
               className="pl-10 border-cyan-300 focus:border-cyan-500"
             />
           </div>
@@ -230,10 +233,10 @@ export function AllergenList({ allergens, symptoms, onItemClick, onEdit, onDelet
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="food">Food</SelectItem>
-              <SelectItem value="drug">Drug</SelectItem>
-              <SelectItem value="respiratory">Respiratory</SelectItem>
+              <SelectItem value="all">{t('allTypes')}</SelectItem>
+              <SelectItem value="food">{t('food')}</SelectItem>
+              <SelectItem value="drug">{t('drug')}</SelectItem>
+              <SelectItem value="respiratory">{t('respiratory')}</SelectItem>
             </SelectContent>
           </Select>
           <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
@@ -241,8 +244,8 @@ export function AllergenList({ allergens, symptoms, onItemClick, onEdit, onDelet
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="name">Sort by Name</SelectItem>
-              <SelectItem value="prevalence">Sort by Prevalence</SelectItem>
+              <SelectItem value="name">{t('sortByName')}</SelectItem>
+              <SelectItem value="prevalence">{t('sortByPrevalence')}</SelectItem>
             </SelectContent>
           </Select>
           <Button variant="outline" size="sm" onClick={toggleSortDirection} className="px-3 bg-transparent">
@@ -268,7 +271,7 @@ export function AllergenList({ allergens, symptoms, onItemClick, onEdit, onDelet
                     <Badge
                       className={`${allergen.prevalence <= 2 ? "bg-green-500" : allergen.prevalence <= 3 ? "bg-yellow-500" : "bg-red-500"} text-white text-xs`}
                     >
-                      Prevalence: {allergen.prevalence}
+                      {t('prevalence')}: {allergen.prevalence}
                     </Badge>
                   </div>
                   {/* Show up to 3 associated symptoms */}
@@ -283,7 +286,7 @@ export function AllergenList({ allergens, symptoms, onItemClick, onEdit, onDelet
                     })}
                     {allergen.symptomsId.length > 3 && (
                       <Badge variant="outline" className="text-xs">
-                        +{allergen.symptomsId.length - 3} more
+                        +{allergen.symptomsId.length - 3} {t('more')}
                       </Badge>
                     )}
                   </div>
@@ -310,7 +313,7 @@ export function AllergenList({ allergens, symptoms, onItemClick, onEdit, onDelet
             </div>
           ))}
           {filteredAndSortedAllergens.length === 0 && (
-            <div className="text-center text-gray-500 py-4">No allergens found</div>
+            <div className="text-center text-gray-500 py-4">{t('noAllergensFound')}</div>
           )}
         </div>
       </CardContent>
@@ -327,6 +330,7 @@ interface AllergyListProps {
 }
 
 export function AllergyList({ allergies, allergens, onItemClick, onEdit, onDelete }: AllergyListProps) {
+  const t = useTranslations('wikiLists');
   const [searchTerm, setSearchTerm] = useState("")
 
   const filteredAllergies = allergies
@@ -335,7 +339,7 @@ export function AllergyList({ allergies, allergens, onItemClick, onEdit, onDelet
 
   const handleDelete = (e: React.MouseEvent, id: string) => {
     e.stopPropagation()
-    if (confirm("Are you sure you want to delete this allergy?")) {
+    if (confirm(t('detailModals.areYouSureAllergy'))) {
       onDelete(id)
     }
   }
@@ -349,7 +353,7 @@ export function AllergyList({ allergies, allergens, onItemClick, onEdit, onDelet
     <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
       <CardHeader>
         <CardTitle className="text-cyan-800 flex items-center justify-between">
-          Allergies
+          {t('allergies')}
           <Badge variant="secondary">{allergies.length}</Badge>
         </CardTitle>
         <div className="relative">
@@ -357,7 +361,7 @@ export function AllergyList({ allergies, allergens, onItemClick, onEdit, onDelet
           <Input
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search allergies..."
+            placeholder={t('searchAllergies')}
             className="pl-10 border-cyan-300 focus:border-cyan-500"
           />
         </div>
@@ -373,7 +377,7 @@ export function AllergyList({ allergies, allergens, onItemClick, onEdit, onDelet
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <div className="font-medium text-cyan-800">{allergy.name}</div>
-                  <div className="text-sm text-gray-600 mt-1">{allergy.allergensId.length} allergen(s) associated</div>
+                  <div className="text-sm text-gray-600 mt-1">{allergy.allergensId.length} {t('allergen(s) associated')}</div>
                   {/* Show up to 3 associated allergens */}
                   <div className="flex flex-wrap gap-1 mt-2">
                     {allergy.allergensId.slice(0, 3).map((allergenId) => {
@@ -386,7 +390,7 @@ export function AllergyList({ allergies, allergens, onItemClick, onEdit, onDelet
                     })}
                     {allergy.allergensId.length > 3 && (
                       <Badge variant="outline" className="text-xs">
-                        +{allergy.allergensId.length - 3} more
+                        +{allergy.allergensId.length - 3} {t('more')}
                       </Badge>
                     )}
                   </div>
@@ -412,7 +416,7 @@ export function AllergyList({ allergies, allergens, onItemClick, onEdit, onDelet
               </div>
             </div>
           ))}
-          {filteredAllergies.length === 0 && <div className="text-center text-gray-500 py-4">No allergies found</div>}
+          {filteredAllergies.length === 0 && <div className="text-center text-gray-500 py-4">{t('noAllergiesFound')}</div>}
         </div>
       </CardContent>
     </Card>
