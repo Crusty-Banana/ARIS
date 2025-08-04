@@ -1,6 +1,6 @@
 "use client"
 
-import {  useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -8,14 +8,14 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Edit, Calendar, User, Shield, AlertTriangle, Plus } from "lucide-react"
+import { Edit, Calendar, User, Shield, AlertTriangle, Plus, Trash2, ChevronDown, ChevronUp, ClipboardList } from "lucide-react"
 import { ScrollableSelect } from "@/components/scrollable-select"
 import { AddAllergenModal } from "./add-allergen-modal"
 import { PotentialCrossAllergens } from "./potential-cross-allergens"
-import { Trash2 } from "lucide-react"
 import { DisplayPAP, DisplayPAPAllergen } from "@/modules/commands/GetPAP/typing"
 import { Allergen, DiscoveryMethod, Gender, ObjectIdAsHexString, Symptom } from "@/modules/business-types"
 import { UpdatePAPAllergen$Params, UpdatePAPFetcher$Params } from "@/modules/commands/UpdatePAP/typing"
+import { useTranslations } from "next-intl"
 
 interface PersonalAllergyProfileProps {
   pAP: DisplayPAP
@@ -26,9 +26,11 @@ interface PersonalAllergyProfileProps {
 }
 
 export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossAllergens, availableAllergens, onUpdate }: PersonalAllergyProfileProps) {
+  const t = useTranslations('personalAllergyProfile');
   const [isEditingProfile, setIsEditingProfile] = useState(false)
   const [editingAllergen, setEditingAllergen] = useState<string | null>(null)
   const [showAddAllergen, setShowAddAllergen] = useState(false)
+  const [isProfileCardExpanded, setIsProfileCardExpanded] = useState(false);
 
   const [profileData, setProfileData] = useState({
     gender: pAP.gender,
@@ -45,7 +47,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
   }, [pAP]);
 
   const formatDate = (timestamp: number | null) => {
-    if (!timestamp) return "Not specified"
+    if (!timestamp) return t('notSpecified')
     return new Date(timestamp * 1000).toLocaleDateString()
   }
 
@@ -114,7 +116,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
         discoveryDate: allergen.discoveryDate,
         discoveryMethod: allergen.discoveryMethod,
         symptomsId: allergen.symptoms.map(symptom => symptom.symptomId),
-       })), allergenData]
+        })), allergenData]
   
     onUpdate({ allergens })
   }
@@ -128,7 +130,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
   }
 
   const handleDeleteAllergen = (allergenId: string) => {
-    if (confirm("Are you sure you want to remove this allergen from your profile?")) {
+    if (confirm(t('areYouSureRemoveAllergen'))) {
       const pAPAllergens = pAP.allergens.map((allergen) => ({
         allergenId: allergen.allergenId,
         discoveryMethod: allergen.discoveryMethod,
@@ -144,34 +146,61 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
     <div className="space-y-6">
       {/* Profile Information */}
       <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
-        <CardHeader>
-          <CardTitle className="text-cyan-800 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <User className="h-5 w-5" />
-              Personal Information
-            </div>
-            <Button variant="outline" size="sm" onClick={() => setIsEditingProfile(true)} className="bg-transparent">
-              <Edit className="h-4 w-4 mr-2" />
-              Edit
+      <CardHeader>
+        <CardTitle className="text-cyan-800 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <User className="h-5 w-5" />
+            {t('personalInformation')}
+          </div>
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-2 justify-end">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsProfileCardExpanded(!isProfileCardExpanded)}
+              className="bg-transparent flex items-center"
+            >
+              {isProfileCardExpanded ? (
+                <>
+                  <ChevronUp className="h-4 w-4 mr-1" />
+                  {t('showLess')}
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="h-4 w-4 mr-1" />
+                  {t('showMore')}
+                </>
+              )}
             </Button>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsEditingProfile(true)}
+              className="bg-transparent flex items-center"
+            >
+              <Edit className="h-4 w-4 mr-1" />
+              {t('edit')}
+            </Button>
+          </div>
+        </CardTitle>
+      </CardHeader>
+
+      {isProfileCardExpanded && (
+        <CardContent className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div>
-            <label className="text-sm font-medium text-gray-700">Gender</label>
+            <label className="text-sm font-medium text-gray-700">{t('gender')}</label>
             <div className="mt-1 p-2 bg-white rounded border">
               {pAP.gender ? (
                 <Badge variant="secondary" className="capitalize">
                   {pAP.gender}
                 </Badge>
               ) : (
-                <span className="text-gray-500">Not specified</span>
+                <span className="text-gray-500">{t('notSpecified')}</span>
               )}
             </div>
           </div>
 
           <div>
-            <label className="text-sm font-medium text-gray-700">Date of Birth</label>
+            <label className="text-sm font-medium text-gray-700">{t('dateOfBirth')}</label>
             <div className="mt-1 p-2 bg-white rounded border flex items-center gap-2">
               <Calendar className="h-4 w-4 text-gray-400" />
               <span>{formatDate(pAP.doB)}</span>
@@ -179,12 +208,12 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
           </div>
 
           <div>
-            <label className="text-sm font-medium text-gray-700">Public Profile</label>
+            <label className="text-sm font-medium text-gray-700">{t('publicProfile')}</label>
             <div className="mt-1 p-2 bg-white rounded border flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Shield className="h-4 w-4 text-gray-400" />
                 <Badge variant={pAP.allowPublic ? "default" : "secondary"}>
-                  {pAP.allowPublic ? "Public" : "Private"}
+                  {pAP.allowPublic ? t('public') : t('private')}
                 </Badge>
               </div>
               {pAP.allowPublic && (
@@ -194,23 +223,32 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                   onClick={() => window.open(`/publicPAP/${pAP.publicId}`, "_blank")}
                   className="ml-2 h-7 text-xs bg-transparent border-cyan-300 hover:bg-cyan-50"
                 >
-                  View Public Profile
+                  {t('viewPublicProfile')}
                 </Button>
               )}
             </div>
           </div>
         </CardContent>
-      </Card>
+      )}
+    </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* My Allergens */}
         <div className="lg:col-span-2">
           <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
-            <CardHeader>
+            <CardHeader className="flex justify-between items-start">
               <CardTitle className="text-cyan-800 flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5" />
-                My Allergens ({pAP.allergens.length})
+                {t('myAllergens')} ({pAP.allergens.length})
               </CardTitle>
+
+              <Button
+                onClick={() => setShowAddAllergen(true)}
+                className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 h-9 px-3 text-sm lg:hidden"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                {t('addAllergenButton')}
+              </Button>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -219,31 +257,31 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                     key={allergen.allergenId}
                     className="bg-white/70 backdrop-blur-sm p-4 rounded-lg border border-cyan-200"
                   >
-                    <div className="flex items-start justify-between mb-3">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-3">
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center flex-wrap gap-2 mb-2">
                           <h3 className="font-semibold text-cyan-800">{allergen.name}</h3>
                           <Badge className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}>
-                            {allergen.type}
+                            {t(allergen.type)}
                           </Badge>
                           <Badge className={`${getSeverityColor(allergen.severity)} text-white text-xs`}>
-                            Severity: {allergen.severity}
+                            {t('detailModals.severity')}: {allergen.severity}
                           </Badge>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 mb-3">
                           <div>
-                            <span className="text-sm font-medium text-gray-700">Discovery Date:</span>
+                            <span className="text-sm font-medium text-gray-700">{t('discoveryDate')}:</span>
                             <span className="ml-2 text-sm">{formatDate(allergen.discoveryDate)}</span>
                           </div>
                           <div>
-                            <span className="text-sm font-medium text-gray-700">Discovery Method:</span>
-                            <span className="ml-2 text-sm">{allergen.discoveryMethod}</span>
+                            <span className="text-sm font-medium text-gray-700">{t('discoveryMethod')}:</span>
+                            <span className="ml-2 text-sm">{allergen.discoveryMethod === "Clinical symptoms" ? t('clinicalSymptoms') : allergen.discoveryMethod === "Paraclinical tests" ? t('paraclinicalTests') : allergen.discoveryMethod === "Potential" ? t('potential') : ""}</span>
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex gap-2 ml-4">
+                      <div className="flex gap-2 sm:ml-4 flex-shrink-0">
                         <Button
                           variant="outline"
                           size="sm"
@@ -263,18 +301,17 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                       </div>
                     </div>
 
-                    {/* Enhanced Symptom Display */}
                     <div>
-                      <span className="text-sm font-medium text-gray-700 block mb-3">Associated Symptoms:</span>
+                      <span className="text-sm font-medium text-gray-700 block mb-3">{t('associatedSymptoms')}:</span>
                       <div className="space-y-3">
                         {allergen.symptoms.map((symptom) => (
                           <div
                             key={symptom.symptomId}
                             className="bg-gradient-to-r from-blue-50 to-indigo-50 p-3 rounded-lg border border-blue-200"
                           >
-                            <div className="flex items-center justify-between mb-2">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2 gap-2">
                               <h4 className="font-medium text-blue-800">{symptom.name}</h4>
-                              <div className="flex gap-1">
+                              <div className="flex gap-1 flex-shrink-0">
                                 <Badge className={`${getSeverityColor(symptom.severity)} text-white text-xs`}>
                                   S: {symptom.severity}
                                 </Badge>
@@ -284,7 +321,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                               </div>
                             </div>
                             <div className="text-sm text-gray-700">
-                              <span className="font-medium">Treatment:</span>
+                              <span className="font-medium">{t('detailModals.treatment')}:</span>
                               <p className="mt-1 text-gray-600">{symptom.treatment}</p>
                             </div>
                           </div>
@@ -297,8 +334,8 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                 {pAP.allergens.length === 0 && (
                   <div className="text-center text-gray-500 py-8">
                     <AlertTriangle className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                    <p>No allergens recorded in your profile</p>
-                    <p className="text-sm text-gray-400 mt-1">Click &quot;Add Allergen&quot; to get started</p>
+                    <p>{t('noAllergensRecorded')}</p>
+                    <p className="text-sm text-gray-400 mt-1">{t('clickAddAllergen')}</p>
                   </div>
                 )}
               </div>
@@ -308,10 +345,9 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
 
         {/* Right Column */}
         <div className="space-y-6">
-          {/* Add Allergen Box */}
-          <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+          <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 hidden lg:block">
             <CardHeader>
-              <CardTitle className="text-green-800 text-lg">Add New Allergen</CardTitle>
+              <CardTitle className="text-green-800 text-lg">{t('addNewAllergenCard')}</CardTitle>
             </CardHeader>
             <CardContent>
               <Button
@@ -319,17 +355,23 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                 className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                Add Allergen
+                {t('addAllergenButton')}
               </Button>
             </CardContent>
           </Card>
 
-          {/* Potential Cross-Allergens */}
           <PotentialCrossAllergens
             potentialAllergens={potentialCrossAllergens}
             userAllergenIds={pAP.allergens.map((a) => a.allergenId)}
             onQuickAdd={handleQuickAddAllergen}
           />
+          
+          {/* UPDATED: Calling the new component */}
+          <UnderlyingMedicalConditionsCard 
+            conditions={pAP.underlyingMedCon}
+            onUpdate={(updatedConditions) => onUpdate({ underlyingMedCon: updatedConditions })}
+          />
+
         </div>
       </div>
 
@@ -342,32 +384,31 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
         onAddAllergen={handleAddAllergen}
       />
 
-      {/* Edit Profile Modal */}
       <Dialog open={isEditingProfile} onOpenChange={setIsEditingProfile}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-cyan-800">Edit Personal Information</DialogTitle>
+            <DialogTitle className="text-cyan-800">{t('editPersonalInfo')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('gender')}</label>
               <Select
                 value={profileData.gender || ""}
-                onValueChange={(value) => setProfileData({ ...profileData, gender: value as Gender })}
+                onValueChange={(value: Gender) => setProfileData({ ...profileData, gender: value as Gender })}
               >
                 <SelectTrigger className="border-cyan-300 focus:border-cyan-500">
-                  <SelectValue placeholder="Select gender" />
+                  <SelectValue placeholder={t('selectGender')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="male">Male</SelectItem>
-                  <SelectItem value="female">Female</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="male">{t('male')}</SelectItem>
+                  <SelectItem value="female">{t('female')}</SelectItem>
+                  <SelectItem value="other">{t('other')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('dateOfBirth')}</label>
               <Input
                 type="date"
                 value={formatDateForInput(profileData.doB)}
@@ -377,10 +418,10 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
             </div>
 
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700">Allow Public Profile</label>
+              <label className="text-sm font-medium text-gray-700">{t('allowPublicProfile')}</label>
               <Switch
                 checked={profileData.allowPublic}
-                onCheckedChange={(checked) => setProfileData({ ...profileData, allowPublic: checked })}
+                onCheckedChange={(checked: boolean) => setProfileData({ ...profileData, allowPublic: checked })}
               />
             </div>
 
@@ -389,17 +430,16 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                 onClick={handleProfileUpdate}
                 className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
               >
-                Save Changes
+                {t('saveChanges')}
               </Button>
               <Button variant="outline" onClick={() => setIsEditingProfile(false)} className="flex-1">
-                Cancel
+                {t('cancel')}
               </Button>
             </div>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Edit Allergen Modal */}
       {editingAllergen && (
         <AllergenEditModal
           allergen={pAP.allergens.find((allergen) => allergen.allergenId === editingAllergen)!}
@@ -412,6 +452,76 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
   )
 }
 
+//UnderlyingMedicalConditions section
+interface UnderlyingMedicalConditionsCardProps {
+    conditions: string[];
+    onUpdate: (newConditions: string[]) => void;
+}
+
+function UnderlyingMedicalConditionsCard({ conditions, onUpdate }: UnderlyingMedicalConditionsCardProps) {
+    const t = useTranslations('personalAllergyProfile');
+    const [newCondition, setNewCondition] = useState("");
+
+    const handleAddCondition = () => {
+        if (newCondition.trim() === "") return;
+        const updatedConditions = [...(conditions || []), newCondition.trim()];
+        onUpdate(updatedConditions);
+        setNewCondition(""); // Clear the input field
+    };
+
+    const handleRemoveCondition = (indexToRemove: number) => {
+        if (confirm(t('removeConditionConfirmation'))) {
+            const updatedConditions = (conditions || []).filter((_, index) => index !== indexToRemove);
+            onUpdate(updatedConditions);
+        }
+    };
+
+    return (
+        <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
+            <CardHeader>
+                <CardTitle className="text-cyan-800 flex items-center gap-2">
+                    <ClipboardList className="h-5 w-5" />
+                    {t('underlyingMedicalConditions')}
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <div className="space-y-2">
+                    {(conditions && conditions.length > 0) ? (
+                        conditions.map((condition, index) => (
+                            <div key={index} className="flex items-center justify-between bg-white/70 p-2 rounded-md border border-cyan-200">
+                                <span className="text-sm text-gray-800">{condition}</span>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleRemoveCondition(index)}
+                                    className="h-7 w-7 p-0 text-red-500 hover:bg-red-50 hover:text-red-600"
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-sm text-center text-gray-500 py-3">{t('noConditionsListed')}</p>
+                    )}
+                </div>
+                <div className="flex items-center gap-2 pt-2 border-t border-cyan-200">
+                    <Input
+                        placeholder={t('addConditionPlaceholder')}
+                        value={newCondition}
+                        onChange={(e) => setNewCondition(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleAddCondition()}
+                        className="border-cyan-300 focus:border-cyan-500 bg-white/100"
+                    />
+                    <Button onClick={handleAddCondition} size="sm" variant="outline">
+                        {t('add')}
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
+
 interface AllergenEditModalProps {
   allergen: DisplayPAPAllergen
   availableSymptoms: Symptom[]
@@ -420,6 +530,7 @@ interface AllergenEditModalProps {
 }
 
 function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClose }: AllergenEditModalProps) {
+  const t = useTranslations('personalAllergyProfile');
   const [discoveryDate, setDiscoveryDate] = useState(allergen.discoveryDate)
   const [discoveryMethod, setDiscoveryMethod] = useState(allergen.discoveryMethod)
   const [selectedSymptoms, setSelectedSymptoms] = useState(allergen.symptoms.map((symptom) => symptom.symptomId))
@@ -446,11 +557,11 @@ function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClose }: A
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="max-w-lg max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle className="text-cyan-800">Edit {allergen.name}</DialogTitle>
+          <DialogTitle className="text-cyan-800">{t('editAllergenTitle', {allergenName: allergen.name})}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Discovery Date</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('discoveryDate')}</label>
             <Input
               type="date"
               value={formatDateForInput(discoveryDate)}
@@ -460,14 +571,14 @@ function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClose }: A
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Discovery Method</label>
-            <Select value={discoveryMethod} onValueChange={value => setDiscoveryMethod(value as DiscoveryMethod)}>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('discoveryMethod')}</label>
+            <Select value={discoveryMethod} onValueChange={(value: DiscoveryMethod) => setDiscoveryMethod(value as DiscoveryMethod)}>
               <SelectTrigger className="border-cyan-300 focus:border-cyan-500">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Clinical symptoms">Clinical symptoms</SelectItem>
-                <SelectItem value="Paraclinical tests">Paraclinical tests</SelectItem>
+                <SelectItem value="Clinical symptoms">{t('clinicalSymptoms')}</SelectItem>
+                <SelectItem value="Paraclinical tests">{t('paraclinicalTests')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -478,7 +589,7 @@ function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClose }: A
             onSelectionChange={setSelectedSymptoms}
             getItemId={(symptom) => symptom.id}
             getItemLabel={(symptom) => symptom.name}
-            label="Associated Symptoms"
+            label={t('associatedSymptoms')}
             maxHeight="max-h-48"
           />
 
@@ -487,10 +598,10 @@ function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClose }: A
               onClick={handleSave}
               className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
             >
-              Save Changes
+              {t('saveChanges')}
             </Button>
             <Button variant="outline" onClick={onClose} className="flex-1 bg-transparent">
-              Cancel
+              {t('cancel')}
             </Button>
           </div>
         </div>

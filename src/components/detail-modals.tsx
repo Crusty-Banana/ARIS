@@ -11,6 +11,7 @@ import { Trash2, Edit, Save, X } from "lucide-react"
 import { GradientSlider } from "./gradient-slider"
 import { ScrollableSelect } from "./scrollable-select"
 import { Allergen, Allergy, Symptom } from "@/modules/business-types"
+import { useTranslations } from "next-intl"
 
 
 interface SymptomDetailModalProps {
@@ -22,6 +23,7 @@ interface SymptomDetailModalProps {
 }
 
 export function SymptomDetailModal({ symptom, open, onClose, onUpdate, onDelete }: SymptomDetailModalProps) {
+  const t = useTranslations('detailModals');
   const [isEditing, setIsEditing] = useState(false)
   const [editData, setEditData] = useState<Symptom | null>(null)
 
@@ -47,7 +49,7 @@ export function SymptomDetailModal({ symptom, open, onClose, onUpdate, onDelete 
   }
 
   const handleDelete = () => {
-    if (symptom && confirm("Are you sure you want to delete this symptom?")) {
+    if (symptom && confirm(t('areYouSureSymptom'))) {
       onDelete(symptom.id)
       onClose()
     }
@@ -62,7 +64,7 @@ export function SymptomDetailModal({ symptom, open, onClose, onUpdate, onDelete 
       <DialogContent className="max-w-lg max-h-[90vh]">
         <DialogHeader>
           <DialogTitle className="text-cyan-800 flex items-center justify-between pr-8">
-            Symptom Details
+            {t('symptomDetails')}
             <div className="flex gap-3">
               {!isEditing ? (
                 <>
@@ -99,7 +101,7 @@ export function SymptomDetailModal({ symptom, open, onClose, onUpdate, onDelete 
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('name')}</label>
             {isEditing ? (
               <Input
                 value={currentData.name}
@@ -112,7 +114,7 @@ export function SymptomDetailModal({ symptom, open, onClose, onUpdate, onDelete 
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Severity</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('severity')}</label>
             {isEditing ? (
               <GradientSlider
                 value={[currentData.severity]}
@@ -125,13 +127,13 @@ export function SymptomDetailModal({ symptom, open, onClose, onUpdate, onDelete 
               <Badge
                 className={`${currentData.severity === 1 ? "bg-green-500" : currentData.severity === 2 ? "bg-yellow-500" : "bg-red-500"} text-white`}
               >
-                Severity: {currentData.severity}
+                {t('severity')}: {currentData.severity}
               </Badge>
             )}
           </div>
 
           <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Prevalence</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('prevalence')}</label>
             {isEditing ? (
               <GradientSlider
                 value={[currentData.prevalence]}
@@ -144,13 +146,13 @@ export function SymptomDetailModal({ symptom, open, onClose, onUpdate, onDelete 
               <Badge
                 className={`${currentData.prevalence <= 2 ? "bg-green-500" : currentData.prevalence <= 3 ? "bg-yellow-500" : "bg-red-500"} text-white`}
               >
-                Prevalence: {currentData.prevalence}
+                {t('prevalence')}: {currentData.prevalence}
               </Badge>
             )}
           </div>
 
           <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Treatment</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('treatment')}</label>
             {isEditing ? (
               <Textarea
                 value={currentData.treatment}
@@ -184,6 +186,7 @@ export function AllergenDetailModal({
   onUpdate,
   onDelete,
 }: AllergenDetailModalProps) {
+  const t = useTranslations('detailModals');
   const [isEditing, setIsEditing] = useState(false)
   const [editData, setEditData] = useState<Allergen | null>(null)
 
@@ -209,7 +212,7 @@ export function AllergenDetailModal({
   }
 
   const handleDelete = () => {
-    if (allergen && confirm("Are you sure you want to delete this allergen?")) {
+    if (allergen && confirm(t('areYouSureAllergen'))) {
       onDelete(allergen.id)
       onClose()
     }
@@ -224,7 +227,7 @@ export function AllergenDetailModal({
       <DialogContent className="max-w-2xl max-h-[90vh]">
         <DialogHeader>
           <DialogTitle className="text-cyan-800 flex items-center justify-between pr-8">
-            Allergen Details
+            {t('allergenDetails')}
             <div className="flex gap-3">
               {!isEditing ? (
                 <>
@@ -261,7 +264,7 @@ export function AllergenDetailModal({
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('name')}</label>
             {isEditing ? (
               <Input
                 value={currentData.name}
@@ -274,7 +277,7 @@ export function AllergenDetailModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('type')}</label>
             {isEditing ? (
               <Select
                 value={currentData.type}
@@ -284,22 +287,22 @@ export function AllergenDetailModal({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="food">Food</SelectItem>
-                  <SelectItem value="drug">Drug</SelectItem>
-                  <SelectItem value="respiratory">Respiratory</SelectItem>
+                  <SelectItem value="food">{t('food')}</SelectItem>
+                  <SelectItem value="drug">{t('drug')}</SelectItem>
+                  <SelectItem value="respiratory">{t('respiratory')}</SelectItem>
                 </SelectContent>
               </Select>
             ) : (
               <Badge
                 className={`${currentData.type === "food" ? "bg-blue-500" : currentData.type === "drug" ? "bg-purple-500" : "bg-green-500"} text-white capitalize`}
               >
-                {currentData.type}
+                {t(currentData.type)}
               </Badge>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Associated Symptoms</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('associatedSymptoms')}</label>
             {isEditing ? (
               <ScrollableSelect
                 items={symptoms.sort((a, b) => a.name.localeCompare(b.name))}
@@ -325,7 +328,7 @@ export function AllergenDetailModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Prevalence</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('prevalence')}</label>
             {isEditing ? (
               <GradientSlider
                 value={[currentData.prevalence]}
@@ -338,13 +341,13 @@ export function AllergenDetailModal({
               <Badge
                 className={`${currentData.prevalence <= 2 ? "bg-green-500" : currentData.prevalence <= 3 ? "bg-yellow-500" : "bg-red-500"} text-white`}
               >
-                Prevalence: {currentData.prevalence}
+                {t('prevalence')}: {currentData.prevalence}
               </Badge>
             )}
           </div>
 
           <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('description')}</label>
             {isEditing ? (
               <Textarea
                 value={currentData.description}
@@ -371,6 +374,7 @@ interface AllergyDetailModalProps {
 }
 
 export function AllergyDetailModal({ allergy, allergens, open, onClose, onUpdate, onDelete }: AllergyDetailModalProps) {
+  const t = useTranslations('detailModals');
   const [isEditing, setIsEditing] = useState(false)
   const [editData, setEditData] = useState<Allergy | null>(null)
 
@@ -396,7 +400,7 @@ export function AllergyDetailModal({ allergy, allergens, open, onClose, onUpdate
   }
 
   const handleDelete = () => {
-    if (allergy && confirm("Are you sure you want to delete this allergy?")) {
+    if (allergy && confirm(t('areYouSureAllergy'))) {
       onDelete(allergy.id)
       onClose()
     }
@@ -411,7 +415,7 @@ export function AllergyDetailModal({ allergy, allergens, open, onClose, onUpdate
       <DialogContent className="max-w-lg max-h-[90vh]">
         <DialogHeader>
           <DialogTitle className="text-cyan-800 flex items-center justify-between pr-8">
-            Allergy Details
+            {t('allergyDetails')}
             <div className="flex gap-3">
               {!isEditing ? (
                 <>
@@ -448,7 +452,7 @@ export function AllergyDetailModal({ allergy, allergens, open, onClose, onUpdate
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('name')}</label>
             {isEditing ? (
               <Input
                 value={currentData.name}
@@ -461,7 +465,7 @@ export function AllergyDetailModal({ allergy, allergens, open, onClose, onUpdate
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Associated Allergens</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('associatedAllergens')}</label>
             {isEditing ? (
               <ScrollableSelect
                 items={allergens.sort((a, b) => a.name.localeCompare(b.name))}

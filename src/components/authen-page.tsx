@@ -2,18 +2,49 @@
 
 import type React from "react"
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Eye, EyeOff, Lock, Mail, User } from "lucide-react"
-import { useState } from "react"
+import {
+  Button
+} from "@/components/ui/button"
+import {
+  Input
+} from "@/components/ui/input"
+import {
+  Label
+} from "@/components/ui/label"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card"
+import {
+  Eye,
+  EyeOff,
+  Lock,
+  Mail,
+  User
+} from "lucide-react"
+import {
+  useState
+} from "react"
 import Link from "next/link"
-import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { httpPost$Register } from "@/modules/commands/Authenticate/fetcher"
+import {
+  signIn
+} from "next-auth/react"
+import {
+  useRouter
+} from "next/navigation"
+import {
+  httpPost$Register
+} from "@/modules/commands/Authenticate/fetcher"
+import {
+  useTranslations
+} from "next-intl"
+
 
 export default function AuthPage() {
+  const t = useTranslations('authPage')
   const [isLogin, setIsLogin] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -38,7 +69,7 @@ export default function AuthPage() {
       if (result?.ok) {
         router.push("/dashboard")
       } else {
-        alert("Login failed. Please check your credentials.")
+        alert(t('loginFailed'))
       }
     } catch (error) {
       console.error("Login error:", error)
@@ -59,19 +90,24 @@ export default function AuthPage() {
     const confirmPassword = formData.get("confirmPassword") as string
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match")
+      alert(t('passwordsDoNotMatch'))
       setIsLoading(false)
       return
     }
 
     try {
-      const res = await httpPost$Register("/api/auth/register", { firstName, lastName, email, password })
+      const res = await httpPost$Register("/api/auth/register", {
+        firstName,
+        lastName,
+        email,
+        password
+      })
 
       if (res.success) {
         setIsLogin(true)
-        alert("Account created successfully! Please sign in.")
+        alert(t('accountCreated'))
       } else {
-        alert(res.message || "Registration failed. Please try again.")
+        alert(res.message || t('registrationFailed'))
       }
     } catch (error) {
       console.error("Registration error:", error)
@@ -95,10 +131,10 @@ export default function AuthPage() {
               {isLogin ? <Lock className="w-6 h-6 text-white" /> : <User className="w-6 h-6 text-white" />}
             </div>
             <CardTitle className="text-2xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-              {isLogin ? "Welcome Back" : "Create Account"}
+              {isLogin ? t('welcomeBack') : t('createAccount')}
             </CardTitle>
             <CardDescription className="text-gray-600">
-              {isLogin ? "Sign in to your account to continue" : "Sign up to get started with your account"}
+              {isLogin ? t('signInPrompt') : t('signUpPrompt')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -106,7 +142,7 @@ export default function AuthPage() {
               <form key="login-form" onSubmit={handleLoginSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-                    Email
+                    {t('email')}
                   </Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -114,7 +150,7 @@ export default function AuthPage() {
                       id="email"
                       name="email"
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder={t('enterYourEmail')}
                       className="pl-10 border-gray-200 focus:border-cyan-500 focus:ring-cyan-500"
                       required
                     />
@@ -123,7 +159,7 @@ export default function AuthPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-sm font-medium text-gray-700">
-                    Password
+                    {t('password')}
                   </Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -131,7 +167,7 @@ export default function AuthPage() {
                       id="password"
                       name="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Enter your password"
+                      placeholder={t('enterYourPassword')}
                       className="pl-10 pr-10 border-gray-200 focus:border-cyan-500 focus:ring-cyan-500"
                       required
                     />
@@ -152,7 +188,7 @@ export default function AuthPage() {
                     className="w-4 h-4 text-cyan-600 bg-gray-100 border-gray-300 rounded focus:ring-cyan-500"
                   />
                   <Label htmlFor="remember" className="text-sm text-gray-600">
-                    Remember me
+                    {t('rememberMe')}
                   </Label>
                 </div>
 
@@ -161,7 +197,7 @@ export default function AuthPage() {
                   disabled={isLoading}
                   className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-medium py-2.5 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50"
                 >
-                  {isLoading ? "Signing In..." : "Sign In"}
+                  {isLoading ? t('signingIn') : t('signIn')}
                 </Button>
               </form>
             ) : (
@@ -169,7 +205,7 @@ export default function AuthPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">
-                      First Name
+                      {t('firstName')}
                     </Label>
                     <div className="relative">
                       <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -177,7 +213,7 @@ export default function AuthPage() {
                         id="firstName"
                         name="firstName"
                         type="text"
-                        placeholder="First name"
+                        placeholder={t('firstNamePlaceholder')}
                         className="pl-10 border-gray-200 focus:border-cyan-500 focus:ring-cyan-500"
                         required
                       />
@@ -186,7 +222,7 @@ export default function AuthPage() {
 
                   <div className="space-y-2">
                     <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">
-                      Last Name
+                      {t('lastName')}
                     </Label>
                     <div className="relative">
                       <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -194,7 +230,7 @@ export default function AuthPage() {
                         id="lastName"
                         name="lastName"
                         type="text"
-                        placeholder="Last name"
+                        placeholder={t('lastNamePlaceholder')}
                         className="pl-10 border-gray-200 focus:border-cyan-500 focus:ring-cyan-500"
                         required
                       />
@@ -204,7 +240,7 @@ export default function AuthPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="registerEmail" className="text-sm font-medium text-gray-700">
-                    Email
+                    {t('email')}
                   </Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -212,7 +248,7 @@ export default function AuthPage() {
                       id="registerEmail"
                       name="email"
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder={t('enterYourEmail')}
                       className="pl-10 border-gray-200 focus:border-cyan-500 focus:ring-cyan-500"
                       required
                     />
@@ -221,7 +257,7 @@ export default function AuthPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="registerPassword" className="text-sm font-medium text-gray-700">
-                    Password
+                    {t('password')}
                   </Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -229,7 +265,7 @@ export default function AuthPage() {
                       id="registerPassword"
                       name="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Create a password"
+                      placeholder={t('createAPassword')}
                       className="pl-10 pr-10 border-gray-200 focus:border-cyan-500 focus:ring-cyan-500"
                       required
                       minLength={6}
@@ -246,7 +282,7 @@ export default function AuthPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">
-                    Confirm Password
+                    {t('confirmPassword')}
                   </Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -254,7 +290,7 @@ export default function AuthPage() {
                       id="confirmPassword"
                       name="confirmPassword"
                       type={showConfirmPassword ? "text" : "password"}
-                      placeholder="Confirm your password"
+                      placeholder={t('confirmYourPassword')}
                       className="pl-10 pr-10 border-gray-200 focus:border-cyan-500 focus:ring-cyan-500"
                       required
                       minLength={6}
@@ -277,14 +313,10 @@ export default function AuthPage() {
                     required
                   />
                   <Label htmlFor="terms" className="text-sm text-gray-600">
-                    I agree to the{" "}
-                    <Link href="/terms" className="text-cyan-600 hover:text-blue-700 font-medium">
-                      Terms of Service
-                    </Link>{" "}
-                    and{" "}
-                    <Link href="/privacy" className="text-cyan-600 hover:text-blue-700 font-medium">
-                      Privacy Policy
-                    </Link>
+                    {t.rich('termsAgreement', {
+                      termsOfService: (chunks) => <Link href="/terms" className="text-cyan-600 hover:text-blue-700 font-medium">{chunks}</Link>,
+                      privacyPolicy: (chunks) => <Link href="/privacy" className="text-cyan-600 hover:text-blue-700 font-medium">{chunks}</Link>,
+                    })}
                   </Label>
                 </div>
 
@@ -293,19 +325,19 @@ export default function AuthPage() {
                   disabled={isLoading}
                   className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-medium py-2.5 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50"
                 >
-                  {isLoading ? "Creating Account..." : "Create Account"}
+                  {isLoading ? t('creatingAccount') : t('createAccountButton')}
                 </Button>
               </form>
             )}
 
             <p className="text-center text-sm text-gray-600">
-              {isLogin ? "Don't have an account? " : "Already have an account? "}
+              {isLogin ? t('noAccount') : t('haveAccount')}
               <button
                 type="button"
                 onClick={toggleAuthMode}
                 className="text-cyan-600 hover:text-blue-700 font-medium focus:outline-none"
               >
-                {isLogin ? "Sign up" : "Sign in"}
+                {isLogin ? t('signUp') : t('signInLink')}
               </button>
             </p>
           </CardContent>

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { X, Search } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 interface ScrollableSelectProps<T> {
   items: T[]
@@ -26,6 +27,7 @@ export function ScrollableSelect<T>({
   label,
   maxHeight = "max-h-48",
 }: ScrollableSelectProps<T>) {
+  const t = useTranslations('common');
   const [searchTerm, setSearchTerm] = useState("")
 
   const filteredItems = items.filter((item) => getItemLabel(item).toLowerCase().includes(searchTerm.toLowerCase()))
@@ -75,7 +77,7 @@ export function ScrollableSelect<T>({
         <Input
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search items..."
+          placeholder={t("searchItems")}
           className="pl-10 border-cyan-300 focus:border-cyan-500"
         />
       </div>

@@ -51,6 +51,7 @@ export const PAP = z.object({
     allowPublic: z.boolean(),
     gender: Gender,
     doB: UnixTimestamp.nullable().default(null),
+    underlyingMedCon: z.array(z.string()).default([]),
     allergens: z
         .array(
             z.object({
@@ -58,6 +59,7 @@ export const PAP = z.object({
                 discoveryDate: UnixTimestamp.nullable().default(null),
                 discoveryMethod: DiscoveryMethod,
                 symptomsId: z.array(ObjectIdAsHexString).default([]),
+                
             }),
         )
         .default([]),

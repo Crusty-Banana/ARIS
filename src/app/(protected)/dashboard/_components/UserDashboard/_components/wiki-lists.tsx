@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, ArrowUp, ArrowDown, Info, Plus, Check } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Allergen, Allergy, Symptom } from "@/modules/business-types"
+import { useTranslations } from "next-intl"
 
 type SortOption = "name" | "severity" | "prevalence"
 type SortDirection = "asc" | "desc"
@@ -18,6 +19,7 @@ interface WikiSymptomListProps {
 }
 
 export function WikiSymptomList({ symptoms }: WikiSymptomListProps) {
+  const t = useTranslations('wikiLists');
   const [searchTerm, setSearchTerm] = useState("")
   const [sortBy, setSortBy] = useState<SortOption>("name")
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
@@ -47,35 +49,37 @@ export function WikiSymptomList({ symptoms }: WikiSymptomListProps) {
 
   return (
     <>
-      <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
+      <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200 w-full">
         <CardHeader>
           <CardTitle className="text-cyan-800 flex items-center justify-between">
-            Symptoms
+            {t('symptoms')}
             <Badge variant="secondary">{symptoms.length}</Badge>
           </CardTitle>
-          <div className="flex gap-2">
+          <div className="flex flex-col md:flex-row gap-2 mt-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search symptoms..."
+                placeholder={t('searchSymptoms')}
                 className="pl-10 border-cyan-300 focus:border-cyan-500"
               />
             </div>
-            <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
-              <SelectTrigger className="w-40 border-cyan-300 focus:border-cyan-500">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="name">Sort by Name</SelectItem>
-                <SelectItem value="severity">Sort by Severity</SelectItem>
-                <SelectItem value="prevalence">Sort by Prevalence</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline" size="sm" onClick={toggleSortDirection} className="px-3 bg-transparent">
-              {sortDirection === "asc" ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
-            </Button>
+            <div className="flex items-center gap-2">
+                <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
+                  <SelectTrigger className="w-full flex-1 md:w-40 border-cyan-300 focus:border-cyan-500">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="name">{t('sortByName')}</SelectItem>
+                    <SelectItem value="severity">{t('sortBySeverity')}</SelectItem>
+                    <SelectItem value="prevalence">{t('sortByPrevalence')}</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button variant="outline" size="sm" onClick={toggleSortDirection} className="px-3 bg-transparent">
+                  {sortDirection === "asc" ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
+                </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -89,27 +93,27 @@ export function WikiSymptomList({ symptoms }: WikiSymptomListProps) {
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="font-medium text-cyan-800">{symptom.name}</div>
-                    <div className="text-sm text-gray-600 flex items-center gap-2 mt-1">
+                    <div className="text-sm text-gray-600 flex items-center flex-wrap gap-2 mt-1">
                       <Badge
                         className={`${symptom.severity === 1 ? "bg-green-500" : symptom.severity === 2 ? "bg-yellow-500" : "bg-red-500"} text-white text-xs`}
                       >
-                        Severity: {symptom.severity}
+                        {t('severity')}: {symptom.severity}
                       </Badge>
                       <Badge
                         className={`${symptom.prevalence <= 2 ? "bg-green-500" : symptom.prevalence <= 3 ? "bg-yellow-500" : "bg-red-500"} text-white text-xs`}
                       >
-                        Prevalence: {symptom.prevalence}
+                        {t('prevalence')}: {symptom.prevalence}
                       </Badge>
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-cyan-100">
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-cyan-100 flex-shrink-0 ml-2">
                     <Info className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
             ))}
             {filteredAndSortedSymptoms.length === 0 && (
-              <div className="text-center text-gray-500 py-4">No symptoms found</div>
+              <div className="text-center text-gray-500 py-4">{t('noSymptomsFound')}</div>
             )}
           </div>
         </CardContent>
@@ -121,33 +125,33 @@ export function WikiSymptomList({ symptoms }: WikiSymptomListProps) {
           {selectedSymptom && (
             <>
               <DialogHeader>
-                <DialogTitle className="text-cyan-800">Symptom Details</DialogTitle>
+                <DialogTitle className="text-cyan-800">{t('symptomDetails')}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('name')}</label>
                   <div className="p-2 bg-gray-50 rounded">{selectedSymptom.name}</div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Severity</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('severity')}</label>
                     <Badge
                       className={`${selectedSymptom.severity === 1 ? "bg-green-500" : selectedSymptom.severity === 2 ? "bg-yellow-500" : "bg-red-500"} text-white`}
                     >
-                      Severity: {selectedSymptom.severity}
+                      {t('severity')}: {selectedSymptom.severity}
                     </Badge>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Prevalence</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('prevalence')}</label>
                     <Badge
                       className={`${selectedSymptom.prevalence <= 2 ? "bg-green-500" : selectedSymptom.prevalence <= 3 ? "bg-yellow-500" : "bg-red-500"} text-white`}
                     >
-                      Prevalence: {selectedSymptom.prevalence}
+                      {t('prevalence')}: {selectedSymptom.prevalence}
                     </Badge>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Treatment</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('treatment')}</label>
                   <div className="p-2 bg-gray-50 rounded min-h-[100px]">{selectedSymptom.treatment}</div>
                 </div>
               </div>
@@ -167,6 +171,7 @@ interface WikiAllergenListProps {
 }
 
 export function WikiAllergenList({ allergens, symptoms, onQuickAdd, userAllergenIds }: WikiAllergenListProps) {
+  const t = useTranslations('wikiLists');
   const [searchTerm, setSearchTerm] = useState("")
   const [sortBy, setSortBy] = useState<SortOption>("name")
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
@@ -211,46 +216,50 @@ export function WikiAllergenList({ allergens, symptoms, onQuickAdd, userAllergen
 
   return (
     <>
-      <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
+      <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200 w-full">
         <CardHeader>
           <CardTitle className="text-cyan-800 flex items-center justify-between">
-            Allergens
+            {t('allergens')}
             <Badge variant="secondary">{allergens.length}</Badge>
           </CardTitle>
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search allergens..."
-                className="pl-10 border-cyan-300 focus:border-cyan-500"
-              />
-            </div>
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-32 border-cyan-300 focus:border-cyan-500">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="food">Food</SelectItem>
-                <SelectItem value="drug">Drug</SelectItem>
-                <SelectItem value="respiratory">Respiratory</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
-              <SelectTrigger className="w-40 border-cyan-300 focus:border-cyan-500">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="name">Sort by Name</SelectItem>
-                <SelectItem value="prevalence">Sort by Prevalence</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline" size="sm" onClick={toggleSortDirection} className="px-3 bg-transparent">
-              {sortDirection === "asc" ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
-            </Button>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder={t('searchAllergens')}
+              className="pl-10 border-cyan-300 focus:border-cyan-500 w-full"
+            />
           </div>
+
+          <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <SelectTrigger className="w-full md:w-32 border-cyan-300 focus:border-cyan-500">
+              <SelectValue placeholder="Filter by Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t('allTypes')}</SelectItem>
+              <SelectItem value="food">{t('food')}</SelectItem>
+              <SelectItem value="drug">{t('drug')}</SelectItem>
+              <SelectItem value="respiratory">{t('respiratory')}</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <div className="flex items-center gap-2">
+                <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
+                  <SelectTrigger className="w-full flex-1 md:w-40 border-cyan-300 focus:border-cyan-500">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="name">{t('sortByName')}</SelectItem>
+                    <SelectItem value="prevalence">{t('sortByPrevalence')}</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button variant="outline" size="sm" onClick={toggleSortDirection} className="px-3 bg-transparent">
+                  {sortDirection === "asc" ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
+                </Button>
+            </div>
+        </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-2 max-h-96 overflow-y-auto">
@@ -260,17 +269,17 @@ export function WikiAllergenList({ allergens, symptoms, onQuickAdd, userAllergen
                 className="bg-white/70 backdrop-blur-sm p-3 rounded-lg border border-cyan-200 cursor-pointer hover:bg-white/90 transition-colors"
                 onClick={() => setSelectedAllergen(allergen)}
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="font-medium text-cyan-800">{allergen.name}</div>
-                    <div className="text-sm text-gray-600 flex items-center gap-2 mt-1">
+                    <div className="text-sm text-gray-600 flex items-center flex-wrap gap-2 mt-1">
                       <Badge className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}>
-                        {allergen.type}
+                        {t(allergen.type)}
                       </Badge>
                       <Badge
                         className={`${allergen.prevalence <= 2 ? "bg-green-500" : allergen.prevalence <= 3 ? "bg-yellow-500" : "bg-red-500"} text-white text-xs`}
                       >
-                        Prevalence: {allergen.prevalence}
+                        {t('prevalence')}: {allergen.prevalence}
                       </Badge>
                     </div>
                     <div className="flex flex-wrap gap-1 mt-2">
@@ -284,12 +293,12 @@ export function WikiAllergenList({ allergens, symptoms, onQuickAdd, userAllergen
                       })}
                       {allergen.symptomsId.length > 3 && (
                         <Badge variant="outline" className="text-xs">
-                          +{allergen.symptomsId.length - 3} more
+                          +{allergen.symptomsId.length - 3} {t('more')}
                         </Badge>
                       )}
                     </div>
                   </div>
-                  <div className="flex gap-1 ml-2">
+                  <div className="flex gap-1 ml-2 flex-shrink-0">
                     {onQuickAdd && !userAllergenIds?.includes(allergen.id) && (
                       <Button
                         variant="ghost"
@@ -299,7 +308,7 @@ export function WikiAllergenList({ allergens, symptoms, onQuickAdd, userAllergen
                           onQuickAdd(allergen)
                         }}
                         className="h-8 w-8 p-0 hover:bg-green-100 text-green-600 border border-green-200 hover:border-green-300"
-                        title="Add to my allergens"
+                        title={t('allergenAddButtonTitle')}
                       >
                         <Plus className="h-4 w-4" />
                       </Button>
@@ -310,7 +319,7 @@ export function WikiAllergenList({ allergens, symptoms, onQuickAdd, userAllergen
                         size="sm"
                         disabled
                         className="h-8 w-8 p-0 text-gray-400 border border-gray-200"
-                        title="Already in your allergens"
+                        title={t('potentialCrossAllergens.alreadyInAllergens')}
                       >
                         <Check className="h-4 w-4" />
                       </Button>
@@ -323,7 +332,7 @@ export function WikiAllergenList({ allergens, symptoms, onQuickAdd, userAllergen
               </div>
             ))}
             {filteredAndSortedAllergens.length === 0 && (
-              <div className="text-center text-gray-500 py-4">No allergens found</div>
+              <div className="text-center text-gray-500 py-4">{t('noAllergensFound')}</div>
             )}
           </div>
         </CardContent>
@@ -335,29 +344,29 @@ export function WikiAllergenList({ allergens, symptoms, onQuickAdd, userAllergen
           {selectedAllergen && (
             <>
               <DialogHeader>
-                <DialogTitle className="text-cyan-800">Allergen Details</DialogTitle>
+                <DialogTitle className="text-cyan-800">{t('allergenDetails')}</DialogTitle>
               </DialogHeader>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('name')}</label>
                   <div className="p-2 bg-gray-50 rounded">{selectedAllergen.name}</div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('type')}</label>
                   <Badge className={`${getTypeColor(selectedAllergen.type)} text-white capitalize`}>
-                    {selectedAllergen.type}
+                    {t(selectedAllergen.type)}
                   </Badge>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Prevalence</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('prevalence')}</label>
                   <Badge
                     className={`${selectedAllergen.prevalence <= 2 ? "bg-green-500" : selectedAllergen.prevalence <= 3 ? "bg-yellow-500" : "bg-red-500"} text-white`}
                   >
-                    Prevalence: {selectedAllergen.prevalence}
+                    {t('prevalence')}: {selectedAllergen.prevalence}
                   </Badge>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Associated Symptoms</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('associatedSymptoms')}</label>
                   <div className="flex flex-wrap gap-1">
                     {selectedAllergen.symptomsId.map((symptomId) => {
                       const symptom = symptoms.find((s) => s.id === symptomId)
@@ -369,8 +378,8 @@ export function WikiAllergenList({ allergens, symptoms, onQuickAdd, userAllergen
                     })}
                   </div>
                 </div>
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <div className="col-span-1 md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('description')}</label>
                   <div className="p-2 bg-gray-50 rounded min-h-[100px]">{selectedAllergen.description}</div>
                 </div>
               </div>
@@ -388,7 +397,8 @@ interface WikiAllergyListProps {
 }
 
 export function WikiAllergyList({ allergies, allergens }: WikiAllergyListProps) {
-  const [searchTerm, setSearchTerm] = useState("")
+  const t = useTranslations('wikiLists');
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedAllergy, setSelectedAllergy] = useState<Allergy | null>(null)
 
   const filteredAllergies = allergies
@@ -397,18 +407,18 @@ export function WikiAllergyList({ allergies, allergens }: WikiAllergyListProps) 
 
   return (
     <>
-      <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
+      <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200 w-full">
         <CardHeader>
           <CardTitle className="text-cyan-800 flex items-center justify-between">
-            Allergies
+            {t('allergies')}
             <Badge variant="secondary">{allergies.length}</Badge>
           </CardTitle>
-          <div className="relative">
+          <div className="relative mt-2">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search allergies..."
+              placeholder={t('searchAllergies')}
               className="pl-10 border-cyan-300 focus:border-cyan-500"
             />
           </div>
@@ -421,10 +431,10 @@ export function WikiAllergyList({ allergies, allergens }: WikiAllergyListProps) 
                 className="bg-white/70 backdrop-blur-sm p-3 rounded-lg border border-cyan-200 cursor-pointer hover:bg-white/90 transition-colors"
                 onClick={() => setSelectedAllergy(allergy)}
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="font-medium text-cyan-800">{allergy.name}</div>
-                    <div className="text-sm text-gray-600 mt-1">{allergy.allergensId.length} allergen(s) associated</div>
+                    <div className="text-sm text-gray-600 mt-1">{allergy.allergensId.length} {t('allergen(s) associated')}</div>
                     <div className="flex flex-wrap gap-1 mt-2">
                       {allergy.allergensId.slice(0, 3).map((allergenId) => {
                         const allergen = allergens.find((a) => a.id === allergenId)
@@ -436,37 +446,36 @@ export function WikiAllergyList({ allergies, allergens }: WikiAllergyListProps) 
                       })}
                       {allergy.allergensId.length > 3 && (
                         <Badge variant="outline" className="text-xs">
-                          +{allergy.allergensId.length - 3} more
+                          +{allergy.allergensId.length - 3} {t('more')}
                         </Badge>
                       )}
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-cyan-100">
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-cyan-100 flex-shrink-0 ml-2">
                     <Info className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
             ))}
-            {filteredAllergies.length === 0 && <div className="text-center text-gray-500 py-4">No allergies found</div>}
+            {filteredAllergies.length === 0 && <div className="text-center text-gray-500 py-4">{t('noAllergiesFound')}</div>}
           </div>
         </CardContent>
       </Card>
 
-      {/* Allergy Detail Modal */}
       <Dialog open={!!selectedAllergy} onOpenChange={() => setSelectedAllergy(null)}>
         <DialogContent className="max-w-lg">
           {selectedAllergy && (
             <>
               <DialogHeader>
-                <DialogTitle className="text-cyan-800">Allergy Details</DialogTitle>
+                <DialogTitle className="text-cyan-800">{t('allergyDetails')}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('name')}</label>
                   <div className="p-2 bg-gray-50 rounded">{selectedAllergy.name}</div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Associated Allergens</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('associatedAllergens')}</label>
                   <div className="flex flex-wrap gap-1">
                     {selectedAllergy.allergensId.map((allergenId) => {
                       const allergen = allergens.find((a) => a.id === allergenId)
