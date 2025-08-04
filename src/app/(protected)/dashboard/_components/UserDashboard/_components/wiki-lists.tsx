@@ -47,13 +47,14 @@ export function WikiSymptomList({ symptoms }: WikiSymptomListProps) {
 
   return (
     <>
-      <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
+      <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200 w-full">
         <CardHeader>
           <CardTitle className="text-cyan-800 flex items-center justify-between">
             Symptoms
             <Badge variant="secondary">{symptoms.length}</Badge>
           </CardTitle>
-          <div className="flex gap-2">
+          {/* Responsive controls: stack on mobile, row on medium screens and up */}
+          <div className="flex flex-col md:flex-row gap-2 mt-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
@@ -63,19 +64,22 @@ export function WikiSymptomList({ symptoms }: WikiSymptomListProps) {
                 className="pl-10 border-cyan-300 focus:border-cyan-500"
               />
             </div>
-            <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
-              <SelectTrigger className="w-40 border-cyan-300 focus:border-cyan-500">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="name">Sort by Name</SelectItem>
-                <SelectItem value="severity">Sort by Severity</SelectItem>
-                <SelectItem value="prevalence">Sort by Prevalence</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline" size="sm" onClick={toggleSortDirection} className="px-3 bg-transparent">
-              {sortDirection === "asc" ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
-            </Button>
+            <div className="flex items-center gap-2">
+                <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
+                  {/* Responsive width: full on mobile, fixed on medium screens and up */}
+                  <SelectTrigger className="w-full flex-1 md:w-40 border-cyan-300 focus:border-cyan-500">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="name">Sort by Name</SelectItem>
+                    <SelectItem value="severity">Sort by Severity</SelectItem>
+                    <SelectItem value="prevalence">Sort by Prevalence</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button variant="outline" size="sm" onClick={toggleSortDirection} className="px-3 bg-transparent">
+                  {sortDirection === "asc" ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
+                </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -89,7 +93,7 @@ export function WikiSymptomList({ symptoms }: WikiSymptomListProps) {
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="font-medium text-cyan-800">{symptom.name}</div>
-                    <div className="text-sm text-gray-600 flex items-center gap-2 mt-1">
+                    <div className="text-sm text-gray-600 flex items-center flex-wrap gap-2 mt-1">
                       <Badge
                         className={`${symptom.severity === 1 ? "bg-green-500" : symptom.severity === 2 ? "bg-yellow-500" : "bg-red-500"} text-white text-xs`}
                       >
@@ -102,7 +106,7 @@ export function WikiSymptomList({ symptoms }: WikiSymptomListProps) {
                       </Badge>
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-cyan-100">
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-cyan-100 flex-shrink-0 ml-2">
                     <Info className="h-4 w-4" />
                   </Button>
                 </div>
@@ -128,7 +132,7 @@ export function WikiSymptomList({ symptoms }: WikiSymptomListProps) {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
                   <div className="p-2 bg-gray-50 rounded">{selectedSymptom.name}</div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Severity</label>
                     <Badge
@@ -211,46 +215,57 @@ export function WikiAllergenList({ allergens, symptoms, onQuickAdd, userAllergen
 
   return (
     <>
-      <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
+      <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200 w-full">
         <CardHeader>
           <CardTitle className="text-cyan-800 flex items-center justify-between">
             Allergens
             <Badge variant="secondary">{allergens.length}</Badge>
           </CardTitle>
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search allergens..."
-                className="pl-10 border-cyan-300 focus:border-cyan-500"
-              />
-            </div>
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-32 border-cyan-300 focus:border-cyan-500">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="food">Food</SelectItem>
-                <SelectItem value="drug">Drug</SelectItem>
-                <SelectItem value="respiratory">Respiratory</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
-              <SelectTrigger className="w-40 border-cyan-300 focus:border-cyan-500">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="name">Sort by Name</SelectItem>
-                <SelectItem value="prevalence">Sort by Prevalence</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline" size="sm" onClick={toggleSortDirection} className="px-3 bg-transparent">
-              {sortDirection === "asc" ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
-            </Button>
+          {/* Responsive controls: stack on mobile, row on medium screens and up */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search allergens..."
+              className="pl-10 border-cyan-300 focus:border-cyan-500 w-full"
+            />
           </div>
+
+          {/* Type Filter Dropdown */}
+          <Select value={typeFilter} onValueChange={setTypeFilter}>
+            {/* Removed 'flex-1' as it's not needed. 
+              'w-full' applies on mobile (due to flex-col).
+              'md:w-32' applies on medium screens and up (in the flex-row).
+            */}
+            <SelectTrigger className="w-full md:w-32 border-cyan-300 focus:border-cyan-500">
+              <SelectValue placeholder="Filter by Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="food">Food</SelectItem>
+              <SelectItem value="drug">Drug</SelectItem>
+              <SelectItem value="respiratory">Respiratory</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <div className="flex items-center gap-2">
+                <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
+                  {/* Responsive width: full on mobile, fixed on medium screens and up */}
+                  <SelectTrigger className="w-full flex-1 md:w-40 border-cyan-300 focus:border-cyan-500">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="name">Sort by Name</SelectItem>
+                    <SelectItem value="prevalence">Sort by Prevalence</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button variant="outline" size="sm" onClick={toggleSortDirection} className="px-3 bg-transparent">
+                  {sortDirection === "asc" ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
+                </Button>
+            </div>
+        </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-2 max-h-96 overflow-y-auto">
@@ -260,10 +275,10 @@ export function WikiAllergenList({ allergens, symptoms, onQuickAdd, userAllergen
                 className="bg-white/70 backdrop-blur-sm p-3 rounded-lg border border-cyan-200 cursor-pointer hover:bg-white/90 transition-colors"
                 onClick={() => setSelectedAllergen(allergen)}
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="font-medium text-cyan-800">{allergen.name}</div>
-                    <div className="text-sm text-gray-600 flex items-center gap-2 mt-1">
+                    <div className="text-sm text-gray-600 flex items-center flex-wrap gap-2 mt-1">
                       <Badge className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}>
                         {allergen.type}
                       </Badge>
@@ -289,7 +304,7 @@ export function WikiAllergenList({ allergens, symptoms, onQuickAdd, userAllergen
                       )}
                     </div>
                   </div>
-                  <div className="flex gap-1 ml-2">
+                  <div className="flex gap-1 ml-2 flex-shrink-0">
                     {onQuickAdd && !userAllergenIds?.includes(allergen.id) && (
                       <Button
                         variant="ghost"
@@ -337,7 +352,8 @@ export function WikiAllergenList({ allergens, symptoms, onQuickAdd, userAllergen
               <DialogHeader>
                 <DialogTitle className="text-cyan-800">Allergen Details</DialogTitle>
               </DialogHeader>
-              <div className="grid grid-cols-2 gap-4">
+              {/* Responsive grid: 1 column on mobile, 2 on medium screens and up */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
                   <div className="p-2 bg-gray-50 rounded">{selectedAllergen.name}</div>
@@ -369,7 +385,8 @@ export function WikiAllergenList({ allergens, symptoms, onQuickAdd, userAllergen
                     })}
                   </div>
                 </div>
-                <div className="col-span-2">
+                {/* This will span correctly on both 1 and 2 column grids */}
+                <div className="col-span-1 md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                   <div className="p-2 bg-gray-50 rounded min-h-[100px]">{selectedAllergen.description}</div>
                 </div>
@@ -387,6 +404,7 @@ interface WikiAllergyListProps {
   allergens: Allergen[]
 }
 
+// This component is already quite responsive, but minor tweaks improve robustness.
 export function WikiAllergyList({ allergies, allergens }: WikiAllergyListProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedAllergy, setSelectedAllergy] = useState<Allergy | null>(null)
@@ -397,13 +415,13 @@ export function WikiAllergyList({ allergies, allergens }: WikiAllergyListProps) 
 
   return (
     <>
-      <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
+      <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200 w-full">
         <CardHeader>
           <CardTitle className="text-cyan-800 flex items-center justify-between">
             Allergies
             <Badge variant="secondary">{allergies.length}</Badge>
           </CardTitle>
-          <div className="relative">
+          <div className="relative mt-2">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               value={searchTerm}
@@ -421,7 +439,7 @@ export function WikiAllergyList({ allergies, allergens }: WikiAllergyListProps) 
                 className="bg-white/70 backdrop-blur-sm p-3 rounded-lg border border-cyan-200 cursor-pointer hover:bg-white/90 transition-colors"
                 onClick={() => setSelectedAllergy(allergy)}
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="font-medium text-cyan-800">{allergy.name}</div>
                     <div className="text-sm text-gray-600 mt-1">{allergy.allergensId.length} allergen(s) associated</div>
@@ -441,7 +459,7 @@ export function WikiAllergyList({ allergies, allergens }: WikiAllergyListProps) 
                       )}
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-cyan-100">
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-cyan-100 flex-shrink-0 ml-2">
                     <Info className="h-4 w-4" />
                   </Button>
                 </div>
@@ -452,7 +470,7 @@ export function WikiAllergyList({ allergies, allergens }: WikiAllergyListProps) 
         </CardContent>
       </Card>
 
-      {/* Allergy Detail Modal */}
+      {/* Allergy Detail Modal - layout is already responsive */}
       <Dialog open={!!selectedAllergy} onOpenChange={() => setSelectedAllergy(null)}>
         <DialogContent className="max-w-lg">
           {selectedAllergy && (

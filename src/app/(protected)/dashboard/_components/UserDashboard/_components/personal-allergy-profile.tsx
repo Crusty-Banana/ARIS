@@ -150,7 +150,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
             <User className="h-5 w-5" />
             Personal Information
           </div>
-          <div className="flex items-center gap-x-2">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-2 justify-end">
             <Button
               variant="outline"
               size="sm"
