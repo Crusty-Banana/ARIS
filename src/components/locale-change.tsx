@@ -35,7 +35,7 @@ export default function LocaleDropdown() {
 
     return (
         <Select value={currentLocale} onValueChange={(value: Locale) => changeLanguage(value)}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-auto min-w-[120px] bg-white/20 text-white border-none hover:bg-white/30 data-[state=open]:bg-white/30 [&>span]:text-white [&>svg]:stroke-white">
                 <SelectValue placeholder="Select language" />
             </SelectTrigger>
             <SelectContent>
