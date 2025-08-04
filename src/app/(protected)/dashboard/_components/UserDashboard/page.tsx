@@ -13,6 +13,7 @@ import { httpGet$GetSymptoms } from "@/modules/commands/GetSymptoms/fetcher"
 import { httpGet$GetAllergens } from "@/modules/commands/GetAllergens/fetcher"
 import { httpGet$GetAllergies } from "@/modules/commands/GetAllergies/fetcher"
 import { httpGet$GetCrossAllergenFromUserID } from "@/modules/commands/GetCrossAllergenFromUserID/fetcher"
+import { useTranslations } from "next-intl"
 
 export default function UserDashboard() {
   const [pAP, setPAP] = useState<DisplayPAP>({
@@ -25,11 +26,12 @@ export default function UserDashboard() {
     underlyingMedCon: [],
     allergens: [],
   })
+  const t = useTranslations('userDashboard')
   const [symptoms, setSymptoms] = useState<Symptom[]>([])
   const [allergens, setAllergens] = useState<Allergen[]>([])
   const [allergies, setAllergies] = useState<Allergy[]>([])
   const [potentialCrossAllergens, setPotentialCrossAllergens] = useState<Allergen[]>([])
-  
+
   const availableAllergens = allergens.filter((allergen) => !pAP.allergens.some((pAPAllergen) => pAPAllergen.allergenId === allergen.id))
 
   const fetchPotentialCrossAllergens = async () => {
@@ -49,7 +51,7 @@ export default function UserDashboard() {
       console.error(data.message);
     }
   }
-  
+
   const fetchAllergens = async () => {
     const data = await httpGet$GetAllergens('/api/allergens', {});
     if (data.success) {
@@ -67,7 +69,7 @@ export default function UserDashboard() {
       console.error(data.message);
     }
   }
-    
+
   const fetchPAP = useCallback(async () => {
     const data = await httpGet$GetPAP('api/pap');
     if (data.success) {
@@ -92,11 +94,11 @@ export default function UserDashboard() {
       discoveryDate: allergen.discoveryDate,
       discoveryMethod: allergen.discoveryMethod,
       symptomsId: allergen.symptoms.map(symptom => symptom.symptomId),
-     })), {
+    })), {
       allergenId: inputAllergen.id,
       discoveryMethod: "" as DiscoveryMethod,
       symptomsId: [],
-     }]
+    }]
 
     await handleProfileUpdate({ allergens })
 
@@ -116,9 +118,9 @@ export default function UserDashboard() {
       <div className="container mx-auto p-6">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-800 mb-2 pb-1">
-            User Dashboard
+            {t('title')}
           </h1>
-          <p className="text-gray-600">Manage your personal allergy profile and explore the allergy wiki</p>
+          <p className="text-gray-600">{t('description')}</p>
         </div>
 
         <Tabs defaultValue="profile" className="space-y-6">
@@ -127,13 +129,13 @@ export default function UserDashboard() {
               value="profile"
               className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-600 data-[state=active]:text-white"
             >
-              Personal Allergy Profile
+              {t('pap')}
             </TabsTrigger>
             <TabsTrigger
               value="wiki"
               className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-600 data-[state=active]:text-white"
             >
-              Allergy Wiki
+              {t('wiki')}
             </TabsTrigger>
           </TabsList>
 
@@ -143,15 +145,15 @@ export default function UserDashboard() {
 
           <TabsContent value="wiki" className="space-y-6">
             <div className="mb-6">
-              <h2 className="text-2xl font-semibold text-cyan-800 mb-2">Allergy Information Wiki</h2>
-              <p className="text-gray-600">Browse comprehensive information about symptoms, allergens, and allergies</p>
+              <h2 className="text-2xl font-semibold text-cyan-800 mb-2">{t('wikiInfo')}</h2>
+              <p className="text-gray-600">{t('wikiDescription')}</p>
             </div>
 
             <Tabs defaultValue="wiki-allergies" className="space-y-4">
               <TabsList className="bg-white/30">
-                <TabsTrigger value="wiki-allergies">Allergies</TabsTrigger>
-                <TabsTrigger value="wiki-allergens">Allergens</TabsTrigger>
-                <TabsTrigger value="wiki-symptoms">Symptoms</TabsTrigger>
+                <TabsTrigger value="wiki-allergies">{t('allergies')}</TabsTrigger>
+                <TabsTrigger value="wiki-allergens">{t('allergens')}</TabsTrigger>
+                <TabsTrigger value="wiki-symptoms">{t('symptoms')}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="wiki-symptoms">

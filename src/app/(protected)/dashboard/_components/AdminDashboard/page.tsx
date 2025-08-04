@@ -26,9 +26,10 @@ import { httpDelete$DeleteAllergy } from "@/modules/commands/DeleteAllergy/fetch
 import { SymptomModal } from "@/components/symptom-modal"
 import { AllergenModal } from "@/components/allergen-modal"
 import { AllergyModal } from "@/components/allergy-modal"
+import { useTranslations } from "next-intl"
 
 export default function AdminDashboard() {
-
+  const t = useTranslations('adminDashboard');
   const [symptoms, setSymptoms] = useState<Symptom[]>([])
 
   const [allergens, setAllergens] = useState<Allergen[]>([])
@@ -162,9 +163,9 @@ export default function AdminDashboard() {
       <div className="container mx-auto p-6">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-800 mb-2">
-            Admin Dashboard
+            {t('title')}
           </h1>
-          <p className="text-gray-600">Manage symptoms, allergens, and allergies</p>
+          <p className="text-gray-600">{t('description')}</p>
         </div>
 
         <Tabs defaultValue="symptoms" className="space-y-6">
@@ -173,25 +174,25 @@ export default function AdminDashboard() {
               value="symptoms"
               className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-600 data-[state=active]:text-white"
             >
-              Symptoms
+              {t('symptoms')}
             </TabsTrigger>
             <TabsTrigger
               value="allergens"
               className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-600 data-[state=active]:text-white"
             >
-              Allergens
+              {t('allergens')}
             </TabsTrigger>
             <TabsTrigger
               value="allergies"
               className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-600 data-[state=active]:text-white"
             >
-              Allergies
+              {t('allergies')}
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="symptoms" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold text-cyan-800">Symptom Management</h2>
+              <h2 className="text-2xl font-semibold text-cyan-800">{t('symptom management')}</h2>
               <SymptomModal onAddSymptom={addSymptom} />
             </div>
             <SymptomList
@@ -204,7 +205,7 @@ export default function AdminDashboard() {
 
           <TabsContent value="allergens" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold text-cyan-800">Allergen Management</h2>
+              <h2 className="text-2xl font-semibold text-cyan-800">{t('allergen management')}</h2>
               <AllergenModal symptoms={symptoms} onAddAllergen={addAllergen} />
             </div>
             <AllergenList
@@ -218,7 +219,7 @@ export default function AdminDashboard() {
 
           <TabsContent value="allergies" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold text-cyan-800">Allergy Management</h2>
+              <h2 className="text-2xl font-semibold text-cyan-800">{t('allergy management')}</h2>
               <AllergyModal allergens={allergens} onAddAllergy={addAllergy} />
             </div>
             <AllergyList
