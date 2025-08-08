@@ -42,8 +42,14 @@ export function AddRecommendationModal({
         onClose();
     };
 
+    const handleCancel = () => {
+        setType("");
+        setContent("");
+        onClose();
+    }
+
     return (
-        <Dialog open={open} onOpenChange={onClose}>
+        <Dialog open={open} onOpenChange={handleCancel}>
             <DialogContent className="flex flex-col h-[60vh] min-w-[40vw]">
                 <DialogHeader>
                     <DialogTitle className="text-cyan-800">{"Add Recommendation"}</DialogTitle>
@@ -85,7 +91,7 @@ export function AddRecommendationModal({
                         {"Submit"}
                     </Button>
                     
-                    <Button variant="outline" onClick={onClose} className="flex-1 bg-transparent">
+                    <Button variant="outline" onClick={handleCancel} className="flex-1 bg-transparent">
                         {"Cancel"}
                     </Button>
                 </div>
