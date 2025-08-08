@@ -11,7 +11,7 @@ import { AddRecommendationModal } from "./recommend-modal"
 
 export default function Header() {
   const t = useTranslations('header');
-  const { status } = useSession();
+  const { data, status } = useSession();
   /* const [language, setLanguage] = useState<"vi" | "en">("en")
 
   const toggleLanguage = () => {
@@ -50,10 +50,11 @@ export default function Header() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-48" align="end">
 
+                  {data.user.role === "user" && (
                   <DropdownMenuItem className="cursor-pointer" onClick={() => setShowFeedback(true)}>
                     <MessageSquareWarning className="mr-2 h-4 w-4" />
                     <span>{"Feedback"}</span>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem>)}
 
                   <DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>
                     <LogOut className="mr-2 h-4 w-4" />
