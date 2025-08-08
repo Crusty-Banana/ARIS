@@ -75,3 +75,10 @@ export const Symptom = z.object({
     treatment: z.string().default(""),
 });
 export type Symptom = z.infer<typeof Symptom>;
+
+export const Recommendation = z.object({
+    id: ObjectIdAsHexString,
+    recommendType: z.enum(["Allergen Suggestion", "General Feedback"]),
+    content: z.string().default("")
+});
+export type Recommendation = z.infer<typeof Recommendation>;
