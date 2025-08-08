@@ -16,6 +16,7 @@ import { DisplayPAP, DisplayPAPAllergen } from "@/modules/commands/GetPAP/typing
 import { Allergen, DiscoveryMethod, Gender, ObjectIdAsHexString, Symptom } from "@/modules/business-types"
 import { UpdatePAPAllergen$Params, UpdatePAPFetcher$Params } from "@/modules/commands/UpdatePAP/typing"
 import { useTranslations } from "next-intl"
+import { AddRecommendationModal } from "./recommend-modal"
 
 interface PersonalAllergyProfileProps {
   pAP: DisplayPAP
@@ -31,6 +32,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
   const [editingAllergen, setEditingAllergen] = useState<string | null>(null)
   const [showAddAllergen, setShowAddAllergen] = useState(false)
   const [isProfileCardExpanded, setIsProfileCardExpanded] = useState(false);
+  const [showAddRecommendation, setShowAddRecommendation] = useState(false);
 
   const [profileData, setProfileData] = useState({
     gender: pAP.gender,
@@ -360,6 +362,21 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
             </CardContent>
           </Card>
 
+          <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 hidden lg:block">
+            <CardHeader>
+              <CardTitle className="text-green-800 text-lg">{"Recommendation"}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button
+                onClick={() => setShowAddRecommendation(true)}
+                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                {"Recommend"}
+              </Button>
+            </CardContent>
+          </Card>
+
           <PotentialCrossAllergens
             potentialAllergens={potentialCrossAllergens}
             userAllergenIds={pAP.allergens.map((a) => a.allergenId)}
@@ -382,6 +399,11 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
         availableAllergens={availableAllergens}
         availableSymptoms={availableSymptoms}
         onAddAllergen={handleAddAllergen}
+      />
+
+      <AddRecommendationModal
+        open={showAddRecommendation}
+        onClose={() => setShowAddRecommendation(false)}
       />
 
       <Dialog open={isEditingProfile} onOpenChange={setIsEditingProfile}>
