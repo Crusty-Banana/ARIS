@@ -10,15 +10,15 @@ import { Input } from "@/components/ui/input"
 import { httpPost$AddRecommendation } from "@/modules/commands/AddRecommendation/fetcher"
 
 
-interface RecommendModalProps {
+interface AddRecommendationModalProps {
     open: boolean
     onClose: () => void
 }
 
-export function RecommendModal({
+export function AddRecommendationModal({
     open,
     onClose,
-}: RecommendModalProps) {
+}: AddRecommendationModalProps) {
     const [type, setType] = useState<RecommendationType>("");
     const [content, setContent] = useState<string>("");
 
@@ -49,7 +49,7 @@ export function RecommendModal({
                     <DialogTitle className="text-cyan-800">{"Add Recommendation"}</DialogTitle>
                 </DialogHeader>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto">
+                <div className="gap-6 max-h-[70vh] overflow-y-auto">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">{"Recommendation Type"}</label>
                         <Select value={type} onValueChange={(value) => setType(value as RecommendationType)}>
