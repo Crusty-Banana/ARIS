@@ -15,6 +15,9 @@ export type DiscoveryMethod = z.infer<typeof DiscoveryMethod>;
 export const Gender = z.enum(["male", "female", "other", ""]).default("");
 export type Gender = z.infer<typeof Gender>;
 
+export const RecommendationType = z.enum(["Allergen Suggestion", "General Feedback", ""]).default("");
+export type RecommendationType = z.infer<typeof RecommendationType>;
+
 export const User = z.object({
     id: ObjectIdAsHexString,
     firstName: z.string().min(1, "First name is required"),
@@ -78,7 +81,7 @@ export type Symptom = z.infer<typeof Symptom>;
 
 export const Recommendation = z.object({
     id: ObjectIdAsHexString,
-    recommendType: z.enum(["Allergen Suggestion", "General Feedback"]),
+    type: RecommendationType,
     content: z.string().default("")
 });
 export type Recommendation = z.infer<typeof Recommendation>;
