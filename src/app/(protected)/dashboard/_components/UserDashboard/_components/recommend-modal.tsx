@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { AddRecommendation$Params } from "@/modules/commands/AddRecommendation/typing"
 import { RecommendationType } from "@/modules/business-types"
-import { Input } from "@/components/ui/input"
 import { httpPost$AddRecommendation } from "@/modules/commands/AddRecommendation/fetcher"
+import { Textarea } from "@/components/ui/textarea"
 
 
 interface AddRecommendationModalProps {
@@ -44,36 +44,36 @@ export function AddRecommendationModal({
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="">
+            <DialogContent className="flex flex-col h-[60vh] min-w-[40vw]">
                 <DialogHeader>
                     <DialogTitle className="text-cyan-800">{"Add Recommendation"}</DialogTitle>
                 </DialogHeader>
 
-                <div className="gap-6 max-h-[70vh] overflow-y-auto">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">{"Recommendation Type"}</label>
-                        <Select value={type} onValueChange={(value) => setType(value as RecommendationType)}>
-                            <SelectTrigger className="border-cyan-300 focus:border-cyan-500">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Allergen Suggestion">{"Allergen Suggestion"}</SelectItem>
-                                <SelectItem value="General Feedback">{"General Feedback"}</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">{"Content"}</label>
-                        <Input
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{"Recommendation Type"}</label>
+                    <Select value={type} onValueChange={(value) => setType(value as RecommendationType)}>
+                        <SelectTrigger className="w-[250px] border-cyan-300 focus:border-cyan-500">
+                            <SelectValue placeholder="Select a recommendation type..."/>
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="Allergen Suggestion">{"Allergen Suggestion"}</SelectItem>
+                            <SelectItem value="General Feedback">{"General Feedback"}</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                <div className="flex flex-1 flex-col overflow-hidden">
+                    <label className="text-wrap max-w-full text-sm font-medium text-gray-700 mb-1">{"Content"}</label>
+                    <Textarea
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
                             placeholder={"Your recommendation..."}
                             required
-                            className="border-cyan-300 focus:border-cyan-500"
-                        />
-                    </div>
+                            className="border-cyan-300 focus:border-cyan-500 resize-none flex-grow"
+                    />
                 </div>
+
 
 
                 <div className="flex gap-2 pt-4 border-t">
