@@ -23,8 +23,8 @@ export async function handler$DeleteUser(
               await session.commitTransaction();
               return result;
          } catch (error) {
-              await session.abortTransaction();
-              throw new Error("Failed to delete user and associated data.");
+               await session.abortTransaction();
+               throw new Error("Failed to delete user and associated data", { cause: error });
          } finally {
               session.endSession();
          }

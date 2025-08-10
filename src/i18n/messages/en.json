@@ -39,6 +39,7 @@
         "signIn": "Sign In",
         "signingIn": "Signing In...",
         "loginFailed": "Login failed. Please check your credentials.",
+        "pleaseVerifyEmail": "Your email address is not verified. Please check for the verification link.",
         "firstName": "First Name",
         "lastName": "Last Name",
         "firstNamePlaceholder": "First name",

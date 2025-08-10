@@ -16,12 +16,15 @@ export const authOptions: AuthOptions = {
                 if (!credentials?.email || !credentials.password) {
                     return null;
                 }
-
+        
                 const user = await db
                     .collection('users')
                     .findOne({ email: credentials.email });
 
                 if (user && (await compare(credentials.password, user.password))) {
+                    if (!user.emailVerified) {
+                        throw new Error("EmailNotVerified");
+                    }
                     return {
                         id: user._id.toHexString(),
                         email: user.email,

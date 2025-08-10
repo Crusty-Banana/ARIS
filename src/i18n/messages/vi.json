@@ -39,6 +39,7 @@
         "signIn": "Đăng nhập",
         "signingIn": "Đang đăng nhập...",
         "loginFailed": "Đăng nhập thất bại. Vui lòng kiểm tra thông tin đăng nhập của bạn.",
+        "pleaseVerifyEmail": "Địa chỉ email của bạn chưa được xác thực. Vui lòng kiểm tra email để nhận đường dẫn xác thực.",
         "firstName": "Tên",
         "lastName": "Họ",
         "firstNamePlaceholder": "Tên",

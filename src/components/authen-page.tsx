@@ -65,11 +65,14 @@ export default function AuthPage() {
         password,
         redirect: false,
       })
+      
 
       if (result?.ok) {
         router.push("/dashboard")
       } else {
-        alert(t('loginFailed'))
+        if (result?.error === "EmailNotVerified") {
+          alert(t('pleaseVerifyEmail')); 
+        } else alert(t('loginFailed'))
       }
     } catch (error) {
       console.error("Login error:", error)
