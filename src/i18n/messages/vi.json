@@ -235,7 +235,8 @@
         "footerNote2": "Luôn tham khảo ý kiến chuyên gia y tế để được tư vấn."
     },
     "header": {
-        "logout": "Đăng xuất"
+        "logout": "Đăng xuất",
+        "deleteAccount": "Xoá tài khoản"
     },
     "dataTables": {
         "existingSymptoms": "Triệu chứng hiện có",
