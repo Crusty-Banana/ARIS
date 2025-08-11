@@ -58,7 +58,20 @@
         "noAccount": "Chưa có tài khoản? ",
         "haveAccount": "Đã có tài khoản? ",
         "signUp": "Đăng ký",
-        "signInLink": "Đăng nhập"
+        "forgotPasswordTitle": "Quên mật khẩu",
+        "forgotPasswordPrompt": "Nhập địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn một liên kết để đặt lại mật khẩu.",
+        "sendResetLink": "Gửi liên kết đặt lại",
+        "forgotPasswordLink": "Quên mật khẩu?",
+        "backToLogin": "Quay lại trang đăng nhập",
+        "signInLink": "Đăng nhập",
+        "sendingLink": "Vui lòng chờ xíu...",
+        "resetPasswordTitle": "ĐẶT LẠI MẬT KHẨU",
+        "resetPasswordPrompt": "Nhập mật khẩu mới của bạn. Mật khẩu mới là cái gì cũng được.",
+        "newPassword": "Mật khẩu mới:",
+        "confirmNewPassword": "Nhập lại lần nữa cho chắc:",
+        "resetPasswordButton": "Đổi lại mật khẩu",
+        "resettingPassword": "Vui lòng chờ xíu...",
+        "redirectingToLogin": "Đang đưa bạn trở lại..."
     },
     "symptomModal": {
         "addSymptom": "Thêm Triệu chứng",
