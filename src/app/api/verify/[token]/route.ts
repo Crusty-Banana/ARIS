@@ -4,10 +4,10 @@ import { ObjectId } from "mongodb";
 
 export async function GET(
     req: NextRequest,
-    { params }: { params: { token: string } }
+    { params }: { params: Promise<{ token: string }> }
 ) {
     try {
-        const { token } = params;
+        const { token } = await params;
         const db = await getDb();
 
         const verificationToken = await db.collection('verification_tokens').findOne({ token });

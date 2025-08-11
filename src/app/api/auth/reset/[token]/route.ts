@@ -1,14 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/modules/mongodb";
-import { hash } from "bcryptjs";
 import { ZodError } from "zod";
-import { ObjectId } from "mongodb";
-import { ResetPassword$Params } from "@/modules/commands/RecoverAccount/typing";
 
 
 export async function GET(
     req: NextRequest,
-    { params }: { params: { token: string } }
+    { params }: { params: Promise<{ token: string }> }
 ) {
         try {
             const { token } = await params;
