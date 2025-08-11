@@ -49,7 +49,7 @@
         "passwordsDoNotMatch": "Passwords do not match",
         "accountCreated": "Account created successfully! Please sign in.",
         "registrationFailed": "Registration failed. Please try again.",
-        "termsAgreement": "I agree to the {termsOfService} and {privacyPolicy}",
+        "termsAgreement": "I agree to the <termsOfService>Terms of Service</termsOfService> and <privacyPolicy>Privacy Policy</privacyPolicy>.",
         "termsOfService": "Terms of Service",
         "privacyPolicy": "Privacy Policy",
         "createAccountButton": "Create Account",
