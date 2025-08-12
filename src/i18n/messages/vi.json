@@ -156,6 +156,7 @@
         "removeConditionConfirmation": "Bạn có chắc chắn muốn xóa tình trạng bệnh lý này không?",
         "detailModals": {
             "severity": "Độ nghiêm trọng",
+            "prevalence": "Độ phổ biến",
             "treatment": "Điều trị"
         },
         "clinicalSymptoms": "Triệu chứng lâm sàng",

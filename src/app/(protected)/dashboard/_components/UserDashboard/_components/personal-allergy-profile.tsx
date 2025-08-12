@@ -313,10 +313,10 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                               <h4 className="font-medium text-blue-800">{symptom.name}</h4>
                               <div className="flex gap-1 flex-shrink-0">
                                 <Badge className={`${getSeverityColor(symptom.severity)} text-white text-xs`}>
-                                  Severity: {symptom.severity}
+                                  {t("detailModals.severity")}: {symptom.severity}
                                 </Badge>
                                 <Badge className={`${getSeverityColor(symptom.prevalence)} text-white text-xs`}>
-                                  Prevalence: {symptom.prevalence}
+                                  {t("detailModals.prevalence")}: {symptom.prevalence}
                                 </Badge>
                               </div>
                             </div>
