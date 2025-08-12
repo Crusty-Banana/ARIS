@@ -475,7 +475,7 @@ export function WikiAllergyList({ allergies, allergens }: WikiAllergyListProps) 
                   <div className="p-2 bg-gray-50 rounded">{selectedAllergy.name}</div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('associatedAllergens')}</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('allergen(s) associated')}</label>
                   <div className="flex flex-wrap gap-1">
                     {selectedAllergy.allergensId.map((allergenId) => {
                       const allergen = allergens.find((a) => a.id === allergenId)
