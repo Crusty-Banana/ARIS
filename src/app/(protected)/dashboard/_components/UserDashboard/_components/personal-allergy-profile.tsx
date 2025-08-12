@@ -16,6 +16,7 @@ import { DisplayPAP, DisplayPAPAllergen } from "@/modules/commands/GetPAP/typing
 import { Allergen, DiscoveryMethod, Gender, ObjectIdAsHexString, Symptom } from "@/modules/business-types"
 import { UpdatePAPAllergen$Params, UpdatePAPFetcher$Params } from "@/modules/commands/UpdatePAP/typing"
 import { useTranslations } from "next-intl"
+import { SymptomDetailModal } from "./symptom-detail-modal"
 
 interface PersonalAllergyProfileProps {
   pAP: DisplayPAP
@@ -31,6 +32,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
   const [editingAllergen, setEditingAllergen] = useState<string | null>(null)
   const [showAddAllergen, setShowAddAllergen] = useState(false)
   const [isProfileCardExpanded, setIsProfileCardExpanded] = useState(false);
+  const [selectedSymptom, setSelectedSymptom] = useState<Symptom | null>(null)
 
   const [profileData, setProfileData] = useState({
     gender: pAP.gender,
@@ -301,14 +303,15 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                       </div>
                     </div>
 
-                    <div>
-                      <span className="text-sm font-medium text-gray-700 block mb-3">{t('associatedSymptoms')}:</span>
+                    <div className="flex gap-[1vw]">
+                      <span className="text-sm font-medium text-gray-700 block">{t('associatedSymptoms')}:</span>
                       <div className="flex gap-[0.5vw]">
                         {allergen.symptoms.map((symptom) => (
                           <Badge 
                             key={symptom.symptomId} 
                             variant="outline" 
-                            className="text-xs hover:bg-cyan-500 hover:text-zinc-50 hover:cursor-pointer"
+                            className="text-xs hover:bg-cyan-100 hover:cursor-pointer"
+                            onClick={() => setSelectedSymptom(Symptom.parse({id: symptom.symptomId, ...symptom}))}
                           >
                             {symptom.name}
                           </Badge>
@@ -426,6 +429,11 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
           </div>
         </DialogContent>
       </Dialog>
+
+      <SymptomDetailModal
+        symptom={selectedSymptom}
+        onOpenChange={() => setSelectedSymptom(null)}
+      />
 
       {editingAllergen && (
         <AllergenEditModal
