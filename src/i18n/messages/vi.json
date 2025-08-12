@@ -49,7 +49,7 @@
         "passwordsDoNotMatch": "Mật khẩu không khớp",
         "accountCreated": "Tài khoản đã được tạo thành công! Vui lòng đăng nhập.",
         "registrationFailed": "Đăng ký thất bại. Vui lòng thử lại.",
-        "termsAgreement": "Tôi đồng ý với <termsOfService>Terms of Service</termsOfService> and <privacyPolicy>Privacy Policy</privacyPolicy>",
+        "termsAgreement": "Tôi đồng ý với<termsOfService>Điều Khoản</termsOfService>and<privacyPolicy>Quyền Riêng Tư</privacyPolicy>",
         "termsOfService": "Điều khoản dịch vụ",
         "privacyPolicy": "Chính sách bảo mật",
         "createAccountButton": "Tạo tài khoản",
