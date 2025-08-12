@@ -10,7 +10,7 @@ import { Search, ArrowUp, ArrowDown, Info, Plus, Check } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Allergen, Allergy, Symptom } from "@/modules/business-types"
 import { useTranslations } from "next-intl"
-import { SymptomDetailModal } from "./symptom-detail-modal"
+import { SymptomDetailModal } from "@/components/symptom-detail-modal"
 
 type SortOption = "name" | "severity" | "prevalence"
 type SortDirection = "asc" | "desc"
