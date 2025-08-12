@@ -19,6 +19,7 @@ import { SymptomDetailModal } from "@/components/symptom-detail-modal"
 import { AllergenEditModal } from "./_components/allergen-edit-modal"
 import { UnderlyingMedicalConditionsCard } from "./_components/underlying-medical-condition"
 import { AddAllergenButton } from "./_components/add-allergen-button"
+import { Label } from "@/components/ui/label"
 
 interface PersonalAllergyProfileProps {
   pAP: DisplayPAP
@@ -306,8 +307,8 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                     </div>
 
                     <div className="flex gap-[1vw]">
-                      <span className="text-sm font-medium text-gray-700 block">{t('associatedSymptoms')}:</span>
-                      <div className="flex gap-[0.5vw]">
+                      <div className="flex gap-[0.5vw] flex-wrap">
+                        <Label className="text-sm font-medium text-gray-700 whitespace-nowrap">{t('associatedSymptoms')}:</Label>
                         {allergen.symptoms.map((symptom) => (
                           <Badge 
                             key={symptom.symptomId} 
