@@ -235,7 +235,8 @@
         "footerNote2": "Always consult healthcare professionals for medical advice."
     },
     "header": {
-        "logout": "Log out"
+        "logout": "Log out",
+        "feedback": "Feedback"
     },
     "dataTables": {
         "existingSymptoms": "Existing Symptoms",

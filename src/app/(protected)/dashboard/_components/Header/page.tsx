@@ -4,19 +4,14 @@ import { User, LogOut, MessageSquareWarning } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { signOut, useSession } from "next-auth/react"
-import LocaleDropdown from "./locale-change"
+import LocaleDropdown from "./_components/locale-change"
 import { useTranslations } from "next-intl"
 import React, { useState } from "react"
-import { AddRecommendationModal } from "./recommend-modal"
+import { AddRecommendationModal } from "./_components/recommend-modal"
 
 export default function Header() {
   const t = useTranslations('header');
   const { data, status } = useSession();
-  /* const [language, setLanguage] = useState<"vi" | "en">("en")
-
-  const toggleLanguage = () => {
-    setLanguage((prev) => (prev === "en" ? "vi" : "en"))
-  } */
 
   const [showFeedback, setShowFeedback] = useState(false);
 
@@ -24,23 +19,10 @@ export default function Header() {
     <React.Fragment>
       <header className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-4 shadow-lg sticky top-0 z-10">
         <div className="flex items-center justify-between">
-          {/* Left side - ARIS text */}
           <div className="text-white text-2xl font-bold">ARIS</div>
 
-          {/* Right side - Language switch and Profile */}
           <div className="flex items-center gap-4">
-            {/* Language Switch */}
-            {/* <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleLanguage}
-              className="text-white hover:bg-white/20 flex items-center gap-2"
-            >
-              <Globe className="h-4 w-4" />
-              <span className="text-sm font-medium">{language === "en" ? "EN" : "VI"}</span>
-            </Button> */}
             <LocaleDropdown />
-            {/* Profile Dropdown */}
             {status === "authenticated" && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -53,7 +35,7 @@ export default function Header() {
                   {data.user.role === "user" && (
                   <DropdownMenuItem className="cursor-pointer" onClick={() => setShowFeedback(true)}>
                     <MessageSquareWarning className="mr-2 h-4 w-4" />
-                    <span>{"Feedback"}</span>
+                    <span>{t("feedback")}</span>
                   </DropdownMenuItem>)}
 
                   <DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>
@@ -68,7 +50,6 @@ export default function Header() {
       </header>
 
       <AddRecommendationModal open={showFeedback} onClose={() => setShowFeedback(false)}/>
-    </React.Fragment>
-    
+    </React.Fragment>   
   )
 }
