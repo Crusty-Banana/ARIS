@@ -49,7 +49,7 @@
         "passwordsDoNotMatch": "Mật khẩu không khớp",
         "accountCreated": "Tài khoản đã được tạo thành công! Vui lòng đăng nhập.",
         "registrationFailed": "Đăng ký thất bại. Vui lòng thử lại.",
-        "termsAgreement": "Tôi đồng ý với <termsOfService>Terms of Service</termsOfService> and <privacyPolicy>Privacy Policy</privacyPolicy>",
+        "termsAgreement": "Tôi đồng ý với<termsOfService>Điều Khoản</termsOfService>and<privacyPolicy>Quyền Riêng Tư</privacyPolicy>",
         "termsOfService": "Điều khoản dịch vụ",
         "privacyPolicy": "Chính sách bảo mật",
         "createAccountButton": "Tạo tài khoản",
@@ -235,7 +235,8 @@
         "footerNote2": "Luôn tham khảo ý kiến chuyên gia y tế để được tư vấn."
     },
     "header": {
-        "logout": "Đăng xuất"
+        "logout": "Đăng xuất",
+        "feedback": "Góp ý"
     },
     "dataTables": {
         "existingSymptoms": "Triệu chứng hiện có",
@@ -270,7 +271,18 @@
         "potential": "Có khả năng",
         "cancel": "Hủy bỏ"
     },
+    "recommendationModal": {
+        "title": "Đóng Góp Ý Kiến",
+        "recommendationType": "Loại Đóng Góp",
+        "defaultTypeText": "Chọn một loại...",
+        "content": "Nội Dung",
+        "defaultContentText": "Góp ý của bạn...",
+        "allergenSuggestion": "Gợi ý dị nguyên mới",
+        "generalFeedback": "Góp ý chung"
+    },
     "common": {
-        "searchItems": "Tìm kiếm triệu chứng..."
+        "searchItems": "Tìm kiếm tên...",
+        "send": "Gửi",
+        "cancel": "Hủy bỏ"
     }
 }

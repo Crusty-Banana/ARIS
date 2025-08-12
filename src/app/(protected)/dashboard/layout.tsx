@@ -1,4 +1,4 @@
-import Header from '@/components/header';
+import Header from './_components/Header/page';
 import React from 'react';
 
 export default async function Layout({
