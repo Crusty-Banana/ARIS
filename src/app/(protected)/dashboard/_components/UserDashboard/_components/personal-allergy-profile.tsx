@@ -303,28 +303,15 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
 
                     <div>
                       <span className="text-sm font-medium text-gray-700 block mb-3">{t('associatedSymptoms')}:</span>
-                      <div className="space-y-3">
+                      <div className="flex gap-[0.5vw]">
                         {allergen.symptoms.map((symptom) => (
-                          <div
-                            key={symptom.symptomId}
-                            className="bg-gradient-to-r from-blue-50 to-indigo-50 p-3 rounded-lg border border-blue-200"
+                          <Badge 
+                            key={symptom.symptomId} 
+                            variant="outline" 
+                            className="text-xs hover:bg-cyan-500 hover:text-zinc-50 hover:cursor-pointer"
                           >
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2 gap-2">
-                              <h4 className="font-medium text-blue-800">{symptom.name}</h4>
-                              <div className="flex gap-1 flex-shrink-0">
-                                <Badge className={`${getSeverityColor(symptom.severity)} text-white text-xs`}>
-                                  {t("detailModals.severity")}: {symptom.severity}
-                                </Badge>
-                                <Badge className={`${getSeverityColor(symptom.prevalence)} text-white text-xs`}>
-                                  {t("detailModals.prevalence")}: {symptom.prevalence}
-                                </Badge>
-                              </div>
-                            </div>
-                            {/* <div className="text-sm text-gray-700">
-                              <span className="font-medium">{t('detailModals.treatment')}:</span>
-                              <p className="mt-1 text-gray-600">{symptom.treatment}</p>
-                            </div> */}
-                          </div>
+                            {symptom.name}
+                          </Badge>
                         ))}
                       </div>
                     </div>

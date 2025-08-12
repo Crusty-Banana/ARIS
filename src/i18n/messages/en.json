@@ -156,6 +156,7 @@
         "removeConditionConfirmation": "Are you sure you want to remove this medical condition?",
         "detailModals": {
             "severity": "Severity",
+            "prevalence": "Prevalence",
             "treatment": "Treatment"
         },
         "clinicalSymptoms": "Clinical Symptoms",
