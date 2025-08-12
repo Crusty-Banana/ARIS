@@ -8,7 +8,7 @@ import { AddRecommendation$Params } from "@/modules/commands/AddRecommendation/t
 import { RecommendationType } from "@/modules/business-types"
 import { httpPost$AddRecommendation } from "@/modules/commands/AddRecommendation/fetcher"
 import { Textarea } from "@/components/ui/textarea"
-
+import { toast } from "sonner"
 
 interface AddRecommendationModalProps {
     open: boolean
@@ -25,21 +25,24 @@ export function AddRecommendationModal({
     const handleAddRecommendation = async (rec: AddRecommendation$Params) => {
         const data = await httpPost$AddRecommendation('/api/recommendations', rec);
         if (!data.success) {
-            console.error(data.message);
+            toast.error("An error occured when sending feedback.", {
+                description: data.message
+            })
+        } else {
+            toast.success("Thank you for your feedback!");
+            setType("");
+            setContent("");
+            onClose();
         }
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!type || !content) return;
 
-        handleAddRecommendation({
+        await handleAddRecommendation({
             type,
             content
         });
-
-        setType("");
-        setContent("");
-        onClose();
     };
 
     const handleCancel = () => {
