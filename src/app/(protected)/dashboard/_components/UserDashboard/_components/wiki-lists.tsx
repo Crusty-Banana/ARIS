@@ -10,6 +10,7 @@ import { Search, ArrowUp, ArrowDown, Info, Plus, Check } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Allergen, Allergy, Symptom } from "@/modules/business-types"
 import { useTranslations } from "next-intl"
+import { SymptomDetailModal } from "./symptom-detail-modal"
 
 type SortOption = "name" | "severity" | "prevalence"
 type SortDirection = "asc" | "desc"
@@ -120,45 +121,10 @@ export function WikiSymptomList({ symptoms }: WikiSymptomListProps) {
       </Card>
 
       {/* Symptom Detail Modal */}
-      <Dialog open={!!selectedSymptom} onOpenChange={() => setSelectedSymptom(null)}>
-        <DialogContent className="max-w-lg">
-          {selectedSymptom && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="text-cyan-800">{t('symptomDetails')}</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('name')}</label>
-                  <div className="p-2 bg-gray-50 rounded">{selectedSymptom.name}</div>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('severity')}</label>
-                    <Badge
-                      className={`${selectedSymptom.severity === 1 ? "bg-green-500" : selectedSymptom.severity === 2 ? "bg-yellow-500" : "bg-red-500"} text-white`}
-                    >
-                      {t('severity')}: {selectedSymptom.severity}
-                    </Badge>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('prevalence')}</label>
-                    <Badge
-                      className={`${selectedSymptom.prevalence <= 2 ? "bg-green-500" : selectedSymptom.prevalence <= 3 ? "bg-yellow-500" : "bg-red-500"} text-white`}
-                    >
-                      {t('prevalence')}: {selectedSymptom.prevalence}
-                    </Badge>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('treatment')}</label>
-                  <div className="p-2 bg-gray-50 rounded min-h-[100px]">{selectedSymptom.treatment}</div>
-                </div>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+      <SymptomDetailModal
+        symptom={selectedSymptom}
+        onOpenChange={() => setSelectedSymptom(null)}
+      />
     </>
   )
 }
@@ -475,7 +441,7 @@ export function WikiAllergyList({ allergies, allergens }: WikiAllergyListProps) 
                   <div className="p-2 bg-gray-50 rounded">{selectedAllergy.name}</div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('associatedAllergens')}</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('allergen(s) associated')}</label>
                   <div className="flex flex-wrap gap-1">
                     {selectedAllergy.allergensId.map((allergenId) => {
                       const allergen = allergens.find((a) => a.id === allergenId)
