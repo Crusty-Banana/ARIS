@@ -271,7 +271,18 @@
         "potential": "Potential",
         "cancel": "Cancel"
     },
+    "recommendationModal": {
+        "title": "Send Feedback",
+        "recommendationType": "Feedback Type",
+        "defaultTypeText": "Select a type...",
+        "content": "Content",
+        "defaultContentText": "Your feedback...",
+        "allergenSuggestion": "Allergen Suggestion",
+        "generalFeedback": "General Feedback"
+    },
     "common": {
-        "searchItems": "Search items..."
+        "searchItems": "Search items...",
+        "send": "Send",
+        "cancel": "Cancel"
     }
 }

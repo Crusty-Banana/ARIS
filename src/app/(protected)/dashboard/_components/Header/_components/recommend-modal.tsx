@@ -9,6 +9,7 @@ import { RecommendationType } from "@/modules/business-types"
 import { httpPost$AddRecommendation } from "@/modules/commands/AddRecommendation/fetcher"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
+import { useTranslations } from "next-intl"
 
 interface AddRecommendationModalProps {
     open: boolean
@@ -19,6 +20,8 @@ export function AddRecommendationModal({
     open,
     onClose,
 }: AddRecommendationModalProps) {
+    const t = useTranslations("recommendationModal");
+    const commonT = useTranslations("common");
     const [type, setType] = useState<RecommendationType>("");
     const [content, setContent] = useState<string>("");
 
@@ -55,29 +58,29 @@ export function AddRecommendationModal({
         <Dialog open={open} onOpenChange={handleCancel}>
             <DialogContent className="flex flex-col h-[60vh] min-w-[40vw]">
                 <DialogHeader>
-                    <DialogTitle className="text-cyan-800">{"Add Recommendation"}</DialogTitle>
+                    <DialogTitle className="text-cyan-800">{t("title")}</DialogTitle>
                 </DialogHeader>
 
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">{"Recommendation Type"}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t("recommendationType")}</label>
                     <Select value={type} onValueChange={(value) => setType(value as RecommendationType)}>
                         <SelectTrigger className="w-[250px] border-cyan-300 focus:border-cyan-500">
-                            <SelectValue placeholder="Select a recommendation type..."/>
+                            <SelectValue placeholder={t("defaultTypeText")}/>
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="Allergen Suggestion">{"Allergen Suggestion"}</SelectItem>
-                            <SelectItem value="General Feedback">{"General Feedback"}</SelectItem>
+                            <SelectItem value="Allergen Suggestion">{t("allergenSuggestion")}</SelectItem>
+                            <SelectItem value="General Feedback">{t("generalFeedback")}</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
 
                 <div className="flex flex-1 flex-col overflow-hidden">
-                    <label className="text-wrap max-w-full text-sm font-medium text-gray-700 mb-1">{"Content"}</label>
+                    <label className="text-wrap max-w-full text-sm font-medium text-gray-700 mb-1">{t("content")}</label>
                     <Textarea
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
-                            placeholder={"Your recommendation..."}
+                            placeholder={t("defaultContentText")}
                             required
                             className="border-cyan-300 focus:border-cyan-500 resize-none flex-grow"
                     />
@@ -91,11 +94,11 @@ export function AddRecommendationModal({
                         disabled={!type || !content}
                         className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
                     >
-                        {"Submit"}
+                        {commonT("send")}
                     </Button>
                     
                     <Button variant="outline" onClick={handleCancel} className="flex-1 bg-transparent">
-                        {"Cancel"}
+                        {commonT("cancel")}
                     </Button>
                 </div>
 
