@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Eye, EyeOff, KeyRound, Lock } from "lucide-react";
 import { httpPost$ResetPassword, httpGet$ResetPasswordToken } from "@/modules/commands/RecoverAccount/fetcher";
+import Header from '@/components/header';
 
 export default function ResetPasswordPage() {
     const t = useTranslations('authPage');
@@ -46,18 +47,15 @@ export default function ResetPasswordPage() {
     if (token) {
         fetchToken();
     }
-    });
+    }, [token, router] );
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setNotification(null);
-        
-
         if (password !== confirmPassword) {
             setNotification({ message: t('passwordsDoNotMatch'), type: 'error' });
             return;
         }
-
         if (!token) {
             setNotification({ message: t('invalidToken'), type: 'error' });
             return;
@@ -78,81 +76,88 @@ export default function ResetPasswordPage() {
     }
 
     return (
-        <div className="flex-grow bg-gradient-to-br from-cyan-400 via-cyan-500 to-blue-600 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-            <div className="w-full max-w-sm sm:max-w-md">
-                <Card className="backdrop-blur-sm bg-white/95 shadow-2xl border-0">
-                    <CardHeader className="space-y-1 text-center">
-                        <div className="mx-auto w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full flex items-center justify-center mb-4">
-                            <KeyRound className="w-6 h-6 text-white" />
-                        </div>
-                        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-                            {t('resetPasswordTitle')}
-                        </CardTitle>
-                        <CardDescription className="text-gray-600">
-                            {t('resetPasswordPrompt')}
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {notification && (
-                            <div className={`p-3 rounded-md text-sm ${notification.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                                {notification.message}
-                                {notification.type === 'success' && (
-                                    <>
-                                        {' '}{t('redirectingToLogin')}
-                                    </>
+        <div className='flex flex-col h-screen'>
+            <Header />
+            <div className='flex flex-grow'>
+                <div className="flex-grow bg-gradient-to-br from-cyan-400 via-cyan-500 to-blue-600 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+                    <div className="w-full max-w-sm sm:max-w-md">
+                        <Card className="backdrop-blur-sm bg-white/95 shadow-2xl border-0">
+                            <CardHeader className="space-y-1 text-center">
+                                <div className="mx-auto w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full flex items-center justify-center mb-4">
+                                    <KeyRound className="w-6 h-6 text-white" />
+                                </div>
+                                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+                                    {t('resetPasswordTitle')}
+                                </CardTitle>
+                                <CardDescription className="text-gray-600">
+                                    {t('resetPasswordPrompt')}
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                {notification && (
+                                    <div className={`p-3 rounded-md text-sm ${notification.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                        {notification.message}
+                                        {notification.type === 'success' && (
+                                            <>
+                                                {' '}{t('redirectingToLogin')}
+                                            </>
+                                        )}
+                                    </div>
                                 )}
-                            </div>
-                        )}
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="password">{t('newPassword')}</Label>
-                                <div className="relative">
-                                    <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                                    <Input
-                                        id="password"
-                                        name="password"
-                                        type={showPassword ? "text" : "password"}
-                                        placeholder={t('createAPassword')}
-                                        className="pl-10 pr-10"
-                                        required
-                                        minLength={6}
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        disabled={isLoading || notification?.type === 'success'}
-                                    />
-                                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
-                                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="confirmPassword">{t('confirmNewPassword')}</Label>
-                                <div className="relative">
-                                    <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                                    <Input
-                                        id="confirmPassword"
-                                        name="confirmPassword"
-                                        type={showConfirmPassword ? "text" : "password"}
-                                        placeholder={t('confirmYourPassword')}
-                                        className="pl-10 pr-10"
-                                        required
-                                        minLength={6}
-                                        value={confirmPassword}
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                        disabled={isLoading || notification?.type === 'success'}
-                                    />
-                                    <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
-                                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                    </button>
-                                </div>
-                            </div>
-                            <Button type="submit" disabled={isLoading || notification?.type === 'success'} className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-medium py-2.5">
-                                {isLoading ? t('resettingPassword') : t('resetPasswordButton')}
-                            </Button>
-                        </form>
-                    </CardContent>
-                </Card>
+                                <form onSubmit={handleSubmit} className="space-y-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="password">{t('newPassword')}</Label>
+                                        <div className="relative">
+                                            <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                                            <Input
+                                                id="password"
+                                                name="password"
+                                                type={showPassword ? "text" : "password"}
+                                                placeholder={t('createAPassword')}
+                                                className="pl-10 pr-10"
+                                                required
+                                                minLength={6}
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                disabled={isLoading || notification?.type === 'success'}
+                                            />
+                                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                                                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="confirmPassword">{t('confirmNewPassword')}</Label>
+                                        <div className="relative">
+                                            <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                                            <Input
+                                                id="confirmPassword"
+                                                name="confirmPassword"
+                                                type={showConfirmPassword ? "text" : "password"}
+                                                placeholder={t('confirmYourPassword')}
+                                                className="pl-10 pr-10"
+                                                required
+                                                minLength={6}
+                                                value={confirmPassword}
+                                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                                disabled={isLoading || notification?.type === 'success'}
+                                            />
+                                            <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                                                {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <Button type="submit" disabled={isLoading || notification?.type === 'success'} className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-medium py-2.5">
+                                        {isLoading ? t('resettingPassword') : t('resetPasswordButton')}
+                                    </Button>
+                                </form>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
             </div>
         </div>
+        
+        
     );
 }
