@@ -1,8 +1,8 @@
-import { Allergen, ObjectIdAsHexString } from "@/modules/business-types";
+import { ObjectIdAsHexString } from "@/modules/business-types";
 import { Db, ObjectId } from "mongodb";
 import { z } from "zod";
 
-export function createAddHandler(BusinessType: z.AnyZodObject, collectionName: string) {
+export function createAddHandler<BusinessType extends z.AnyZodObject>(BusinessType: BusinessType, collectionName: string) {
   const addParams = BusinessType.omit({ id: true });
   type addParams = z.infer<typeof addParams>;
 
@@ -10,12 +10,12 @@ export function createAddHandler(BusinessType: z.AnyZodObject, collectionName: s
     addParams,
     addHandler: async (db: Db, params: addParams) => {
       const { insertedId } = await db.collection(collectionName).insertOne(params);
-      return { result: insertedId };
+      return { result: insertedId.toHexString() };
     }
   }
 }
 
-export function createGetHandler(BusinessType: z.AnyZodObject, collectionName: string) {
+export function createGetHandler<BusinessType extends z.AnyZodObject>(BusinessType: BusinessType, collectionName: string) {
   const getParams = z.object({
     id: ObjectIdAsHexString.optional(),
     limit: z.coerce.number().optional(),
@@ -49,13 +49,13 @@ export function createGetHandler(BusinessType: z.AnyZodObject, collectionName: s
         });
       });
 
-      return { result: parsedDocs };
+      return { result: parsedDocs as BusinessType[] };
     }
   }
 }
 
-export function createUpdateHandler(collectionName: string) {
-  const updateParams = Allergen.partial().required({ id: true });
+export function createUpdateHandler<BusinessType extends z.AnyZodObject>(BusinessType: BusinessType, collectionName: string) {
+  const updateParams = BusinessType.partial().required({ id: true });
   type updateParams = z.infer<typeof updateParams>;
 
   return {
