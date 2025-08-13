@@ -18,6 +18,9 @@ export type Gender = z.infer<typeof Gender>;
 export const RecommendationType = z.enum(["Allergen Suggestion", "General Feedback", ""]).default("");
 export type RecommendationType = z.infer<typeof RecommendationType>;
 
+export const DisplayString = z.object({ "en": z.string().default(""), "vi": z.string().default("") })
+export type DisplayString = z.infer<typeof DisplayString>;
+
 export const User = z.object({
     id: ObjectIdAsHexString,
     firstName: z.string().min(1, "First name is required"),
@@ -27,21 +30,20 @@ export const User = z.object({
     role: Role,
 });
 export type User = z.infer<typeof User>;
-export type UserInfo = Pick<User, "firstName" | "lastName">;
 
 export const Allergen = z.object({
     id: ObjectIdAsHexString,
     type: z.enum(["food", "drug", "respiratory"]),
-    name: z.string().min(1, "Allergen name is required"),
+    name: DisplayString,
+    description: DisplayString,
     symptomsId: z.array(ObjectIdAsHexString),
     prevalence: z.number().min(1).max(5).default(1),
-    description: z.string().default(""),
 });
 export type Allergen = z.infer<typeof Allergen>;
 
 export const Allergy = z.object({
     id: ObjectIdAsHexString,
-    name: z.string().min(1, "Allergy name is required"),
+    name: DisplayString,
     allergensId: z.array(ObjectIdAsHexString).default([]),
 });
 
@@ -62,7 +64,7 @@ export const PAP = z.object({
                 discoveryDate: UnixTimestamp.nullable().default(null),
                 discoveryMethod: DiscoveryMethod,
                 symptomsId: z.array(ObjectIdAsHexString).default([]),
-                
+
             }),
         )
         .default([]),
@@ -72,10 +74,10 @@ export type PAP = z.infer<typeof PAP>;
 
 export const Symptom = z.object({
     id: ObjectIdAsHexString,
-    name: z.string().min(1, "Symptom name is required"),
+    name: DisplayString,
+    treatment: DisplayString,
     severity: z.number().min(1).max(3),
     prevalence: z.number().min(1).max(5).default(1),
-    treatment: z.string().default(""),
 });
 export type Symptom = z.infer<typeof Symptom>;
 
