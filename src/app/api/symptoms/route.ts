@@ -1,6 +1,7 @@
-import { ObjectIdAsHexString, Symptom } from "@/modules/business-types";
-import { AddSymptom$Params, GetSymptoms$Params, handler$AddSymptom, handler$GetSymptoms } from "@/modules/commands/CRUDSymptom/crud";
+import { ObjectIdAsHexString } from "@/modules/business-types";
+import { AddSymptom$Params, DisplaySymptom, GetSymptoms$Params, handler$AddSymptom, handler$GetSymptoms } from "@/modules/commands/CRUDSymptom/crud";
 import { createRoute } from "@/modules/constructors/BaseRoute/route";
+import { z } from "zod";
 
 export const POST = createRoute<AddSymptom$Params, ObjectIdAsHexString>({
   params: AddSymptom$Params,
@@ -10,7 +11,7 @@ export const POST = createRoute<AddSymptom$Params, ObjectIdAsHexString>({
   needAdmin: true,
 });
 
-export const GET = createRoute<GetSymptoms$Params, (typeof Symptom)[]>({
+export const GET = createRoute<GetSymptoms$Params, (z.infer<typeof DisplaySymptom>)[]>({
   params: GetSymptoms$Params,
   handler: handler$GetSymptoms,
   success_message: "Symptoms retrieved successfully",

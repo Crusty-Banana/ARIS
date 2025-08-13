@@ -1,8 +1,8 @@
-import { Recommendation } from "@/modules/business-types";
-import { DeleteRecommendation$Params, GetRecommendations$Params, handler$DeleteRecommendation, handler$GetRecommendations, handler$UpdateRecommendation, UpdateRecommendation$Params } from "@/modules/commands/CRUDRecommendation/crud";
+import { DeleteRecommendation$Params, DisplayRecommendation, GetRecommendations$Params, handler$DeleteRecommendation, handler$GetRecommendations, handler$UpdateRecommendation, UpdateRecommendation$Params } from "@/modules/commands/CRUDRecommendation/crud";
 import { createRoute } from "@/modules/constructors/BaseRoute/route";
+import { z } from "zod";
 
-export const GET = createRoute<GetRecommendations$Params, (typeof Recommendation)[]>({
+export const GET = createRoute<GetRecommendations$Params, (z.infer<typeof DisplayRecommendation>)[]>({
   params: GetRecommendations$Params,
   handler: handler$GetRecommendations,
   success_message: "Recommendation retrieved successfully",

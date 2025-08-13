@@ -1,4 +1,4 @@
-import { ObjectIdAsHexString } from "@/modules/business-types";
+import { DisplayString, ObjectIdAsHexString } from "@/modules/business-types";
 import { Db, ObjectId } from "mongodb";
 import { z } from "zod";
 
@@ -16,17 +16,26 @@ export function createAddHandler<BusinessType extends z.AnyZodObject>(BusinessTy
 }
 
 export function createGetHandler<BusinessType extends z.AnyZodObject>(BusinessType: BusinessType, collectionName: string) {
+  const DisplayBusinessType = z.object(Object.fromEntries(
+    Object.entries(BusinessType).map(
+      ([key, value]) => [key, value === DisplayString ? z.string() : value]
+    )
+  ));
+  type DisplayBusinessType = z.infer<typeof DisplayBusinessType>;
+
   const getParams = z.object({
     id: ObjectIdAsHexString.optional(),
     limit: z.coerce.number().optional(),
-    offset: z.coerce.number().optional()
+    offset: z.coerce.number().optional(),
+    lang: z.coerce.string().default("vi")
   });
   type getParams = z.infer<typeof getParams>;
 
   return {
     getParams,
+    DisplayBusinessType,
     getHandler: async (db: Db, params: getParams) => {
-      const { id, limit, offset } = params;
+      const { id, limit, offset, lang } = params;
 
       const filterTerm = id ? [{
         $match: id ? { _id: ObjectId.createFromHexString(id) } : {},
@@ -49,7 +58,14 @@ export function createGetHandler<BusinessType extends z.AnyZodObject>(BusinessTy
         });
       });
 
-      return { result: parsedDocs as BusinessType[] };
+      const unilanguageDocs = parsedDocs.map((doc) => {
+        return DisplayBusinessType.parse(
+          Object.fromEntries(
+            Object.entries(doc).map(([key, value]) => [key, DisplayString.safeParse(value).success ? value[lang] : value])
+          )
+        )
+      });
+      return { result: unilanguageDocs as DisplayBusinessType[] };
     }
   }
 }

@@ -1,8 +1,8 @@
-import { Symptom } from "@/modules/business-types";
-import { DeleteSymptom$Params, GetSymptoms$Params, handler$DeleteSymptom, handler$GetSymptoms, handler$UpdateSymptom, UpdateSymptom$Params } from "@/modules/commands/CRUDSymptom/crud";
+import { DeleteSymptom$Params, DisplaySymptom, GetSymptoms$Params, handler$DeleteSymptom, handler$GetSymptoms, handler$UpdateSymptom, UpdateSymptom$Params } from "@/modules/commands/CRUDSymptom/crud";
 import { createRoute } from "@/modules/constructors/BaseRoute/route";
+import { z } from "zod";
 
-export const GET = createRoute<GetSymptoms$Params, (typeof Symptom)[]>({
+export const GET = createRoute<GetSymptoms$Params, (z.infer<typeof DisplaySymptom>)[]>({
   params: GetSymptoms$Params,
   handler: handler$GetSymptoms,
   success_message: "Symptom retrieved successfully",

@@ -1,6 +1,7 @@
-import { ObjectIdAsHexString, User } from "@/modules/business-types";
-import { AddUser$Params, GetUsers$Params, handler$AddUser, handler$GetUsers } from "@/modules/commands/CRUDUser/crud";
+import { ObjectIdAsHexString } from "@/modules/business-types";
+import { AddUser$Params, DisplayUser, GetUsers$Params, handler$AddUser, handler$GetUsers } from "@/modules/commands/CRUDUser/crud";
 import { createRoute } from "@/modules/constructors/BaseRoute/route";
+import { z } from "zod";
 
 export const POST = createRoute<AddUser$Params, ObjectIdAsHexString>({
   params: AddUser$Params,
@@ -10,7 +11,7 @@ export const POST = createRoute<AddUser$Params, ObjectIdAsHexString>({
   needAdmin: true,
 });
 
-export const GET = createRoute<GetUsers$Params, (typeof User)[]>({
+export const GET = createRoute<GetUsers$Params, (z.infer<typeof DisplayUser>)[]>({
   params: GetUsers$Params,
   handler: handler$GetUsers,
   success_message: "Users retrieved successfully",

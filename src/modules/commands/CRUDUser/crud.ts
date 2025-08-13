@@ -3,6 +3,7 @@ import { createCRUD } from "@/modules/constructors/BaseCRUD/crud";
 import { z } from "zod";
 
 export const {
+  DisplayBusinessType: DisplayUser,
   addParams: AddUser$Params,
   getParams: GetUsers$Params,
   updateParams: UpdateUser$Params,

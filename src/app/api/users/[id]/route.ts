@@ -1,8 +1,8 @@
-import { User } from "@/modules/business-types";
-import { DeleteUser$Params, GetUsers$Params, handler$DeleteUser, handler$GetUsers, handler$UpdateUser, UpdateUser$Params } from "@/modules/commands/CRUDUser/crud";
+import { DeleteUser$Params, DisplayUser, GetUsers$Params, handler$DeleteUser, handler$GetUsers, handler$UpdateUser, UpdateUser$Params } from "@/modules/commands/CRUDUser/crud";
 import { createRoute } from "@/modules/constructors/BaseRoute/route";
+import { z } from "zod";
 
-export const GET = createRoute<GetUsers$Params, (typeof User)[]>({
+export const GET = createRoute<GetUsers$Params, (z.infer<typeof DisplayUser>)[]>({
   params: GetUsers$Params,
   handler: handler$GetUsers,
   success_message: "User retrieved successfully",

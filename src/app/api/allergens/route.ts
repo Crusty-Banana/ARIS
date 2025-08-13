@@ -1,6 +1,7 @@
 import { createRoute } from '@/modules/constructors/BaseRoute/route';
-import { Allergen, ObjectIdAsHexString } from '@/modules/business-types';
-import { AddAllergen$Params, GetAllergens$Params, handler$AddAllergen, handler$GetAllergens } from '@/modules/commands/CRUDAllergen/crud';
+import { ObjectIdAsHexString } from '@/modules/business-types';
+import { AddAllergen$Params, DisplayAllergen, GetAllergens$Params, handler$AddAllergen, handler$GetAllergens } from '@/modules/commands/CRUDAllergen/crud';
+import { z } from 'zod';
 
 export const POST = createRoute<AddAllergen$Params, ObjectIdAsHexString>({
   params: AddAllergen$Params,
@@ -10,7 +11,7 @@ export const POST = createRoute<AddAllergen$Params, ObjectIdAsHexString>({
   needAdmin: true,
 });
 
-export const GET = createRoute<GetAllergens$Params, (typeof Allergen)[]>({
+export const GET = createRoute<GetAllergens$Params, (z.infer<typeof DisplayAllergen>)[]>({
   params: GetAllergens$Params,
   handler: handler$GetAllergens,
   success_message: "Allergens retrieved successfully",

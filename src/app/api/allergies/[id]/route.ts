@@ -1,8 +1,8 @@
 import { createRoute } from "@/modules/constructors/BaseRoute/route";
-import { Allergy } from "@/modules/business-types";
-import { DeleteAllergy$Params, GetAllergies$Params, handler$DeleteAllergy, handler$GetAllergies, handler$UpdateAllergy, UpdateAllergy$Params } from "@/modules/commands/CRUDAllergy/crud";
+import { DeleteAllergy$Params, DisplayAllergy, GetAllergies$Params, handler$DeleteAllergy, handler$GetAllergies, handler$UpdateAllergy, UpdateAllergy$Params } from "@/modules/commands/CRUDAllergy/crud";
+import { z } from "zod";
 
-export const GET = createRoute<GetAllergies$Params, (typeof Allergy)[]>({
+export const GET = createRoute<GetAllergies$Params, (z.infer<typeof DisplayAllergy>)[]>({
   params: GetAllergies$Params,
   handler: handler$GetAllergies,
   success_message: "Allergy retrieved successfully",

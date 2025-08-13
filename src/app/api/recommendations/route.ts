@@ -1,6 +1,7 @@
-import { ObjectIdAsHexString, Recommendation } from "@/modules/business-types";
-import { AddRecommendation$Params, GetRecommendations$Params, handler$AddRecommendation, handler$GetRecommendations } from "@/modules/commands/CRUDRecommendation/crud";
+import { ObjectIdAsHexString } from "@/modules/business-types";
+import { AddRecommendation$Params, DisplayRecommendation, GetRecommendations$Params, handler$AddRecommendation, handler$GetRecommendations } from "@/modules/commands/CRUDRecommendation/crud";
 import { createRoute } from "@/modules/constructors/BaseRoute/route";
+import { z } from "zod";
 
 export const POST = createRoute<AddRecommendation$Params, ObjectIdAsHexString>({
   params: AddRecommendation$Params,
@@ -10,7 +11,7 @@ export const POST = createRoute<AddRecommendation$Params, ObjectIdAsHexString>({
   needAdmin: true,
 });
 
-export const GET = createRoute<GetRecommendations$Params, (typeof Recommendation)[]>({
+export const GET = createRoute<GetRecommendations$Params, (z.infer<typeof DisplayRecommendation>)[]>({
   params: GetRecommendations$Params,
   handler: handler$GetRecommendations,
   success_message: "Recommendations retrieved successfully",

@@ -3,6 +3,7 @@ import { createCRUD } from "@/modules/constructors/BaseCRUD/crud";
 import { z } from "zod";
 
 export const {
+  DisplayBusinessType: DisplayAllergen,
   addParams: AddAllergen$Params,
   getParams: GetAllergens$Params,
   updateParams: UpdateAllergen$Params,
