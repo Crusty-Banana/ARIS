@@ -1,39 +1,19 @@
-import { handler$AddRecommendation } from "@/modules/commands/AddRecommendation/handler";
-import { AddRecommendation$Params } from "@/modules/commands/AddRecommendation/typing";
-import { getDb } from "@/modules/mongodb";
-import { getToken } from "next-auth/jwt";
-import { NextRequest, NextResponse } from "next/server";
+import { ObjectIdAsHexString, Recommendation } from "@/modules/business-types";
+import { AddRecommendation$Params, GetRecommendations$Params, handler$AddRecommendation, handler$GetRecommendations } from "@/modules/commands/CRUDRecommendation/crud";
+import { createRoute } from "@/modules/constructors/BaseRoute/route";
 
-export async function POST(req: NextRequest) {
-    try {
-        const token = await getToken({ req });
-        
-        if (!token) {
-            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-        }
-        
-        const body = await req.json();
-        const parsedBody = AddRecommendation$Params.safeParse(body);
+export const POST = createRoute<AddRecommendation$Params, ObjectIdAsHexString>({
+  params: AddRecommendation$Params,
+  handler: handler$AddRecommendation,
+  success_message: "Recommendation added successfully",
+  needAuth: true,
+  needAdmin: true,
+});
 
-        if (!parsedBody.success) {
-            return NextResponse.json({ message: parsedBody.error.message || "invalid params" }, { status: 400 });
-        }
-        const db = await getDb();
-
-        const { insertedId } = await handler$AddRecommendation(db, parsedBody.data);
-
-        return NextResponse.json(
-            { message: 'Recommendation added successfully', recommendationId: insertedId },
-            { status: 201 }
-        );
-    } catch (error) {
-        let message = "An error occurred";
-        if (error instanceof Error) {
-            message += `: ${error.message}`;
-        }
-        return NextResponse.json(
-            { message },
-            { status: 500},
-        )
-    }
-}
+export const GET = createRoute<GetRecommendations$Params, (typeof Recommendation)[]>({
+  params: GetRecommendations$Params,
+  handler: handler$GetRecommendations,
+  success_message: "Recommendations retrieved successfully",
+  needAuth: true,
+  needSearchParams: true,
+});

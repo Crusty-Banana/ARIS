@@ -264,6 +264,7 @@ export function createRoute<params, result>({
   needAdmin = false,
   needSearchParams = false,
   useId = false,
+  omitResult = false,
 }: {
   params: z.AnyZodObject,
   handler: (db: Db, params: params) => Promise<{ result: result }>,
@@ -272,6 +273,7 @@ export function createRoute<params, result>({
   needAdmin?: boolean,
   needSearchParams?: boolean,
   useId?: boolean,
+  omitResult?: boolean,
 }) {
   return async (req: NextRequest, context?: { params: Promise<{ id: string }> }) => {
     try {
@@ -295,7 +297,14 @@ export function createRoute<params, result>({
 
       const { result } = await handler(db, parsedBody.data as params);
 
-      return NextResponse.json({ result, message: success_message }, { status: 200 });
+      if (omitResult) {
+        if (result !== 1) {
+          return NextResponse.json({ message: "Item not found." }, { status: 404 });
+        }
+        return NextResponse.json({ message: success_message }, { status: 200 });
+      } else {
+        return NextResponse.json({ result, message: success_message }, { status: 200 });
+      }
     } catch (error) {
       let message = "An error occurred";
       if (error instanceof Error) {
