@@ -8,7 +8,7 @@ export function createCRUD<BusinessType extends z.AnyZodObject>(BusinessType: Bu
   const { updateParams, updateHandler } = createUpdateHandler<BusinessType>(BusinessType, collectionName);
   const { deleteParams, deleteHandler } = createDeleteHandler(collectionName);
   const { addResult, addFetcher } = createAddFetcher(addParams);
-  const { getResult, getFetcher } = createGetFetcher(getParams, BusinessType);
+  const { getResult, getFetcher } = createGetFetcher(getParams, BusinessType, DisplayBusinessType);
   const { updateResult, updateFetcher } = createUpdateFetcher(updateParams);
   const { deleteResult, deleteFetcher } = createDeleteFetcher();
 

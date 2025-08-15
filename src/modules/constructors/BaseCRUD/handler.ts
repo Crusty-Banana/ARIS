@@ -57,7 +57,9 @@ export function createGetHandler<BusinessType extends z.AnyZodObject>(BusinessTy
           ...doc,
         });
       });
-
+      if (lang !== "vi" && lang !== "en") {
+        return { result: parsedDocs as BusinessType[] };
+      }
       const unilanguageDocs = parsedDocs.map((doc) => {
         return DisplayBusinessType.parse(
           Object.fromEntries(

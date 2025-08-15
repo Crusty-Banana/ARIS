@@ -30,12 +30,12 @@ export function createAddFetcher(addParams: z.AnyZodObject) {
   }
 }
 
-export function createGetFetcher(getParams: z.AnyZodObject, BusinessType: z.AnyZodObject) {
+export function createGetFetcher(getParams: z.AnyZodObject, BusinessType: z.AnyZodObject, DisplayBusinessType: z.AnyZodObject) {
   type getParams = z.infer<typeof getParams>;
   const getResult = z.object({
     success: z.boolean(),
     message: z.string(),
-    result: z.array(BusinessType).optional()
+    result: z.array(z.union([BusinessType, DisplayBusinessType])).optional()
   });
   type getResult = z.infer<typeof getResult>;
 
