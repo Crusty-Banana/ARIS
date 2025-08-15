@@ -17,7 +17,7 @@ export const {
   updateHandler: handler$UpdateRecommendation,
   deleteHandler: handler$DeleteRecommendation,
   addFetcher: httpPost$AddRecommendation,
-  getFetcher: httpGet$GetRecommendation,
+  getFetcher: httpGet$GetRecommendations,
   updateFetcher: httpPut$UpdateRecommendation,
   deleteFetcher: httpDelete$DeleteRecommendation,
 } = createCRUD<typeof Recommendation>(Recommendation, "recommendations");

@@ -17,7 +17,7 @@ export const {
   updateHandler: handler$UpdateUser,
   deleteHandler: handler$DeleteUser,
   addFetcher: httpPost$AddUser,
-  getFetcher: httpGet$GetUser,
+  getFetcher: httpGet$GetUsers,
   updateFetcher: httpPut$UpdateUser,
   deleteFetcher: httpDelete$DeleteUser,
 } = createCRUD<typeof User>(User, "users");

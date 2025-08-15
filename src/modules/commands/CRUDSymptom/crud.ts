@@ -17,7 +17,7 @@ export const {
   updateHandler: handler$UpdateSymptom,
   deleteHandler: handler$DeleteSymptom,
   addFetcher: httpPost$AddSymptom,
-  getFetcher: httpGet$GetSymptom,
+  getFetcher: httpGet$GetSymptoms,
   updateFetcher: httpPut$UpdateSymptom,
   deleteFetcher: httpDelete$DeleteSymptom,
 } = createCRUD<typeof Symptom>(Symptom, "symptoms_en");

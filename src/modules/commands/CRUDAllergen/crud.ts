@@ -17,7 +17,7 @@ export const {
   updateHandler: handler$UpdateAllergen,
   deleteHandler: handler$DeleteAllergen,
   addFetcher: httpPost$AddAllergen,
-  getFetcher: httpGet$GetAllergen,
+  getFetcher: httpGet$GetAllergens,
   updateFetcher: httpPut$UpdateAllergen,
   deleteFetcher: httpDelete$DeleteAllergen,
 } = createCRUD<typeof Allergen>(Allergen, "allergens_en");
