@@ -21,6 +21,21 @@ export type RecommendationType = z.infer<typeof RecommendationType>;
 export const DisplayString = z.object({ "en": z.string().default(""), "vi": z.string().default("") })
 export type DisplayString = z.infer<typeof DisplayString>;
 
+export const FetcherResult = z.object({
+    success: z.boolean(),
+    message: z.string(),
+});
+export type FetcherResult = z.infer<typeof FetcherResult>;
+
+export const BusisnessTypeCollection = {
+    users: "users",
+    allergens: "allergens",
+    allergies: "allergies",
+    paps: "paps",
+    symptoms: "symptoms",
+    recommendations: "recommendations",
+}
+
 export const User = z.object({
     id: ObjectIdAsHexString,
     firstName: z.string().min(1, "First name is required"),
