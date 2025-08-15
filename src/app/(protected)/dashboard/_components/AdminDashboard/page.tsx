@@ -5,28 +5,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { SymptomDetailModal, AllergenDetailModal, AllergyDetailModal } from "@/components/detail-modals"
 import { SymptomList, AllergenList, AllergyList } from "@/components/item-lists"
 import { Allergen, Allergy, Symptom } from "@/modules/business-types"
-import { httpGet$GetSymptoms } from "@/modules/commands/GetSymptoms/fetcher"
-import { AddSymptom$Params } from "@/modules/commands/AddSymptom/typing"
-import { httpPost$AddSymptom } from "@/modules/commands/AddSymptom/fetcher"
-import { UpdateSymptom$Params } from "@/modules/commands/UpdateSymptom/typing"
-import { httpPut$UpdateSymptom } from "@/modules/commands/UpdateSymptom/fetcher"
-import { httpDelete$DeleteSymptom } from "@/modules/commands/DeleteSymptom/fetcher"
-import { httpGet$GetAllergens } from "@/modules/commands/GetAllergens/fetcher"
-import { AddAllergen$Params } from "@/modules/commands/AddAllergen/typing"
-import { httpPost$AddAllergen } from "@/modules/commands/AddAllergen/fetcher"
-import { UpdateAllergen$Params } from "@/modules/commands/UpdateAllergen/typing"
-import { httpPut$UpdateAllergen } from "@/modules/commands/UpdateAllergen/fetcher"
-import { httpDelete$DeleteAllergen } from "@/modules/commands/DeleteAllergen/fetcher"
-import { httpGet$GetAllergies } from "@/modules/commands/GetAllergies/fetcher"
-import { AddAllergy$Params } from "@/modules/commands/AddAllergy/typing"
-import { httpPost$AddAllergy } from "@/modules/commands/AddAllergy/fetcher"
-import { UpdateAllergy$Params } from "@/modules/commands/UpdateAllergy/typing"
-import { httpPut$UpdateAllergy } from "@/modules/commands/UpdateAllergy/fetcher"
-import { httpDelete$DeleteAllergy } from "@/modules/commands/DeleteAllergy/fetcher"
 import { SymptomModal } from "@/components/symptom-modal"
 import { AllergenModal } from "@/components/allergen-modal"
 import { AllergyModal } from "@/components/allergy-modal"
 import { useTranslations } from "next-intl"
+import { httpGet$GetSymptoms } from "@/modules/commands/CRUDSymptom/crud"
 
 export default function AdminDashboard() {
   const t = useTranslations('adminDashboard');
@@ -44,7 +27,7 @@ export default function AdminDashboard() {
   const fetchSymptoms = async () => {
     const data = await httpGet$GetSymptoms('/api/symptoms', {});
     if (data.success) {
-      setSymptoms(data.symptoms!);
+      setSymptoms(data.result!);
     } else {
       console.error(data.message);
     }

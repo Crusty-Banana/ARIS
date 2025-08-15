@@ -32,7 +32,7 @@ export async function handler$GetUsers(db: Db, params: GetBusinessType$Params) {
     });
   });
 
-  return parsedDocs;
+  return { result: parsedDocs };
 }
 
 export async function handler$GetAllergens(db: Db, params: GetBusinessType$Params) {
@@ -94,7 +94,7 @@ export async function handler$GetPAPs(db: Db, params: GetBusinessType$Params) {
     });
   });
 
-  return parsedDocs;
+  return { result: parsedDocs };
 }
 
 export async function handler$GetSymptoms(db: Db, params: GetBusinessType$Params) {
@@ -132,5 +132,5 @@ export async function handler$GetRecommendations(db: Db, params: GetBusinessType
     });
   });
 
-  return parsedDocs;
+  return { result: parsedDocs };
 }

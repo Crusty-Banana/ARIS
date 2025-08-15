@@ -1,20 +1,57 @@
-import { createRoute } from "@/modules/constructors/BaseRoute/route";
-import { ObjectIdAsHexString } from "@/modules/business-types";
-import { AddAllergy$Params, DisplayAllergy, GetAllergies$Params, handler$AddAllergy, handler$GetAllergies } from "@/modules/commands/CRUDAllergy/crud";
-import { z } from "zod";
+import { NextRequest, NextResponse } from 'next/server';
+import { checkAdmin, checkAuth, processError } from '@/lib/utils';
+import { getDb } from '@/modules/mongodb';
+import { handler$AddAllergy } from '@/modules/commands/AddBusinessType/handler';
+import { handler$GetAllergies } from '@/modules/commands/GetBusinessType/handler';
+import { AddAllergy$Params } from '@/modules/commands/AddBusinessType/typing';
+import { GetBusinessType$Params } from '@/modules/commands/GetBusinessType/typing';
 
-export const POST = createRoute<AddAllergy$Params, ObjectIdAsHexString>({
-  params: AddAllergy$Params,
-  handler: handler$AddAllergy,
-  success_message: "Allergy added successfully",
-  needAuth: true,
-  needAdmin: true,
-})
+export async function POST(
+  req: NextRequest
+) {
+  try {
+    // Check Authentication
+    const authCheck = await checkAdmin(req);
+    if (!authCheck.success) return authCheck.result;
 
-export const GET = createRoute<GetAllergies$Params, (z.infer<typeof DisplayAllergy>)[]>({
-  params: GetAllergies$Params,
-  handler: handler$GetAllergies,
-  success_message: "Allergies retrieved successfully",
-  needAuth: true,
-  needSearchParams: true,
-})
+    // Validate Input
+    const body = await req.json();
+    const parsedBody = AddAllergy$Params.safeParse(body);
+    if (!parsedBody.success) {
+      return NextResponse.json({ message: parsedBody.error.message || "Invalid params" }, { status: 400 });
+    }
+
+    // Handle action
+    const db = await getDb();
+    const { result } = await handler$AddAllergy(db, parsedBody.data);
+
+    return NextResponse.json({ result, message: "Allergy created successfully" }, { status: 200 });
+  } catch (error) {
+    return processError(error);
+  }
+}
+
+export async function GET(
+  req: NextRequest
+) {
+  try {
+    // Check Authentication
+    const authCheck = await checkAuth(req);
+    if (!authCheck.success) return authCheck.result;
+
+    // Validate Input
+    const searchParams = Object.fromEntries(req.nextUrl.searchParams);
+    const parsedBody = GetBusinessType$Params.safeParse(searchParams);
+    if (!parsedBody.success) {
+      return NextResponse.json({ message: parsedBody.error.message || "Invalid params" }, { status: 400 });
+    }
+
+    // Handle action
+    const db = await getDb();
+    const { result } = await handler$GetAllergies(db, parsedBody.data);
+
+    return NextResponse.json({ result, message: "Allergies retrieved successfully" }, { status: 200 });
+  } catch (error) {
+    return processError(error);
+  }
+}
