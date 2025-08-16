@@ -21,6 +21,12 @@ export type RecommendationType = z.infer<typeof RecommendationType>;
 export const DisplayString = z.object({ "en": z.string().default(""), "vi": z.string().default("") })
 export type DisplayString = z.infer<typeof DisplayString>;
 
+export const AllergenType = z.enum(["food", "drug", "respiratory", ""]).default("");
+export type AllergenType = z.infer<typeof AllergenType>;
+
+export const Language = z.enum(["en", "vi"]);
+export type Language = z.infer<typeof Language>;
+
 export const FetcherResult = z.object({
     success: z.boolean(),
     message: z.string(),
@@ -29,10 +35,10 @@ export type FetcherResult = z.infer<typeof FetcherResult>;
 
 export const BusisnessTypeCollection = {
     users: "users",
-    allergens: "allergens",
-    allergies: "allergies",
+    allergens: "allergens_en",
+    allergies: "allergies_en",
     paps: "paps",
-    symptoms: "symptoms",
+    symptoms: "symptoms_en",
     recommendations: "recommendations",
 }
 
@@ -48,7 +54,7 @@ export type User = z.infer<typeof User>;
 
 export const Allergen = z.object({
     id: ObjectIdAsHexString,
-    type: z.enum(["food", "drug", "respiratory"]),
+    type: AllergenType,
     name: DisplayString,
     description: DisplayString,
     symptomsId: z.array(ObjectIdAsHexString),

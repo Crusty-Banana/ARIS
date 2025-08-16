@@ -3,25 +3,27 @@
 import type React from "react"
 
 import { useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Plus } from "lucide-react"
-import { ScrollableSelect } from "./scrollable-select"
-import { Allergen } from "@/modules/business-types"
-import { AddAllergy$Params } from "@/modules/commands/AddAllergy/typing"
-import { useTranslations } from "next-intl"
+import { Allergen, DisplayString, Language } from "@/modules/business-types"
+import { useLocale, useTranslations } from "next-intl"
+import { AddAllergy$Params } from "@/modules/commands/AddBusinessType/typing"
+import { AllergyForm } from "./allergy-form"
 
-interface AllergyModalProps {
+interface AddAllergyButtonProps {
   allergens: Allergen[]
   onAddAllergy: (allergy: AddAllergy$Params) => void
 }
 
-export function AllergyModal({ allergens, onAddAllergy }: AllergyModalProps) {
+export function AddAllergyButton({ allergens, onAddAllergy }: AddAllergyButtonProps) {
   const t = useTranslations('allergyModal');
+  const localLanguage = useLocale() as Language;
+
   const [open, setOpen] = useState(false)
-  const [name, setName] = useState("")
+  const [name, setName] = useState<DisplayString>({en: "", vi: ""})
   const [selectedAllergens, setSelectedAllergens] = useState<string[]>([])
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>(localLanguage);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -30,10 +32,16 @@ export function AllergyModal({ allergens, onAddAllergy }: AllergyModalProps) {
         name,
         allergensId: selectedAllergens,
       })
-      setName("")
+      setName({en: "", vi: ""})
       setSelectedAllergens([])
       setOpen(false)
     }
+  }
+  const handleNameChange = (value: string) => {
+    setName((prev) => ({
+      ...prev,
+      [selectedLanguage]: value,
+    }))
   }
 
   return (
@@ -47,29 +55,18 @@ export function AllergyModal({ allergens, onAddAllergy }: AllergyModalProps) {
       <DialogContent className="max-w-md max-h-[90vh]">
         <DialogHeader>
           <DialogTitle className="text-cyan-800">{t('addNewAllergy')}</DialogTitle>
+          <DialogDescription />
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">{t('allergyName')}</label>
-            <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder={t('enterAllergyName')}
-              required
-              className="border-cyan-300 focus:border-cyan-500"
-            />
-          </div>
-
-          <ScrollableSelect
-            items={allergens.sort((a, b) => a.name.localeCompare(b.name))}
-            selectedItems={selectedAllergens}
-            onSelectionChange={setSelectedAllergens}
-            getItemId={(allergen) => allergen.id}
-            getItemLabel={(allergen) => allergen.name}
-            label={t('associatedAllergens')}
-            maxHeight="max-h-48"
+          <AllergyForm 
+            selectedLanguage={selectedLanguage}
+            setSelectedLanguage={setSelectedLanguage}
+            name={name}
+            handleNameChange={handleNameChange}
+            allergens={allergens}
+            selectedAllergens={selectedAllergens}
+            setSelectedAllergens={setSelectedAllergens}
           />
-
           <Button
             type="submit"
             className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
