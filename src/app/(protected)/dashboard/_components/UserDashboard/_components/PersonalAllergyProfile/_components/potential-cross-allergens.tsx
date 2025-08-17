@@ -4,8 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Plus, AlertTriangle } from "lucide-react"
-import { Allergen } from "@/modules/business-types"
-import { useTranslations } from "next-intl"
+import { Allergen, Language } from "@/modules/business-types"
+import { useLocale, useTranslations } from "next-intl"
 
 interface PotentialCrossAllergensProps {
   potentialAllergens: Allergen[]
@@ -19,6 +19,8 @@ export function PotentialCrossAllergens({
   onQuickAdd,
 }: PotentialCrossAllergensProps) {
   const t = useTranslations('potentialCrossAllergens');
+  const localLanguage = useLocale() as Language;
+
   const getTypeColor = (type: string) => {
     switch (type) {
       case "food":
@@ -55,12 +57,12 @@ export function PotentialCrossAllergens({
             >
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="font-medium text-orange-800">{allergen.name}</span>
+                  <span className="font-medium text-orange-800">{allergen.name[localLanguage]}</span>
                   <Badge className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}>
                     {allergen.type}
                   </Badge>
                 </div>
-                <div className="text-sm text-gray-600 line-clamp-2">{allergen.description}</div>
+                <div className="text-sm text-gray-600 line-clamp-2">{allergen.description[localLanguage]}</div>
                 <div className="text-xs text-gray-500 mt-1">{allergen.symptomsId.length} {t('associatedSymptoms')}</div>
               </div>
               <Button

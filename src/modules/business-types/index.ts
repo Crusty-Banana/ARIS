@@ -73,7 +73,7 @@ export type Allergy = z.infer<typeof Allergy>;
 export const PAP = z.object({
     id: ObjectIdAsHexString,
     userId: ObjectIdAsHexString,
-    publicId: ObjectIdAsHexString.optional(),
+    publicId: ObjectIdAsHexString,
     allowPublic: z.boolean(),
     gender: Gender,
     doB: UnixTimestamp.nullable().default(null),

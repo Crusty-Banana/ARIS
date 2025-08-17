@@ -1,9 +1,9 @@
 import { Db, ObjectId } from "mongodb";
-import { UpdatePAP$Params } from "./typing";
+import { UpdatePAPWithUserId$Params } from "./typing";
 
-export async function handler$UpdatePAP(
+export async function handler$UpdatePAPWithUserId(
     db: Db,
-    params: UpdatePAP$Params
+    params: UpdatePAPWithUserId$Params
 ) {
     const { userId, allergens, ...PAPdata } = params;
     const result = await db.collection("paps").updateOne(
@@ -21,6 +21,6 @@ export async function handler$UpdatePAP(
             }
         }
     );
-    return { result };
+    return { result: result.modifiedCount };
 
 }

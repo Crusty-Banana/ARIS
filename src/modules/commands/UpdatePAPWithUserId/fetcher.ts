@@ -1,8 +1,8 @@
-import { UpdatePAPFetcher$Params, UpdatePAP$Result } from "./typing";
+import { UpdatePAPWithUserIdFetcher$Params, UpdatePAPWithUserId$Result } from "./typing";
 
-export async function httpPut$UpdatePAP(
+export async function httpPut$UpdatePAPWithUserId(
     url: string,
-    params: UpdatePAPFetcher$Params
+    params: UpdatePAPWithUserIdFetcher$Params
 ) {
     const response = await fetch(url, {
         method: 'PUT',
@@ -11,7 +11,7 @@ export async function httpPut$UpdatePAP(
     });
     const text = await response.text();
     const data = JSON.parse(text);
-    const result = UpdatePAP$Result.parse({
+    const result = UpdatePAPWithUserId$Result.parse({
         success: response.ok,
         ...data
     });

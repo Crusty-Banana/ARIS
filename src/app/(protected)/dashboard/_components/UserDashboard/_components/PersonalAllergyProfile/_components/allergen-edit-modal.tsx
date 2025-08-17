@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DiscoveryMethod, Symptom } from "@/modules/business-types";
-import { DisplayPAPAllergen } from "@/modules/commands/GetPAP/typing";
-import { UpdatePAPAllergen$Params } from "@/modules/commands/UpdatePAP/typing";
-import { useTranslations } from "next-intl";
+import { DiscoveryMethod, Language, Symptom } from "@/modules/business-types";
+import { DisplayPAPAllergen } from "@/modules/commands/GetPAPWithUserId/typing";
+import { UpdatePAPAllergen$Params } from "@/modules/commands/UpdatePAPWithUserId/typing";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
 interface AllergenEditModalProps {
@@ -18,6 +18,8 @@ interface AllergenEditModalProps {
 
 export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClose }: AllergenEditModalProps) {
   const t = useTranslations('personalAllergyProfile');
+  const localLanguage = useLocale() as Language;
+
   const [discoveryDate, setDiscoveryDate] = useState(allergen.discoveryDate)
   const [discoveryMethod, setDiscoveryMethod] = useState(allergen.discoveryMethod)
   const [selectedSymptoms, setSelectedSymptoms] = useState(allergen.symptoms.map((symptom) => symptom.symptomId))
@@ -44,7 +46,7 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="max-w-lg max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle className="text-cyan-800">{t('editAllergenTitle', {allergenName: allergen.name})}</DialogTitle>
+          <DialogTitle className="text-cyan-800">{t('editAllergenTitle', {allergenName: allergen.name[localLanguage]})}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div>
@@ -71,11 +73,11 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
           </div>
 
           <ScrollableSelect
-            items={availableSymptoms.sort((a, b) => a.name.localeCompare(b.name))}
+            items={availableSymptoms.sort((a, b) => a.name[localLanguage].localeCompare(b.name[localLanguage]))}
             selectedItems={selectedSymptoms}
             onSelectionChange={setSelectedSymptoms}
             getItemId={(symptom) => symptom.id}
-            getItemLabel={(symptom) => symptom.name}
+            getItemLabel={(symptom) => symptom.name[localLanguage]}
             label={t('associatedSymptoms')}
             maxHeight="max-h-48"
           />

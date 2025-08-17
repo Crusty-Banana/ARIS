@@ -15,7 +15,7 @@ export async function checkAuth(req: NextRequest) {
       success: false, result: NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
   }
-  return { success: true, result: token };
+  return { success: true, token: token };
 }
 
 export async function checkAdmin(req: NextRequest) {
@@ -26,7 +26,7 @@ export async function checkAdmin(req: NextRequest) {
       success: false, result: NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
   }
-  return { success: true, result: token };
+  return { success: true, token: token };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

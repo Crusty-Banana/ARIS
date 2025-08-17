@@ -9,7 +9,7 @@ interface AllergenItemProps {
   allergen: LocalizedAllergen,
   symptoms: LocalizedSymptom[],
   onClick: () => void,
-  handleQuickAdd?: (allergen: LocalizedAllergen) => void,
+  handleQuickAdd?: () => void,
   userAllergenIds?: string[]
 }
 
@@ -57,7 +57,7 @@ export function AllergenItem({allergen, symptoms, onClick, handleQuickAdd, userA
               size="sm"
               onClick={(e) => {
                 e.stopPropagation()
-                handleQuickAdd(allergen)
+                handleQuickAdd()
               }}
               className="h-8 w-8 p-0 hover:bg-green-100 text-green-600 border border-green-200 hover:border-green-300"
               title={t('allergenAddButtonTitle')}

@@ -13,8 +13,8 @@ interface AllergenDetailModalProps {
   allergen: Allergen
   symptoms: Symptom[]
   onClose: () => void
-  onUpdate: (allergen: Allergen) => void
-  onDelete: (id: string) => void
+  onUpdate?: (allergen: Allergen) => void
+  onDelete?: (id: string) => void
 }
 
 export function AllergenDetailModal({
@@ -39,14 +39,14 @@ export function AllergenDetailModal({
   }
 
   const saveEdit = () => {
-    onUpdate(editData)
+    if (onUpdate) onUpdate(editData)
     setIsEditing(false)
     onClose()
   }
 
   const handleDelete = () => {
     if (confirm(t('areYouSureAllergen'))) {
-      onDelete(allergen.id)
+      if (onDelete) onDelete(allergen.id)
       onClose()
     }
   }
@@ -58,7 +58,7 @@ export function AllergenDetailModal({
           <DialogTitle className="text-cyan-800 flex items-center justify-between pr-8">
             {t('allergenDetails')}
             <div className="flex gap-3">
-              {!isEditing ? (
+              {(onUpdate && onDelete) && (!isEditing ? (
                 <>
                   <Button variant="outline" size="sm" onClick={startEdit}>
                     <Edit className="h-4 w-4" />
@@ -86,7 +86,7 @@ export function AllergenDetailModal({
                     <X className="h-4 w-4" />
                   </Button>
                 </>
-              )}
+              ))}
             </div>
           </DialogTitle>
           <DialogDescription />
@@ -116,7 +116,7 @@ export function AllergenDetailModal({
                   {t(allergen.type)}
                 </Badge>
               </div>
-              <LanguageDropdown selectedLanguage={selectedLanguage} setSelectedLanguage={setSelectedLanguage} />
+              {(onUpdate && onDelete) && <LanguageDropdown selectedLanguage={selectedLanguage} setSelectedLanguage={setSelectedLanguage} />}
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>

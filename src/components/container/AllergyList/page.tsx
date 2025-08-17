@@ -12,8 +12,8 @@ import { AllergyDetailModal } from "./_components/allergy-detail-modal"
 interface AllergyListProps {
   allergies: Allergy[]
   allergens: Allergen[]
-  onEdit: (allergy: Allergy) => void
-  onDelete: (id: string) => void
+  onEdit?: (allergy: Allergy) => void
+  onDelete?: (id: string) => void
 }
 
 export function AllergyList({ allergies, allergens, onEdit, onDelete }: AllergyListProps) {
@@ -28,12 +28,12 @@ export function AllergyList({ allergies, allergens, onEdit, onDelete }: AllergyL
 
   const handleDelete = (id: string) => {
     if (confirm(t('detailModals.areYouSureAllergy'))) {
-      onDelete(id)
+      if (onDelete) onDelete(id)
     }
   }
 
   const handleEdit = (allergy: Allergy) => {
-    onEdit(allergy)
+    if (onEdit) onEdit(allergy)
   }
 
   const localizedAllergens = allergens.map((allergen) => localizeAllergen(allergen, localLanguage))
@@ -74,8 +74,8 @@ export function AllergyList({ allergies, allergens, onEdit, onDelete }: AllergyL
         allergy={selectedAllergy} 
         allergens={allergens} 
         onClose={() => setSelectedAllergy(null)}
-        onUpdate={handleEdit} 
-        onDelete={handleDelete}
+        onUpdate={onEdit? handleEdit: undefined} 
+        onDelete={onDelete? handleDelete: undefined}
       />}
     </>
   )

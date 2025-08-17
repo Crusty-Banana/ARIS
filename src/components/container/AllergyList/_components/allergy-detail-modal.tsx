@@ -12,8 +12,8 @@ interface AllergyDetailModalProps {
   allergy: Allergy
   allergens: Allergen[]
   onClose: () => void
-  onUpdate: (allergy: Allergy) => void
-  onDelete: (id: string) => void
+  onUpdate?: (allergy: Allergy) => void
+  onDelete?: (id: string) => void
 }
 
 export function AllergyDetailModal({ allergy, allergens, onClose, onUpdate, onDelete }: AllergyDetailModalProps) {
@@ -32,14 +32,14 @@ export function AllergyDetailModal({ allergy, allergens, onClose, onUpdate, onDe
   }
 
   const saveEdit = () => {
-    onUpdate(editData)
+    if (onUpdate) onUpdate(editData)
     setIsEditing(false)
     onClose()
   }
 
   const handleDelete = () => {
     if (confirm(t('areYouSureAllergy'))) {
-      onDelete(allergy.id)
+      if(onDelete) onDelete(allergy.id)
       onClose()
     }
   }
@@ -51,7 +51,7 @@ export function AllergyDetailModal({ allergy, allergens, onClose, onUpdate, onDe
           <DialogTitle className="text-cyan-800 flex items-center justify-between pr-8">
             {t('allergyDetails')}
             <div className="flex gap-3">
-              {!isEditing ? (
+              {(onUpdate && onDelete) && (!isEditing ? (
                 <>
                   <Button variant="outline" size="sm" onClick={startEdit}>
                     <Edit className="h-4 w-4" />
@@ -79,7 +79,7 @@ export function AllergyDetailModal({ allergy, allergens, onClose, onUpdate, onDe
                     <X className="h-4 w-4" />
                   </Button>
                 </>
-              )}
+              ))}
             </div>
           </DialogTitle>
           <DialogDescription />
@@ -101,7 +101,7 @@ export function AllergyDetailModal({ allergy, allergens, onClose, onUpdate, onDe
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t('name')}</label>
                 <div className="p-2 bg-gray-50 rounded">{allergy.name[localLanguage]}</div>
               </div>
-              <LanguageDropdown selectedLanguage={selectedLanguage} setSelectedLanguage={setSelectedLanguage} />
+              {(onUpdate && onDelete) && <LanguageDropdown selectedLanguage={selectedLanguage} setSelectedLanguage={setSelectedLanguage} />}
             </div>
             <div>
               <div>

@@ -13,8 +13,8 @@ import { SymptomDetailModal } from "./_components/symptom-detail-modal";
 
 interface SymptomListProps {
   symptoms: Symptom[]
-  onUpdate: (symptom: Symptom) => void
-  onDelete: (id: string) => void
+  onUpdate?: (symptom: Symptom) => void
+  onDelete?: (id: string) => void
 }
 
 
@@ -51,15 +51,15 @@ export function SymptomList({ symptoms, onUpdate, onDelete }: SymptomListProps) 
       return sortDirection === "asc" ? comparison : -comparison
     })
 
-  const handleDelete = (id: string) => {
+  const handleDelete = onDelete? (id: string) => {
     if (confirm(t('detailModals.areYouSureSymptom'))) {
       onDelete(id)
     }
-  }
+  } : undefined
 
-  const handleEdit = (symptom: Symptom) => {
+  const handleEdit = onUpdate? (symptom: Symptom) => {
     onUpdate(symptom)
-  }
+  } : undefined
 
   return (
     <>

@@ -1,9 +1,9 @@
 import { Db, ObjectId } from "mongodb";
-import { AddPAP$Params } from "./typing";
+import { AddPAPWithUserId$Params } from "./typing";
 
-export async function handler$AddPAP(
+export async function handler$AddPAPWithUserId(
     db: Db,
-    params: AddPAP$Params
+    params: AddPAPWithUserId$Params
 ) {
     const { userId } = params;
     await db.collection('paps').insertOne({

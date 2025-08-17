@@ -8,23 +8,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { Search } from "lucide-react"
 import { ScrollableSelect } from "@/components/scrollable-select"
-import { Allergen, DiscoveryMethod, Symptom } from "@/modules/business-types"
-import { useTranslations } from "next-intl"
+import { Allergen, DiscoveryMethod, Language, Symptom } from "@/modules/business-types"
+import { useLocale, useTranslations } from "next-intl"
+import { PAPAllergen } from "@/modules/commands/UpdatePAPWithUserId/typing"
 
 interface AddAllergenModalProps {
   open: boolean
   onClose: () => void
   availableAllergens: Allergen[]
   availableSymptoms: Symptom[]
-  onAddAllergen: (allergen: {
-    allergenId: string
-    name: string
-    type: "food" | "drug" | "respiratory"
-    severity: number
-    discoveryDate: number | null
-    discoveryMethod: DiscoveryMethod
-    symptomsId: string[]
-  }) => void
+  onAddAllergen: (allergen: PAPAllergen) => void
 }
 
 export function AddAllergenModal({
@@ -35,9 +28,11 @@ export function AddAllergenModal({
   onAddAllergen,
 }: AddAllergenModalProps) {
   const t = useTranslations('addAllergenModal'); // Assuming 'addAllergenModal' is the namespace in your translation file
+  const localLanguage = useLocale() as Language;
+
+
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedAllergen, setSelectedAllergen] = useState<Allergen | null>(null)
-  const [severity, setSeverity] = useState(1)
   const [discoveryDate, setDiscoveryDate] = useState<string>("")
   const [discoveryMethod, setDiscoveryMethod] = useState<DiscoveryMethod>(
     "Clinical symptoms",
@@ -45,7 +40,7 @@ export function AddAllergenModal({
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([])
 
   const filteredAllergens = availableAllergens.filter((allergen) =>
-    allergen.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    allergen.name[localLanguage].toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
   const getTypeColor = (type: string) => {
@@ -71,9 +66,6 @@ export function AddAllergenModal({
 
     onAddAllergen({
       allergenId: selectedAllergen.id,
-      name: selectedAllergen.name,
-      type: selectedAllergen.type,
-      severity,
       discoveryDate: parseInputDate(discoveryDate),
       discoveryMethod,
       symptomsId: selectedSymptoms,
@@ -81,7 +73,6 @@ export function AddAllergenModal({
 
     // Reset form
     setSelectedAllergen(null)
-    setSeverity(1)
     setDiscoveryDate("")
     setDiscoveryMethod("Clinical symptoms")
     setSelectedSymptoms([])
@@ -127,7 +118,7 @@ export function AddAllergenModal({
                   }`}
                   onClick={() => handleAllergenSelect(allergen)}
                 >
-                  <div className="font-medium text-cyan-800">{allergen.name}</div>
+                  <div className="font-medium text-cyan-800">{allergen.name[localLanguage]}</div>
                   <div className="flex items-center gap-2 mt-1">
                     <Badge className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}>
                       {t(allergen.type)}
@@ -149,8 +140,8 @@ export function AddAllergenModal({
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">{t("selectedAllergen")}</label>
                   <div className="p-2 bg-cyan-50 rounded border">
-                    <div className="font-medium">{selectedAllergen.name}</div>
-                    <div className="text-sm text-gray-600 mt-1">{selectedAllergen.description}</div>
+                    <div className="font-medium">{selectedAllergen.name[localLanguage]}</div>
+                    <div className="text-sm text-gray-600 mt-1">{selectedAllergen.description[localLanguage]}</div>
                   </div>
                 </div>
 
@@ -179,11 +170,11 @@ export function AddAllergenModal({
                 </div>
 
                 <ScrollableSelect
-                  items={availableSymptoms.sort((a, b) => a.name.localeCompare(b.name))}
+                  items={availableSymptoms.sort((a, b) => a.name[localLanguage].localeCompare(b.name[localLanguage]))}
                   selectedItems={selectedSymptoms}
                   onSelectionChange={setSelectedSymptoms}
                   getItemId={(symptom) => symptom.id}
-                  getItemLabel={(symptom) => symptom.name}
+                  getItemLabel={(symptom) => symptom.name[localLanguage]}
                   label={t("associatedSymptoms")}
                   maxHeight="max-h-32"
                 />

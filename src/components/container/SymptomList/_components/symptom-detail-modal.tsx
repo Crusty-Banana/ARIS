@@ -12,8 +12,8 @@ import { SymptomForm } from "./symptom-form"
 interface SymptomDetailModalProps {
   symptom: Symptom
   onClose: () => void
-  onUpdate: (symptom: Symptom) => void
-  onDelete: (id: string) => void
+  onUpdate?: (symptom: Symptom) => void
+  onDelete?: (id: string) => void
 }
 
 export function SymptomDetailModal({ symptom, onClose, onUpdate, onDelete }: SymptomDetailModalProps) {
@@ -31,18 +31,18 @@ export function SymptomDetailModal({ symptom, onClose, onUpdate, onDelete }: Sym
     setIsEditing(false)
   }
 
-  const saveEdit = () => {
+  const saveEdit = onUpdate? () => {
     onUpdate(editData)
     setIsEditing(false)
     onClose()
-  }
+  }: undefined
 
-  const handleDelete = () => {
+  const handleDelete = onDelete? () => {
     if (confirm(t('areYouSureSymptom'))) {
       onDelete(symptom.id)
       onClose()
     }
-  }
+  }: undefined
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
@@ -51,7 +51,7 @@ export function SymptomDetailModal({ symptom, onClose, onUpdate, onDelete }: Sym
           <DialogTitle className="text-cyan-800 flex items-center justify-between pr-8">
             {t('symptomDetails')}
             <div className="flex gap-3">
-              {!isEditing ? (
+              {(onUpdate && onDelete) && (!isEditing ? (
                 <>
                   <Button variant="outline" size="sm" onClick={startEdit}>
                     <Edit className="h-4 w-4" />
@@ -79,7 +79,7 @@ export function SymptomDetailModal({ symptom, onClose, onUpdate, onDelete }: Sym
                     <X className="h-4 w-4" />
                   </Button>
                 </>
-              )}
+              ))}
             </div>
           </DialogTitle>
           <DialogDescription />
@@ -104,7 +104,7 @@ export function SymptomDetailModal({ symptom, onClose, onUpdate, onDelete }: Sym
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t('name')} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})</label>
                 <div className="p-2 bg-gray-50 rounded">{symptom.name[selectedLanguage]}</div>
               </div>
-              <LanguageDropdown selectedLanguage={selectedLanguage} setSelectedLanguage={setSelectedLanguage} />
+              {(onUpdate && onDelete) && <LanguageDropdown selectedLanguage={selectedLanguage} setSelectedLanguage={setSelectedLanguage} />}
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
