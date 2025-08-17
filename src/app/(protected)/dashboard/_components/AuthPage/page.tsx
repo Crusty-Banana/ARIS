@@ -139,7 +139,7 @@ export default function AuthPage() {
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
 
-    const result = await httpPost$RequestReset('/api/auth/recover', { email });
+    await httpPost$RequestReset('/api/auth/recover', { email });
     
     // Always show a positive message to prevent email enumeration
     setNotification({ message: t('forgotPasswordRequestSent'), type: 'success'});

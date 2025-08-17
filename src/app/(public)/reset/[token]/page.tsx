@@ -46,7 +46,7 @@ export default function ResetPasswordPage() {
     if (token) {
         fetchToken();
     }
-    }, [token, router] );
+    }, [t, token, router] );
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
