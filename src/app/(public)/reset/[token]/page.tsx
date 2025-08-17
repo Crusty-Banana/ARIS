@@ -29,14 +29,14 @@ export default function ResetPasswordPage() {
         try {
         const result = await httpGet$ResetPasswordToken(`/api/auth/reset/${token}`);
         if (!result.success){
-            setNotification({ message: 'Invalid or expired reset token.', type: 'error' });
+            setNotification({ message: t("badToken"), type: 'error' });
             setTimeout(() => {
                 router.push('/');
             }, 2000);
         }
         } catch (err) {
             console.error("Error fetching token:", err);
-            setNotification({ message: 'Invalid or expired reset token.', type: 'error' });
+            setNotification({ message: t("badToken"), type: 'error' });
             setTimeout(() => {
                 router.push('/');
             }, 2000);
@@ -56,20 +56,20 @@ export default function ResetPasswordPage() {
             return;
         }
         if (!token) {
-            setNotification({ message: t('invalidToken'), type: 'error' });
+            setNotification({ message: t('badToken'), type: 'error' });
             return;
         }
         setIsLoading(true);
         const result = await httpPost$ResetPassword('/api/auth/reset', { token, password });
 
         if (result.success) {
-            setNotification({ message: result.message, type: 'success' });
+            setNotification({ message: t("passwordResetSuccess"), type: 'success' });
             // Redirect to login after a short delay
             setTimeout(() => {
                 router.push('/?reset=success');
             }, 2000);
         } else {
-            setNotification({ message: result.message, type: 'error' });
+            setNotification({ message: t("error") + ": " + result.message, type: 'error' });
         }
         setIsLoading(false);
     }

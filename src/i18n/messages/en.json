@@ -71,7 +71,11 @@
         "confirmNewPassword": "New password, again, for ensurance:",
         "resetPasswordButton": "Reset password",
         "resettingPassword": "Please wait...",
-        "redirectingToLogin": "Bringing you back..."
+        "redirectingToLogin": "Bringing you back...", 
+        "forgotPasswordRequestSent": "If your account is valid, a link has been sent to your email address.",
+        "badToken": "Invalid or expired reset token.",
+        "error": "Error",
+        "passwordResetSuccess": "Password Reset successfully!"
 
     },
     "symptomModal": {

@@ -120,7 +120,7 @@ export default function AuthPage() {
         setAuthMode('login'); // Switch to login view
         setNotification({ message: t('accountCreated'), type: 'success' });
       } else {
-        setNotification({ message: res.message || t('registrationFailed'), type: 'error' });
+        setNotification({ message: t('registrationFailed'), type: 'error' });
       }
     } catch (error) {
       console.error("Registration error:", error)
@@ -142,7 +142,7 @@ export default function AuthPage() {
     const result = await httpPost$RequestReset('/api/auth/recover', { email });
     
     // Always show a positive message to prevent email enumeration
-    setNotification({ message: result.message, type: 'success'});
+    setNotification({ message: t('forgotPasswordRequestSent'), type: 'success'});
     setIsLoading(false);
   }
 

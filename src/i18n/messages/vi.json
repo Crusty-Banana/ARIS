@@ -71,7 +71,11 @@
         "confirmNewPassword": "Nhập lại lần nữa cho chắc:",
         "resetPasswordButton": "Đổi lại mật khẩu",
         "resettingPassword": "Vui lòng chờ xíu...",
-        "redirectingToLogin": "Đang đưa bạn trở lại..."
+        "redirectingToLogin": "Đang đưa bạn trở lại...", 
+        "forgotPasswordRequestSent": "Nếu tài khoản của bạn hợp lệ, một liên kết đã được gửi đến địa chỉ email của bạn.",
+        "badToken": "Mã đặt lại không hợp lệ hoặc đã hết hạn.",
+        "error": "Lỗi",
+        "passwordResetSuccess": "Đặt lại mật khẩu thành công!"
     },
     "symptomModal": {
         "addSymptom": "Thêm Triệu chứng",
