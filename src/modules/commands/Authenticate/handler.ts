@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import { hash } from 'bcryptjs';
 import { Db } from "mongodb";
 import { Register$Params } from "./typing";
-import { handler$AddPAP } from "../AddPAP/handler";
+import { handler$AddPAPWithUserId } from "../AddPAPWithUserId/handler";
 import { authOptions } from "@/modules/authentication/authConfig";
 import { sendVerificationEmail } from "@/modules/email";
 import { randomBytes } from "crypto";
@@ -46,7 +46,7 @@ export async function handler$Register(
     await sendVerificationEmail(email, firstName, verificationToken);
     // -------------------------------
 
-    await handler$AddPAP(
+    await handler$AddPAPWithUserId(
         db,
         { userId: newUser.insertedId.toHexString() }
     );

@@ -1,73 +1,57 @@
-import { handler$AddSymptom } from "@/modules/commands/AddSymptom/handlers";
-import { AddSymptom$Params } from "@/modules/commands/AddSymptom/typing";
-import { handler$GetSymptoms } from "@/modules/commands/GetSymptoms/handler";
-import { GetSymptoms$Params } from "@/modules/commands/GetSymptoms/typing";
-import { getDb } from "@/modules/mongodb";
-import { getToken } from "next-auth/jwt";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
+import { checkAdmin, checkAuth, processError } from '@/lib/utils';
+import { getDb } from '@/modules/mongodb';
+import { handler$AddSymptom } from '@/modules/commands/AddBusinessType/handler';
+import { handler$GetSymptoms } from '@/modules/commands/GetBusinessType/handler';
+import { AddSymptom$Params } from '@/modules/commands/AddBusinessType/typing';
+import { GetBusinessType$Params } from '@/modules/commands/GetBusinessType/typing';
 
-export async function POST(req: NextRequest) {
-    try {
-        const token = await getToken({ req });
+export async function POST(
+  req: NextRequest
+) {
+  try {
+    // Check Authentication
+    const authCheck = await checkAdmin(req);
+    if (!authCheck.success) return authCheck.result;
 
-        if (!token || token.role !== 'admin') {
-            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-        }
-
-        const body = await req.json();
-        const parsedBody = AddSymptom$Params.safeParse(body);
-
-        if (!parsedBody.success) {
-            return NextResponse.json({ message: parsedBody.error.message || "invalid params" }, { status: 400 });
-        }
-
-        const db = await getDb();
-        const result = await handler$AddSymptom(db, parsedBody.data);
-
-        return NextResponse.json(
-            { message: 'Symptom added successfully', symptomId: result.insertedId },
-            { status: 201 }
-        );
-    } catch (error) {
-        let message = "An error occurred";
-        if (error instanceof Error) {
-            message += `: ${error.message}`;
-        }
-        return NextResponse.json(
-            { message },
-            { status: 500 }
-        );
-
+    // Validate Input
+    const body = await req.json();
+    const parsedBody = AddSymptom$Params.safeParse(body);
+    if (!parsedBody.success) {
+      return NextResponse.json({ message: parsedBody.error.message || "Invalid params" }, { status: 400 });
     }
+
+    // Handle action
+    const db = await getDb();
+    const { result } = await handler$AddSymptom(db, parsedBody.data);
+
+    return NextResponse.json({ result, message: "Symptom created successfully" }, { status: 200 });
+  } catch (error) {
+    return processError(error);
+  }
 }
 
-export async function GET(req: NextRequest) {
-    try {
-        const token = await getToken({ req });
+export async function GET(
+  req: NextRequest
+) {
+  try {
+    // Check Authentication
+    const authCheck = await checkAuth(req);
+    if (!authCheck.success) return authCheck.result;
 
-        if (!token) {
-            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-        }
-
-        const searchParams = Object.fromEntries(req.nextUrl.searchParams);
-        const parsedBody = GetSymptoms$Params.safeParse(searchParams);
-        if (!parsedBody.success) {
-            return NextResponse.json({ messsage: parsedBody.error.message || "invalid params" }, { status: 400 });
-        }
-
-        const db = await getDb();
-        const { symptoms } = await handler$GetSymptoms(db, parsedBody.data);
-
-        return NextResponse.json({ symptoms, message: "Symptoms fetched successfully." }, { status: 200 });
-    } catch (error) {
-        let message = "An error occurred";
-        if (error instanceof Error) {
-            message += `: ${error.message}`;
-        }
-        return NextResponse.json(
-            { message },
-            { status: 500 }
-        );
+    // Validate Input
+    const searchParams = Object.fromEntries(req.nextUrl.searchParams);
+    const parsedBody = GetBusinessType$Params.safeParse(searchParams);
+    if (!parsedBody.success) {
+      return NextResponse.json({ message: parsedBody.error.message || "Invalid params" }, { status: 400 });
     }
-}
 
+    // Handle action
+    const db = await getDb();
+    const { result } = await handler$GetSymptoms(db, parsedBody.data);
+
+    return NextResponse.json({ result, message: "Symptoms retrieved successfully" }, { status: 200 });
+  } catch (error) {
+    return processError(error);
+  }
+}

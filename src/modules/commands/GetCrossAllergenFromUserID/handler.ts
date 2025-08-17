@@ -11,7 +11,7 @@ export async function handler$GetCrossAllergenFromUserID(
     const result = await db.collection("paps").findOne({ userId: new ObjectId(userID) });
 
     if (!result || !result.allergens || result.allergens.length === 0) {
-        return { crossAllergens: [] as Allergen[] };
+        return { result: [] as Allergen[] };
     }
     const userAllergenIds = result.allergens.map((allergen: { allergenId: ObjectId, degree: number }) => (
         allergen.allergenId
@@ -45,5 +45,5 @@ export async function handler$GetCrossAllergenFromUserID(
             ...doc,
         });
     });
-    return { crossAllergens: allergens };
+    return { result: allergens };
 }
