@@ -61,7 +61,7 @@
     },
     "symptomModal": {
         "addSymptom": "Thêm Triệu chứng",
-        "addNewSymptom": "Thêm Triệu chứng Mới",
+        "addNewSymptom": "Thêm Triệu Chứng Mới",
         "symptomName": "Tên Triệu chứng",
         "enterSymptomName": "Nhập tên triệu chứng",
         "severityLabel": "Mức độ nghiêm trọng (1-3)",
@@ -253,7 +253,7 @@
         "allergens": "Dị nguyên"
     },
     "addAllergenModal": {
-        "addNewAllergen": "Thêm Dị nguyên Mới",
+        "addNewAllergen": "Thêm Dị Nguyên Mới",
         "searchAllergen": "Tìm kiếm dị nguyên...",
         "food": "Thực phẩm",
         "drug": "Thuốc",
@@ -284,6 +284,36 @@
     "common": {
         "searchItems": "Tìm kiếm tên...",
         "send": "Gửi",
-        "cancel": "Hủy bỏ"
+        "cancel": "Hủy bỏ",
+        "food": "Thực phẩm",
+        "drug": "Thuốc",
+        "respiratory": "Hô hấp",
+        "type": "Loại",
+        "selectType": "Chọn loại",
+        "language": "Ngôn ngữ",
+        "name": "Tên",
+        "enterName": "Nhập tên...",
+        "allTypes": "Tất cả các loại",
+        "treatment": "Điều trị",
+        "sortByPrevalence": "Sắp xếp theo độ phổ biến",
+        "sortByName": "Sắp xếp theo tên",
+        "sortBySeverity": "Sắp xếp theo độ nghiêm trọng",
+        "allergens": "Dị nguyên",
+        "allergies": "Dị ứng",
+        "symptoms": "Triệu chứng",
+        "searchAllergens": "Tìm kiếm dị nguyên...",
+        "searchAllergies": "Tìm kiếm dị ứng...",
+        "searchSymptoms": "Tìm kiếm triệu chứng...",
+        "noAllergensFound": "Không tìm thấy dị nguyên nào",
+        "noAllergiesFound": "Không tìm thấy dị ứng nào",
+        "noSymptomsFound": "Không tìm thấy triệu chứng nào",
+        "detailModals": {
+            "areYouSureAllergenDelete": "Bạn có chắc chắn muốn xóa dị nguyên này không?",
+            "areYouSureAllergyDelete": "Bạn có chắc chắn muốn xóa dị ứng này không?",
+            "areYouSureSymptomDelete": "Bạn có chắc chắn muốn xóa triệu chứng này không?",
+            "treatmentPlaceholder": "Nhập thông tin điều trị",
+            "severityLabel": "Độ nghiêm trọng (1-3)",
+            "prevalenceLabel": "Độ phổ biến (1-5)"
+        }
     }
 }

@@ -2,31 +2,20 @@
 
 import { useEffect, useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { SymptomDetailModal, AllergenDetailModal, AllergyDetailModal } from "@/components/detail-modals"
-import { SymptomList, AllergenList, AllergyList } from "@/components/item-lists"
-import { Allergen, Allergy, Symptom } from "@/modules/business-types"
-import { httpGet$GetSymptoms } from "@/modules/commands/GetSymptoms/fetcher"
-import { AddSymptom$Params } from "@/modules/commands/AddSymptom/typing"
-import { httpPost$AddSymptom } from "@/modules/commands/AddSymptom/fetcher"
-import { UpdateSymptom$Params } from "@/modules/commands/UpdateSymptom/typing"
-import { httpPut$UpdateSymptom } from "@/modules/commands/UpdateSymptom/fetcher"
-import { httpDelete$DeleteSymptom } from "@/modules/commands/DeleteSymptom/fetcher"
-import { httpGet$GetAllergens } from "@/modules/commands/GetAllergens/fetcher"
-import { AddAllergen$Params } from "@/modules/commands/AddAllergen/typing"
-import { httpPost$AddAllergen } from "@/modules/commands/AddAllergen/fetcher"
-import { UpdateAllergen$Params } from "@/modules/commands/UpdateAllergen/typing"
-import { httpPut$UpdateAllergen } from "@/modules/commands/UpdateAllergen/fetcher"
-import { httpDelete$DeleteAllergen } from "@/modules/commands/DeleteAllergen/fetcher"
-import { httpGet$GetAllergies } from "@/modules/commands/GetAllergies/fetcher"
-import { AddAllergy$Params } from "@/modules/commands/AddAllergy/typing"
-import { httpPost$AddAllergy } from "@/modules/commands/AddAllergy/fetcher"
-import { UpdateAllergy$Params } from "@/modules/commands/UpdateAllergy/typing"
-import { httpPut$UpdateAllergy } from "@/modules/commands/UpdateAllergy/fetcher"
-import { httpDelete$DeleteAllergy } from "@/modules/commands/DeleteAllergy/fetcher"
-import { SymptomModal } from "@/components/symptom-modal"
-import { AllergenModal } from "@/components/allergen-modal"
-import { AllergyModal } from "@/components/allergy-modal"
 import { useTranslations } from "next-intl"
+import { httpGet$GetAllergens, httpGet$GetAllergies, httpGet$GetSymptoms } from "@/modules/commands/GetBusinessType/fetcher"
+import { AddAllergen$Params, AddAllergy$Params, AddSymptom$Params } from "@/modules/commands/AddBusinessType/typing"
+import { httpPost$AddAllergen, httpPost$AddAllergy, httpPost$AddSymptom } from "@/modules/commands/AddBusinessType/fetcher"
+import { UpdateAllergen$Params, UpdateAllergy$Params, UpdateSymptom$Params } from "@/modules/commands/UpdateBusinessType/typing"
+import { httpPut$UpdateAllergen, httpPut$UpdateAllergy, httpPut$UpdateSymptom } from "@/modules/commands/UpdateBusinessType/fetcher"
+import { httpDelete$DeleteAllergen, httpDelete$DeleteAllergy, httpDelete$DeleteSymptom } from "@/modules/commands/DeleteBusinessType/fetcher"
+import { AddSymptomButton } from "@/components/container/SymptomList/_components/symptom-add-button"
+import { SymptomList } from "@/components/container/SymptomList/page"
+import { Allergen, Allergy, Symptom } from "@/modules/business-types"
+import { AddAllergenButton } from "@/components/container/AllergenList/_components/allergen-add-button"
+import { AllergenList } from "@/components/container/AllergenList/page"
+import { AddAllergyButton } from "@/components/container/AllergyList/_components/allergy-add-button"
+import { AllergyList } from "@/components/container/AllergyList/page"
 
 export default function AdminDashboard() {
   const t = useTranslations('adminDashboard');
@@ -36,15 +25,10 @@ export default function AdminDashboard() {
 
   const [allergies, setAllergies] = useState<Allergy[]>([])
 
-  // Detail modal states
-  const [selectedSymptom, setSelectedSymptom] = useState<Symptom | null>(null)
-  const [selectedAllergen, setSelectedAllergen] = useState<Allergen | null>(null)
-  const [selectedAllergy, setSelectedAllergy] = useState<Allergy | null>(null)
-
   const fetchSymptoms = async () => {
     const data = await httpGet$GetSymptoms('/api/symptoms', {});
     if (data.success) {
-      setSymptoms(data.symptoms!);
+      setSymptoms(data.result as Symptom[]);
     } else {
       console.error(data.message);
     }
@@ -53,7 +37,7 @@ export default function AdminDashboard() {
   const fetchAllergens = async () => {
     const data = await httpGet$GetAllergens('/api/allergens', {});
     if (data.success) {
-      setAllergens(data.allergens!);
+      setAllergens(data.result as Allergen[]);
     } else {
       console.error(data.message);
     }
@@ -62,7 +46,7 @@ export default function AdminDashboard() {
   const fetchAllergies = async () => {
     const data = await httpGet$GetAllergies('/api/allergies', {});
     if (data.success) {
-      setAllergies(data.allergies!);
+      setAllergies(data.result as Allergy[]);
     } else {
       console.error(data.message);
     }
@@ -193,12 +177,11 @@ export default function AdminDashboard() {
           <TabsContent value="symptoms" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-semibold text-cyan-800">{t('symptom management')}</h2>
-              <SymptomModal onAddSymptom={addSymptom} />
+              <AddSymptomButton onAddSymptom={addSymptom} />
             </div>
             <SymptomList
               symptoms={symptoms}
-              onItemClick={setSelectedSymptom}
-              onEdit={setSelectedSymptom}
+              onUpdate={updateSymptom}
               onDelete={deleteSymptom}
             />
           </TabsContent>
@@ -206,13 +189,12 @@ export default function AdminDashboard() {
           <TabsContent value="allergens" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-semibold text-cyan-800">{t('allergen management')}</h2>
-              <AllergenModal symptoms={symptoms} onAddAllergen={addAllergen} />
+              <AddAllergenButton symptoms={symptoms} onAddAllergen={addAllergen} />
             </div>
             <AllergenList
               allergens={allergens}
               symptoms={symptoms}
-              onItemClick={setSelectedAllergen}
-              onEdit={setSelectedAllergen}
+              onEdit={updateAllergen}
               onDelete={deleteAllergen}
             />
           </TabsContent>
@@ -220,45 +202,16 @@ export default function AdminDashboard() {
           <TabsContent value="allergies" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-semibold text-cyan-800">{t('allergy management')}</h2>
-              <AllergyModal allergens={allergens} onAddAllergy={addAllergy} />
+              <AddAllergyButton allergens={allergens} onAddAllergy={addAllergy} />
             </div>
             <AllergyList
               allergies={allergies}
               allergens={allergens}
-              onItemClick={setSelectedAllergy}
-              onEdit={setSelectedAllergy}
+              onEdit={updateAllergy}
               onDelete={deleteAllergy}
             />
           </TabsContent>
-
         </Tabs>
-
-        {/* Detail Modals */}
-        <SymptomDetailModal
-          symptom={selectedSymptom}
-          open={!!selectedSymptom}
-          onClose={() => setSelectedSymptom(null)}
-          onUpdate={updateSymptom}
-          onDelete={deleteSymptom}
-        />
-
-        <AllergenDetailModal
-          allergen={selectedAllergen}
-          symptoms={symptoms}
-          open={!!selectedAllergen}
-          onClose={() => setSelectedAllergen(null)}
-          onUpdate={updateAllergen}
-          onDelete={deleteAllergen}
-        />
-
-        <AllergyDetailModal
-          allergy={selectedAllergy}
-          allergens={allergens}
-          open={!!selectedAllergy}
-          onClose={() => setSelectedAllergy(null)}
-          onUpdate={updateAllergy}
-          onDelete={deleteAllergy}
-        />
       </div>
     </div>
   )

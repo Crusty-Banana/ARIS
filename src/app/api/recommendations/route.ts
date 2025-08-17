@@ -1,39 +1,57 @@
-import { handler$AddRecommendation } from "@/modules/commands/AddRecommendation/handler";
-import { AddRecommendation$Params } from "@/modules/commands/AddRecommendation/typing";
-import { getDb } from "@/modules/mongodb";
-import { getToken } from "next-auth/jwt";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
+import { checkAdmin, checkAuth, processError } from '@/lib/utils';
+import { getDb } from '@/modules/mongodb';
+import { handler$AddRecommendation } from '@/modules/commands/AddBusinessType/handler';
+import { handler$GetRecommendations } from '@/modules/commands/GetBusinessType/handler';
+import { AddRecommendation$Params } from '@/modules/commands/AddBusinessType/typing';
+import { GetBusinessType$Params } from '@/modules/commands/GetBusinessType/typing';
 
-export async function POST(req: NextRequest) {
-    try {
-        const token = await getToken({ req });
-        
-        if (!token) {
-            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-        }
-        
-        const body = await req.json();
-        const parsedBody = AddRecommendation$Params.safeParse(body);
+export async function POST(
+  req: NextRequest
+) {
+  try {
+    // Check Authentication
+    const authCheck = await checkAdmin(req);
+    if (!authCheck.success) return authCheck.result;
 
-        if (!parsedBody.success) {
-            return NextResponse.json({ message: parsedBody.error.message || "invalid params" }, { status: 400 });
-        }
-        const db = await getDb();
-
-        const { insertedId } = await handler$AddRecommendation(db, parsedBody.data);
-
-        return NextResponse.json(
-            { message: 'Recommendation added successfully', recommendationId: insertedId },
-            { status: 201 }
-        );
-    } catch (error) {
-        let message = "An error occurred";
-        if (error instanceof Error) {
-            message += `: ${error.message}`;
-        }
-        return NextResponse.json(
-            { message },
-            { status: 500},
-        )
+    // Validate Input
+    const body = await req.json();
+    const parsedBody = AddRecommendation$Params.safeParse(body);
+    if (!parsedBody.success) {
+      return NextResponse.json({ message: parsedBody.error.message || "Invalid params" }, { status: 400 });
     }
+
+    // Handle action
+    const db = await getDb();
+    const { result } = await handler$AddRecommendation(db, parsedBody.data);
+
+    return NextResponse.json({ result, message: "Recommendation created successfully" }, { status: 200 });
+  } catch (error) {
+    return processError(error);
+  }
+}
+
+export async function GET(
+  req: NextRequest
+) {
+  try {
+    // Check Authentication
+    const authCheck = await checkAuth(req);
+    if (!authCheck.success) return authCheck.result;
+
+    // Validate Input
+    const searchParams = Object.fromEntries(req.nextUrl.searchParams);
+    const parsedBody = GetBusinessType$Params.safeParse(searchParams);
+    if (!parsedBody.success) {
+      return NextResponse.json({ message: parsedBody.error.message || "Invalid params" }, { status: 400 });
+    }
+
+    // Handle action
+    const db = await getDb();
+    const { result } = await handler$GetRecommendations(db, parsedBody.data);
+
+    return NextResponse.json({ result, message: "Recommendations retrieved successfully" }, { status: 200 });
+  } catch (error) {
+    return processError(error);
+  }
 }

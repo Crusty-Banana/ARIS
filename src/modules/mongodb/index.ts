@@ -1,3 +1,5 @@
+'use server';
+
 // import { initializeIndices } from "kreate-server/db/initData";
 import { MongoClient, Db } from "mongodb";
 

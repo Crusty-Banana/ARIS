@@ -11,26 +11,28 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Edit, Calendar, User, Shield, AlertTriangle, Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react"
 import { AddAllergenModal } from "./_components/add-allergen-modal"
 import { PotentialCrossAllergens } from "./_components/potential-cross-allergens"
-import { DisplayPAP } from "@/modules/commands/GetPAP/typing"
-import { Allergen, DiscoveryMethod, Gender, ObjectIdAsHexString, Symptom } from "@/modules/business-types"
-import { UpdatePAPAllergen$Params, UpdatePAPFetcher$Params } from "@/modules/commands/UpdatePAP/typing"
-import { useTranslations } from "next-intl"
-import { SymptomDetailModal } from "@/components/symptom-detail-modal"
+import { DisplayPAP } from "@/modules/commands/GetPAPWithUserId/typing"
+import { Allergen, DiscoveryMethod, Gender, Language, ObjectIdAsHexString, Symptom } from "@/modules/business-types"
+import { useLocale, useTranslations } from "next-intl"
 import { AllergenEditModal } from "./_components/allergen-edit-modal"
 import { UnderlyingMedicalConditionsCard } from "./_components/underlying-medical-condition"
 import { AddAllergenButton } from "./_components/add-allergen-button"
 import { Label } from "@/components/ui/label"
+import { PAPAllergen, UpdatePAPAllergen$Params, UpdatePAPWithUserIdFetcher$Params } from "@/modules/commands/UpdatePAPWithUserId/typing"
+import { SymptomDetailModal } from "@/components/container/SymptomList/_components/symptom-detail-modal"
 
 interface PersonalAllergyProfileProps {
   pAP: DisplayPAP
   availableSymptoms: Symptom[]
   availableAllergens: Allergen[]
   potentialCrossAllergens: Allergen[]
-  onUpdate: (params: UpdatePAPFetcher$Params) => void
+  onUpdate: (params: UpdatePAPWithUserIdFetcher$Params) => void
 }
 
 export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossAllergens, availableAllergens, onUpdate }: PersonalAllergyProfileProps) {
   const t = useTranslations('personalAllergyProfile');
+  const localLanguage = useLocale() as Language;
+
   const [isEditingProfile, setIsEditingProfile] = useState(false)
   const [editingAllergen, setEditingAllergen] = useState<string | null>(null)
   const [showAddAllergen, setShowAddAllergen] = useState(false)
@@ -92,13 +94,12 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
     setIsEditingProfile(false)
   }
 
-  const handleAllergenUpdate = (allergenId: ObjectIdAsHexString, updates: Omit<UpdatePAPAllergen$Params, "allergenId">) => {
-    const pAPAllergens = pAP.allergens.map((allergen) => ({
-      allergenId: allergen.allergenId,
-      discoveryMethod: allergen.discoveryMethod,
-      discoveryDate: allergen.discoveryDate,
+  const handleAllergenUpdate = (allergenId: ObjectIdAsHexString, updates: UpdatePAPAllergen$Params) => {
+    const pAPAllergens = pAP.allergens.map((allergen) => (PAPAllergen.parse({
+      ...allergen,
       symptomsId: allergen.symptoms.map((symptom) => symptom.symptomId),
-    }))
+    })))
+
     const allergensUpdate = pAPAllergens.map((allergen) => {
       if (allergen.allergenId === allergenId) {
         return {
@@ -115,11 +116,9 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
     setEditingAllergen(null)
   }
 
-  const handleAddAllergen = (allergenData: UpdatePAPAllergen$Params) => {
-      const allergens = [...pAP.allergens.map(allergen => ({
-        allergenId: allergen.allergenId,
-        discoveryDate: allergen.discoveryDate,
-        discoveryMethod: allergen.discoveryMethod,
+  const handleAddAllergen = (allergenData: PAPAllergen) => {
+      const allergens = [...pAP.allergens.map(allergen => PAPAllergen.parse({
+        ...allergen,
         symptomsId: allergen.symptoms.map(symptom => symptom.symptomId),
         })), allergenData]
   
@@ -129,6 +128,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
   const handleQuickAddAllergen = (allergen: Allergen) => {
     handleAddAllergen({
       allergenId: allergen.id,
+      discoveryDate: null,
       discoveryMethod: "Potential" as DiscoveryMethod,
       symptomsId: [],
     })
@@ -265,7 +265,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-3">
                       <div className="flex-1">
                         <div className="flex items-center flex-wrap gap-2 mb-2">
-                          <h3 className="font-semibold text-cyan-800">{allergen.name}</h3>
+                          <h3 className="font-semibold text-cyan-800">{allergen.name[localLanguage]}</h3>
                           <Badge className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}>
                             {t(allergen.type)}
                           </Badge>
@@ -316,7 +316,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                             className="text-xs hover:bg-cyan-100 hover:cursor-pointer"
                             onClick={() => setSelectedSymptom(Symptom.parse({id: symptom.symptomId, ...symptom}))}
                           >
-                            {symptom.name}
+                            {symptom.name[localLanguage]}
                           </Badge>
                         ))}
                       </div>
@@ -418,10 +418,10 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
         </DialogContent>
       </Dialog>
 
-      <SymptomDetailModal
+      {selectedSymptom && <SymptomDetailModal
         symptom={selectedSymptom}
-        onOpenChange={() => setSelectedSymptom(null)}
-      />
+        onClose={() => setSelectedSymptom(null)}
+      />}
 
       {editingAllergen && (
         <AllergenEditModal

@@ -284,6 +284,36 @@
     "common": {
         "searchItems": "Search items...",
         "send": "Send",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "food":"Food",
+        "drug":"Drug",
+        "respiratory":"Respiratory",
+        "type": "Type",
+        "selectType": "Select type",
+        "language": "Language",
+        "name": "Name",
+        "enterName": "Enter name...",
+        "allTypes": "All Types",
+        "treatment": "Treatment",
+        "sortByPrevalence": "Sort by Prevalence",
+        "sortByName": "Sort by Name",
+        "sortBySeverity":" Sort by Severity",
+        "allergens": "Allergens",
+        "allergies": "Allergies",
+        "symptoms": "Symptoms",
+        "searchAllergens": "Search for allergens...",
+        "searchAllergies": "Search for allergies...",
+        "searchSymptoms": "Search for symptoms...",
+        "noAllergensFound": "No allergens found",
+        "noAllergiesFound": "No allergies found",
+        "noSymptomsFound": "No symptoms found",
+        "detailModals": {
+            "areYouSureAllergenDelete": "Are you sure you want to delete this allergen?",
+            "areYouSureAllergyDelete": "Are you sure you want to delete this allergy?",
+            "areYouSureSymptomDelete": "Are you sure you want to delete this symptom?",
+            "treatmentPlaceholder": "Enter treatment information",
+            "severityLabel": "Severity (1-3)",
+            "prevalenceLabel": "Prevalence (1-5)"
+        }
     }
 }
