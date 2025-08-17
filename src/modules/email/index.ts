@@ -48,7 +48,6 @@ const getPasswordResetEmailHtml = (url: string) => `
  */
 export async function sendVerificationEmail(to: string, name: string, token: string) {
     const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/verify/${token}`;
-    console.log("TRANS", transporter)
     await transporter.sendMail({
         from: process.env.EMAIL_FROM,
         to,

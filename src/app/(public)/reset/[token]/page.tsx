@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Eye, EyeOff, KeyRound, Lock } from "lucide-react";
 import { httpPost$ResetPassword, httpGet$ResetPasswordToken } from "@/modules/commands/RecoverAccount/fetcher";
-import Header from '@/components/header';
 
 export default function ResetPasswordPage() {
     const t = useTranslations('authPage');
@@ -77,7 +76,6 @@ export default function ResetPasswordPage() {
 
     return (
         <div className='flex flex-col h-screen'>
-            <Header />
             <div className='flex flex-grow'>
                 <div className="flex-grow bg-gradient-to-br from-cyan-400 via-cyan-500 to-blue-600 flex items-center justify-center p-4 sm:p-6 lg:p-8">
                     <div className="w-full max-w-sm sm:max-w-md">

@@ -253,7 +253,8 @@
     },
     "header": {
         "logout": "Log out",
-        "deleteAccount": "Delete Account"
+        "deleteAccount": "Delete Account",
+        "feedback": "Feedback"
     },
     "dataTables": {
         "existingSymptoms": "Existing Symptoms",
