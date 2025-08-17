@@ -1,6 +1,6 @@
 import { Db, ObjectId } from "mongodb";
 import { GetCrossAllergenFromAllergenID$Params } from "./typing";
-import { Allergen } from "@/modules/business-types";
+import { Allergen, BusisnessTypeCollection } from "@/modules/business-types";
 
 
 export async function handler$GetCrossAllergenFromAllergenID(
@@ -9,7 +9,7 @@ export async function handler$GetCrossAllergenFromAllergenID(
 ) {
     const { allergenID } = params;
     // 1. Find all allergy categories that contain the specified allergen
-    const relatedAllergies = await db.collection('allergies').find({
+    const relatedAllergies = await db.collection(BusisnessTypeCollection.allergies).find({
         allergensId: allergenID
     }).toArray();
 
@@ -27,7 +27,7 @@ export async function handler$GetCrossAllergenFromAllergenID(
     const uniqueCrossAllergenIds = Array.from(crossAllergenIds).map(idStr => ObjectId.createFromHexString(idStr));
 
     // 3. Fetch the details of the cross-allergens
-    const crossAllergens = await db.collection('allergens').find({
+    const crossAllergens = await db.collection(BusisnessTypeCollection.allergens).find({
         _id: { $in: uniqueCrossAllergenIds }
     }).toArray();
 
