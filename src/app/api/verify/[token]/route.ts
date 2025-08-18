@@ -11,7 +11,7 @@ export async function GET(
         const db = await getDb();
 
         const verificationToken = await db.collection('verification_tokens').findOne({ token });
-        
+
         if (!verificationToken || verificationToken.expires < new Date()) {
             // Redirect to an error page if token is invalid or expired (DUMMY)
             return NextResponse.redirect(new URL('/verification-failed', req.url));

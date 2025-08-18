@@ -34,7 +34,7 @@ export async function httpPost$ResetPassword(
             body: JSON.stringify(params),
         });
         const data = await response.json();
-        
+
         if (!response.ok) {
             return { success: false, message: data.message || "Failed to reset password." };
         }
@@ -54,7 +54,7 @@ export async function httpGet$ResetPasswordToken(
             headers: { 'Content-Type': 'application/json' },
         });
         const data = await response.json();
-        
+
         if (!response.ok) {
             return { success: false, message: data.message || "Bad Token." };
         }

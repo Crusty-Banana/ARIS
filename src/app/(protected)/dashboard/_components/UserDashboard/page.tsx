@@ -79,7 +79,7 @@ export default function UserDashboard() {
       setPAP(data.result!);
       fetchPotentialCrossAllergens();
     } else {
-      console.error(data.message);
+      toast.error(data.message);
     }
   }, [])
 
@@ -88,7 +88,7 @@ export default function UserDashboard() {
     if (data.success) {
       await fetchPAP();
     } else {
-      console.error(data.message);
+      toast.error(data.message);
     }
   }
 
