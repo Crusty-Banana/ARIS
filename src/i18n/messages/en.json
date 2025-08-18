@@ -39,6 +39,7 @@
         "signIn": "Sign In",
         "signingIn": "Signing In...",
         "loginFailed": "Login failed. Please check your credentials.",
+        "pleaseVerifyEmail": "Your email address is not verified. Please check for the verification link.",
         "firstName": "First Name",
         "lastName": "Last Name",
         "firstNamePlaceholder": "First name",
@@ -57,7 +58,25 @@
         "noAccount": "Don't have an account? ",
         "haveAccount": "Already have an account? ",
         "signUp": "Sign up",
-        "signInLink": "Sign in"
+        "forgotPasswordTitle": "Forgot Password",
+        "forgotPasswordPrompt": "Enter your email address and we'll send you a link to reset your password.",
+        "sendResetLink": "Send Reset Link",
+        "forgotPasswordLink": "Forgot your password?",
+        "backToLogin": "Back to Login",
+        "signInLink": "Sign in",
+        "sendingLink": "Please wait...",
+        "resetPasswordTitle": "RESET PASSWORD",
+        "resetPasswordPrompt": "Input your new password. Can be whatever.",
+        "newPassword": "New password:",
+        "confirmNewPassword": "New password, again, for ensurance:",
+        "resetPasswordButton": "Reset password",
+        "resettingPassword": "Please wait...",
+        "redirectingToLogin": "Bringing you back...", 
+        "forgotPasswordRequestSent": "If your account is valid, a link has been sent to your email address.",
+        "badToken": "Invalid or expired reset token.",
+        "error": "Error",
+        "passwordResetSuccess": "Password Reset successfully!"
+
     },
     "symptomModal": {
         "addSymptom": "Add Symptom",
@@ -68,6 +87,7 @@
         "prevalenceLabel": "Prevalence (1-5)",
         "treatment": "Treatment",
         "treatmentPlaceholder": "Enter treatment information"
+        
     },
     "allergenModal": {
         "": "",
@@ -237,6 +257,7 @@
     },
     "header": {
         "logout": "Log out",
+        "deleteAccount": "Delete Account",
         "feedback": "Feedback"
     },
     "dataTables": {

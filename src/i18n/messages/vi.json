@@ -39,6 +39,7 @@
         "signIn": "Đăng nhập",
         "signingIn": "Đang đăng nhập...",
         "loginFailed": "Đăng nhập thất bại. Vui lòng kiểm tra thông tin đăng nhập của bạn.",
+        "pleaseVerifyEmail": "Địa chỉ email của bạn chưa được xác thực. Vui lòng kiểm tra email để nhận đường dẫn xác thực.",
         "firstName": "Tên",
         "lastName": "Họ",
         "firstNamePlaceholder": "Tên",
@@ -57,7 +58,24 @@
         "noAccount": "Chưa có tài khoản? ",
         "haveAccount": "Đã có tài khoản? ",
         "signUp": "Đăng ký",
-        "signInLink": "Đăng nhập"
+        "forgotPasswordTitle": "Quên mật khẩu",
+        "forgotPasswordPrompt": "Nhập địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn một liên kết để đặt lại mật khẩu.",
+        "sendResetLink": "Gửi liên kết đặt lại",
+        "forgotPasswordLink": "Quên mật khẩu?",
+        "backToLogin": "Quay lại trang đăng nhập",
+        "signInLink": "Đăng nhập",
+        "sendingLink": "Vui lòng chờ xíu...",
+        "resetPasswordTitle": "ĐẶT LẠI MẬT KHẨU",
+        "resetPasswordPrompt": "Nhập mật khẩu mới của bạn. Mật khẩu mới là cái gì cũng được.",
+        "newPassword": "Mật khẩu mới:",
+        "confirmNewPassword": "Nhập lại lần nữa cho chắc:",
+        "resetPasswordButton": "Đổi lại mật khẩu",
+        "resettingPassword": "Vui lòng chờ xíu...",
+        "redirectingToLogin": "Đang đưa bạn trở lại...", 
+        "forgotPasswordRequestSent": "Nếu tài khoản của bạn hợp lệ, một liên kết đã được gửi đến địa chỉ email của bạn.",
+        "badToken": "Mã đặt lại không hợp lệ hoặc đã hết hạn.",
+        "error": "Lỗi",
+        "passwordResetSuccess": "Đặt lại mật khẩu thành công!"
     },
     "symptomModal": {
         "addSymptom": "Thêm Triệu chứng",
@@ -237,6 +255,7 @@
     },
     "header": {
         "logout": "Đăng xuất",
+        "deleteAccount": "Xoá tài khoản",
         "feedback": "Góp ý"
     },
     "dataTables": {
