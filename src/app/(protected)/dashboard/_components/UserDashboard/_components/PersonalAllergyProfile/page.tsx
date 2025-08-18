@@ -20,6 +20,7 @@ import { AddAllergenButton } from "./_components/add-allergen-button"
 import { Label } from "@/components/ui/label"
 import { PAPAllergen, UpdatePAPAllergen$Params, UpdatePAPWithUserIdFetcher$Params } from "@/modules/commands/UpdatePAPWithUserId/typing"
 import { SymptomDetailModal } from "@/components/container/SymptomList/_components/symptom-detail-modal"
+import { getTypeColor } from "@/lib/client-side-utils"
 
 interface PersonalAllergyProfileProps {
   pAP: DisplayPAP
@@ -74,19 +75,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
     return "bg-red-500"
   }
 
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case "food":
-        return "bg-blue-500"
-      case "drug":
-        return "bg-purple-500"
-      case "respiratory":
-        return "bg-green-500"
-      default:
-        return "bg-gray-500"
-    }
-  }
-
   const handleProfileUpdate = () => {
     onUpdate({
       ...profileData,
@@ -99,13 +87,12 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
       ...allergen,
       symptomsId: allergen.symptoms.map((symptom) => symptom.symptomId),
     })))
-
     const allergensUpdate = pAPAllergens.map((allergen) => {
       if (allergen.allergenId === allergenId) {
-        return {
+        return PAPAllergen.parse({
           ...allergen,
           ...updates,
-        }
+        })
       }
       return allergen
     })
@@ -130,16 +117,16 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
       allergenId: allergen.id,
       discoveryDate: null,
       discoveryMethod: "Potential" as DiscoveryMethod,
+      doneTest: false,
+      testDone: "",
       symptomsId: [],
     })
   }
 
   const handleDeleteAllergen = (allergenId: string) => {
     if (confirm(t('areYouSureRemoveAllergen'))) {
-      const pAPAllergens = pAP.allergens.map((allergen) => ({
-        allergenId: allergen.allergenId,
-        discoveryMethod: allergen.discoveryMethod,
-        discoveryDate: allergen.discoveryDate,
+      const pAPAllergens = pAP.allergens.map((allergen) => PAPAllergen.parse({
+        ...allergen,
         symptomsId: allergen.symptoms.map((symptom) => symptom.symptomId),
       }))
       const updatedAllergens = pAPAllergens.filter((allergen) => allergen.allergenId !== allergenId)

@@ -16,6 +16,7 @@ import { AddAllergenButton } from "@/components/container/AllergenList/_componen
 import { AllergenList } from "@/components/container/AllergenList/page"
 import { AddAllergyButton } from "@/components/container/AllergyList/_components/allergy-add-button"
 import { AllergyList } from "@/components/container/AllergyList/page"
+import { toast } from "sonner"
 
 export default function AdminDashboard() {
   const t = useTranslations('adminDashboard');
@@ -30,7 +31,7 @@ export default function AdminDashboard() {
     if (data.success) {
       setSymptoms(data.result as Symptom[]);
     } else {
-      console.error(data.message);
+      toast.error(data.message);
     }
   }
 
@@ -39,7 +40,7 @@ export default function AdminDashboard() {
     if (data.success) {
       setAllergens(data.result as Allergen[]);
     } else {
-      console.error(data.message);
+      toast.error(data.message);
     }
   }
 
@@ -48,7 +49,7 @@ export default function AdminDashboard() {
     if (data.success) {
       setAllergies(data.result as Allergy[]);
     } else {
-      console.error(data.message);
+      toast.error(data.message);
     }
   }
 
@@ -57,7 +58,7 @@ export default function AdminDashboard() {
     if (data.success) {
       await fetchSymptoms();
     } else {
-      console.error(data.message);
+      toast.error(data.message);
     }
   }
 
@@ -67,7 +68,7 @@ export default function AdminDashboard() {
     if (data.success) {
       await fetchSymptoms();
     } else {
-      console.error(data.message);
+      toast.error(data.message);
     }
   }
 
@@ -76,7 +77,7 @@ export default function AdminDashboard() {
     if (data.success) {
       await fetchSymptoms();
     } else {
-      console.error(data.message);
+      toast.error(data.message);
     }
   }
 
@@ -85,7 +86,7 @@ export default function AdminDashboard() {
     if (data.success) {
       await fetchAllergens();
     } else {
-      console.error(data.message);
+      toast.error(data.message);
     }
   }
 
@@ -95,7 +96,7 @@ export default function AdminDashboard() {
     if (data.success) {
       await fetchAllergens();
     } else {
-      console.error(data.message);
+      toast.error(data.message);
     }
   }
 
@@ -104,7 +105,7 @@ export default function AdminDashboard() {
     if (data.success) {
       await fetchAllergens();
     } else {
-      console.error(data.message);
+      toast.error(data.message);
     }
   }
 
@@ -113,7 +114,7 @@ export default function AdminDashboard() {
     if (data.success) {
       await fetchAllergies();
     } else {
-      console.error(data.message);
+      toast.error(data.message);
     }
   }
 
@@ -123,7 +124,7 @@ export default function AdminDashboard() {
     if (data.success) {
       await fetchAllergies();
     } else {
-      console.error(data.message);
+      toast.error(data.message);
     }
   }
 
@@ -132,7 +133,7 @@ export default function AdminDashboard() {
     if (data.success) {
       await fetchAllergies();
     } else {
-      console.error(data.message);
+      toast.error(data.message);
     }
   }
 

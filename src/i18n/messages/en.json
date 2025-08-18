@@ -291,7 +291,12 @@
         "paraclinicalTest": "Paraclinical Test",
         "associatedSymptoms":"Associated Symptoms",
         "potential": "Potential",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "doneTest": "Tested",
+        "testDone": "Type of Test",
+        "skinTest": "Skin Test",
+        "bloodTest": "Blood Test",
+        "provocationTest": "Provocation Test"
     },
     "recommendationModal": {
         "title": "Send Feedback",

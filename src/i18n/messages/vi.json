@@ -289,7 +289,12 @@
         "paraclinicalTest": "Xét nghiệm cận lâm sàng",
         "associatedSymptoms": "Các triệu chứng liên quan",
         "potential": "Có khả năng",
-        "cancel": "Hủy bỏ"
+        "cancel": "Hủy bỏ",
+        "doneTest": "Đã xét nghiệm",
+        "testDone": "Loại xét nghiệm",
+        "skinTest": "Xét Nghiệm Da",
+        "bloodTest": "Xét Nghiệm Máu",
+        "provocationTest": "Xét Nghiệm Kích Thích"
     },
     "recommendationModal": {
         "title": "Đóng Góp Ý Kiến",

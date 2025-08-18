@@ -63,7 +63,7 @@ export async function PUT(
     const { result } = await handler$UpdateSymptom(db, parsedBody.data);
 
     if (result != 1) {
-      return NextResponse.json({ message: "Symptom not found." }, { status: 404 });
+      return NextResponse.json({ message: "Symptom not found or no changes were made." }, { status: 404 });
     }
     return NextResponse.json({ message: "Symptom updated successfully" }, { status: 200 });
   } catch (error) {

@@ -1,5 +1,6 @@
-import { Allergen, DiscoveryMethod, FetcherResult, ObjectIdAsHexString, PAP, Symptom, UnixTimestamp } from "@/modules/business-types";
+import { Allergen, FetcherResult, ObjectIdAsHexString, PAP, Symptom } from "@/modules/business-types";
 import z from "zod";
+import { PAPAllergen } from "../UpdatePAPWithUserId/typing";
 
 export const GetPAPWithUserId$Params = z.object({
     userId: ObjectIdAsHexString.optional(),
@@ -14,11 +15,8 @@ export const DisplayPAPAllergen = Allergen.omit({
     id: true,
     description: true,
     symptomsId: true,
-}).extend({
-    allergenId: ObjectIdAsHexString,
+}).extend(PAPAllergen.shape).extend({
     severity: z.number().min(1).max(3),
-    discoveryDate: UnixTimestamp.nullable(),
-    discoveryMethod: DiscoveryMethod,
     symptoms: z.array(DisplayPAPSymptom),
 });
 export type DisplayPAPAllergen = z.infer<typeof DisplayPAPAllergen>;
