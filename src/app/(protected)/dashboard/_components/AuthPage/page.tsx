@@ -361,7 +361,13 @@ export default function AuthPage() {
                   className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-medium py-2.5 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50" 
                 > 
                   {isLoading ? t('creatingAccount') : t('createAccountButton')} 
-                </Button> 
+                </Button>
+                <div className="text-center">
+                  <button type="button" onClick={() => { setAuthMode('login'); setNotification(null); }} className="text-sm text-cyan-600 hover:text-blue-700 font-medium focus:outline-none inline-flex items-center">
+                    <ArrowLeft className="w-4 h-4 mr-1"/>
+                    {t('backToLogin')}
+                  </button>
+                </div> 
               </form>
             )}
 
