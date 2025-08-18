@@ -11,7 +11,7 @@ async function handler$GetBusinessType(db: Db, params: GetBusinessType$Params, c
 
   const pagingTerm = [
     ...(offset ? [{ $skip: offset }] : []),
-    { $limit: limit || 200 },
+    { $limit: limit || 1000 },
   ];
 
   const docs = await db
