@@ -98,6 +98,8 @@ export default function UserDashboard() {
       symptomsId: allergen.symptoms.map(symptom => symptom.symptomId),
     }))), PAPAllergen.parse({
       allergenId: inputAllergen.id,
+      doneTest: false,
+      testDone: "",
       discoveryDate: null,
       discoveryMethod: "" as DiscoveryMethod,
       symptomsId: [],
