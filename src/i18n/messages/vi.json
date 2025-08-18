@@ -251,7 +251,8 @@
         "respiratory": "Hô hấp",
         "treatment": "Điều trị",
         "footerNote1": "Đây là hồ sơ dị ứng công khai. Thông tin được cung cấp cho mục đích nhận thức và trường hợp khẩn cấp.",
-        "footerNote2": "Luôn tham khảo ý kiến chuyên gia y tế để được tư vấn."
+        "footerNote2": "Luôn tham khảo ý kiến chuyên gia y tế để được tư vấn.",
+        "associatedSymptoms": "Các triệu chứng liên quan"
     },
     "header": {
         "logout": "Đăng xuất",

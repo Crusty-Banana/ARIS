@@ -253,7 +253,8 @@
         "respiratory": "Respiratory",
         "treatment": "Treatment",
         "footerNote1": "This is a public allergy profile. Information is provided for awareness and emergency purposes.",
-        "footerNote2": "Always consult healthcare professionals for medical advice."
+        "footerNote2": "Always consult healthcare professionals for medical advice.",
+        "associatedSymptoms": "Associated Symptoms"
     },
     "header": {
         "logout": "Log out",

@@ -19,16 +19,6 @@ export async function handler$GetPAPWithUserId(
         id: resultPAP._id.toHexString(),
         userId: resultPAP.userId.toHexString(),
         publicId: resultPAP.publicId.toHexString(),
-        allergens: resultPAP.allergens.map((allergen: {
-            allergenId: ObjectId,
-            discoveryDate: number | null,
-            discoveryMethod: string,
-            symptomsId: ObjectId[],
-        }) => ({
-            ...allergen,
-            allergenId: allergen.allergenId.toHexString(),
-            symptomsId: allergen.symptomsId.map(symptomId => symptomId.toHexString()),
-        })),
     });
 
     const resultAllergens = await db
