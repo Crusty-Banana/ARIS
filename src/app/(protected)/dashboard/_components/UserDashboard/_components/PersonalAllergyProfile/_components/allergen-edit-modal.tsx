@@ -1,9 +1,11 @@
+import { DiscoveryMethodDropdown } from "@/components/discovery-method-dropdown";
+import { DoneTestTickbox } from "@/components/done-test-tickbox";
 import { ScrollableSelect } from "@/components/scrollable-select";
+import { TestTypeDropdown } from "@/components/test-type-dropdown";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DiscoveryMethod, Language, Symptom } from "@/modules/business-types";
+import { DiscoveryMethod, Language, Symptom, TestType } from "@/modules/business-types";
 import { DisplayPAPAllergen } from "@/modules/commands/GetPAPWithUserId/typing";
 import { UpdatePAPAllergen$Params } from "@/modules/commands/UpdatePAPWithUserId/typing";
 import { useLocale, useTranslations } from "next-intl";
@@ -23,6 +25,8 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
   const [discoveryDate, setDiscoveryDate] = useState(allergen.discoveryDate)
   const [discoveryMethod, setDiscoveryMethod] = useState(allergen.discoveryMethod)
   const [selectedSymptoms, setSelectedSymptoms] = useState(allergen.symptoms.map((symptom) => symptom.symptomId))
+  const [doneTest, setDoneTest] = useState(false);
+  const [testDone, setTestDone] = useState<TestType>("");
 
   const formatDateForInput = (timestamp: number | null) => {
     if (!timestamp) return ""
@@ -38,6 +42,8 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
     onUpdate({
       discoveryDate,
       discoveryMethod,
+      doneTest,
+      testDone,
       symptomsId: selectedSymptoms,
     })
   }
@@ -59,19 +65,27 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">{t('discoveryMethod')}</label>
-            <Select value={discoveryMethod} onValueChange={(value: DiscoveryMethod) => setDiscoveryMethod(value as DiscoveryMethod)}>
-              <SelectTrigger className="border-cyan-300 focus:border-cyan-500">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Clinical symptoms">{t('clinicalSymptoms')}</SelectItem>
-                <SelectItem value="Paraclinical tests">{t('paraclinicalTests')}</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="flex gap-6">
+            <div className="flex-1">
+              <DiscoveryMethodDropdown value={discoveryMethod} onValueChange={(value) => setDiscoveryMethod(value as DiscoveryMethod)}/>
+            </div>
+            {doneTest && (
+              <div className="flex-1">
+                <TestTypeDropdown value={testDone} onValueChange={(value) => setTestDone(value as TestType)} />
+              </div>
+            )}
           </div>
-
+          <div>
+            {discoveryMethod === "Clinical symptoms" && (
+              <DoneTestTickbox 
+                checked={doneTest} 
+                onCheckedChange={(checked) => {
+                  setDoneTest(checked as boolean)
+                  if (!checked) setTestDone("")
+                }}
+              />
+            )}
+          </div>
           <ScrollableSelect
             items={availableSymptoms.sort((a, b) => a.name[localLanguage].localeCompare(b.name[localLanguage]))}
             selectedItems={selectedSymptoms}

@@ -27,6 +27,9 @@ export type AllergenType = z.infer<typeof AllergenType>;
 export const Language = z.enum(["en", "vi"]);
 export type Language = z.infer<typeof Language>;
 
+export const TestType = z.enum(["skin", "blood", "provocation", ""]);
+export type TestType = z.infer<typeof TestType>;
+
 export const FetcherResult = z.object({
     success: z.boolean(),
     message: z.string(),
@@ -84,8 +87,9 @@ export const PAP = z.object({
                 allergenId: ObjectIdAsHexString,
                 discoveryDate: UnixTimestamp.nullable().default(null),
                 discoveryMethod: DiscoveryMethod,
+                doneTest: z.boolean(),
+                testDone: TestType,
                 symptomsId: z.array(ObjectIdAsHexString).default([]),
-
             }),
         )
         .default([]),

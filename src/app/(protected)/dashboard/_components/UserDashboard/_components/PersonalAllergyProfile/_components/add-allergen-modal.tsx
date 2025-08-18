@@ -4,13 +4,16 @@ import { useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Search } from "lucide-react"
 import { ScrollableSelect } from "@/components/scrollable-select"
-import { Allergen, DiscoveryMethod, Language, Symptom } from "@/modules/business-types"
+import { Allergen, DiscoveryMethod, Language, Symptom, TestType } from "@/modules/business-types"
 import { useLocale, useTranslations } from "next-intl"
 import { PAPAllergen } from "@/modules/commands/UpdatePAPWithUserId/typing"
+import { getTypeColor } from "@/lib/client-side-utils"
+import { TestTypeDropdown } from "@/components/test-type-dropdown"
+import { DiscoveryMethodDropdown } from "@/components/discovery-method-dropdown"
+import { DoneTestTickbox } from "@/components/done-test-tickbox"
 
 interface AddAllergenModalProps {
   open: boolean
@@ -27,9 +30,8 @@ export function AddAllergenModal({
   availableSymptoms,
   onAddAllergen,
 }: AddAllergenModalProps) {
-  const t = useTranslations('addAllergenModal'); // Assuming 'addAllergenModal' is the namespace in your translation file
+  const t = useTranslations('addAllergenModal');
   const localLanguage = useLocale() as Language;
-
 
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedAllergen, setSelectedAllergen] = useState<Allergen | null>(null)
@@ -38,23 +40,12 @@ export function AddAllergenModal({
     "Clinical symptoms",
   )
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([])
+  const [doneTest, setDoneTest] = useState(false);
+  const [testDone, setTestDone] = useState<TestType>("");
 
   const filteredAllergens = availableAllergens.filter((allergen) =>
     allergen.name[localLanguage].toLowerCase().includes(searchTerm.toLowerCase()),
   )
-
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case "food":
-        return "bg-blue-500"
-      case "drug":
-        return "bg-purple-500"
-      case "respiratory":
-        return "bg-green-500"
-      default:
-        return "bg-gray-500"
-    }
-  }
 
   const parseInputDate = (dateString: string) => {
     if (!dateString) return null
@@ -68,6 +59,8 @@ export function AddAllergenModal({
       allergenId: selectedAllergen.id,
       discoveryDate: parseInputDate(discoveryDate),
       discoveryMethod,
+      doneTest,
+      testDone,
       symptomsId: selectedSymptoms,
     })
 
@@ -155,18 +148,27 @@ export function AddAllergenModal({
                   />
                 </div>
 
+                <div className="flex gap-6">
+                  <div className="flex-1">
+                    <DiscoveryMethodDropdown value={discoveryMethod} onValueChange={(value) => setDiscoveryMethod(value as DiscoveryMethod)}/>
+                  </div>
+                  {doneTest && (
+                    <div className="flex-1">
+                      <TestTypeDropdown value={testDone} onValueChange={(value) => setTestDone(value as TestType)} />
+                    </div>
+                  )}
+                </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t("discoveryMethod")}</label>
-                  <Select value={discoveryMethod} onValueChange={(value) => setDiscoveryMethod(value as DiscoveryMethod)}>
-                    <SelectTrigger className="border-cyan-300 focus:border-cyan-500">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Clinical symptoms">{t("clinicalSymptoms")}</SelectItem>
-                      <SelectItem value="Paraclinical tests">{t("paraclinicalTest")}</SelectItem>
-                      <SelectItem value="Potential">{t("potential")}</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  {discoveryMethod === "Clinical symptoms" && (
+                    <DoneTestTickbox 
+                      checked={doneTest} 
+                      onCheckedChange={(checked) => {
+                        setDoneTest(checked as boolean)
+                        if (!checked) setTestDone("")
+                      }}
+                    />
+                  )}
                 </div>
 
                 <ScrollableSelect
