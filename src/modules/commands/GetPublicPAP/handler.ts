@@ -1,38 +1,30 @@
 import { Db, ObjectId } from "mongodb";
-import { GetPublicPAP$Params, PublicPAP } from "./typing";
-import { Allergen, PAP, Symptom, UnixTimestamp } from "@/modules/business-types";
+import { GetPublicPAP$Params, PublicPAP, PublicPAPAllergen, PublicPAPSymptom } from "./typing";
+import { Allergen, BusisnessTypeCollection, PAP, Symptom } from "@/modules/business-types";
 
 export async function handler$GetPublicPAP(
     db: Db,
     params: GetPublicPAP$Params
 ) {
     const { publicId } = params;
-    const resultPap = await db.collection("paps").findOne({ publicId: new ObjectId(publicId) });
+    const resultPap = await db.collection("paps").findOne({
+        publicId: new ObjectId(publicId),
+        allowPublic: true
+    });
 
     if (!resultPap) {
-        return { publicPap: resultPap };
+        return { result: resultPap };
     }
 
     const pap = PAP.parse({
         ...resultPap,
         id: resultPap._id.toHexString(),
         userId: resultPap.userId.toHexString(),
-        publicId: resultPap.publicId ? resultPap.publicId.toHexString() : null,
-        allergens: resultPap.allergens.map((allergen: {
-            allergenId: ObjectId,
-            discoveryDate: UnixTimestamp,
-            discoveryMethod: string,
-            symptomsId: ObjectId[],
-        }) => ({
-            allergenId: allergen.allergenId.toHexString(),
-            discoveryDate: allergen.discoveryDate,
-            discoveryMethod: allergen.discoveryMethod,
-            symptomsId: allergen.symptomsId.map((symptomId: ObjectId) => symptomId.toHexString()),
-        })),
+        publicId: resultPap.publicId.toHexString()
     });
 
     const resultAllergens = await db
-        .collection("allergens")
+        .collection(BusisnessTypeCollection.allergens)
         .find({
             _id: {
                 $in: pap.allergens.map(allergen => new ObjectId(allergen.allergenId)),
@@ -40,7 +32,7 @@ export async function handler$GetPublicPAP(
         })
         .toArray();
 
-    const allergens = resultAllergens.map((allergen) => {
+    const relatedAllergens = resultAllergens.map((allergen) => {
         return Allergen.parse({
             ...allergen,
             id: allergen._id.toHexString(),
@@ -48,7 +40,7 @@ export async function handler$GetPublicPAP(
     })
 
     const resultSymptoms = await db
-        .collection("symptoms")
+        .collection(BusisnessTypeCollection.symptoms)
         .find({
             _id: {
                 $in: pap.allergens.flatMap(allergen => allergen.symptomsId).map(symptomId => new ObjectId(symptomId)),
@@ -56,7 +48,7 @@ export async function handler$GetPublicPAP(
         })
         .toArray();
 
-    const symptoms = resultSymptoms.map((symptom) => {
+    const relatedSymptoms = resultSymptoms.map((symptom) => {
         return Symptom.parse({
             ...symptom,
             id: symptom._id.toHexString(),
@@ -65,7 +57,7 @@ export async function handler$GetPublicPAP(
 
     const populatedAllergens = pap.allergens.map(
         (userAllergen) => {
-            const allergenDetails = allergens.find(
+            const allergenDetails = relatedAllergens.find(
                 (allergen) =>
                     allergen.id === userAllergen.allergenId,
             );
@@ -77,30 +69,27 @@ export async function handler$GetPublicPAP(
             let allergenSeverity = 1;
             const populatedSymptoms = userAllergen.symptomsId.map(
                 (symptomId) => {
-                    const symptomDetails = symptoms.find(
+                    const symptomDetails = relatedSymptoms.find(
                         (symptom) =>
                             symptom.id === symptomId,
                     );
 
                     if (!symptomDetails) {
-                        throw new Error("Symptom not found");
+                        throw new Error(`Symptom not found ${symptomId}`);
                     }
                     allergenSeverity = Math.max(allergenSeverity, symptomDetails.severity);
-                    return {
-                        symptomId: symptomDetails.id,
-                        name: symptomDetails.name,
-                        severity: symptomDetails.severity,
-                        treatment: symptomDetails.treatment
-                    };
+                    return PublicPAPSymptom.parse({
+                        ...symptomDetails,
+                        symptomId
+                    });
                 }
             );
-            return {
-                allergenId: userAllergen.allergenId,
-                name: allergenDetails.name,
-                type: allergenDetails.type,
+            return PublicPAPAllergen.parse({
+                ...userAllergen,
+                ...allergenDetails,
                 severity: allergenSeverity,
                 symptoms: populatedSymptoms,
-            };
+            });
         },
     );
 
@@ -108,5 +97,5 @@ export async function handler$GetPublicPAP(
         publicId,
         allergens: populatedAllergens,
     });
-    return { publicPAP };
+    return { result: publicPAP };
 }

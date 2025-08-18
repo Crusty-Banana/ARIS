@@ -7,7 +7,10 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { AlertTriangle, User, Shield, Heart } from "lucide-react"
 import { PublicPAP } from "@/modules/commands/GetPublicPAP/typing"
 import { httpGet$GetPublicPAP } from "@/modules/commands/GetPublicPAP/fetcher"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
+import { Language } from "@/modules/business-types"
+import { getSeverityColor, getTypeColor } from "@/lib/client-side-utils"
+import LocaleDropdown from "@/app/(protected)/dashboard/_components/Header/_components/locale-change"
 
 interface PublicPAPViewProps {
   publicId: string
@@ -15,6 +18,8 @@ interface PublicPAPViewProps {
 
 export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
   const t = useTranslations('publicPAPView');
+  const localLanguage = useLocale() as Language;
+
   const [profile, setProfile] = useState<PublicPAP | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -24,9 +29,9 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
       try {
         setLoading(true)
 
-        const data = await httpGet$GetPublicPAP(`/api/pap/public/${publicId}`)
+        const data = await httpGet$GetPublicPAP(`/api/user-pap/public/${publicId}`)
         if (data.success) {
-            setProfile(data.publicPAP!)
+            setProfile(data.result!)
         } else {
             setError(data.message)
         }
@@ -42,29 +47,10 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
     fetchProfile()
   }, [publicId, t])
 
-  const getSeverityColor = (severity: number) => {
-    if (severity === 1) return "bg-green-500"
-    if (severity === 2) return "bg-yellow-500"
-    return "bg-red-500"
-  }
-
   const getSeverityLabel = (severity: number) => {
     if (severity === 1) return t('mild')
     if (severity === 2) return t('moderate')
     return t('severe')
-  }
-
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case "food":
-        return "bg-blue-500"
-      case "drug":
-        return "bg-purple-500"
-      case "respiratory":
-        return "bg-green-500"
-      default:
-        return "bg-gray-500"
-    }
   }
 
   if (loading) {
@@ -156,11 +142,14 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
     <div className="min-h-screen bg-gradient-to-br from-cyan-100 via-blue-50 to-blue-100">
       <div className="container mx-auto p-6">
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <User className="h-8 w-8 text-cyan-600" />
-            <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-800">
-              {t('publicAllergyProfile')}
-            </h1>
+          <div className="flex justify-between">
+            <div className="flex items-center gap-3">
+              <User className="h-8 w-8 text-cyan-600 mb-4" />
+              <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-800 pb-4">
+                {t('publicAllergyProfile')}
+              </h1>
+            </div>
+            <LocaleDropdown className="bg-white"/>
           </div>
           <div className="flex items-center gap-2 text-gray-600">
             <Shield className="h-4 w-4" />
@@ -189,7 +178,7 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
                     className="bg-white/70 backdrop-blur-sm p-4 rounded-lg border border-cyan-200"
                   >
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-lg font-semibold text-cyan-800">{allergen.name}</h3>
+                      <h3 className="text-lg font-semibold text-cyan-800">{allergen.name[localLanguage]}</h3>
                       <div className="flex items-center gap-2">
                         <Badge className={`${getTypeColor(allergen.type)} text-white capitalize`}>
                           {allergen.type}
@@ -209,7 +198,7 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
                           .sort((a, b) => b.severity - a.severity)
                           .map((symptom) => (
                             <Badge key={symptom.symptomId} variant="outline" className="text-xs border-cyan-300">
-                              {symptom.name} ({symptom.severity})
+                              {symptom.name[localLanguage]} ({symptom.severity})
                             </Badge>
                           ))}
                       </div>
@@ -246,7 +235,7 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
                     className="bg-white/70 backdrop-blur-sm p-4 rounded-lg border border-orange-200"
                   >
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-lg font-semibold text-orange-800">{symptom.name}</h3>
+                      <h3 className="text-lg font-semibold text-orange-800">{symptom.name[localLanguage]}</h3>
                       <Badge className={`${getSeverityColor(symptom.severity)} text-white`}>
                         {getSeverityLabel(symptom.severity)} ({symptom.severity})
                       </Badge>
@@ -255,7 +244,7 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
                     <div>
                       <span className="text-sm font-medium text-gray-700 block mb-2">{t('treatment')}:</span>
                       <div className="bg-gradient-to-r from-orange-50 to-yellow-50 p-3 rounded-md border border-orange-100">
-                        <p className="text-gray-700 text-sm leading-relaxed">{symptom.treatment}</p>
+                        <p className="text-gray-700 text-sm leading-relaxed">{symptom.treatment[localLanguage]}</p>
                       </div>
                     </div>
                   </div>

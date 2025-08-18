@@ -15,16 +15,16 @@ export async function GET(
         }
 
         const db = await getDb();
-        const { publicPAP } = await handler$GetPublicPAP(db, parsedBody.data);
+        const { result } = await handler$GetPublicPAP(db, parsedBody.data);
 
-        if (!publicPAP) {
+        if (!result) {
             return NextResponse.json(
                 { message: "Public PAP not found or is private" },
                 { status: 404 },
             );
         }
 
-        return NextResponse.json({ publicPAP, message: "Public PAP found" }, { status: 200 });
+        return NextResponse.json({ result, message: "Public PAP found" }, { status: 200 });
     } catch (error) {
         let message = "An error occurred";
         if (error instanceof Error) {

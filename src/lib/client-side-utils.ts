@@ -36,12 +36,8 @@ export const getSeverityColor = (severity: number) => {
     case 1:
       return "bg-green-500"
     case 2:
-      return "bg-green-500"
-    case 3:
       return "bg-yellow-500"
-    case 4:
-      return "bg-red-500"
-    case 5:
+    case 3:
       return "bg-red-500"
     default:
       return "bg-gray-500"

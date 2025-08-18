@@ -5,21 +5,10 @@ export async function handler$UpdatePAPWithUserId(
     db: Db,
     params: UpdatePAPWithUserId$Params
 ) {
-    const { userId, allergens, ...PAPdata } = params;
+    const { userId, ...PAPdata } = params;
     const result = await db.collection("paps").updateOne(
         { userId: new ObjectId(userId) },
-        {
-            $set: {
-                ...PAPdata,
-                ...(allergens ? {
-                    allergens: allergens.map(allergen => ({
-                        ...allergen,
-                        allergenId: new ObjectId(allergen.allergenId),
-                        ...(allergen.symptomsId ? { symptomsId: allergen.symptomsId.map(symptomId => new ObjectId(symptomId)) } : {}),
-                    }))
-                } : {})
-            }
-        }
+        { $set: PAPdata }
     );
     return { result: result.modifiedCount };
 
