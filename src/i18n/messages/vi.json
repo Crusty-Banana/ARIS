@@ -71,7 +71,7 @@
         "confirmNewPassword": "Nhập lại lần nữa cho chắc:",
         "resetPasswordButton": "Đổi lại mật khẩu",
         "resettingPassword": "Vui lòng chờ xíu...",
-        "redirectingToLogin": "Đang đưa bạn trở lại...", 
+        "redirectingToLogin": "Đang đưa bạn trở lại...",
         "forgotPasswordRequestSent": "Nếu tài khoản của bạn hợp lệ, một liên kết đã được gửi đến địa chỉ email của bạn.",
         "badToken": "Mã đặt lại không hợp lệ hoặc đã hết hạn.",
         "error": "Lỗi",
@@ -255,6 +255,8 @@
         "associatedSymptoms": "Các triệu chứng liên quan"
     },
     "header": {
+        "dashboard": "Bảng điều khiển",
+        "profile": "Hồ sơ",
         "logout": "Đăng xuất",
         "deleteAccount": "Xoá tài khoản",
         "feedback": "Góp ý"
@@ -340,5 +342,14 @@
             "severityLabel": "Độ nghiêm trọng (1-3)",
             "prevalenceLabel": "Độ phổ biến (1-5)"
         }
+    },
+    "profile": {
+        "title": "Hồ sơ người dùng",
+        "description": "Quản lý hồ sơ cá nhân và thông tin y tế của bạn"
+    },
+    "security": {
+        "title": "Cài đặt bảo mật",
+        "passwordChange": "Đổi mật khẩu",
+        "passwordChangeDescription": "Thay đổi mật khẩu của tài khoản của bạn"
     }
 }

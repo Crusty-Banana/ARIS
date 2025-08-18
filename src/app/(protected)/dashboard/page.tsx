@@ -14,7 +14,7 @@ export default function Home() {
   }
 
   if (status === "loading") {
-    return <LoadingScreen/>;
+    return <LoadingScreen />;
   }
 
   return (session?.user?.role === 'admin') ? (

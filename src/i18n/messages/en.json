@@ -71,12 +71,11 @@
         "confirmNewPassword": "New password, again, for ensurance:",
         "resetPasswordButton": "Reset password",
         "resettingPassword": "Please wait...",
-        "redirectingToLogin": "Bringing you back...", 
+        "redirectingToLogin": "Bringing you back...",
         "forgotPasswordRequestSent": "If your account is valid, a link has been sent to your email address.",
         "badToken": "Invalid or expired reset token.",
         "error": "Error",
         "passwordResetSuccess": "Password Reset successfully!"
-
     },
     "symptomModal": {
         "addSymptom": "Add Symptom",
@@ -87,7 +86,6 @@
         "prevalenceLabel": "Prevalence (1-5)",
         "treatment": "Treatment",
         "treatmentPlaceholder": "Enter treatment information"
-        
     },
     "allergenModal": {
         "": "",
@@ -257,6 +255,8 @@
         "associatedSymptoms": "Associated Symptoms"
     },
     "header": {
+        "dashboard": "Dashboard",
+        "profile": "Profile",
         "logout": "Log out",
         "deleteAccount": "Delete Account",
         "feedback": "Feedback"
@@ -275,11 +275,11 @@
         "allergens": "Allergens"
     },
     "addAllergenModal": {
-        "addNewAllergen":"Add New Allergen",
+        "addNewAllergen": "Add New Allergen",
         "searchAllergen": "Search for allergens...",
-        "food":"Food",
-        "drug":"Drug",
-        "respiratory":"Respiratory",
+        "food": "Food",
+        "drug": "Drug",
+        "respiratory": "Respiratory",
         "symptoms": "symptoms",
         "severity": "Severity",
         "prevalence": "Prevalence",
@@ -290,7 +290,7 @@
         "discoveryMethod": "Discovery Method",
         "clinicalSymptoms": "Clinical Symptoms",
         "paraclinicalTest": "Paraclinical Test",
-        "associatedSymptoms":"Associated Symptoms",
+        "associatedSymptoms": "Associated Symptoms",
         "potential": "Potential",
         "cancel": "Cancel",
         "doneTest": "Tested",
@@ -312,9 +312,9 @@
         "searchItems": "Search items...",
         "send": "Send",
         "cancel": "Cancel",
-        "food":"Food",
-        "drug":"Drug",
-        "respiratory":"Respiratory",
+        "food": "Food",
+        "drug": "Drug",
+        "respiratory": "Respiratory",
         "type": "Type",
         "selectType": "Select type",
         "language": "Language",
@@ -324,7 +324,7 @@
         "treatment": "Treatment",
         "sortByPrevalence": "Sort by Prevalence",
         "sortByName": "Sort by Name",
-        "sortBySeverity":" Sort by Severity",
+        "sortBySeverity": " Sort by Severity",
         "allergens": "Allergens",
         "allergies": "Allergies",
         "symptoms": "Symptoms",
@@ -342,5 +342,14 @@
             "severityLabel": "Severity (1-3)",
             "prevalenceLabel": "Prevalence (1-5)"
         }
+    },
+    "profile": {
+        "title": "User Profile",
+        "description": "Manage your personal information and medical details"
+    },
+    "security": {
+        "title": "Security Settings",
+        "passwordChange": "Password Change",
+        "passwordChangeDescription": "Change your password to protect your account"
     }
 }
