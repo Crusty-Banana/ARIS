@@ -1,6 +1,6 @@
 import { UpdateProfileWithUserIdFetcher$Params, UpdateProfileWithUserId$Result } from "./typing";
 
-export async function httpPut$UpdatePAPWithUserId(
+export async function httpPut$UpdateProfileWithUserId(
   url: string,
   params: UpdateProfileWithUserIdFetcher$Params
 ) {

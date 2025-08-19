@@ -25,7 +25,6 @@ export async function GET(
     // Handle action
     const db = await getDb();
     const { result } = await handler$GetProfileWithUserId(db, parsedBody.data);
-
     return NextResponse.json({ result, message: "Profile retrieved successfully" }, { status: 200 });
   } catch (error) {
     return processError(error);
@@ -52,7 +51,6 @@ export async function PUT(
     // Handle action
     const db = await getDb();
     const { result } = await handler$UpdateProfileWithUserId(db, parsedBody.data);
-
     if (result.PAPModified !== 1 && result.userModified !== 1) {
       return NextResponse.json({ message: "No Profile data was modified" }, { status: 404 });
     }

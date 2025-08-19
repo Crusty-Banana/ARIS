@@ -44,7 +44,6 @@ export async function PUT(req: NextRequest) {
         if (!parsedBody.success) {
             return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
         }
-        console.log(parsedBody.data)
         const db = await getDb();
         const { result } = await handler$UpdatePAPWithUserId(db, parsedBody.data);
 

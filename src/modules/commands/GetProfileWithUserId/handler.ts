@@ -8,8 +8,9 @@ export async function handler$GetProfileWithUserId(
 ) {
   const { userId } = params;
   const userPAP = await db.collection(BusisnessTypeCollection.paps).findOne({ userId: new ObjectId(userId) });
-  const user = await db.collection(BusisnessTypeCollection.users).findOne({ id: new ObjectId(userId) });
-
+  const user = await db.collection(BusisnessTypeCollection.users).findOne({ _id: new ObjectId(userId) });
+  // console.log(user)
+  // console.log(userPAP)
   if (!user || !userPAP) {
     return { result: userPAP };
   }
@@ -20,5 +21,6 @@ export async function handler$GetProfileWithUserId(
     userId,
     publicId: userPAP.publicId.toHexString(),
   })
+  // console.log(userProfile)
   return { result: userProfile }
 }

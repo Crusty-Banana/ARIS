@@ -1,6 +1,6 @@
 import { GetProfileWithUserId$Result } from "./typing";
 
-export async function httpGet$GetPAPWithUserId(
+export async function httpGet$GetProfileWithUserId(
   url: string
 ) {
   const response = await fetch(url);

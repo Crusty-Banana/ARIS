@@ -8,14 +8,11 @@ import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Edit3, Save, X, Loader2, Trash2, Plus } from "lucide-react"
-import { httpGet$GetUsers } from "@/modules/commands/GetBusinessType/fetcher"
 import { z } from "zod"
 import { useSession } from "next-auth/react"
-import { httpGet$GetPAPWithUserId } from "@/modules/commands/GetPAPWithUserId/fetcher"
-import { httpPut$UpdateUser } from "@/modules/commands/UpdateBusinessType/fetcher"
-import { httpPut$UpdatePAPWithUserId } from "@/modules/commands/UpdatePAPWithUserId/fetcher"
 // import { useTranslations } from "next-intl"
-
+import { httpGet$GetProfileWithUserId } from "@/modules/commands/GetProfileWithUserId/fetcher"
+import { httpPut$UpdateProfileWithUserId } from "@/modules/commands/UpdateProfileWithUserId/fetcher"
 const personalInfoSchema = z.object({
     firstName: z.string().min(1, "First name is required"),
     lastName: z.string().min(1, "Last name is required"),
@@ -30,7 +27,8 @@ const personalInfoSchema = z.object({
             { message: "Invalid date" }
         ),
     gender: z.enum(["male", "female", "other"]),
-    underlyingMedCon: z.array(z.string())
+    underlyingMedCon: z.array(z.string()),
+    allowPublic: z.boolean().default(false)
 })
 
 type PersonalInfoData = z.infer<typeof personalInfoSchema>
@@ -43,7 +41,8 @@ export function PersonalInfoSection() {
         email: "john.doe@example.com",
         doB: Date.parse("1990-05-15"),
         gender: "male",
-        underlyingMedCon: ["Asthma (moderate persistent)", "Seasonal allergies"]
+        underlyingMedCon: ["Asthma (moderate persistent)", "Seasonal allergies"],
+        allowPublic: false
     })
     // const t = useTranslations("personalInfo")
     const { data: session } = useSession()
@@ -70,15 +69,11 @@ export function PersonalInfoSection() {
     // }, [session])
     const getUserData = useCallback(async () => {
         if (session?.user?.id) {
-            setIsLoading(true)
-            const data = await httpGet$GetUsers(`/api/users/${session.user.id}`, {});
-            const PAPdata = await httpGet$GetPAPWithUserId(`/api/user-pap`);
+            const data = await httpGet$GetProfileWithUserId('api/user-profile')
             // console.log(data.result)
             // console.log(data.success)
             if (data.success && data.result) {
-                const payload =
-                    Array.isArray(data.result) ? data.result[0] : data.result;
-                const cleanedPayload = optionalPersonalInfoSchema.parse(payload)
+                const cleanedPayload = optionalPersonalInfoSchema.parse(data.result)
                 setSavedData(prevData => ({
                     ...prevData,
                     ...(cleanedPayload ?? {})
@@ -88,22 +83,6 @@ export function PersonalInfoSection() {
                     ...(cleanedPayload ?? {})
                 }));
             } else {
-                console.error(data.message);
-            }
-
-            if (PAPdata.success && PAPdata.result) {
-                console.log(PAPdata.result)
-                const cleanedPAPPayload = optionalPersonalInfoSchema.parse(PAPdata.result)
-                setSavedData(prevData => ({
-                    ...prevData,
-                    ...cleanedPAPPayload
-                }));
-                setFormData(prevData => ({
-                    ...prevData,
-                    ...cleanedPAPPayload
-                }));
-            } else {
-                console.log("Error here")
                 console.error(data.message);
             }
             setIsLoading(false)
@@ -145,19 +124,15 @@ export function PersonalInfoSection() {
             underlyingMedCon: prev.underlyingMedCon.filter((_, i) => i !== index),
         }))
     }
-    const updateUser = async () => {
-        const userResponse = await httpPut$UpdateUser(`/api/users`, { ...formData })
-        if (!userResponse.success) {
-            console.error(userResponse.message)
-        }
-        const PAPResponse = await httpPut$UpdatePAPWithUserId(`/api/user-pap`, { ...formData })
-        if (!PAPResponse.success) {
-            console.error(PAPResponse.message)
+    const updateUser = async (data: PersonalInfoData) => {
+        const updateResponse = await httpPut$UpdateProfileWithUserId('api/user-profile', data)
+        if (!updateResponse.success) {
+            console.error(updateResponse.message)
         }
     }
     const handleSave = () => {
         setIsEditing(false)
-        updateUser()
+        updateUser(formData)
         setPersonalData(formData)
         setSavedData(formData)
         // Here you would typically save to your backend

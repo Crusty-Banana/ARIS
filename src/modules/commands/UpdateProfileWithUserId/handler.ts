@@ -7,17 +7,18 @@ export async function handler$UpdateProfileWithUserId(
   db: Db,
   params: UpdateProfileWithUserId$Params
 ) {
-  const PAPData = UserProfilePAP.parse(params);
-  const userData = UserProfileUser.parse(params);
-  const userId = params.userId;
+  console.log("!!!!!!!!!!!!!!!")
+  const PAPData = UserProfilePAP.partial().parse(params);
+  const userData = UserProfileUser.partial().parse(params);
 
+  const userId = params.userId;
   const PAPResult = await db.collection(BusisnessTypeCollection.paps).updateOne(
     { userId: new ObjectId(userId) },
     { $set: PAPData }
   );
 
   const userResult = await db.collection(BusisnessTypeCollection.users).updateOne(
-    { userId: new ObjectId(userId) },
+    { _id: new ObjectId(userId) },
     { $set: userData }
   );
 
