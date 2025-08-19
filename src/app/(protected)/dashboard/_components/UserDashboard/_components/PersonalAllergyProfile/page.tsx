@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Edit, Calendar, User, Shield, AlertTriangle, Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react"
+import { Edit, AlertTriangle, Plus, Trash2 } from "lucide-react"
 import { AddAllergenModal } from "./_components/add-allergen-modal"
 import { PotentialCrossAllergens } from "./_components/potential-cross-allergens"
 import { DisplayPAP } from "@/modules/commands/GetPAPWithUserId/typing"
@@ -37,7 +37,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
   const [isEditingProfile, setIsEditingProfile] = useState(false)
   const [editingAllergen, setEditingAllergen] = useState<string | null>(null)
   const [showAddAllergen, setShowAddAllergen] = useState(false)
-  const [isProfileCardExpanded, setIsProfileCardExpanded] = useState(false);
   const [selectedSymptom, setSelectedSymptom] = useState<Symptom | null>(null)
 
   const [profileData, setProfileData] = useState({
@@ -136,94 +135,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
 
   return (
     <div className="space-y-6">
-      {/* Profile Information */}
-      {/* <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
-        <CardHeader>
-            <CardTitle className="text-cyan-800 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-                <User className="h-5 w-5" />
-                {t('personalInformation')}
-            </div>
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-2 justify-end">
-                <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsProfileCardExpanded(!isProfileCardExpanded)}
-                className="bg-transparent flex items-center"
-                >
-                {isProfileCardExpanded ? (
-                    <>
-                    <ChevronUp className="h-4 w-4 mr-1" />
-                    {t('showLess')}
-                    </>
-                ) : (
-                    <>
-                    <ChevronDown className="h-4 w-4 mr-1" />
-                    {t('showMore')}
-                    </>
-                )}
-                </Button>
-                <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsEditingProfile(true)}
-                className="bg-transparent flex items-center"
-                >
-                <Edit className="h-4 w-4 mr-1" />
-                {t('edit')}
-                </Button>
-            </div>
-            </CardTitle>
-        </CardHeader>
-
-        {isProfileCardExpanded && (
-            <CardContent className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div>
-                <label className="text-sm font-medium text-gray-700">{t('gender')}</label>
-                <div className="mt-1 p-2 bg-white rounded border">
-                {pAP.gender ? (
-                    <Badge variant="secondary" className="capitalize">
-                    {pAP.gender}
-                    </Badge>
-                ) : (
-                    <span className="text-gray-500">{t('notSpecified')}</span>
-                )}
-                </div>
-            </div>
-
-            <div>
-                <label className="text-sm font-medium text-gray-700">{t('dateOfBirth')}</label>
-                <div className="mt-1 p-2 bg-white rounded border flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-gray-400" />
-                <span>{formatDate(pAP.doB)}</span>
-                </div>
-            </div>
-
-            <div>
-                <label className="text-sm font-medium text-gray-700">{t('publicProfile')}</label>
-                <div className="mt-1 p-2 bg-white rounded border flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-gray-400" />
-                    <Badge variant={pAP.allowPublic ? "default" : "secondary"}>
-                    {pAP.allowPublic ? t('public') : t('private')}
-                    </Badge>
-                </div>
-                {pAP.allowPublic && (
-                    <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => window.open(`/publicPAP/${pAP.publicId}`, "_blank")}
-                    className="ml-2 h-7 text-xs bg-transparent border-cyan-300 hover:bg-cyan-50"
-                    >
-                    {t('viewPublicProfile')}
-                    </Button>
-                )}
-                </div>
-            </div>
-            </CardContent>
-        )}
-      </Card> */}
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* My Allergens */}
         <div className="lg:col-span-2">
