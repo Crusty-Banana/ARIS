@@ -44,12 +44,11 @@ export async function PUT(req: NextRequest) {
         if (!parsedBody.success) {
             return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
         }
-
         const db = await getDb();
         const { result } = await handler$UpdatePAPWithUserId(db, parsedBody.data);
 
         if (result !== 1) {
-            return NextResponse.json({ message: "Personal Allergy Profile not found" }, { status: 404 });
+            return NextResponse.json({ message: "No Personal Allergy Profile was modified" }, { status: 404 });
         }
         return NextResponse.json({ message: "Personal Allergy Profile updated successfully" }, { status: 200 });
     } catch (error) {

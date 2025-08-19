@@ -1,6 +1,6 @@
 "use client"
 
-import { User, LogOut, MessageSquareWarning } from "lucide-react"
+import { User, LogOut, MessageSquareWarning, Blocks } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { signOut, useSession } from "next-auth/react"
@@ -19,10 +19,27 @@ export default function Header() {
   return (
     <React.Fragment>
       <header className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-4 shadow-lg sticky top-0 z-10">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center gap-6">
           <div className="text-white text-2xl font-bold">ARIS</div>
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2 text-white hover:bg-white/30 text-lg px-6 py-2"
+            onClick={() => router.push("/dashboard")}
+          >
+            <Blocks className="h-6 w-6" />
+            <span>{t('dashboard')}</span>
+          </Button>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 ml-auto">
+            {/* <Button */}
+            {/*   variant="ghost" */}
+            {/*   className="flex items-center gap-2 text-white hover:bg-white/30" */}
+            {/*   onClick={() => router.push("/dashboard")} */}
+            {/* > */}
+            {/*   <Blocks className="h-5 w-5" /> */}
+            {/*   <span>{t('dashboard')}</span> */}
+            {/* </Button> */}
+
             <LocaleDropdown />
             {status === "authenticated" && (
               <DropdownMenu>
@@ -32,7 +49,7 @@ export default function Header() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-48" align="end">
-                  <DropdownMenuItem className="cursor=pointer" onClick={() => router.push("/profile")}>
+                  <DropdownMenuItem className="cursor-pointer" onClick={() => router.push("/profile")}>
                     <User className="mr-2 h-4 w-4" />
                     <span>{t('profile')}</span>
                   </DropdownMenuItem>

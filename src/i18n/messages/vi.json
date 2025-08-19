@@ -71,7 +71,7 @@
         "confirmNewPassword": "Nhập lại lần nữa cho chắc:",
         "resetPasswordButton": "Đổi lại mật khẩu",
         "resettingPassword": "Vui lòng chờ xíu...",
-        "redirectingToLogin": "Đang đưa bạn trở lại...", 
+        "redirectingToLogin": "Đang đưa bạn trở lại...",
         "forgotPasswordRequestSent": "Nếu tài khoản của bạn hợp lệ, một liên kết đã được gửi đến địa chỉ email của bạn.",
         "badToken": "Mã đặt lại không hợp lệ hoặc đã hết hạn.",
         "error": "Lỗi",
@@ -255,6 +255,8 @@
         "associatedSymptoms": "Các triệu chứng liên quan"
     },
     "header": {
+        "dashboard": "Bảng điều khiển",
+        "profile": "Hồ sơ",
         "logout": "Đăng xuất",
         "deleteAccount": "Xoá tài khoản",
         "feedback": "Góp ý"
@@ -340,5 +342,58 @@
             "severityLabel": "Độ nghiêm trọng (1-3)",
             "prevalenceLabel": "Độ phổ biến (1-5)"
         }
+    },
+    "profile": {
+        "title": "Hồ sơ người dùng",
+        "description": "Quản lý hồ sơ cá nhân và thông tin y tế của bạn"
+    },
+    "security": {
+        "title": "Cài đặt bảo mật",
+        "passwordChange": "Đổi mật khẩu",
+        "passwordChangeDescription": "Thay đổi mật khẩu của tài khoản của bạn"
+    },
+    "personalInfo": {
+        "title": "Thông tin cá nhân",
+        "edit": "Chỉnh sửa",
+        "cancel": "Hủy",
+        "save": "Lưu",
+        "saving": "...Đang lưu",
+        "savingChanges": "Đang lưu thay đổi...",
+        "firstName": "Tên",
+        "lastName": "Tên đệm",
+        "email": "Email",
+        "dateOfBirth": "Ngày sinh",
+        "gender": "Giới tính",
+        "profileVisibility": "Hồ sơ công khai",
+        "profileVisibilityDescription": "Công khai hồ sơ của bạn",
+        "male": "Nam",
+        "female": "Nữ",
+        "other": "Khác",
+        "medicalConditionsTitle": "Bệnh lý nền",
+        "medicalConditions": "Bệnh nền",
+        "addCondition": "Thêm bệnh nền",
+        "noCondition": "Không có bệnh nền nào được ghi trong hồ sơ của bạn"
+    },
+    "changePassword": {
+        "title": "Đổi mật khẩu",
+        "description": "Thay đổi mật khẩu của tài khoản của bạn",
+        "currentPassword": "Mật khẩu hiện tại",
+        "newPassword": "Mật khẩu mới",
+        "confirmPassword": "Xác nhận mật khẩu",
+        "enterCurrentPassword": "Nhập mật khẩu hiện tại",
+        "enterNewPassword": "Nhập mật khẩu mới",
+        "confirmNewPassword": "Nhập lại mật khẩu mới",
+        "save": "Cập nhật mật khẩu",
+        "cancel": "Hủy bỏ"
+    },
+    "accountManagement": {
+        "title": "Quản lý tài khoản",
+        "description": "Quản lý tài khoản của bạn",
+        "dangerZone": "Vùng nguy hiểm",
+        "dangerZoneDescription": "Thay đổi vĩnh viễn tài khoản của bạn",
+        "deleteAccount": "Xoá tài khoản",
+        "deleteWarning": "<strong>Cảnh báo:</strong> Hành động này không thể hoàn tác. Thao tác này sẽ xóa vĩnh viễn tài khoản của bạn và loại bỏ toàn bộ dữ liệu của bạn khỏi máy chủ của chúng tôi.",
+        "deleteConfirmation": "Xóa tài khoản",
+        "cancel": "Hủy bỏ"
     }
 }

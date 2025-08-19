@@ -137,7 +137,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
   return (
     <div className="space-y-6">
       {/* Profile Information */}
-      <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
+      {/* <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
         <CardHeader>
             <CardTitle className="text-cyan-800 flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -222,7 +222,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
             </div>
             </CardContent>
         )}
-      </Card>
+      </Card> */}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* My Allergens */}
