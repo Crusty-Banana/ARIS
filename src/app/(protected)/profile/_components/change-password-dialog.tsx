@@ -49,15 +49,17 @@ export function ChangePasswordDialog({ trigger }: ChangePasswordDialogProps) {
     const handlePasswordSave = () => {
         setErrors({ currentPassword: "", passwordMatch: "" })
 
+        if (passwordData.newPassword !== passwordData.confirmPassword) {
+            setErrors((prev) => ({ ...prev, passwordMatch: "New passwords don't match" }))
+            return
+        }
+
         if (passwordData.currentPassword !== "currentpass") {
             setErrors((prev) => ({ ...prev, currentPassword: "Current password is incorrect" }))
             return
         }
 
-        if (passwordData.newPassword !== passwordData.confirmPassword) {
-            setErrors((prev) => ({ ...prev, passwordMatch: "New passwords don't match" }))
-            return
-        }
+
 
         // Here you would typically validate current password and save new one
         console.log("Password change requested")
