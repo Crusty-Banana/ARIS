@@ -6,9 +6,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { AlertTriangle, Trash2 } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useTranslations } from "next-intl"
+import { signOut } from "next-auth/react"
+import { httpDelete$DeleteUser } from "@/modules/commands/DeleteBusinessType/fetcher"
 export function AccountManagementSection() {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
     const t = useTranslations("accountManagement")
+    const handleDeleteAccount = async () => {
+        // Handle account deletion logic here
+        const result = await httpDelete$DeleteUser("/api/users")
+        if (result.success) signOut()
+    }
     return (
         <div className="space-y-6">
             <h2 className="text-2xl font-semibold text-cyan-800">{t("title")}</h2>
@@ -38,7 +45,7 @@ export function AccountManagementSection() {
                                 </AlertDescription>
                             </Alert>
                             <div className="flex gap-2">
-                                <Button variant="destructive">
+                                <Button variant="destructive" onClick={async () => handleDeleteAccount()}>
                                     <Trash2 className="w-4 h-4 mr-2" />
                                     {t("deleteConfirmation")}
                                 </Button>
