@@ -351,5 +351,27 @@
         "title": "Cài đặt bảo mật",
         "passwordChange": "Đổi mật khẩu",
         "passwordChangeDescription": "Thay đổi mật khẩu của tài khoản của bạn"
+    },
+    "personalInfo": {
+        "title": "Thông tin cá nhân",
+        "edit": "Chỉnh sửa",
+        "cancel": "Hủy",
+        "save": "Lưu",
+        "saving": "...Đang lưu",
+        "savingChanges": "Đang lưu thay đổi...",
+        "firstName": "Tên",
+        "lastName": "Tên đệm",
+        "email": "Email",
+        "dateOfBirth": "Ngày sinh",
+        "gender": "Giới tính",
+        "profileVisibility": "Hồ sơ công khai",
+        "profileVisibilityDescription": "Công khai hồ sơ của bạn",
+        "male": "Nam",
+        "female": "Nữ",
+        "other": "Khác",
+        "medicalConditionsTitle": "Bệnh lý nền",
+        "medicalConditions": "Bệnh nền",
+        "addCondition": "Thêm bệnh nền",
+        "noCondition": "Không có bệnh nền nào được ghi trong hồ sơ của bạn"
     }
 }

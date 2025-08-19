@@ -351,5 +351,26 @@
         "title": "Security Settings",
         "passwordChange": "Password Change",
         "passwordChangeDescription": "Change your password to protect your account"
+    },
+    "personalInfo": {
+        "title": "Personal Information",
+        "edit": "Edit Profile",
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "...Saving",
+        "savingChanges": "Saving changes...",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "dateOfBirth": "Date of Birth",
+        "gender": "Gender",
+        "profileVisibility": "Profile Visibility",
+        "profileVisibilityDescription": "Make profile information public",
+        "saving": "Saving changes",
+        "male": "Male",
+        "female": "Female",
+        "other": "Other",
+        "medicalConditionsTitle": "Underlying Medical Conditions",
+        "medicalConditions": "Medical Conditions"
     }
 }

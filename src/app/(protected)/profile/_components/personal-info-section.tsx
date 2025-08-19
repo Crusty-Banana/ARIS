@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Edit3, Save, X, Loader2, Trash2, Plus } from "lucide-react"
 import { z } from "zod"
 import { useSession } from "next-auth/react"
-// import { useTranslations } from "next-intl"
+import { useTranslations } from "next-intl"
 import { httpGet$GetProfileWithUserId } from "@/modules/commands/GetProfileWithUserId/fetcher"
 import { httpPut$UpdateProfileWithUserId } from "@/modules/commands/UpdateProfileWithUserId/fetcher"
 const personalInfoSchema = z.object({
@@ -45,7 +45,7 @@ export function PersonalInfoSection() {
         underlyingMedCon: ["Asthma (moderate persistent)", "Seasonal allergies"],
         allowPublic: false
     })
-    // const t = useTranslations("personalInfo")
+    const t = useTranslations("personalInfo")
     const { data: session } = useSession()
     const [isLoading, setIsLoading] = useState(true)
     const [isSaving, setIsSaving] = useState(false)
@@ -53,28 +53,10 @@ export function PersonalInfoSection() {
     const [formData, setFormData] = useState<PersonalInfoData>(personalData)
     const [savedData, setSavedData] = useState<PersonalInfoData>(personalData)
 
-    // const getUserData = useCallback(async () => {
-    //     const data = await httpGet$GetUsers(`/api/users/${session?.user.id}`, {});
-    //     console.log(data.result)
-    //     if (data.success) {
-    //         setPersonalData(prevData => ({
-    //             ...prevData,
-    //             ...data.result
-    //         }));
-    //         setFormData(prevData => ({
-    //             ...prevData,
-    //             ...data.result
-    //         }));
-    //     } else {
-    //         console.error(data.message);
-    //     }
-    // }, [session])
     const getUserData = useCallback(async () => {
         if (session?.user?.id) {
             setIsLoading(true)
             const data = await httpGet$GetProfileWithUserId('api/user-profile')
-            // console.log(data.result)
-            // console.log(data.success)
             if (data.success && data.result) {
                 const cleanedPayload = optionalPersonalInfoSchema.parse(data.result)
                 setSavedData(prevData => ({
@@ -96,18 +78,9 @@ export function PersonalInfoSection() {
         getUserData()
     }, [session, getUserData])
 
-    // useEffect(() => {
-    //     console.log('Current formData:', formData);
-    //     console.log('Current savedData:', savedData);
-    // }, [formData, savedData]);
-    //
-
-
-
     const handleInputChange = (field: string, value: string | boolean) => {
         if (field === "doB") {
             const timestamp = Date.parse(value as string)
-            // console.log("Timestamp: ", timestamp)
             setFormData((prev) => ({ ...prev, doB: timestamp }))
         } else {
             setFormData((prev) => ({ ...prev, [field]: value }))
@@ -148,7 +121,6 @@ export function PersonalInfoSection() {
         setSavedData(formData)
         setIsSaving(false)
         setIsEditing(false)
-        // Here you would typically save to your backend
     }
 
     const handleCancel = () => {
@@ -157,13 +129,12 @@ export function PersonalInfoSection() {
     }
 
     if (isLoading) {
-        // ...existing code...
         return (
             <div className="space-y-8">
                 {/* Personal Information Section */}
                 <div className="space-y-6">
                     <div className="flex justify-between items-center">
-                        <h2 className="text-2xl font-semibold text-cyan-800">Personal Information</h2>
+                        <h2 className="text-2xl font-semibold text-cyan-800">{t('title')}</h2>
                         <Skeleton className="h-10 w-32" />
                     </div>
                     <Card className="bg-white/70 backdrop-blur-sm border-white/20">
@@ -182,7 +153,7 @@ export function PersonalInfoSection() {
 
                 {/* Medical Conditions Section */}
                 <div className="space-y-6">
-                    <h2 className="text-2xl font-semibold text-cyan-800">Underlying Medical Conditions</h2>
+                    <h2 className="text-2xl font-semibold text-cyan-800">{t('medicalConditionsTitle')}</h2>
                     <Card className="bg-white/70 backdrop-blur-sm border-white/20">
                         <CardContent className="p-6 space-y-6">
                             <div className="space-y-2">
@@ -204,7 +175,7 @@ export function PersonalInfoSection() {
             {/* Personal Information Section */}
             <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                    <h2 className="text-2xl font-semibold text-cyan-800">Personal Information</h2>
+                    <h2 className="text-2xl font-semibold text-cyan-800">{t('title')}</h2>
                     {!isEditing ? (
                         <Button
                             onClick={() => setIsEditing(true)}
@@ -212,17 +183,17 @@ export function PersonalInfoSection() {
                             disabled={isSaving}
                         >
                             <Edit3 className="w-4 h-4 mr-2" />
-                            Edit Profile
+                            {t('edit')}
                         </Button>
                     ) : (
                         <div className="flex gap-2">
                             <Button onClick={handleSave} className="bg-green-500 hover:bg-green-600" disabled={isSaving}>
                                 {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-                                {isSaving ? "Saving..." : "Save"}
+                                {isSaving ? t('saving') : t('save')}
                             </Button>
                             <Button onClick={handleCancel} variant="outline" disabled={isSaving}>
                                 <X className="w-4 h-4 mr-2" />
-                                Cancel
+                                {t('cancel')}
                             </Button>
                         </div>
                     )}
@@ -235,14 +206,14 @@ export function PersonalInfoSection() {
                                 <div className="absolute inset-0 flex items-center justify-center bg-white/20 backdrop-blur-sm rounded-lg z-10">
                                     <div className="flex items-center space-x-2 text-cyan-700">
                                         <Loader2 className="w-5 h-5 animate-spin" />
-                                        <span className="text-sm font-medium">Saving changes...</span>
+                                        <span className="text-sm font-medium">{t('savingChanges')}</span>
                                     </div>
                                 </div>
                             )}
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="firstName">First Name</Label>
+                                    <Label htmlFor="firstName">{t('firstName')}</Label>
                                     <Input
                                         id="firstName"
                                         value={formData.firstName}
@@ -252,7 +223,7 @@ export function PersonalInfoSection() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="lastName">Last Name</Label>
+                                    <Label htmlFor="lastName">{t('lastName')}</Label>
                                     <Input
                                         id="lastName"
                                         value={formData.lastName}
@@ -262,7 +233,7 @@ export function PersonalInfoSection() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="email">Email</Label>
+                                    <Label htmlFor="email">{t('email')}</Label>
                                     <Input
                                         id="email"
                                         type="email"
@@ -273,7 +244,7 @@ export function PersonalInfoSection() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="dateOfBirth">Date of Birth</Label>
+                                    <Label htmlFor="dateOfBirth">{t('dateOfBirth')}</Label>
                                     <Input
                                         id="dateOfBirth"
                                         type="date"
@@ -284,7 +255,7 @@ export function PersonalInfoSection() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="gender">Gender</Label>
+                                    <Label htmlFor="gender">{t('gender')}</Label>
                                     <Select
                                         value={formData.gender}
                                         onValueChange={(value) => handleInputChange("gender", value)}
@@ -294,14 +265,14 @@ export function PersonalInfoSection() {
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="male">Male</SelectItem>
-                                            <SelectItem value="female">Female</SelectItem>
-                                            <SelectItem value="other">Other</SelectItem>
+                                            <SelectItem value="male">{t('male')}</SelectItem>
+                                            <SelectItem value="female">{t('female')}</SelectItem>
+                                            <SelectItem value="other">{t('other')}</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="allowPublic">Profile Visibility</Label>
+                                    <Label htmlFor="allowPublic">{t('profileVisibility')}</Label>
                                     <div className="flex items-center space-x-2 pt-2">
                                         <Switch
                                             id="allowPublic"
@@ -311,7 +282,7 @@ export function PersonalInfoSection() {
                                             className="data-[state=checked]:bg-blue-600"
                                         />
                                         <span className="text-sm text-gray-600">
-                                            Make profile information public
+                                            {t('profileVisibilityDescription')}
                                         </span>
                                     </div>
                                 </div>
@@ -323,7 +294,7 @@ export function PersonalInfoSection() {
 
             {/* Medical Conditions Section */}
             <div className="space-y-6">
-                <h2 className="text-2xl font-semibold text-cyan-800">Underlying Medical Conditions</h2>
+                <h2 className="text-2xl font-semibold text-cyan-800">{t('medicalConditionsTitle')}</h2>
 
                 <Card className="bg-white/70 backdrop-blur-sm border-white/20">
                     <CardContent className="p-6 space-y-6">
@@ -332,14 +303,14 @@ export function PersonalInfoSection() {
                                 <div className="absolute inset-0 flex items-center justify-center bg-white/20 backdrop-blur-sm rounded-lg z-10">
                                     <div className="flex items-center space-x-2 text-cyan-700">
                                         <Loader2 className="w-5 h-5 animate-spin" />
-                                        <span className="text-sm font-medium">Saving changes...</span>
+                                        <span className="text-sm font-medium">{t('savingChanges')}</span>
                                     </div>
                                 </div>
                             )}
 
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center">
-                                    <Label>Medical Conditions</Label>
+                                    <Label>{t('medicalConditions')}</Label>
                                     {isEditing && (
                                         <Button
                                             type="button"
@@ -348,14 +319,14 @@ export function PersonalInfoSection() {
                                             className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white"
                                         >
                                             <Plus className="w-4 h-4 mr-1" />
-                                            Add Condition
+                                            {t('addCondition')}
                                         </Button>
                                     )}
                                 </div>
 
                                 <div className="space-y-3">
                                     {formData.underlyingMedCon.length === 0 ? (
-                                        <p className="text-gray-500 italic">No medical conditions listed</p>
+                                        <p className="text-gray-500 italic">{t('noCondition')}</p>
                                     ) : (
                                         formData.underlyingMedCon.map((condition, index) => (
                                             <div key={index} className="flex gap-2 items-center">
