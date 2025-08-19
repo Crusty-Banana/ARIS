@@ -19,7 +19,6 @@ const personalInfoSchema = z.object({
     lastName: z.string().min(1, "Last name is required"),
     email: z.string().email("Invalid email address"),
     doB: z.number()
-        .min(0)
         .refine(
             (dob) => {
                 const date = new Date(dob);
@@ -112,10 +111,8 @@ export function PersonalInfoSection() {
             console.error(updateResponse.message)
         }
     }
-    // const simulateNetworkDelay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
     const handleSave = async () => {
         setIsSaving(true)
-        // await simulateNetworkDelay(2000)
         await updateUser(formData)
         setPersonalData(formData)
         setSavedData(formData)

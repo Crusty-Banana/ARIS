@@ -16,6 +16,8 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Lock, Eye, EyeOff } from "lucide-react"
+import { httpPut$PasswordChange } from "@/modules/commands/PasswordChange/fetcher"
+import { signOut } from "next-auth/react"
 
 interface ChangePasswordDialogProps {
     trigger?: React.ReactNode
@@ -46,19 +48,22 @@ export function ChangePasswordDialog({ trigger }: ChangePasswordDialogProps) {
         }
     }
 
-    const handlePasswordSave = () => {
+    const handlePasswordSave = async () => {
         setErrors({ currentPassword: "", passwordMatch: "" })
 
         if (passwordData.newPassword !== passwordData.confirmPassword) {
             setErrors((prev) => ({ ...prev, passwordMatch: "New passwords don't match" }))
             return
         }
+        const result = await httpPut$PasswordChange('/api/auth/change', {
+            password: passwordData.currentPassword,
+            newPassword: passwordData.newPassword,
+        })
 
-        if (passwordData.currentPassword !== "currentpass") {
-            setErrors((prev) => ({ ...prev, currentPassword: "Current password is incorrect" }))
+        if (!result.result) {
+            setErrors((prev) => ({ ...prev, currentPassword: result.message }))
             return
         }
-
 
 
         // Here you would typically validate current password and save new one
@@ -68,6 +73,7 @@ export function ChangePasswordDialog({ trigger }: ChangePasswordDialogProps) {
         setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" })
         setErrors({ currentPassword: "", passwordMatch: "" })
         setShowPasswordDialog(false)
+        signOut()
     }
 
     const handleCancel = () => {
