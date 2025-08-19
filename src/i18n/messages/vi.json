@@ -373,5 +373,27 @@
         "medicalConditions": "Bệnh nền",
         "addCondition": "Thêm bệnh nền",
         "noCondition": "Không có bệnh nền nào được ghi trong hồ sơ của bạn"
+    },
+    "changePassword": {
+        "title": "Đổi mật khẩu",
+        "description": "Thay đổi mật khẩu của tài khoản của bạn",
+        "currentPassword": "Mật khẩu hiện tại",
+        "newPassword": "Mật khẩu mới",
+        "confirmPassword": "Xác nhận mật khẩu",
+        "enterCurrentPassword": "Nhập mật khẩu hiện tại",
+        "enterNewPassword": "Nhập mật khẩu mới",
+        "confirmNewPassword": "Nhập lại mật khẩu mới",
+        "save": "Cập nhật mật khẩu",
+        "cancel": "Hủy bỏ"
+    },
+    "accountManagement": {
+        "title": "Quản lý tài khoản",
+        "description": "Quản lý tài khoản của bạn",
+        "dangerZone": "Vùng nguy hiểm",
+        "dangerZoneDescription": "Thay đổi vĩnh viễn tài khoản của bạn",
+        "deleteAccount": "Xoá tài khoản",
+        "deleteWarning": "<strong>Cảnh báo:</strong> Hành động này không thể hoàn tác. Thao tác này sẽ xóa vĩnh viễn tài khoản của bạn và loại bỏ toàn bộ dữ liệu của bạn khỏi máy chủ của chúng tôi.",
+        "deleteConfirmation": "Xóa tài khoản",
+        "cancel": "Hủy bỏ"
     }
 }

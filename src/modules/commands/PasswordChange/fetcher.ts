@@ -14,7 +14,6 @@ export async function httpPut$PasswordChange(
     });
     const text = await response.text();
     const data = JSON.parse(text);
-    console.log(data)
     const result = PasswordChange$Result.parse({
         success: response.ok,
         ...data

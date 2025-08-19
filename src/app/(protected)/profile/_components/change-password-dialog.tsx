@@ -2,10 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
     Dialog,
     DialogContent,
@@ -15,10 +12,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Lock, Eye, EyeOff } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { httpPut$PasswordChange } from "@/modules/commands/PasswordChange/fetcher"
+import { Eye, EyeOff, Lock } from "lucide-react"
 import { signOut } from "next-auth/react"
-
+import { useState } from "react"
+import { useTranslations } from "next-intl"
 interface ChangePasswordDialogProps {
     trigger?: React.ReactNode
 }
@@ -37,7 +37,7 @@ export function ChangePasswordDialog({ trigger }: ChangePasswordDialogProps) {
         currentPassword: "",
         passwordMatch: "",
     })
-
+    const t = useTranslations("changePassword")
     const handlePasswordChange = (field: string, value: string) => {
         setPasswordData((prev) => ({ ...prev, [field]: value }))
         if (field === "currentPassword") {
@@ -55,6 +55,7 @@ export function ChangePasswordDialog({ trigger }: ChangePasswordDialogProps) {
             setErrors((prev) => ({ ...prev, passwordMatch: "New passwords don't match" }))
             return
         }
+        // Here you would typically validate current password and save new one
         const result = await httpPut$PasswordChange('/api/auth/change', {
             password: passwordData.currentPassword,
             newPassword: passwordData.newPassword,
@@ -64,10 +65,6 @@ export function ChangePasswordDialog({ trigger }: ChangePasswordDialogProps) {
             setErrors((prev) => ({ ...prev, currentPassword: result.message }))
             return
         }
-
-
-        // Here you would typically validate current password and save new one
-        console.log("Password change requested")
 
         // Reset form and close dialog
         setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" })
@@ -97,19 +94,19 @@ export function ChangePasswordDialog({ trigger }: ChangePasswordDialogProps) {
             <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle className="text-cyan-800">Change Password</DialogTitle>
-                    <DialogDescription>Enter your current password and choose a new secure password.</DialogDescription>
+                    <DialogTitle className="text-cyan-800">{t('title')}</DialogTitle>
+                    <DialogDescription>{t('description')}</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="currentPassword">Current Password</Label>
+                        <Label htmlFor="currentPassword">{t('currentPassword')}</Label>
                         <div className="relative">
                             <Input
                                 id="currentPassword"
                                 type={showCurrentPassword ? "text" : "password"}
                                 value={passwordData.currentPassword}
                                 onChange={(e) => handlePasswordChange("currentPassword", e.target.value)}
-                                placeholder="Enter current password"
+                                placeholder={t('enterCurrentPassword')}
                             />
                             <Button
                                 type="button"
@@ -124,14 +121,14 @@ export function ChangePasswordDialog({ trigger }: ChangePasswordDialogProps) {
                         {errors.currentPassword && <p className="text-red-600 text-sm">{errors.currentPassword}</p>}
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="newPassword">New Password</Label>
+                        <Label htmlFor="newPassword">{t('newPassword')}</Label>
                         <div className="relative">
                             <Input
                                 id="newPassword"
                                 type={showNewPassword ? "text" : "password"}
                                 value={passwordData.newPassword}
                                 onChange={(e) => handlePasswordChange("newPassword", e.target.value)}
-                                placeholder="Enter new password"
+                                placeholder={t('enterNewPassword')}
                             />
                             <Button
                                 type="button"
@@ -146,14 +143,14 @@ export function ChangePasswordDialog({ trigger }: ChangePasswordDialogProps) {
                         {errors.passwordMatch && <p className="text-red-600 text-sm">{errors.passwordMatch}</p>}
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                        <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
                         <div className="relative">
                             <Input
                                 id="confirmPassword"
                                 type={showConfirmPassword ? "text" : "password"}
                                 value={passwordData.confirmPassword}
                                 onChange={(e) => handlePasswordChange("confirmPassword", e.target.value)}
-                                placeholder="Confirm new password"
+                                placeholder={t('confirmNewPassword')}
                             />
                             <Button
                                 type="button"
@@ -169,14 +166,14 @@ export function ChangePasswordDialog({ trigger }: ChangePasswordDialogProps) {
                 </div>
                 <DialogFooter>
                     <Button type="button" variant="outline" onClick={handleCancel}>
-                        Cancel
+                        {t('cancel')}
                     </Button>
                     <Button
                         type="button"
                         onClick={handlePasswordSave}
                         className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
                     >
-                        Update Password
+                        {t('save')}
                     </Button>
                 </DialogFooter>
             </DialogContent>

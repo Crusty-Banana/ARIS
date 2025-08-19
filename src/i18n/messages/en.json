@@ -373,5 +373,26 @@
         "medicalConditions": "Medical Conditions",
         "addCondition": "Add Condition",
         "noCondition": "No medical conditions listed"
+    },
+    "changePassword": {
+        "title": "Change Password",
+        "description": "Change your password to protect your account",
+        "currentPassword": "Current Password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password",
+        "enterCurrentPassword": "Enter current password",
+        "enterNewPassword": "Enter new password",
+        "confirmNewPassword": "Enter confirm password",
+        "save": "Update Password",
+        "cancel": "Cancel"
+    },
+    "accountManagement": {
+        "title": "Account Management",
+        "dangerZone": " Danger Zone",
+        "dangerZoneDescription": "Irreversible actions that will permanently affect your account",
+        "deleteAccount": "Delete Account",
+        "deleteWarning": "<strong>Warning:</strong> This action cannot be undone. This will permanently delete your account and remove all your data from our servers.",
+        "deleteConfirmation": "Yes, delete my account",
+        "cancel": "Cancel"
     }
 }
