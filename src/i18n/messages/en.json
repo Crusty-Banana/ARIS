@@ -366,11 +366,12 @@
         "gender": "Gender",
         "profileVisibility": "Profile Visibility",
         "profileVisibilityDescription": "Make profile information public",
-        "saving": "Saving changes",
         "male": "Male",
         "female": "Female",
         "other": "Other",
         "medicalConditionsTitle": "Underlying Medical Conditions",
-        "medicalConditions": "Medical Conditions"
+        "medicalConditions": "Medical Conditions",
+        "addCondition": "Add Condition",
+        "noCondition": "No medical conditions listed"
     }
 }
