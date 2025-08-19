@@ -39,6 +39,7 @@
         "signIn": "Đăng nhập",
         "signingIn": "Đang đăng nhập...",
         "loginFailed": "Đăng nhập thất bại. Vui lòng kiểm tra thông tin đăng nhập của bạn.",
+        "pleaseVerifyEmail": "Địa chỉ email của bạn chưa được xác thực. Vui lòng kiểm tra email để nhận đường dẫn xác thực.",
         "firstName": "Tên",
         "lastName": "Họ",
         "firstNamePlaceholder": "Tên",
@@ -49,7 +50,7 @@
         "passwordsDoNotMatch": "Mật khẩu không khớp",
         "accountCreated": "Tài khoản đã được tạo thành công! Vui lòng đăng nhập.",
         "registrationFailed": "Đăng ký thất bại. Vui lòng thử lại.",
-        "termsAgreement": "Tôi đồng ý với {termsOfService} và {privacyPolicy}",
+        "termsAgreement": "Tôi đồng ý với<termsOfService>Điều Khoản</termsOfService>and<privacyPolicy>Quyền Riêng Tư</privacyPolicy>",
         "termsOfService": "Điều khoản dịch vụ",
         "privacyPolicy": "Chính sách bảo mật",
         "createAccountButton": "Tạo tài khoản",
@@ -57,11 +58,28 @@
         "noAccount": "Chưa có tài khoản? ",
         "haveAccount": "Đã có tài khoản? ",
         "signUp": "Đăng ký",
-        "signInLink": "Đăng nhập"
+        "forgotPasswordTitle": "Quên mật khẩu",
+        "forgotPasswordPrompt": "Nhập địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn một liên kết để đặt lại mật khẩu.",
+        "sendResetLink": "Gửi liên kết đặt lại",
+        "forgotPasswordLink": "Quên mật khẩu?",
+        "backToLogin": "Quay lại trang đăng nhập",
+        "signInLink": "Đăng nhập",
+        "sendingLink": "Vui lòng chờ xíu...",
+        "resetPasswordTitle": "ĐẶT LẠI MẬT KHẨU",
+        "resetPasswordPrompt": "Nhập mật khẩu mới của bạn. Mật khẩu mới là cái gì cũng được.",
+        "newPassword": "Mật khẩu mới:",
+        "confirmNewPassword": "Nhập lại lần nữa cho chắc:",
+        "resetPasswordButton": "Đổi lại mật khẩu",
+        "resettingPassword": "Vui lòng chờ xíu...",
+        "redirectingToLogin": "Đang đưa bạn trở lại...",
+        "forgotPasswordRequestSent": "Nếu tài khoản của bạn hợp lệ, một liên kết đã được gửi đến địa chỉ email của bạn.",
+        "badToken": "Mã đặt lại không hợp lệ hoặc đã hết hạn.",
+        "error": "Lỗi",
+        "passwordResetSuccess": "Đặt lại mật khẩu thành công!"
     },
     "symptomModal": {
         "addSymptom": "Thêm Triệu chứng",
-        "addNewSymptom": "Thêm Triệu chứng Mới",
+        "addNewSymptom": "Thêm Triệu Chứng Mới",
         "symptomName": "Tên Triệu chứng",
         "enterSymptomName": "Nhập tên triệu chứng",
         "severityLabel": "Mức độ nghiêm trọng (1-3)",
@@ -156,6 +174,7 @@
         "removeConditionConfirmation": "Bạn có chắc chắn muốn xóa tình trạng bệnh lý này không?",
         "detailModals": {
             "severity": "Độ nghiêm trọng",
+            "prevalence": "Độ phổ biến",
             "treatment": "Điều trị"
         },
         "clinicalSymptoms": "Triệu chứng lâm sàng",
@@ -232,10 +251,15 @@
         "respiratory": "Hô hấp",
         "treatment": "Điều trị",
         "footerNote1": "Đây là hồ sơ dị ứng công khai. Thông tin được cung cấp cho mục đích nhận thức và trường hợp khẩn cấp.",
-        "footerNote2": "Luôn tham khảo ý kiến chuyên gia y tế để được tư vấn."
+        "footerNote2": "Luôn tham khảo ý kiến chuyên gia y tế để được tư vấn.",
+        "associatedSymptoms": "Các triệu chứng liên quan"
     },
     "header": {
-        "logout": "Đăng xuất"
+        "dashboard": "Bảng điều khiển",
+        "profile": "Hồ sơ",
+        "logout": "Đăng xuất",
+        "deleteAccount": "Xoá tài khoản",
+        "feedback": "Góp ý"
     },
     "dataTables": {
         "existingSymptoms": "Triệu chứng hiện có",
@@ -251,7 +275,7 @@
         "allergens": "Dị nguyên"
     },
     "addAllergenModal": {
-        "addNewAllergen": "Thêm Dị nguyên Mới",
+        "addNewAllergen": "Thêm Dị Nguyên Mới",
         "searchAllergen": "Tìm kiếm dị nguyên...",
         "food": "Thực phẩm",
         "drug": "Thuốc",
@@ -268,9 +292,108 @@
         "paraclinicalTest": "Xét nghiệm cận lâm sàng",
         "associatedSymptoms": "Các triệu chứng liên quan",
         "potential": "Có khả năng",
-        "cancel": "Hủy bỏ"
+        "cancel": "Hủy bỏ",
+        "doneTest": "Đã xét nghiệm",
+        "testDone": "Loại xét nghiệm",
+        "skinTest": "Xét Nghiệm Da",
+        "bloodTest": "Xét Nghiệm Máu",
+        "provocationTest": "Xét Nghiệm Kích Thích"
+    },
+    "recommendationModal": {
+        "title": "Đóng Góp Ý Kiến",
+        "recommendationType": "Loại Đóng Góp",
+        "defaultTypeText": "Chọn một loại...",
+        "content": "Nội Dung",
+        "defaultContentText": "Góp ý của bạn...",
+        "allergenSuggestion": "Gợi ý dị nguyên mới",
+        "generalFeedback": "Góp ý chung"
     },
     "common": {
-        "searchItems": "Tìm kiếm triệu chứng..."
+        "searchItems": "Tìm kiếm tên...",
+        "send": "Gửi",
+        "cancel": "Hủy bỏ",
+        "food": "Thực phẩm",
+        "drug": "Thuốc",
+        "respiratory": "Hô hấp",
+        "type": "Loại",
+        "selectType": "Chọn loại",
+        "language": "Ngôn ngữ",
+        "name": "Tên",
+        "enterName": "Nhập tên...",
+        "allTypes": "Tất cả các loại",
+        "treatment": "Điều trị",
+        "sortByPrevalence": "Sắp xếp theo độ phổ biến",
+        "sortByName": "Sắp xếp theo tên",
+        "sortBySeverity": "Sắp xếp theo độ nghiêm trọng",
+        "allergens": "Dị nguyên",
+        "allergies": "Dị ứng",
+        "symptoms": "Triệu chứng",
+        "searchAllergens": "Tìm kiếm dị nguyên...",
+        "searchAllergies": "Tìm kiếm dị ứng...",
+        "searchSymptoms": "Tìm kiếm triệu chứng...",
+        "noAllergensFound": "Không tìm thấy dị nguyên nào",
+        "noAllergiesFound": "Không tìm thấy dị ứng nào",
+        "noSymptomsFound": "Không tìm thấy triệu chứng nào",
+        "detailModals": {
+            "areYouSureAllergenDelete": "Bạn có chắc chắn muốn xóa dị nguyên này không?",
+            "areYouSureAllergyDelete": "Bạn có chắc chắn muốn xóa dị ứng này không?",
+            "areYouSureSymptomDelete": "Bạn có chắc chắn muốn xóa triệu chứng này không?",
+            "treatmentPlaceholder": "Nhập thông tin điều trị",
+            "severityLabel": "Độ nghiêm trọng (1-3)",
+            "prevalenceLabel": "Độ phổ biến (1-5)"
+        }
+    },
+    "profile": {
+        "title": "Hồ sơ người dùng",
+        "description": "Quản lý hồ sơ cá nhân và thông tin y tế của bạn"
+    },
+    "security": {
+        "title": "Cài đặt bảo mật",
+        "passwordChange": "Đổi mật khẩu",
+        "passwordChangeDescription": "Thay đổi mật khẩu của tài khoản của bạn"
+    },
+    "personalInfo": {
+        "title": "Thông tin cá nhân",
+        "edit": "Chỉnh sửa",
+        "cancel": "Hủy",
+        "save": "Lưu",
+        "saving": "...Đang lưu",
+        "savingChanges": "Đang lưu thay đổi...",
+        "firstName": "Tên",
+        "lastName": "Tên đệm",
+        "email": "Email",
+        "dateOfBirth": "Ngày sinh",
+        "gender": "Giới tính",
+        "profileVisibility": "Hồ sơ công khai",
+        "profileVisibilityDescription": "Công khai hồ sơ của bạn",
+        "male": "Nam",
+        "female": "Nữ",
+        "other": "Khác",
+        "medicalConditionsTitle": "Bệnh lý nền",
+        "medicalConditions": "Bệnh nền",
+        "addCondition": "Thêm bệnh nền",
+        "noCondition": "Không có bệnh nền nào được ghi trong hồ sơ của bạn"
+    },
+    "changePassword": {
+        "title": "Đổi mật khẩu",
+        "description": "Thay đổi mật khẩu của tài khoản của bạn",
+        "currentPassword": "Mật khẩu hiện tại",
+        "newPassword": "Mật khẩu mới",
+        "confirmPassword": "Xác nhận mật khẩu",
+        "enterCurrentPassword": "Nhập mật khẩu hiện tại",
+        "enterNewPassword": "Nhập mật khẩu mới",
+        "confirmNewPassword": "Nhập lại mật khẩu mới",
+        "save": "Cập nhật mật khẩu",
+        "cancel": "Hủy bỏ"
+    },
+    "accountManagement": {
+        "title": "Quản lý tài khoản",
+        "description": "Quản lý tài khoản của bạn",
+        "dangerZone": "Vùng nguy hiểm",
+        "dangerZoneDescription": "Thay đổi vĩnh viễn tài khoản của bạn",
+        "deleteAccount": "Xoá tài khoản",
+        "deleteWarning": "<strong>Cảnh báo:</strong> Hành động này không thể hoàn tác. Thao tác này sẽ xóa vĩnh viễn tài khoản của bạn và loại bỏ toàn bộ dữ liệu của bạn khỏi máy chủ của chúng tôi.",
+        "deleteConfirmation": "Xóa tài khoản",
+        "cancel": "Hủy bỏ"
     }
 }

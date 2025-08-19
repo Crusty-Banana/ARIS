@@ -39,6 +39,7 @@
         "signIn": "Sign In",
         "signingIn": "Signing In...",
         "loginFailed": "Login failed. Please check your credentials.",
+        "pleaseVerifyEmail": "Your email address is not verified. Please check for the verification link.",
         "firstName": "First Name",
         "lastName": "Last Name",
         "firstNamePlaceholder": "First name",
@@ -49,7 +50,7 @@
         "passwordsDoNotMatch": "Passwords do not match",
         "accountCreated": "Account created successfully! Please sign in.",
         "registrationFailed": "Registration failed. Please try again.",
-        "termsAgreement": "I agree to the {termsOfService} and {privacyPolicy}",
+        "termsAgreement": "I agree to the <termsOfService>Terms of Service</termsOfService> and <privacyPolicy>Privacy Policy</privacyPolicy>.",
         "termsOfService": "Terms of Service",
         "privacyPolicy": "Privacy Policy",
         "createAccountButton": "Create Account",
@@ -57,7 +58,24 @@
         "noAccount": "Don't have an account? ",
         "haveAccount": "Already have an account? ",
         "signUp": "Sign up",
-        "signInLink": "Sign in"
+        "forgotPasswordTitle": "Forgot Password",
+        "forgotPasswordPrompt": "Enter your email address and we'll send you a link to reset your password.",
+        "sendResetLink": "Send Reset Link",
+        "forgotPasswordLink": "Forgot your password?",
+        "backToLogin": "Back to Login",
+        "signInLink": "Sign in",
+        "sendingLink": "Please wait...",
+        "resetPasswordTitle": "RESET PASSWORD",
+        "resetPasswordPrompt": "Input your new password. Can be whatever.",
+        "newPassword": "New password:",
+        "confirmNewPassword": "New password, again, for ensurance:",
+        "resetPasswordButton": "Reset password",
+        "resettingPassword": "Please wait...",
+        "redirectingToLogin": "Bringing you back...",
+        "forgotPasswordRequestSent": "If your account is valid, a link has been sent to your email address.",
+        "badToken": "Invalid or expired reset token.",
+        "error": "Error",
+        "passwordResetSuccess": "Password Reset successfully!"
     },
     "symptomModal": {
         "addSymptom": "Add Symptom",
@@ -156,6 +174,7 @@
         "removeConditionConfirmation": "Are you sure you want to remove this medical condition?",
         "detailModals": {
             "severity": "Severity",
+            "prevalence": "Prevalence",
             "treatment": "Treatment"
         },
         "clinicalSymptoms": "Clinical Symptoms",
@@ -232,10 +251,15 @@
         "respiratory": "Respiratory",
         "treatment": "Treatment",
         "footerNote1": "This is a public allergy profile. Information is provided for awareness and emergency purposes.",
-        "footerNote2": "Always consult healthcare professionals for medical advice."
+        "footerNote2": "Always consult healthcare professionals for medical advice.",
+        "associatedSymptoms": "Associated Symptoms"
     },
     "header": {
-        "logout": "Log out"
+        "dashboard": "Dashboard",
+        "profile": "Profile",
+        "logout": "Log out",
+        "deleteAccount": "Delete Account",
+        "feedback": "Feedback"
     },
     "dataTables": {
         "existingSymptoms": "Existing Symptoms",
@@ -251,11 +275,11 @@
         "allergens": "Allergens"
     },
     "addAllergenModal": {
-        "addNewAllergen":"Add New Allergen",
+        "addNewAllergen": "Add New Allergen",
         "searchAllergen": "Search for allergens...",
-        "food":"Food",
-        "drug":"Drug",
-        "respiratory":"Respiratory",
+        "food": "Food",
+        "drug": "Drug",
+        "respiratory": "Respiratory",
         "symptoms": "symptoms",
         "severity": "Severity",
         "prevalence": "Prevalence",
@@ -266,11 +290,109 @@
         "discoveryMethod": "Discovery Method",
         "clinicalSymptoms": "Clinical Symptoms",
         "paraclinicalTest": "Paraclinical Test",
-        "associatedSymptoms":"Associated Symptoms",
+        "associatedSymptoms": "Associated Symptoms",
         "potential": "Potential",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "doneTest": "Tested",
+        "testDone": "Type of Test",
+        "skinTest": "Skin Test",
+        "bloodTest": "Blood Test",
+        "provocationTest": "Provocation Test"
+    },
+    "recommendationModal": {
+        "title": "Send Feedback",
+        "recommendationType": "Feedback Type",
+        "defaultTypeText": "Select a type...",
+        "content": "Content",
+        "defaultContentText": "Your feedback...",
+        "allergenSuggestion": "Allergen Suggestion",
+        "generalFeedback": "General Feedback"
     },
     "common": {
-        "searchItems": "Search items..."
+        "searchItems": "Search items...",
+        "send": "Send",
+        "cancel": "Cancel",
+        "food": "Food",
+        "drug": "Drug",
+        "respiratory": "Respiratory",
+        "type": "Type",
+        "selectType": "Select type",
+        "language": "Language",
+        "name": "Name",
+        "enterName": "Enter name...",
+        "allTypes": "All Types",
+        "treatment": "Treatment",
+        "sortByPrevalence": "Sort by Prevalence",
+        "sortByName": "Sort by Name",
+        "sortBySeverity": " Sort by Severity",
+        "allergens": "Allergens",
+        "allergies": "Allergies",
+        "symptoms": "Symptoms",
+        "searchAllergens": "Search for allergens...",
+        "searchAllergies": "Search for allergies...",
+        "searchSymptoms": "Search for symptoms...",
+        "noAllergensFound": "No allergens found",
+        "noAllergiesFound": "No allergies found",
+        "noSymptomsFound": "No symptoms found",
+        "detailModals": {
+            "areYouSureAllergenDelete": "Are you sure you want to delete this allergen?",
+            "areYouSureAllergyDelete": "Are you sure you want to delete this allergy?",
+            "areYouSureSymptomDelete": "Are you sure you want to delete this symptom?",
+            "treatmentPlaceholder": "Enter treatment information",
+            "severityLabel": "Severity (1-3)",
+            "prevalenceLabel": "Prevalence (1-5)"
+        }
+    },
+    "profile": {
+        "title": "User Profile",
+        "description": "Manage your personal information and medical details"
+    },
+    "security": {
+        "title": "Security Settings",
+        "passwordChange": "Password Change",
+        "passwordChangeDescription": "Change your password to protect your account"
+    },
+    "personalInfo": {
+        "title": "Personal Information",
+        "edit": "Edit Profile",
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "...Saving",
+        "savingChanges": "Saving changes...",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "dateOfBirth": "Date of Birth",
+        "gender": "Gender",
+        "profileVisibility": "Profile Visibility",
+        "profileVisibilityDescription": "Make profile information public",
+        "male": "Male",
+        "female": "Female",
+        "other": "Other",
+        "medicalConditionsTitle": "Underlying Medical Conditions",
+        "medicalConditions": "Medical Conditions",
+        "addCondition": "Add Condition",
+        "noCondition": "No medical conditions listed"
+    },
+    "changePassword": {
+        "title": "Change Password",
+        "description": "Change your password to protect your account",
+        "currentPassword": "Current Password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password",
+        "enterCurrentPassword": "Enter current password",
+        "enterNewPassword": "Enter new password",
+        "confirmNewPassword": "Enter confirm password",
+        "save": "Update Password",
+        "cancel": "Cancel"
+    },
+    "accountManagement": {
+        "title": "Account Management",
+        "dangerZone": " Danger Zone",
+        "dangerZoneDescription": "Irreversible actions that will permanently affect your account",
+        "deleteAccount": "Delete Account",
+        "deleteWarning": "<strong>Warning:</strong> This action cannot be undone. This will permanently delete your account and remove all your data from our servers.",
+        "deleteConfirmation": "Yes, delete my account",
+        "cancel": "Cancel"
     }
 }

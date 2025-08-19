@@ -1,3 +1,5 @@
+'use server';
+
 // import { initializeIndices } from "kreate-server/db/initData";
 import { MongoClient, Db } from "mongodb";
 
@@ -64,14 +66,14 @@ async function disconnect() {
 }
 
 /** Returns `MongoClient` given a connection URI */
-async function getClient(uri: string): Promise<MongoClient> {
+export async function getClient(): Promise<MongoClient> {
     const data = getData();
     if (!data) {
-        return await connect(uri);
-    } else if (data.uri !== uri) {
+        return await connect(SERVER_ENV.MONGODB_URI);
+    } else if (data.uri !== SERVER_ENV.MONGODB_URI) {
         console.log("uri changed, reconnecting...");
         await disconnect();
-        return await connect(uri);
+        return await connect(SERVER_ENV.MONGODB_URI);
     } else {
         return await data.clientPromise;
     }
@@ -79,7 +81,7 @@ async function getClient(uri: string): Promise<MongoClient> {
 
 /** Returns `Db` using the default connection URI */
 export async function getDb(): Promise<Db> {
-    const client = await getClient(SERVER_ENV.MONGODB_URI);
+    const client = await getClient();
     const db = client.db(SERVER_ENV.MONGODB_DBNAME);
     return db;
 }
