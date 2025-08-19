@@ -280,7 +280,7 @@ export function PersonalInfoSection() {
                                         type="email"
                                         value={formData.email}
                                         onChange={(e) => handleInputChange("email", e.target.value)}
-                                        disabled={!isEditing}
+                                        disabled={true}
                                         className={!isEditing ? "bg-gray-50" : ""}
                                     />
                                 </div>
