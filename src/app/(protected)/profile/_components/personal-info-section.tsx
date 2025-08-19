@@ -48,6 +48,7 @@ export function PersonalInfoSection() {
     // const t = useTranslations("personalInfo")
     const { data: session } = useSession()
     const [isLoading, setIsLoading] = useState(true)
+    const [isSaving, setIsSaving] = useState(false)
     const [isEditing, setIsEditing] = useState(false)
     const [formData, setFormData] = useState<PersonalInfoData>(personalData)
     const [savedData, setSavedData] = useState<PersonalInfoData>(personalData)
@@ -70,6 +71,7 @@ export function PersonalInfoSection() {
     // }, [session])
     const getUserData = useCallback(async () => {
         if (session?.user?.id) {
+            setIsLoading(true)
             const data = await httpGet$GetProfileWithUserId('api/user-profile')
             // console.log(data.result)
             // console.log(data.success)
@@ -103,7 +105,13 @@ export function PersonalInfoSection() {
 
 
     const handleInputChange = (field: string, value: string | boolean) => {
-        setFormData((prev) => ({ ...prev, [field]: value }))
+        if (field === "doB") {
+            const timestamp = Date.parse(value as string)
+            // console.log("Timestamp: ", timestamp)
+            setFormData((prev) => ({ ...prev, doB: timestamp }))
+        } else {
+            setFormData((prev) => ({ ...prev, [field]: value }))
+        }
     }
     const addMedicalCondition = () => {
         setFormData((prev) => ({
@@ -131,11 +139,15 @@ export function PersonalInfoSection() {
             console.error(updateResponse.message)
         }
     }
-    const handleSave = () => {
-        setIsEditing(false)
-        updateUser(formData)
+    // const simulateNetworkDelay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+    const handleSave = async () => {
+        setIsSaving(true)
+        // await simulateNetworkDelay(2000)
+        await updateUser(formData)
         setPersonalData(formData)
         setSavedData(formData)
+        setIsSaving(false)
+        setIsEditing(false)
         // Here you would typically save to your backend
     }
 
@@ -197,18 +209,18 @@ export function PersonalInfoSection() {
                         <Button
                             onClick={() => setIsEditing(true)}
                             className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white"
-                            disabled={isLoading}
+                            disabled={isSaving}
                         >
                             <Edit3 className="w-4 h-4 mr-2" />
                             Edit Profile
                         </Button>
                     ) : (
                         <div className="flex gap-2">
-                            <Button onClick={handleSave} className="bg-green-500 hover:bg-green-600" disabled={isLoading}>
-                                {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-                                {isLoading ? "Saving..." : "Save"}
+                            <Button onClick={handleSave} className="bg-green-500 hover:bg-green-600" disabled={isSaving}>
+                                {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                                {isSaving ? "Saving..." : "Save"}
                             </Button>
-                            <Button onClick={handleCancel} variant="outline" disabled={isLoading}>
+                            <Button onClick={handleCancel} variant="outline" disabled={isSaving}>
                                 <X className="w-4 h-4 mr-2" />
                                 Cancel
                             </Button>
@@ -218,8 +230,8 @@ export function PersonalInfoSection() {
 
                 <Card className="bg-white/70 backdrop-blur-sm border-white/20">
                     <CardContent className="p-6 space-y-4">
-                        <div className={`relative ${isLoading ? "opacity-60 pointer-events-none" : ""}`}>
-                            {isLoading && (
+                        <div className={`relative ${isSaving ? "opacity-60 pointer-events-none" : ""}`}>
+                            {isSaving && (
                                 <div className="absolute inset-0 flex items-center justify-center bg-white/20 backdrop-blur-sm rounded-lg z-10">
                                     <div className="flex items-center space-x-2 text-cyan-700">
                                         <Loader2 className="w-5 h-5 animate-spin" />
@@ -315,8 +327,8 @@ export function PersonalInfoSection() {
 
                 <Card className="bg-white/70 backdrop-blur-sm border-white/20">
                     <CardContent className="p-6 space-y-6">
-                        <div className={`relative ${isLoading ? "opacity-60 pointer-events-none" : ""}`}>
-                            {isLoading && (
+                        <div className={`relative ${isSaving ? "opacity-60 pointer-events-none" : ""}`}>
+                            {isSaving && (
                                 <div className="absolute inset-0 flex items-center justify-center bg-white/20 backdrop-blur-sm rounded-lg z-10">
                                     <div className="flex items-center space-x-2 text-cyan-700">
                                         <Loader2 className="w-5 h-5 animate-spin" />
