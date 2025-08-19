@@ -49,7 +49,7 @@ export default function Header() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-48" align="end">
-                  <DropdownMenuItem className="cursor=pointer" onClick={() => router.push("/profile")}>
+                  <DropdownMenuItem className="cursor-pointer" onClick={() => router.push("/profile")}>
                     <User className="mr-2 h-4 w-4" />
                     <span>{t('profile')}</span>
                   </DropdownMenuItem>
