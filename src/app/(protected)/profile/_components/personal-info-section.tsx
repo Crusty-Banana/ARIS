@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -101,7 +102,7 @@ export function PersonalInfoSection() {
 
 
 
-    const handleInputChange = (field: string, value: string) => {
+    const handleInputChange = (field: string, value: string | boolean) => {
         setFormData((prev) => ({ ...prev, [field]: value }))
     }
     const addMedicalCondition = () => {
@@ -286,6 +287,21 @@ export function PersonalInfoSection() {
                                             <SelectItem value="other">Other</SelectItem>
                                         </SelectContent>
                                     </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="allowPublic">Profile Visibility</Label>
+                                    <div className="flex items-center space-x-2 pt-2">
+                                        <Switch
+                                            id="allowPublic"
+                                            checked={formData.allowPublic}
+                                            onCheckedChange={(checked) => handleInputChange("allowPublic", checked)}
+                                            disabled={!isEditing}
+                                            className="data-[state=checked]:bg-blue-600"
+                                        />
+                                        <span className="text-sm text-gray-600">
+                                            Make profile information public
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
