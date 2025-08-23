@@ -103,6 +103,7 @@ export const Symptom = z.object({
     treatment: DisplayString,
     severity: z.number().min(1).max(3),
     prevalence: z.number().min(1).max(5).default(1),
+    media: z.array(z.string().url()).default([]),
 });
 export type Symptom = z.infer<typeof Symptom>;
 

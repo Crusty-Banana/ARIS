@@ -44,6 +44,21 @@ export function SymptomDetailModal({ symptom, onClose, onUpdate, onDelete }: Sym
     }
   }: undefined
 
+  const onMediaAdd = (files: FileList) => {
+    const newUrls = Array.from(files).map(file => URL.createObjectURL(file));
+    setEditData(prevData => ({
+      ...prevData,
+      media: [...(prevData.media || []), ...newUrls]
+    }));
+  };
+
+  const onMediaRemove = (urlToRemove: string) => {
+    setEditData(prevData => ({
+      ...prevData,
+      media: (prevData.media || []).filter(url => url !== urlToRemove)
+    }));
+  };
+
   return (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="max-w-lg max-h-[90vh]">
@@ -96,6 +111,9 @@ export function SymptomDetailModal({ symptom, onClose, onUpdate, onDelete }: Sym
             setPrevalence={(value) => {setEditData({...editData, prevalence: value})}}
             treatment={editData.treatment}
             handleTreatmentChange={(value) => {setEditData({...editData, treatment: {...editData.treatment, [selectedLanguage]: value}})}}
+            media={editData.media || []}
+            onMediaAdd={onMediaAdd}
+            onMediaRemove={onMediaRemove}
           />
         ) : (
           <>
@@ -129,6 +147,24 @@ export function SymptomDetailModal({ symptom, onClose, onUpdate, onDelete }: Sym
               <label className="block text-sm font-medium text-gray-700 mb-1">{t("treatment")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})</label>
               <div className="p-2 bg-gray-50 rounded min-h-[100px]">{symptom.treatment[selectedLanguage]}</div>
             </div>
+
+            <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">{t("mediaLabel")}</label>
+                <div className="grid grid-cols-3 gap-2 p-2 bg-gray-50 rounded">
+                  {symptom.media.map((url, index) => {
+                    const isVideo = /\.(mp4|webm|ogg)$/i.test(url);
+                    return (
+                      <div key={index} className="aspect-square bg-gray-200 rounded overflow-hidden">
+                        {isVideo ? (
+                          <video src={url} controls className="w-full h-full object-cover" />
+                        ) : (
+                          <img src={url} alt={`Symptom media ${index + 1}`} className="w-full h-full object-cover" />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
           </>
         )}
       </DialogContent>
