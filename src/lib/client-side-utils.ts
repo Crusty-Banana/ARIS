@@ -56,7 +56,7 @@ export const localizeSymptom = (symptom: Symptom, language: Language) => {
   return LocalizedSymptom.parse({
     ...symptom,
     name: symptom.name[language],
-    treatment: symptom.treatment[language],
+    description: symptom.description[language],
   })
 }
 

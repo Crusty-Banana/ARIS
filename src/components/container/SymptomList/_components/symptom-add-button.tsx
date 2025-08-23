@@ -21,22 +21,25 @@ export function AddSymptomButton({ onAddSymptom }: AddSymptomButtonProps) {
   const [name, setName] = useState({"en": "", "vi": ""})
   const [severity, setSeverity] = useState(1)
   const [prevalence, setPrevalence] = useState(1)
-  const [treatment, setTreatment] = useState({"en": "", "vi": ""})
+  const [description, setDescription] = useState({"en": "", "vi": ""})
+
+  const [media,] = useState<string[]>([])
   const [selectedLanguage, setSelectedLanguage] = useState<Language>("en")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (name && treatment) {
+    if (name && description) {
       onAddSymptom({
         name,
         severity: severity,
         prevalence: prevalence,
-        treatment,
+        description,
+        media
       })
       setName({"en": "", "vi": ""})
       setSeverity(1)
       setPrevalence(1)
-      setTreatment({"en": "", "vi": ""})
+      setDescription({"en": "", "vi": ""})
       setOpen(false)
     }
   }
@@ -47,12 +50,13 @@ export function AddSymptomButton({ onAddSymptom }: AddSymptomButtonProps) {
     }))
   }
 
-  const handleTreatmentChange = (value: string) => {
-    setTreatment((prev) => ({
+  const handleDescriptionChange = (value: string) => {
+    setDescription((prev) => ({
       ...prev,
       [selectedLanguage]: value,
     }))
   }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -76,8 +80,9 @@ export function AddSymptomButton({ onAddSymptom }: AddSymptomButtonProps) {
             setSeverity={setSeverity}
             prevalence={prevalence}
             setPrevalence={setPrevalence}
-            treatment={treatment}
-            handleTreatmentChange={handleTreatmentChange}
+            description={description}
+
+            handleDescriptionChange={handleDescriptionChange}
           />
           <Button
             type="submit"

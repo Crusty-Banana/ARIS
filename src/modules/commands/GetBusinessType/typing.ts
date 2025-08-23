@@ -12,9 +12,9 @@ export const LocalizedAllergy = Allergy.omit({ name: true }).extend({
 });
 export type LocalizedAllergy = z.infer<typeof LocalizedAllergy>;
 
-export const LocalizedSymptom = Symptom.omit({ name: true, treatment: true }).extend({
+export const LocalizedSymptom = Symptom.omit({ name: true, description: true }).extend({
   name: z.string(),
-  treatment: z.string(),
+  description: z.string(),
 });
 export type LocalizedSymptom = z.infer<typeof LocalizedSymptom>;
 

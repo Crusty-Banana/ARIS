@@ -100,7 +100,7 @@ export type PAP = z.infer<typeof PAP>;
 export const Symptom = z.object({
     id: ObjectIdAsHexString,
     name: DisplayString,
-    treatment: DisplayString,
+    description: DisplayString,
     severity: z.number().min(1).max(3),
     prevalence: z.number().min(1).max(5).default(1),
     media: z.array(z.string().url()).default([]),

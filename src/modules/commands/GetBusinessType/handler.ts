@@ -116,7 +116,7 @@ export async function handler$GetSymptoms(db: Db, params: GetBusinessType$Params
       ...doc,
       id: doc._id.toHexString(),
       name: doc.name[lang],
-      treatment: doc.treatment[lang],
+      description: doc.description[lang],
     });
   });
   return { result: parsedDocs };
