@@ -340,8 +340,10 @@
             "areYouSureSymptomDelete": "Bạn có chắc chắn muốn xóa triệu chứng này không?",
             "treatmentPlaceholder": "Nhập thông tin điều trị",
             "severityLabel": "Độ nghiêm trọng (1-3)",
-            "prevalenceLabel": "Độ phổ biến (1-5)"
-        }
+            "prevalenceLabel": "Độ phổ biến (1-5)",
+            "descriptionPlaceholder": "Không tìm thấy mô tả..."
+        },
+        "description":"Mô tả"
     },
     "profile": {
         "title": "Hồ sơ người dùng",
