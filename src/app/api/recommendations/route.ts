@@ -40,8 +40,16 @@ export async function GET(
     if (!authCheck.success) return authCheck.result;
 
     // Validate Input
-    const searchParams = Object.fromEntries(req.nextUrl.searchParams);
-    const parsedBody = GetBusinessType$Params.safeParse(searchParams);
+    const urlSearch = req.nextUrl.searchParams;
+
+    // Support multiple ids: ?ids=...&ids=...
+    const params: Record<string, unknown> = Object.fromEntries(urlSearch);
+
+    const id = urlSearch.getAll("id");
+    if (id.length > 0) {
+      params.id = id; // override with array of ids
+    }
+    const parsedBody = GetBusinessType$Params.safeParse(params);
     if (!parsedBody.success) {
       return NextResponse.json({ message: parsedBody.error.message || "Invalid params" }, { status: 400 });
     }
