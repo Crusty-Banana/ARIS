@@ -1,5 +1,6 @@
 import { ObjectCannedACL, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { SERVER_ENV } from "@/modules/env/server";
+import { AddFileToS3$Params } from "../commands/AddFileToS3/typing";
 
 export const s3Client = new S3Client({
   region: SERVER_ENV.AWS_REGION,
@@ -9,7 +10,10 @@ export const s3Client = new S3Client({
   },
 });
 
-export async function uploadFileToS3(file: Buffer, fileName: string, contentType: string) {
+export async function uploadFileToS3(
+  { file, fileName, contentType }:
+    AddFileToS3$Params
+) {
   const params = {
     Bucket: process.env.AWS_S3_BUCKET_NAME,
     Key: `${Date.now()}-${fileName}`,
