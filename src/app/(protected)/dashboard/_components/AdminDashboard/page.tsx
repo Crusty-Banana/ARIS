@@ -190,7 +190,7 @@ export default function AdminDashboard() {
           <TabsContent value="allergens" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-semibold text-cyan-800">{t('allergen management')}</h2>
-              <AddAllergenButton symptoms={symptoms} onAddAllergen={addAllergen} />
+              <AddAllergenButton symptoms={symptoms} onAddAllergen={addAllergen} allergens={allergens} />
             </div>
             <AllergenList
               allergens={allergens}

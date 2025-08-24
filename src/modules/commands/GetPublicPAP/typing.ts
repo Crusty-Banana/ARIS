@@ -16,7 +16,6 @@ export const PublicPAPAllergen = DisplayPAP.shape.allergens.element.omit({
     symptoms: true,
     discoveryDate: true,
     discoveryMethod: true,
-    prevalence: true,
 }).extend({
     symptoms: z.array(PublicPAPSymptom)
 })

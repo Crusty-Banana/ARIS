@@ -60,8 +60,19 @@ export const Allergen = z.object({
     type: AllergenType,
     name: DisplayString,
     description: DisplayString,
+    isWholeAllergen: z.boolean().default(true),
+    treatment: z.object({
+        lvl1: DisplayString,
+        lvl2: DisplayString,
+        lvl3: DisplayString
+    }).default({
+        lvl1: {"en": "", "vi": ""},
+        lvl2: {"en": "", "vi": ""},
+        lvl3: {"en": "", "vi": ""}
+    }),
     symptomsId: z.array(ObjectIdAsHexString),
-    prevalence: z.number().min(1).max(5).default(1),
+    crossSensitivityId: z.array(ObjectIdAsHexString).default([]),
+    media: z.array(z.string().url()).default([]),
 });
 export type Allergen = z.infer<typeof Allergen>;
 

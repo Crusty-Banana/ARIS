@@ -101,7 +101,15 @@
         "enterDescription": "Enter description",
         "food": "Food",
         "drug": "Drug",
-        "respiratory": "Respiratory"
+        "respiratory": "Respiratory",
+        "crossSensitivity": "Cross sensitivities",
+        "lvl1Treatment": "Level 1 Treatment",
+        "lvl2Treatment": "Level 2 Treatment",
+        "lvl3Treatment": "Level 3 Treatment",
+        "enterTreatment": "Enter treatment...",
+        "allergenType": "Allergen type",
+        "wholeAllergen": "Whole allergen",
+        "componentAllergen": "Component allergen"
     },
     "allergyModal": {
         "addAllergy": "Add Allergy",
@@ -135,8 +143,14 @@
         "food": "Food",
         "drug": "Drug",
         "respiratory": "Respiratory",
-        "quickAddSuccess": "{allergenName} has been added to your allergens!"
-        
+        "quickAddSuccess": "{allergenName} has been added to your allergens!",
+        "crossSensitivity": "Cross Sensitivity",
+        "lvl1Treatment": "Level 1 Treatment",
+        "lvl2Treatment": "Level 2 Treatment",
+        "lvl3Treatment": "Level 3 Treatment",
+        "isWholeAllergen": "Classification",
+        "wholeAllergen": "Whole allergen",
+        "componentAllergen": ""
     },
     "personalAllergyProfile": {
         "personalInformation": "Personal Information",

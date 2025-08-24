@@ -101,7 +101,15 @@
         "enterDescription": "Nhập mô tả",
         "food": "Thực phẩm",
         "drug": "Thuốc",
-        "respiratory": "Hô hấp"
+        "respiratory": "Hô hấp",
+        "crossSensitivity": "Mẫn cảm chéo",
+        "lvl1Treatment": "Điều trị mức 1",
+        "lvl2Treatment": "Điều trị mức 2",
+        "lvl3Treatment": "Điều trị mức 3",
+        "enterTreatment": "Thêm phương pháp điều trị...",
+        "allergenType": "Phân loại",
+        "wholeAllergen": "Dị nguyên toàn phần",
+        "componentAllergen": "Dị nguyên thành phần"
     },
     "allergyModal": {
         "addAllergy": "Thêm Dị ứng",
@@ -135,7 +143,14 @@
         "food": "Thực phẩm",
         "drug": "Thuốc",
         "respiratory": "Hô hấp",
-        "quickAddSuccess": "{allergenName} đã được thêm vào danh sách dị nguyên của bạn!"
+        "quickAddSuccess": "{allergenName} đã được thêm vào danh sách dị nguyên của bạn!",
+        "crossSensitivity": "Mẫn cảm chéo",
+        "lvl1Treatment": "Điều trị mức 1",
+        "lvl2Treatment": "Điều trị mức 2",
+        "lvl3Treatment": "Điều trị mức 3",
+        "isWholeAllergen": "Phân loại",
+        "wholeAllergen": "Dị nguyên toàn phần",
+        "componentAllergen": "Dị nguyên thành phần"
     },
     "personalAllergyProfile": {
         "personalInformation": "Thông tin cá nhân",

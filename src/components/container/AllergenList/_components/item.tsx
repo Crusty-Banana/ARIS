@@ -28,11 +28,6 @@ export function AllergenItem({allergen, symptoms, onClick, handleQuickAdd, userA
             <Badge className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}>
               {t(allergen.type)}
             </Badge>
-            <Badge
-              className={`${allergen.prevalence <= 2 ? "bg-green-500" : allergen.prevalence <= 3 ? "bg-yellow-500" : "bg-red-500"} text-white text-xs`}
-            >
-              {t('prevalence')}: {allergen.prevalence}
-            </Badge>
           </div>
           <div className="flex flex-wrap gap-1 mt-2">
             {allergen.symptomsId.slice(0, 3).map((symptomId) => {
