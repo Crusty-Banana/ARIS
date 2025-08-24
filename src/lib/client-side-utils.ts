@@ -1,5 +1,5 @@
-import { Allergen, Allergy, Language, Symptom } from "@/modules/business-types"
-import { LocalizedAllergen, LocalizedAllergy, LocalizedSymptom } from "@/modules/commands/GetBusinessType/typing"
+import { Allergen, Language, Symptom } from "@/modules/business-types"
+import { LocalizedAllergen, LocalizedSymptom } from "@/modules/commands/GetBusinessType/typing"
 
 export const getTypeColor = (type: string) => {
   switch (type) {
@@ -62,12 +62,5 @@ export const localizeSymptom = (symptom: Symptom, language: Language) => {
     ...symptom,
     name: symptom.name[language],
     description: symptom.description[language],
-  })
-}
-
-export const localizeAllergy = (allergy: Allergy, language: Language) => {
-  return LocalizedAllergy.parse({
-    ...allergy,
-    name: allergy.name[language],
   })
 }

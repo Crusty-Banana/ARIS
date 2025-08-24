@@ -39,7 +39,6 @@ export type FetcherResult = z.infer<typeof FetcherResult>;
 export const BusisnessTypeCollection = {
     users: "users",
     allergens: "allergens_en",
-    allergies: "allergies_en",
     paps: "paps",
     symptoms: "symptoms_en",
     recommendations: "recommendations",
@@ -75,14 +74,6 @@ export const Allergen = z.object({
     media: z.array(z.string().url()).default([]),
 });
 export type Allergen = z.infer<typeof Allergen>;
-
-export const Allergy = z.object({
-    id: ObjectIdAsHexString,
-    name: DisplayString,
-    allergensId: z.array(ObjectIdAsHexString).default([]),
-});
-
-export type Allergy = z.infer<typeof Allergy>;
 
 export const PAP = z.object({
     id: ObjectIdAsHexString,

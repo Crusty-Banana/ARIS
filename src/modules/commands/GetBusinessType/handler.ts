@@ -1,11 +1,17 @@
 import { Db, ObjectId } from "mongodb";
-import { GetBusinessType$Params, LocalizedAllergen, LocalizedAllergy, LocalizedSymptom } from "./typing";
-import { Allergen, Allergy, BusisnessTypeCollection, PAP, Recommendation, Symptom, User } from "@/modules/business-types";
+import { GetBusinessType$Params, 
+  GetAllergens$Params,
+  GetRecommendations$Params,
+  GetUsers$Params,
+  GetPAP$Params,
+  GetSymptoms$Params,
+  LocalizedAllergen, LocalizedSymptom } from "./typing";
+import { Allergen, BusisnessTypeCollection, PAP, Recommendation, Symptom, User } from "@/modules/business-types";
 
 async function handler$GetBusinessType(db: Db, params: GetBusinessType$Params, collectionName: string) {
   const { id, limit, offset, lang, ...filters } = params;
 
-  const match: Record<string, any> = {};
+  const match: Record<string, unknown> = {};
 
   if (id) {
     if (Array.isArray(id)) {
@@ -38,7 +44,7 @@ async function handler$GetBusinessType(db: Db, params: GetBusinessType$Params, c
   return { docs, lang };
 }
 
-export async function handler$GetUsers(db: Db, params: GetBusinessType$Params) {
+export async function handler$GetUsers(db: Db, params: GetUsers$Params) {
   const { docs } = await handler$GetBusinessType(db, params, BusisnessTypeCollection.users);
 
   const parsedDocs = docs.map((doc) => {
@@ -51,7 +57,7 @@ export async function handler$GetUsers(db: Db, params: GetBusinessType$Params) {
   return { result: parsedDocs };
 }
 
-export async function handler$GetAllergens(db: Db, params: GetBusinessType$Params) {
+export async function handler$GetAllergens(db: Db, params: GetAllergens$Params) {
   const { docs, lang } = await handler$GetBusinessType(db, params, BusisnessTypeCollection.allergens);
 
   if (lang !== "vi" && lang !== "en") {
@@ -76,31 +82,8 @@ export async function handler$GetAllergens(db: Db, params: GetBusinessType$Param
   return { result: parsedDocs };
 }
 
-export async function handler$GetAllergies(db: Db, params: GetBusinessType$Params) {
-  const { docs, lang } = await handler$GetBusinessType(db, params, BusisnessTypeCollection.allergies);
 
-  if (lang !== "vi" && lang !== "en") {
-    const parsedDocs = docs.map((doc) => {
-      return Allergy.parse({
-        ...doc,
-        id: doc._id.toHexString(),
-      });
-    });
-
-    return { result: parsedDocs };
-  }
-
-  const parsedDocs = docs.map((doc) => {
-    return LocalizedAllergy.parse({
-      ...doc,
-      id: doc._id.toHexString(),
-      name: doc.name[lang],
-    });
-  });
-  return { result: parsedDocs };
-}
-
-export async function handler$GetPAPs(db: Db, params: GetBusinessType$Params) {
+export async function handler$GetPAPs(db: Db, params: GetPAP$Params) {
   const { docs } = await handler$GetBusinessType(db, params, BusisnessTypeCollection.paps);
 
   const parsedDocs = docs.map((doc) => {
@@ -113,7 +96,7 @@ export async function handler$GetPAPs(db: Db, params: GetBusinessType$Params) {
   return { result: parsedDocs };
 }
 
-export async function handler$GetSymptoms(db: Db, params: GetBusinessType$Params) {
+export async function handler$GetSymptoms(db: Db, params: GetSymptoms$Params) {
   const { docs, lang } = await handler$GetBusinessType(db, params, BusisnessTypeCollection.symptoms);
 
   if (lang !== "vi" && lang !== "en") {
@@ -138,7 +121,7 @@ export async function handler$GetSymptoms(db: Db, params: GetBusinessType$Params
   return { result: parsedDocs };
 }
 
-export async function handler$GetRecommendations(db: Db, params: GetBusinessType$Params) {
+export async function handler$GetRecommendations(db: Db, params: GetRecommendations$Params) {
   const { docs } = await handler$GetBusinessType(db, params, BusisnessTypeCollection.recommendations);
 
   const parsedDocs = docs.map((doc) => {

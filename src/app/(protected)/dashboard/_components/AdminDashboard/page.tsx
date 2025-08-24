@@ -3,19 +3,17 @@
 import { useEffect, useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useTranslations } from "next-intl"
-import { httpGet$GetAllergens, httpGet$GetAllergies, httpGet$GetSymptoms } from "@/modules/commands/GetBusinessType/fetcher"
-import { AddAllergen$Params, AddAllergy$Params, AddSymptom$Params } from "@/modules/commands/AddBusinessType/typing"
-import { httpPost$AddAllergen, httpPost$AddAllergy, httpPost$AddSymptom } from "@/modules/commands/AddBusinessType/fetcher"
-import { UpdateAllergen$Params, UpdateAllergy$Params, UpdateSymptom$Params } from "@/modules/commands/UpdateBusinessType/typing"
-import { httpPut$UpdateAllergen, httpPut$UpdateAllergy, httpPut$UpdateSymptom } from "@/modules/commands/UpdateBusinessType/fetcher"
-import { httpDelete$DeleteAllergen, httpDelete$DeleteAllergy, httpDelete$DeleteSymptom } from "@/modules/commands/DeleteBusinessType/fetcher"
+import { httpGet$GetAllergens, httpGet$GetSymptoms } from "@/modules/commands/GetBusinessType/fetcher"
+import { AddAllergen$Params, AddSymptom$Params } from "@/modules/commands/AddBusinessType/typing"
+import { httpPost$AddAllergen, httpPost$AddSymptom } from "@/modules/commands/AddBusinessType/fetcher"
+import { UpdateAllergen$Params, UpdateSymptom$Params } from "@/modules/commands/UpdateBusinessType/typing"
+import { httpPut$UpdateAllergen, httpPut$UpdateSymptom } from "@/modules/commands/UpdateBusinessType/fetcher"
+import { httpDelete$DeleteAllergen, httpDelete$DeleteSymptom } from "@/modules/commands/DeleteBusinessType/fetcher"
 import { AddSymptomButton } from "@/components/container/SymptomList/_components/symptom-add-button"
 import { SymptomList } from "@/components/container/SymptomList/page"
-import { Allergen, Allergy, Symptom } from "@/modules/business-types"
+import { Allergen, Symptom } from "@/modules/business-types"
 import { AddAllergenButton } from "@/components/container/AllergenList/_components/allergen-add-button"
 import { AllergenList } from "@/components/container/AllergenList/page"
-import { AddAllergyButton } from "@/components/container/AllergyList/_components/allergy-add-button"
-import { AllergyList } from "@/components/container/AllergyList/page"
 import { toast } from "sonner"
 
 export default function AdminDashboard() {
@@ -23,8 +21,6 @@ export default function AdminDashboard() {
   const [symptoms, setSymptoms] = useState<Symptom[]>([])
 
   const [allergens, setAllergens] = useState<Allergen[]>([])
-
-  const [allergies, setAllergies] = useState<Allergy[]>([])
 
   const fetchSymptoms = async () => {
     const data = await httpGet$GetSymptoms('/api/symptoms', {});
@@ -39,15 +35,6 @@ export default function AdminDashboard() {
     const data = await httpGet$GetAllergens('/api/allergens', {});
     if (data.success) {
       setAllergens(data.result as Allergen[]);
-    } else {
-      toast.error(data.message);
-    }
-  }
-
-  const fetchAllergies = async () => {
-    const data = await httpGet$GetAllergies('/api/allergies', {});
-    if (data.success) {
-      setAllergies(data.result as Allergy[]);
     } else {
       toast.error(data.message);
     }
@@ -109,38 +96,9 @@ export default function AdminDashboard() {
     }
   }
 
-  const addAllergy = async (allergy: AddAllergy$Params) => {
-    const data = await httpPost$AddAllergy('/api/allergies', allergy);
-    if (data.success) {
-      await fetchAllergies();
-    } else {
-      toast.error(data.message);
-    }
-  }
-
-  const updateAllergy = async (allergyData: UpdateAllergy$Params) => {
-    const { id, ...rest } = allergyData;
-    const data = await httpPut$UpdateAllergy(`/api/allergies/${id}`, rest);
-    if (data.success) {
-      await fetchAllergies();
-    } else {
-      toast.error(data.message);
-    }
-  }
-
-  const deleteAllergy = async (id: string) => {
-    const data = await httpDelete$DeleteAllergy(`/api/allergies/${id}`);
-    if (data.success) {
-      await fetchAllergies();
-    } else {
-      toast.error(data.message);
-    }
-  }
-
   useEffect(() => {
     fetchSymptoms();
     fetchAllergens();
-    fetchAllergies();
   }, [])
 
   return (
@@ -166,12 +124,6 @@ export default function AdminDashboard() {
               className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-600 data-[state=active]:text-white"
             >
               {t('allergens')}
-            </TabsTrigger>
-            <TabsTrigger
-              value="allergies"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-600 data-[state=active]:text-white"
-            >
-              {t('allergies')}
             </TabsTrigger>
           </TabsList>
 
@@ -200,18 +152,6 @@ export default function AdminDashboard() {
             />
           </TabsContent>
 
-          <TabsContent value="allergies" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold text-cyan-800">{t('allergy management')}</h2>
-              <AddAllergyButton allergens={allergens} onAddAllergy={addAllergy} />
-            </div>
-            <AllergyList
-              allergies={allergies}
-              allergens={allergens}
-              onEdit={updateAllergy}
-              onDelete={deleteAllergy}
-            />
-          </TabsContent>
         </Tabs>
       </div>
     </div>
