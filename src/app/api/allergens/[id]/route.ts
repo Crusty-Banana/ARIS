@@ -23,7 +23,7 @@ export async function GET(
     // Validate Input
     const { id } = await params;
     const searchParams = Object.fromEntries(req.nextUrl.searchParams);
-    const parsedBody = GetBusinessType$Params.safeParse({ ...searchParams, id });
+    const parsedBody = GetBusinessType$Params.safeParse({ ...searchParams, id:[id] });
     if (!parsedBody.success) {
       return NextResponse.json({ message: parsedBody.error.message || "Invalid params" }, { status: 400 });
     }

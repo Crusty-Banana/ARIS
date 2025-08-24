@@ -24,11 +24,13 @@ export const LocalizedSymptom = Symptom.omit({ name: true, description: true }).
 export type LocalizedSymptom = z.infer<typeof LocalizedSymptom>;
 
 export const GetBusinessType$Params = z.object({
-  id: ObjectIdAsHexString.optional(),
+  id: z.array(ObjectIdAsHexString).optional(),
   limit: z.coerce.number().optional(),
   offset: z.coerce.number().optional(),
   lang: z.coerce.string().optional(),
-});
+})
+.catchall(z.any());
+
 export type GetBusinessType$Params = z.infer<typeof GetBusinessType$Params>;
 
 export const GetUsers$Result = FetcherResult.extend({

@@ -150,7 +150,7 @@
         "lvl3Treatment": "Level 3 Treatment",
         "isWholeAllergen": "Classification",
         "wholeAllergen": "Whole allergen",
-        "componentAllergen": ""
+        "componentAllergen": "Component allergen"
     },
     "personalAllergyProfile": {
         "personalInformation": "Personal Information",

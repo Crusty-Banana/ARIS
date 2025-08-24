@@ -3,11 +3,27 @@ import { GetBusinessType$Params, LocalizedAllergen, LocalizedAllergy, LocalizedS
 import { Allergen, Allergy, BusisnessTypeCollection, PAP, Recommendation, Symptom, User } from "@/modules/business-types";
 
 async function handler$GetBusinessType(db: Db, params: GetBusinessType$Params, collectionName: string) {
-  const { id, limit, offset, lang } = params;
+  const { id, limit, offset, lang, ...filters } = params;
 
-  const filterTerm = id ? [{
-    $match: id ? { _id: ObjectId.createFromHexString(id) } : {},
-  }] : [];
+  const match: Record<string, any> = {};
+
+  if (id) {
+    if (Array.isArray(id)) {
+      match._id = { $in: id.map((hex) => ObjectId.createFromHexString(hex)) };
+    } else {
+      match._id = ObjectId.createFromHexString(id);
+    }
+  }
+
+  for (const [key, value] of Object.entries(filters)) {
+    if (key.endsWith("Id")) {
+      match[key] = { $in: value.map((hex: string) => ObjectId.createFromHexString(hex)) };
+    } else {
+      match[key] = value;
+    }
+  }
+
+  const filterTerm = Object.keys(match).length > 0 ? [{ $match: match }] : [];
 
   const pagingTerm = [
     ...(offset ? [{ $skip: offset }] : []),
