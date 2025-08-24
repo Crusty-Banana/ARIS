@@ -95,7 +95,6 @@ export function AllergenList({ allergens, symptoms, onQuickAdd, userAllergenIds,
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="name">{t('sortByName')}</SelectItem>
-                <SelectItem value="prevalence">{t('sortByPrevalence')}</SelectItem>
               </SelectContent>
             </Select>
             <Button variant="outline" size="sm" onClick={toggleSortDirection} className="px-3 bg-transparent">
