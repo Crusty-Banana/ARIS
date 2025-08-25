@@ -20,7 +20,7 @@ interface AllergenListProps {
   onDelete?: (id: string) => void
 }
 
-type AllergenSortOption = "name" | "severity" | "prevalence"
+type AllergenSortOption = "name" | "severity"
 type SortDirection = "asc" | "desc"
 
 export function AllergenList({ allergens, symptoms, onQuickAdd, userAllergenIds, onEdit, onDelete }: AllergenListProps) {
@@ -47,9 +47,6 @@ export function AllergenList({ allergens, symptoms, onQuickAdd, userAllergenIds,
       switch (sortBy) {
         case "name":
           comparison = a.name[localLanguage].localeCompare(b.name[localLanguage])
-          break
-        case "prevalence":
-          comparison = a.prevalence - b.prevalence
           break
       }
       return sortDirection === "asc" ? comparison : -comparison
@@ -98,7 +95,6 @@ export function AllergenList({ allergens, symptoms, onQuickAdd, userAllergenIds,
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="name">{t('sortByName')}</SelectItem>
-                <SelectItem value="prevalence">{t('sortByPrevalence')}</SelectItem>
               </SelectContent>
             </Select>
             <Button variant="outline" size="sm" onClick={toggleSortDirection} className="px-3 bg-transparent">
@@ -130,6 +126,7 @@ export function AllergenList({ allergens, symptoms, onQuickAdd, userAllergenIds,
         onClose={() => setSelectedAllergen(null)}
         onUpdate={onEdit} 
         onDelete={onDelete? handleDelete: undefined}
+        allergens ={allergens}
       />}
     </>
   )

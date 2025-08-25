@@ -1,30 +1,57 @@
-import { Allergen, Allergy, FetcherResult, ObjectIdAsHexString, PAP, Recommendation, Symptom, User } from "@/modules/business-types";
+import { Allergen, FetcherResult, ObjectIdAsHexString, PAP, Recommendation, Symptom, User } from "@/modules/business-types";
 import { z } from "zod";
 
 export const LocalizedAllergen = Allergen.omit({ name: true, description: true }).extend({
   name: z.string(),
   description: z.string(),
+  treatment: z.object({
+    lvl1: z.string(),
+    lvl2: z.string(),
+    lvl3: z.string(),
+  })
 });
 export type LocalizedAllergen = z.infer<typeof LocalizedAllergen>;
 
-export const LocalizedAllergy = Allergy.omit({ name: true }).extend({
+export const LocalizedSymptom = Symptom.omit({ name: true, description: true }).extend({
   name: z.string(),
-});
-export type LocalizedAllergy = z.infer<typeof LocalizedAllergy>;
-
-export const LocalizedSymptom = Symptom.omit({ name: true, treatment: true }).extend({
-  name: z.string(),
-  treatment: z.string(),
+  description: z.string(),
 });
 export type LocalizedSymptom = z.infer<typeof LocalizedSymptom>;
 
-export const GetBusinessType$Params = z.object({
-  id: ObjectIdAsHexString.optional(),
+export const GetBusinessTypePrimitive$Params = z.object({
+  id: z.array(ObjectIdAsHexString).optional(),
   limit: z.coerce.number().optional(),
   offset: z.coerce.number().optional(),
   lang: z.coerce.string().optional(),
-});
+})
+export type GetBusinessTypePrimitive$Params = z.infer<typeof GetBusinessTypePrimitive$Params>;
+
+export const GetBusinessType$Params = GetBusinessTypePrimitive$Params.catchall(z.any());
+
 export type GetBusinessType$Params = z.infer<typeof GetBusinessType$Params>;
+
+export const GetUsers$Params = GetBusinessTypePrimitive$Params.extend({})
+
+export type GetUsers$Params = z.infer<typeof GetUsers$Params>;
+
+export const GetAllergens$Params = GetBusinessTypePrimitive$Params.extend({
+  isWholeAllergen: z.boolean().optional()
+})
+
+export type GetAllergens$Params = z.infer<typeof GetAllergens$Params>;
+
+export const GetRecommendations$Params = GetBusinessTypePrimitive$Params.extend({})
+
+export type GetRecommendations$Params = z.infer<typeof GetRecommendations$Params>;
+
+export const GetPAP$Params = GetBusinessTypePrimitive$Params.extend({})
+
+export type GetPAP$Params = z.infer<typeof GetPAP$Params>;
+
+export const GetSymptoms$Params = GetBusinessTypePrimitive$Params.extend({})
+
+export type GetSymptoms$Params = z.infer<typeof GetSymptoms$Params>;
+
 
 export const GetUsers$Result = FetcherResult.extend({
   result: z.array(User).optional()
@@ -35,11 +62,6 @@ export const GetAllergens$Result = FetcherResult.extend({
   result: z.array(Allergen).optional()
 });
 export type GetAllergens$Result = z.infer<typeof GetAllergens$Result>;
-
-export const GetAllergies$Result = FetcherResult.extend({
-  result: z.array(Allergy).optional()
-});
-export type GetAllergies$Result = z.infer<typeof GetAllergies$Result>;
 
 export const GetPAPs$Result = FetcherResult.extend({
   result: z.array(PAP).optional()
@@ -62,11 +84,6 @@ export const GetAllergensLocalized$Result = FetcherResult.extend({
   result: z.array(LocalizedAllergen).optional()
 });
 export type GetAllergensLocalized$Result = z.infer<typeof GetAllergensLocalized$Result>;
-
-export const GetAllergiesLocalized$Result = FetcherResult.extend({
-  result: z.array(LocalizedAllergy).optional()
-});
-export type GetAllergiesLocalized$Result = z.infer<typeof GetAllergiesLocalized$Result>;
 
 export const GetSymptomsLocalized$Result = FetcherResult.extend({
   result: z.array(LocalizedSymptom).optional()

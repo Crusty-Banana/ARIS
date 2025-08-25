@@ -16,10 +16,6 @@ export async function handler$DeleteAllergen(db: Db, params: DeleteBusinessType$
   return handler$DeleteBusinessType(db, params, BusisnessTypeCollection.allergens);
 }
 
-export async function handler$DeleteAllergy(db: Db, params: DeleteBusinessType$Params) {
-  return handler$DeleteBusinessType(db, params, BusisnessTypeCollection.allergies);
-}
-
 export async function handler$DeletePAP(db: Db, params: DeleteBusinessType$Params) {
   return handler$DeleteBusinessType(db, params, BusisnessTypeCollection.paps);
 }

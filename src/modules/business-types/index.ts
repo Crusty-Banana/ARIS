@@ -39,7 +39,6 @@ export type FetcherResult = z.infer<typeof FetcherResult>;
 export const BusisnessTypeCollection = {
     users: "users",
     allergens: "allergens_en",
-    allergies: "allergies_en",
     paps: "paps",
     symptoms: "symptoms_en",
     recommendations: "recommendations",
@@ -60,18 +59,21 @@ export const Allergen = z.object({
     type: AllergenType,
     name: DisplayString,
     description: DisplayString,
+    isWholeAllergen: z.boolean().default(true),
+    treatment: z.object({
+        lvl1: DisplayString,
+        lvl2: DisplayString,
+        lvl3: DisplayString
+    }).default({
+        lvl1: {"en": "", "vi": ""},
+        lvl2: {"en": "", "vi": ""},
+        lvl3: {"en": "", "vi": ""}
+    }),
     symptomsId: z.array(ObjectIdAsHexString),
-    prevalence: z.number().min(1).max(5).default(1),
+    crossSensitivityId: z.array(ObjectIdAsHexString).default([]),
+    media: z.array(z.string().url()).default([]),
 });
 export type Allergen = z.infer<typeof Allergen>;
-
-export const Allergy = z.object({
-    id: ObjectIdAsHexString,
-    name: DisplayString,
-    allergensId: z.array(ObjectIdAsHexString).default([]),
-});
-
-export type Allergy = z.infer<typeof Allergy>;
 
 export const PAP = z.object({
     id: ObjectIdAsHexString,
@@ -100,9 +102,10 @@ export type PAP = z.infer<typeof PAP>;
 export const Symptom = z.object({
     id: ObjectIdAsHexString,
     name: DisplayString,
-    treatment: DisplayString,
+    description: DisplayString,
     severity: z.number().min(1).max(3),
     prevalence: z.number().min(1).max(5).default(1),
+    media: z.array(z.string().url()).default([]),
 });
 export type Symptom = z.infer<typeof Symptom>;
 

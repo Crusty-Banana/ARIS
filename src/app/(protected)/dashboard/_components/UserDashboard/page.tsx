@@ -3,17 +3,16 @@
 import { useCallback, useEffect, useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { DisplayPAP } from "@/modules/commands/GetPAPWithUserId/typing"
-import { Allergen, Allergy, DiscoveryMethod, Language, Symptom } from "@/modules/business-types"
+import { Allergen, DiscoveryMethod, Language, Symptom } from "@/modules/business-types"
 import { PersonalAllergyProfile } from "./_components/PersonalAllergyProfile/page"
 import { httpGet$GetCrossAllergenFromUserID } from "@/modules/commands/GetCrossAllergenFromUserID/fetcher"
 import { useLocale, useTranslations } from "next-intl"
-import { httpGet$GetAllergens, httpGet$GetAllergies, httpGet$GetSymptoms } from "@/modules/commands/GetBusinessType/fetcher"
+import { httpGet$GetAllergens, httpGet$GetSymptoms } from "@/modules/commands/GetBusinessType/fetcher"
 import { toast } from "sonner"
 import { httpGet$GetPAPWithUserId } from "@/modules/commands/GetPAPWithUserId/fetcher"
 import { PAPAllergen, UpdatePAPWithUserIdFetcher$Params } from "@/modules/commands/UpdatePAPWithUserId/typing"
 import { httpPut$UpdatePAPWithUserId } from "@/modules/commands/UpdatePAPWithUserId/fetcher"
 import { SymptomList } from "@/components/container/SymptomList/page"
-import { AllergyList } from "@/components/container/AllergyList/page"
 import { AllergenList } from "@/components/container/AllergenList/page"
 
 export default function UserDashboard() {
@@ -32,7 +31,6 @@ export default function UserDashboard() {
   })
   const [symptoms, setSymptoms] = useState<Symptom[]>([])
   const [allergens, setAllergens] = useState<Allergen[]>([])
-  const [allergies, setAllergies] = useState<Allergy[]>([])
   const [potentialCrossAllergens, setPotentialCrossAllergens] = useState<Allergen[]>([])
 
   const availableAllergens = allergens.filter((allergen) => !pAP.allergens.some((pAPAllergen) => pAPAllergen.allergenId === allergen.id))
@@ -59,15 +57,6 @@ export default function UserDashboard() {
     const data = await httpGet$GetAllergens('/api/allergens', {});
     if (data.success) {
       setAllergens(data.result as Allergen[]);
-    } else {
-      toast.error(data.message);
-    }
-  }
-
-  const fetchAllergies = async () => {
-    const data = await httpGet$GetAllergies('/api/allergies', {});
-    if (data.success) {
-      setAllergies(data.result as Allergy[]);
     } else {
       toast.error(data.message);
     }
@@ -113,7 +102,6 @@ export default function UserDashboard() {
   useEffect(() => {
     fetchPAP();
     fetchSymptoms();
-    fetchAllergies();
     fetchAllergens();
   }, [fetchPAP])
 
@@ -154,9 +142,8 @@ export default function UserDashboard() {
               <p className="text-gray-600">{t('wikiDescription')}</p>
             </div>
 
-            <Tabs defaultValue="wiki-allergies" className="space-y-4">
+            <Tabs defaultValue="wiki-allergens" className="space-y-4">
               <TabsList className="bg-white/30">
-                <TabsTrigger value="wiki-allergies">{t('allergies')}</TabsTrigger>
                 <TabsTrigger value="wiki-allergens">{t('allergens')}</TabsTrigger>
                 <TabsTrigger value="wiki-symptoms">{t('symptoms')}</TabsTrigger>
               </TabsList>
@@ -172,10 +159,6 @@ export default function UserDashboard() {
                   onQuickAdd={handleQuickAddFromWiki}
                   userAllergenIds={pAP.allergens.map((allergen) => allergen.allergenId)}
                 />
-              </TabsContent>
-
-              <TabsContent value="wiki-allergies">
-                <AllergyList allergies={allergies} allergens={allergens} />
               </TabsContent>
             </Tabs>
           </TabsContent>

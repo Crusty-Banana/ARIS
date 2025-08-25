@@ -21,10 +21,6 @@ export async function httpDelete$DeleteAllergen(url: string) {
   return httpDelete$DeleteBusinessType(url);
 }
 
-export async function httpDelete$DeleteAllergy(url: string) {
-  return httpDelete$DeleteBusinessType(url);
-}
-
 export async function httpDelete$DeletePap(url: string) {
   return httpDelete$DeleteBusinessType(url);
 }
