@@ -5,9 +5,9 @@ export const LocalizedAllergen = Allergen.omit({ name: true, description: true }
   name: z.string(),
   description: z.string(),
   treatment: z.object({
-    lvl1: z.string(),
-    lvl2: z.string(),
-    lvl3: z.string(),
+    level_1: z.string(),
+    level_2: z.string(),
+    level_3: z.string(),
   })
 });
 export type LocalizedAllergen = z.infer<typeof LocalizedAllergen>;

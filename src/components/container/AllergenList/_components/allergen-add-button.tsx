@@ -28,8 +28,9 @@ export function AddAllergenButton({ symptoms, onAddAllergen, allergens }: AddAll
   const [selectedCrossSentitivity, setSelectedCrossSentitivity] = useState<string[]>([]);
   const [isWholeAllergen, setIsWholeAllergen] = useState(true);
   const [description, setDescription] = useState<DisplayString>({en: "", vi: ""});
-  const [treatment, setTreatment] = useState<{lvl1: DisplayString, lvl2: DisplayString, lvl3: DisplayString}>
-  ({lvl1: {en: "", vi: ""}, lvl2: {en: "", vi: ""}, lvl3: {en: "", vi: ""}});
+  const dummyTreatment = {level_1: {en: "", vi: ""}, level_2: {en: "", vi: ""}, level_3: {en: "", vi: ""}}
+  const [treatment, setTreatment] = useState<{level_1: DisplayString, level_2: DisplayString, level_3: DisplayString}>
+  (dummyTreatment);
 
   const [selectedLanguage, setSelectedLanguage] = useState<Language>(localLanguage);
 
@@ -51,7 +52,7 @@ export function AddAllergenButton({ symptoms, onAddAllergen, allergens }: AddAll
       setSelectedSymptoms([])
       setDescription({en: "", vi: ""})
       setOpen(false)
-      setTreatment({lvl1: {en: "", vi: ""}, lvl2: {en: "", vi: ""}, lvl3: {en: "", vi: ""}})
+      setTreatment(dummyTreatment)
       setSelectedCrossSentitivity([])
       setIsWholeAllergen(true)
     }
@@ -69,7 +70,7 @@ export function AddAllergenButton({ symptoms, onAddAllergen, allergens }: AddAll
       [selectedLanguage]: value,
     }))
   }
-  const handleTreatmentChange = (level: 'lvl1' | 'lvl2' | 'lvl3', value: string) => {
+  const handleTreatmentChange = (level: 'level_1' | 'level_2' | 'level_3', value: string) => {
     setTreatment((prev) => ({
       ...prev,
       [level]: {...prev[level], [selectedLanguage]: value},

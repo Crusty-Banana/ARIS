@@ -22,8 +22,6 @@ export function AddSymptomButton({ onAddSymptom }: AddSymptomButtonProps) {
   const [severity, setSeverity] = useState(1)
   const [prevalence, setPrevalence] = useState(1)
   const [description, setDescription] = useState({"en": "", "vi": ""})
-
-  const [media,] = useState<string[]>([])
   const [selectedLanguage, setSelectedLanguage] = useState<Language>("en")
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -34,7 +32,6 @@ export function AddSymptomButton({ onAddSymptom }: AddSymptomButtonProps) {
         severity: severity,
         prevalence: prevalence,
         description,
-        media
       })
       setName({"en": "", "vi": ""})
       setSeverity(1)

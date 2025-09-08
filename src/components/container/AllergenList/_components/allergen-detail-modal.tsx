@@ -148,16 +148,16 @@ export function AllergenDetailModal({
               <div className="p-2 bg-gray-50 rounded min-h-[100px]">{allergen.description[selectedLanguage]}</div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('lvl1Treatment')}</label>
-              <div className="p-2 bg-gray-50 rounded min-h-[100px]">{allergen.treatment.lvl1[selectedLanguage]}</div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('level_1Treatment')}</label>
+              <div className="p-2 bg-gray-50 rounded min-h-[100px]">{allergen.treatment.level_1[selectedLanguage]}</div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('lvl2Treatment')}</label>
-              <div className="p-2 bg-gray-50 rounded min-h-[100px]">{allergen.treatment.lvl2[selectedLanguage]}</div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('level_2Treatment')}</label>
+              <div className="p-2 bg-gray-50 rounded min-h-[100px]">{allergen.treatment.level_2[selectedLanguage]}</div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('lvl3Treatment')}</label>
-              <div className="p-2 bg-gray-50 rounded min-h-[100px]">{allergen.treatment.lvl3[selectedLanguage]}</div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('level_3Treatment')}</label>
+              <div className="p-2 bg-gray-50 rounded min-h-[100px]">{allergen.treatment.level_3[selectedLanguage]}</div>
             </div>
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t('associatedSymptoms')}</label>

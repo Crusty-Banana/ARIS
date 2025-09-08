@@ -24,8 +24,8 @@ interface AllergenFormProps {
   setSelectedCrossSensitivity: (value: string[]) => void;
   isWholeAllergen: boolean,
   setIsWholeAllergen: (value: boolean) => void,
-  treatment: {lvl1: DisplayString, lvl2: DisplayString, lvl3: DisplayString},
-  handleTreatmentChange: (level: "lvl1" | "lvl2" | "lvl3", value: string) => void,
+  treatment: {level_1: DisplayString, level_2: DisplayString, level_3: DisplayString},
+  handleTreatmentChange: (level: "level_1" | "level_2" | "level_3", value: string) => void,
 }
 
 export function AllergenForm(
@@ -75,33 +75,33 @@ export function AllergenForm(
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          {t("lvl1Treatment")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})
+          {t("level_1Treatment")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})
         </label>
         <Textarea
-          value={treatment.lvl1[selectedLanguage]}
-          onChange={(e) => handleTreatmentChange("lvl1", e.target.value)}
+          value={treatment.level_1[selectedLanguage]}
+          onChange={(e) => handleTreatmentChange("level_1", e.target.value)}
           placeholder={t('enterTreatment')}
           required
           className="border-cyan-300 focus:border-cyan-500 min-h-[80px]" />
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          {t("lvl2Treatment")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})
+          {t("level_2Treatment")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})
         </label>
         <Textarea
-          value={treatment.lvl2[selectedLanguage]}
-          onChange={(e) => handleTreatmentChange("lvl2", e.target.value)}
+          value={treatment.level_2[selectedLanguage]}
+          onChange={(e) => handleTreatmentChange("level_2", e.target.value)}
           placeholder={t('enterTreatment')}
           required
           className="border-cyan-300 focus:border-cyan-500 min-h-[80px]" />
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          {t("lvl3Treatment")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})
+          {t("level_3Treatment")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})
         </label>
         <Textarea
-          value={treatment.lvl3[selectedLanguage]}
-          onChange={(e) => handleTreatmentChange("lvl3", e.target.value)}
+          value={treatment.level_3[selectedLanguage]}
+          onChange={(e) => handleTreatmentChange("level_3", e.target.value)}
           placeholder={t('enterTreatment')}
           required
           className="border-cyan-300 focus:border-cyan-500 min-h-[80px]" />

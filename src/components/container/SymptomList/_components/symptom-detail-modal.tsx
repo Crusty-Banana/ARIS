@@ -130,25 +130,6 @@ export function SymptomDetailModal({ symptom, onClose, onUpdate, onDelete }: Sym
               <label className="block text-sm font-medium text-gray-700 mb-1">{t("description")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})</label>
               <div className="p-2 bg-gray-50 rounded min-h-[100px]">{symptom.description[selectedLanguage]}</div>
             </div>
-
-            {/* HERE TO DEBUG MEDIA LIST LATER */}
-            <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">{t("mediaLabel")}</label>
-                <div className="grid grid-cols-3 gap-2 p-2 bg-gray-50 rounded">
-                  {symptom.media.map((url, index) => {
-                    const isVideo = /\.(mp4|webm|ogg)$/i.test(url);
-                    return (
-                      <div key={index} className="aspect-square bg-gray-200 rounded overflow-hidden">
-                        {isVideo ? (
-                          <video src={url} controls className="w-full h-full object-cover" />
-                        ) : (
-                          <img src={url} alt={`Symptom media ${index + 1}`} className="w-full h-full object-cover" />
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
           </>
         )}
       </DialogContent>

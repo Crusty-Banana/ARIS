@@ -61,13 +61,13 @@ export const Allergen = z.object({
     description: DisplayString,
     isWholeAllergen: z.boolean().default(true),
     treatment: z.object({
-        lvl1: DisplayString,
-        lvl2: DisplayString,
-        lvl3: DisplayString
+        level_1: DisplayString,
+        level_2: DisplayString,
+        level_3: DisplayString
     }).default({
-        lvl1: {"en": "", "vi": ""},
-        lvl2: {"en": "", "vi": ""},
-        lvl3: {"en": "", "vi": ""}
+        level_1: {"en": "", "vi": ""},
+        level_2: {"en": "", "vi": ""},
+        level_3: {"en": "", "vi": ""}
     }),
     symptomsId: z.array(ObjectIdAsHexString),
     crossSensitivityId: z.array(ObjectIdAsHexString).default([]),
@@ -105,7 +105,6 @@ export const Symptom = z.object({
     description: DisplayString,
     severity: z.number().min(1).max(3),
     prevalence: z.number().min(1).max(5).default(1),
-    media: z.array(z.string().url()).default([]),
 });
 export type Symptom = z.infer<typeof Symptom>;
 
