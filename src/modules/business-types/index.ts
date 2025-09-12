@@ -91,6 +91,7 @@ export const PAP = z.object({
                 doneTest: z.boolean(),
                 testDone: TestType.optional(),
                 symptomsId: z.array(ObjectIdAsHexString).default([]),
+                testResult: z.string().optional(),
             }),
         )
         .default([]),
