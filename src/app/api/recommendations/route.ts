@@ -4,7 +4,7 @@ import { getDb } from '@/modules/mongodb';
 import { handler$AddRecommendation } from '@/modules/commands/AddBusinessType/handler';
 import { handler$GetRecommendations } from '@/modules/commands/GetBusinessType/handler';
 import { AddRecommendation$Params } from '@/modules/commands/AddBusinessType/typing';
-import { GetBusinessType$Params } from '@/modules/commands/GetBusinessType/typing';
+import { GetRecommendations$Params } from '@/modules/commands/GetBusinessType/typing';
 
 export async function POST(
   req: NextRequest
@@ -40,16 +40,8 @@ export async function GET(
     if (!authCheck.success) return authCheck.result;
 
     // Validate Input
-    const urlSearch = req.nextUrl.searchParams;
-
-    // Support multiple ids: ?ids=...&ids=...
-    const params: Record<string, unknown> = Object.fromEntries(urlSearch);
-
-    const id = urlSearch.getAll("id");
-    if (id.length > 0) {
-      params.id = id; // override with array of ids
-    }
-    const parsedBody = GetBusinessType$Params.safeParse(params);
+    const searchParams = Object.fromEntries(req.nextUrl.searchParams);
+    const parsedBody = GetRecommendations$Params.safeParse(searchParams);
     if (!parsedBody.success) {
       return NextResponse.json({ message: parsedBody.error.message || "Invalid params" }, { status: 400 });
     }

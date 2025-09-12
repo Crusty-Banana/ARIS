@@ -1,35 +1,24 @@
 import { Db, ObjectId } from "mongodb";
-import { GetBusinessType$Params, 
+import {
+  GetBusinessType$Params,
   GetAllergens$Params,
-  GetRecommendations$Params,
+  LocalizedAllergen, LocalizedSymptom,
   GetUsers$Params,
   GetPAP$Params,
   GetSymptoms$Params,
-  LocalizedAllergen, LocalizedSymptom } from "./typing";
+  GetRecommendations$Params
+} from "./typing";
 import { Allergen, BusisnessTypeCollection, PAP, Recommendation, Symptom, User } from "@/modules/business-types";
 
 async function handler$GetBusinessType(db: Db, params: GetBusinessType$Params, collectionName: string) {
-  const { id, limit, offset, lang, ...filters } = params;
+  const { ids, limit, offset, lang, filters } = params;
 
-  const match: Record<string, unknown> = {};
-
-  if (id) {
-    if (Array.isArray(id)) {
-      match._id = { $in: id.map((hex) => ObjectId.createFromHexString(hex)) };
-    } else {
-      match._id = ObjectId.createFromHexString(id);
+  const filterTerm = (ids || filters) ? [{
+    $match: {
+      ...(ids ? { _id: { $in: ids.map((id) => ObjectId.createFromHexString(id)) } } : {}),
+      ...(filters ? filters : {})
     }
-  }
-
-  for (const [key, value] of Object.entries(filters)) {
-    if (key.endsWith("Id")) {
-      match[key] = { $in: value.map((hex: string) => ObjectId.createFromHexString(hex)) };
-    } else {
-      match[key] = value;
-    }
-  }
-
-  const filterTerm = Object.keys(match).length > 0 ? [{ $match: match }] : [];
+  }] : [];
 
   const pagingTerm = [
     ...(offset ? [{ $skip: offset }] : []),
