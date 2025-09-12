@@ -44,6 +44,7 @@ export function SymptomDetailModal({ symptom, onClose, onUpdate, onDelete }: Sym
     }
   }: undefined
 
+
   return (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="max-w-lg max-h-[90vh]">
@@ -94,8 +95,8 @@ export function SymptomDetailModal({ symptom, onClose, onUpdate, onDelete }: Sym
             setSeverity={(value) => {setEditData({...editData, severity: value})}}
             prevalence={editData.prevalence}
             setPrevalence={(value) => {setEditData({...editData, prevalence: value})}}
-            treatment={editData.treatment}
-            handleTreatmentChange={(value) => {setEditData({...editData, treatment: {...editData.treatment, [selectedLanguage]: value}})}}
+            description={editData.description}
+            handleDescriptionChange={(value) => {setEditData({...editData, description: {...editData.description, [selectedLanguage]: value}})}}
           />
         ) : (
           <>
@@ -126,8 +127,8 @@ export function SymptomDetailModal({ symptom, onClose, onUpdate, onDelete }: Sym
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("treatment")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})</label>
-              <div className="p-2 bg-gray-50 rounded min-h-[100px]">{symptom.treatment[selectedLanguage]}</div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("description")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})</label>
+              <div className="p-2 bg-gray-50 rounded min-h-[100px]">{symptom.description[selectedLanguage]}</div>
             </div>
           </>
         )}

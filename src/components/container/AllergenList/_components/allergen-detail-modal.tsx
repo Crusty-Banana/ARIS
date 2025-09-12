@@ -2,7 +2,7 @@ import { LanguageDropdown } from "@/components/language-dropdown"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { getPrevalenceColor, getTypeColor } from "@/lib/client-side-utils"
+import { getTypeColor } from "@/lib/client-side-utils"
 import { Allergen, Language, Symptom } from "@/modules/business-types"
 import { Edit, Save, Trash2, X } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
@@ -15,6 +15,7 @@ interface AllergenDetailModalProps {
   onClose: () => void
   onUpdate?: (allergen: Allergen) => void
   onDelete?: (id: string) => void
+  allergens: Allergen[]
 }
 
 export function AllergenDetailModal({
@@ -23,6 +24,7 @@ export function AllergenDetailModal({
   onClose,
   onUpdate,
   onDelete,
+  allergens,
 }: AllergenDetailModalProps) {
   const t = useTranslations('detailModals');
   const localLanguage = useLocale() as Language;
@@ -53,7 +55,7 @@ export function AllergenDetailModal({
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh]">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-cyan-800 flex items-center justify-between pr-8">
             {t('allergenDetails')}
@@ -101,11 +103,22 @@ export function AllergenDetailModal({
             handleNameChange={(value) => {setEditData({...editData!, name: {...editData!.name, [selectedLanguage]: value}})}}
             description={editData.description}
             handleDescriptionChange={(value) => {setEditData({...editData!, description: {...editData!.description, [selectedLanguage]: value}})}}
-            prevalence={editData.prevalence}
-            setPrevalence={(value) => {setEditData({...editData!, prevalence: value})}}
             symptoms={symptoms}
+            allergens={allergens}
             selectedSymptoms={editData.symptomsId}
             setSelectedSymptoms={(value) => {setEditData({...editData!, symptomsId: value})}}
+            selectedCrossSensitivity={editData.crossSensitivityId}
+            setSelectedCrossSensitivity={(value) => setEditData({...editData!, crossSensitivityId: value})}
+            isWholeAllergen={editData.isWholeAllergen}
+            setIsWholeAllergen={(value) => setEditData({...editData!, isWholeAllergen: value})}
+            treatment={editData.treatment}
+            handleTreatmentChange={(level, value) => setEditData({
+              ...editData,
+              treatment: {
+                ...editData.treatment,
+                [level]: {...editData.treatment[level], [selectedLanguage]: value},
+              },
+            })}
           />
         ) : (
           <>
@@ -124,10 +137,10 @@ export function AllergenDetailModal({
                 <div className="p-2 bg-gray-50 rounded">{allergen.name[selectedLanguage]}</div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t('prevalence')}</label>
-                <Badge className={`${getPrevalenceColor(allergen.prevalence)} text-white`}>
-                  {t('prevalence')}: {allergen.prevalence}
-                </Badge>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('isWholeAllergen')}</label>
+                <div className="p-2 bg-gray-50 rounded">
+                  {allergen.isWholeAllergen ? t("wholeAllergen") : t("componentAllergen")}
+                </div>
               </div>
             </div>
             <div>
@@ -135,7 +148,18 @@ export function AllergenDetailModal({
               <div className="p-2 bg-gray-50 rounded min-h-[100px]">{allergen.description[selectedLanguage]}</div>
             </div>
             <div>
-              <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('level_1Treatment')}</label>
+              <div className="p-2 bg-gray-50 rounded min-h-[100px]">{allergen.treatment.level_1[selectedLanguage]}</div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('level_2Treatment')}</label>
+              <div className="p-2 bg-gray-50 rounded min-h-[100px]">{allergen.treatment.level_2[selectedLanguage]}</div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('level_3Treatment')}</label>
+              <div className="p-2 bg-gray-50 rounded min-h-[100px]">{allergen.treatment.level_3[selectedLanguage]}</div>
+            </div>
+            <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t('associatedSymptoms')}</label>
                 <div className="flex flex-wrap gap-1">
                   {allergen.symptomsId.map((symptomId) => {
@@ -147,7 +171,19 @@ export function AllergenDetailModal({
                     ) : null
                   })}
                 </div>
-              </div>
+            </div>
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('crossSensitivity')}</label>
+                <div className="flex flex-wrap gap-1">
+                  {allergen.crossSensitivityId.map((allergenId) => {
+                    const allergen = allergens.find((s) => s.id === allergenId)
+                    return allergen ? (
+                      <Badge key={allergenId} variant="outline" className="text-xs">
+                        {allergen.name[localLanguage]}
+                      </Badge>
+                    ) : null
+                  })}
+                </div>
             </div>
           </>
         )}

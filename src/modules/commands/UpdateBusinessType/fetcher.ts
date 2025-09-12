@@ -1,5 +1,5 @@
 import { FetcherResult } from "@/modules/business-types";
-import { UpdateAllergenFetcher$Params, UpdateAllergyFetcher$Params, UpdatePAPFetcher$Params, UpdateRecommendationFetcher$Params, UpdateSymptomFetcher$Params, UpdateUserFetcher$Params } from "./typing";
+import { UpdateAllergenFetcher$Params, UpdatePAPFetcher$Params, UpdateRecommendationFetcher$Params, UpdateSymptomFetcher$Params, UpdateUserFetcher$Params } from "./typing";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function httpPut$UpdateBusinessType(url: string, params: any) {
@@ -22,10 +22,6 @@ export async function httpPut$UpdateUser(url: string, params: UpdateUserFetcher$
 }
 
 export async function httpPut$UpdateAllergen(url: string, params: UpdateAllergenFetcher$Params) {
-  return await httpPut$UpdateBusinessType(url, params);
-}
-
-export async function httpPut$UpdateAllergy(url: string, params: UpdateAllergyFetcher$Params) {
   return await httpPut$UpdateBusinessType(url, params);
 }
 

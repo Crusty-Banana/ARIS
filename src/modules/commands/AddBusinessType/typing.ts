@@ -1,4 +1,4 @@
-import { Allergen, Allergy, FetcherResult, ObjectIdAsHexString, PAP, Recommendation, Symptom, User } from "@/modules/business-types";
+import { Allergen, FetcherResult, ObjectIdAsHexString, PAP, Recommendation, Symptom, User } from "@/modules/business-types";
 import { z } from "zod";
 
 export const AddUser$Params = User.omit({ id: true });
@@ -6,9 +6,6 @@ export type AddUser$Params = z.infer<typeof AddUser$Params>;
 
 export const AddAllergen$Params = Allergen.omit({ id: true });
 export type AddAllergen$Params = z.infer<typeof AddAllergen$Params>;
-
-export const AddAllergy$Params = Allergy.omit({ id: true });
-export type AddAllergy$Params = z.infer<typeof AddAllergy$Params>;
 
 export const AddPAP$Params = PAP.omit({ id: true });
 export type AddPAP$Params = z.infer<typeof AddPAP$Params>;

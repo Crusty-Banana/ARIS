@@ -4,7 +4,7 @@ import { getDb, getClient } from '@/modules/mongodb';
 import { handler$AddUser } from '@/modules/commands/AddBusinessType/handler';
 import { handler$GetUsers } from '@/modules/commands/GetBusinessType/handler';
 import { AddUser$Params } from '@/modules/commands/AddBusinessType/typing';
-import { GetBusinessType$Params } from '@/modules/commands/GetBusinessType/typing';
+import { GetUsers$Params } from '@/modules/commands/GetBusinessType/typing';
 import { DeleteUser$Params } from '@/modules/commands/DeleteUser/typing';
 import { handler$DeleteUser } from '@/modules/commands/DeleteUser/handler';
 
@@ -43,7 +43,7 @@ export async function GET(
 
     // Validate Input
     const searchParams = Object.fromEntries(req.nextUrl.searchParams);
-    const parsedBody = GetBusinessType$Params.safeParse(searchParams);
+    const parsedBody = GetUsers$Params.safeParse(searchParams);
     if (!parsedBody.success) {
       return NextResponse.json({ message: parsedBody.error.message || "Invalid params" }, { status: 400 });
     }

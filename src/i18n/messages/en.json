@@ -101,7 +101,15 @@
         "enterDescription": "Enter description",
         "food": "Food",
         "drug": "Drug",
-        "respiratory": "Respiratory"
+        "respiratory": "Respiratory",
+        "crossSensitivity": "Cross sensitivities",
+        "level_1Treatment": "Level 1 Treatment",
+        "level_2Treatment": "Level 2 Treatment",
+        "level_3Treatment": "Level 3 Treatment",
+        "enterTreatment": "Enter treatment...",
+        "allergenType": "Allergen type",
+        "wholeAllergen": "Whole allergen",
+        "componentAllergen": "Component allergen"
     },
     "allergyModal": {
         "addAllergy": "Add Allergy",
@@ -135,7 +143,14 @@
         "food": "Food",
         "drug": "Drug",
         "respiratory": "Respiratory",
-        "quickAddSuccess": "{allergenName} has been added to your allergens!"
+        "quickAddSuccess": "{allergenName} has been added to your allergens!",
+        "crossSensitivity": "Cross Sensitivity",
+        "level_1Treatment": "Level 1 Treatment",
+        "level_2Treatment": "Level 2 Treatment",
+        "level_3Treatment": "Level 3 Treatment",
+        "isWholeAllergen": "Classification",
+        "wholeAllergen": "Whole allergen",
+        "componentAllergen": "Component allergen"
     },
     "personalAllergyProfile": {
         "personalInformation": "Personal Information",
@@ -340,8 +355,10 @@
             "areYouSureSymptomDelete": "Are you sure you want to delete this symptom?",
             "treatmentPlaceholder": "Enter treatment information",
             "severityLabel": "Severity (1-3)",
-            "prevalenceLabel": "Prevalence (1-5)"
-        }
+            "prevalenceLabel": "Prevalence (1-5)",
+            "descriptionPlaceholder": "Description Missing..."
+        },
+        "description": "Description"
     },
     "profile": {
         "title": "User Profile",

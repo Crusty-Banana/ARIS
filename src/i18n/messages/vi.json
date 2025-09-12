@@ -101,7 +101,15 @@
         "enterDescription": "Nhập mô tả",
         "food": "Thực phẩm",
         "drug": "Thuốc",
-        "respiratory": "Hô hấp"
+        "respiratory": "Hô hấp",
+        "crossSensitivity": "Mẫn cảm chéo",
+        "level_1Treatment": "Điều trị mức 1",
+        "level_2Treatment": "Điều trị mức 2",
+        "level_3Treatment": "Điều trị mức 3",
+        "enterTreatment": "Thêm phương pháp điều trị...",
+        "allergenType": "Phân loại",
+        "wholeAllergen": "Dị nguyên toàn phần",
+        "componentAllergen": "Dị nguyên thành phần"
     },
     "allergyModal": {
         "addAllergy": "Thêm Dị ứng",
@@ -135,7 +143,14 @@
         "food": "Thực phẩm",
         "drug": "Thuốc",
         "respiratory": "Hô hấp",
-        "quickAddSuccess": "{allergenName} đã được thêm vào danh sách dị nguyên của bạn!"
+        "quickAddSuccess": "{allergenName} đã được thêm vào danh sách dị nguyên của bạn!",
+        "crossSensitivity": "Mẫn cảm chéo",
+        "level_1Treatment": "Điều trị mức 1",
+        "level_2Treatment": "Điều trị mức 2",
+        "level_3Treatment": "Điều trị mức 3",
+        "isWholeAllergen": "Phân loại",
+        "wholeAllergen": "Dị nguyên toàn phần",
+        "componentAllergen": "Dị nguyên thành phần"
     },
     "personalAllergyProfile": {
         "personalInformation": "Thông tin cá nhân",
@@ -340,8 +355,10 @@
             "areYouSureSymptomDelete": "Bạn có chắc chắn muốn xóa triệu chứng này không?",
             "treatmentPlaceholder": "Nhập thông tin điều trị",
             "severityLabel": "Độ nghiêm trọng (1-3)",
-            "prevalenceLabel": "Độ phổ biến (1-5)"
-        }
+            "prevalenceLabel": "Độ phổ biến (1-5)",
+            "descriptionPlaceholder": "Không tìm thấy mô tả..."
+        },
+        "description":"Mô tả"
     },
     "profile": {
         "title": "Hồ sơ người dùng",

@@ -1,4 +1,4 @@
-import { Allergen, Allergy, PAP, Recommendation, Symptom, User } from "@/modules/business-types";
+import { Allergen, PAP, Recommendation, Symptom, User } from "@/modules/business-types";
 import { z } from "zod";
 
 export const UpdateUser$Params = User.partial().required({ id: true });
@@ -6,9 +6,6 @@ export type UpdateUser$Params = z.infer<typeof UpdateUser$Params>;
 
 export const UpdateAllergen$Params = Allergen.partial().required({ id: true });
 export type UpdateAllergen$Params = z.infer<typeof UpdateAllergen$Params>;
-
-export const UpdateAllergy$Params = Allergy.partial().required({ id: true });
-export type UpdateAllergy$Params = z.infer<typeof UpdateAllergy$Params>;
 
 export const UpdatePAP$Params = PAP.partial().required({ id: true });
 export type UpdatePAP$Params = z.infer<typeof UpdatePAP$Params>;
@@ -26,9 +23,6 @@ export type UpdateUserFetcher$Params = z.infer<typeof UpdateUserFetcher$Params>;
 
 export const UpdateAllergenFetcher$Params = UpdateAllergen$Params.omit({ id: true });
 export type UpdateAllergenFetcher$Params = z.infer<typeof UpdateAllergenFetcher$Params>;
-
-export const UpdateAllergyFetcher$Params = UpdateAllergy$Params.omit({ id: true });
-export type UpdateAllergyFetcher$Params = z.infer<typeof UpdateAllergyFetcher$Params>;
 
 export const UpdatePAPFetcher$Params = UpdatePAP$Params.omit({ id: true });
 export type UpdatePAPFetcher$Params = z.infer<typeof UpdatePAPFetcher$Params>;

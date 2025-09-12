@@ -20,10 +20,6 @@ export async function handler$UpdateAllergen(db: Db, params: UpdateUser$Params) 
   return await handler$UpdateBusinessType(db, params, BusisnessTypeCollection.allergens);
 }
 
-export async function handler$UpdateAllergy(db: Db, params: UpdateUser$Params) {
-  return await handler$UpdateBusinessType(db, params, BusisnessTypeCollection.allergies);
-}
-
 export async function handler$UpdatePAP(db: Db, params: UpdateUser$Params) {
   return await handler$UpdateBusinessType(db, params, BusisnessTypeCollection.paps);
 }
