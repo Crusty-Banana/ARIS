@@ -88,9 +88,8 @@ export const PAP = z.object({
             z.object({
                 allergenId: ObjectIdAsHexString,
                 discoveryDate: UnixTimestamp.nullable().default(null),
-                discoveryMethod: DiscoveryMethod,
                 doneTest: z.boolean(),
-                testDone: TestType,
+                testDone: TestType.optional(),
                 symptomsId: z.array(ObjectIdAsHexString).default([]),
             }),
         )
