@@ -53,7 +53,7 @@ export function RichTextEditor({ content = "", onChange, placeholder = "Start wr
         const result = await httpPost$AddFileToS3("/api/s3-upload", file)
 
         if (result.success && result.result) {
-          editor?.chain().focus().setImage({ src: result.result }).run()
+          editor?.chain().focus().setImage({ src: result.result }).createParagraphNear().run()
         } else {
           console.error("Upload failed:"+ result.message)
         }
