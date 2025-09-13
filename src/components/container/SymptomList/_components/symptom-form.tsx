@@ -1,6 +1,7 @@
 import { GradientSlider } from "@/components/gradient-slider";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { NameInput } from "@/components/name-input";
+import { RichTextEditor } from "@/components/rich-text-editor";
 import { Textarea } from "@/components/ui/textarea";
 
 import { DisplayString, Language } from "@/modules/business-types";
@@ -56,6 +57,7 @@ export function SymptomForm(
           placeholder={t('detailModals.descriptionPlaceholder')}
           required
           className="border-cyan-300 focus:border-cyan-500 min-h-[80px]" />
+        <RichTextEditor />
       </div>
     </>
   )
