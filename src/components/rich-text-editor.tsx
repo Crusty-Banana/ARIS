@@ -5,7 +5,7 @@ import StarterKit from "@tiptap/starter-kit"
 import Image from "@tiptap/extension-image"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Bold, Italic, List, ListOrdered, Quote, Undo, Redo, ImageIcon, Loader2, Underline } from "lucide-react"
+import { Bold, Italic, Undo, Redo, ImageIcon, Loader2, Underline } from "lucide-react"
 import { useCallback, useState } from "react"
 import { httpPost$AddFileToS3 } from "@/modules/commands/AddFileToS3/fetcher"
 
@@ -73,7 +73,7 @@ export function RichTextEditor({ content = "", onChange, placeholder = "Start wr
   }
 
   return (
-    <Card className="w-full">
+    <Card className="w-full pt-1 gap-0">
       <div className="border-b p-2 flex flex-wrap gap-1">
         <Button
           variant="ghost"
