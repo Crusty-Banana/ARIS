@@ -2,7 +2,6 @@ import { GradientSlider } from "@/components/gradient-slider";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { NameInput } from "@/components/name-input";
 import { RichTextEditor } from "@/components/rich-text-editor";
-import { Textarea } from "@/components/ui/textarea";
 
 import { DisplayString, Language } from "@/modules/business-types";
 import { useTranslations } from "next-intl";
@@ -57,11 +56,18 @@ export function SymptomForm(
           placeholder={t('detailModals.descriptionPlaceholder')}
           required
           className="border-cyan-300 focus:border-cyan-500 min-h-[80px]" /> */}
-        <RichTextEditor 
-          content={description[selectedLanguage]}
+        {selectedLanguage == "vi" ? (<RichTextEditor 
+          content={description["vi"]}
+          key="symptom-text-editor-vi" 
           onChange={(content) => handleDescriptionChange(content)}
           placeholder={t('detailModals.descriptionPlaceholder')}
-        />
+        />) : 
+        (<RichTextEditor 
+          content={description["en"]}
+          key="symptom-text-editor-en" 
+          onChange={(content) => handleDescriptionChange(content)}
+          placeholder={t('detailModals.descriptionPlaceholder')}
+        />)}
       </div>
     </>
   )

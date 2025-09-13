@@ -6,7 +6,7 @@ import Image from "@tiptap/extension-image"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Bold, Italic, Undo, Redo, ImageIcon, Loader2, Underline } from "lucide-react"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { httpPost$AddFileToS3 } from "@/modules/commands/AddFileToS3/fetcher"
 
 interface RichTextEditorProps {
@@ -39,6 +39,12 @@ export function RichTextEditor({ content = "", onChange, placeholder = "Start wr
       },
     },
   })
+
+  useEffect(() => {
+    if (editor && editor.getHTML() !== content) {
+      editor.commands.setContent(content)
+    }
+  }, [content, editor])
 
   const handleImageUpload = useCallback(async () => {
     const input = document.createElement("input")
