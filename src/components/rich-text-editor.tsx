@@ -86,6 +86,7 @@ export function RichTextEditor({ content = "", onChange, placeholder = "Start wr
           size="sm"
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={editor.isActive("bold") ? "bg-muted" : ""}
+          type="button" 
         >
           <Bold className="h-4 w-4" />
         </Button>
@@ -95,6 +96,7 @@ export function RichTextEditor({ content = "", onChange, placeholder = "Start wr
           size="sm"
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={editor.isActive("italic") ? "bg-muted" : ""}
+          type="button" 
         >
           <Italic className="h-4 w-4" />
         </Button>
@@ -104,13 +106,14 @@ export function RichTextEditor({ content = "", onChange, placeholder = "Start wr
           size="sm"
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           className={editor.isActive("underline") ? "bg-muted" : ""}
+          type="button" 
         >
           <Underline className="h-4 w-4" />
         </Button>
 
         <div className="w-px h-6 bg-border mx-1" />
 
-        <Button variant="ghost" size="sm" onClick={handleImageUpload} disabled={isUploading}>
+        <Button variant="ghost" size="sm" onClick={handleImageUpload} disabled={isUploading} type="button" >
           {isUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImageIcon className="h-4 w-4" />}
         </Button>
 
@@ -121,6 +124,7 @@ export function RichTextEditor({ content = "", onChange, placeholder = "Start wr
           size="sm"
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().undo()}
+          type="button" 
         >
           <Undo className="h-4 w-4" />
         </Button>
@@ -130,6 +134,7 @@ export function RichTextEditor({ content = "", onChange, placeholder = "Start wr
           size="sm"
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().redo()}
+          type="button" 
         >
           <Redo className="h-4 w-4" />
         </Button>
