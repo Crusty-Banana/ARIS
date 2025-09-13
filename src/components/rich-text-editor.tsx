@@ -5,7 +5,7 @@ import StarterKit from "@tiptap/starter-kit"
 import Image from "@tiptap/extension-image"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Bold, Italic, List, ListOrdered, Quote, Undo, Redo, ImageIcon, Loader2 } from "lucide-react"
+import { Bold, Italic, List, ListOrdered, Quote, Undo, Redo, ImageIcon, Loader2, Underline } from "lucide-react"
 import { useCallback, useState } from "react"
 import { httpPost$AddFileToS3 } from "@/modules/commands/AddFileToS3/fetcher"
 
@@ -34,7 +34,8 @@ export function RichTextEditor({ content = "", onChange, placeholder = "Start wr
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[200px] p-4",
+        class:
+          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[200px] max-h-[400px] overflow-y-auto p-4",
       },
     },
   })
@@ -55,7 +56,7 @@ export function RichTextEditor({ content = "", onChange, placeholder = "Start wr
         if (result.success && result.result) {
           editor?.chain().focus().setImage({ src: result.result }).createParagraphNear().run()
         } else {
-          console.error("Upload failed:"+ result.message)
+          console.error("Upload failed:" + result.message)
         }
       } catch (error) {
         console.error("Upload error:", error)
@@ -95,28 +96,10 @@ export function RichTextEditor({ content = "", onChange, placeholder = "Start wr
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={editor.isActive("bulletList") ? "bg-muted" : ""}
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          className={editor.isActive("underline") ? "bg-muted" : ""}
         >
-          <List className="h-4 w-4" />
-        </Button>
-
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={editor.isActive("orderedList") ? "bg-muted" : ""}
-        >
-          <ListOrdered className="h-4 w-4" />
-        </Button>
-
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className={editor.isActive("blockquote") ? "bg-muted" : ""}
-        >
-          <Quote className="h-4 w-4" />
+          <Underline className="h-4 w-4" />
         </Button>
 
         <div className="w-px h-6 bg-border mx-1" />
@@ -146,7 +129,7 @@ export function RichTextEditor({ content = "", onChange, placeholder = "Start wr
         </Button>
       </div>
 
-      <EditorContent editor={editor} className="min-h-[200px]" placeholder={placeholder} />
+      <EditorContent editor={editor} placeholder={placeholder} />
     </Card>
   )
 }

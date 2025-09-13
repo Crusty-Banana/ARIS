@@ -51,13 +51,17 @@ export function SymptomForm(
         <label className="block text-sm font-medium text-gray-700 mb-1">
           {t("description")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})
         </label>
-        <Textarea
+        {/* <Textarea
           value={description[selectedLanguage]}
           onChange={(e) => handleDescriptionChange(e.target.value)}
           placeholder={t('detailModals.descriptionPlaceholder')}
           required
-          className="border-cyan-300 focus:border-cyan-500 min-h-[80px]" />
-        <RichTextEditor />
+          className="border-cyan-300 focus:border-cyan-500 min-h-[80px]" /> */}
+        <RichTextEditor 
+          content={description[selectedLanguage]}
+          onChange={(content) => handleDescriptionChange(content)}
+          placeholder={t('detailModals.descriptionPlaceholder')}
+        />
       </div>
     </>
   )
