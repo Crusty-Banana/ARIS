@@ -4,7 +4,13 @@ async function httpGet$GetBusinessType(url: string, params: GetBusinessType$Para
   const searchParams = new URLSearchParams();
   Object.entries(params).forEach(([key, value]) => {
     if (value) {
-      searchParams.append(key, value.toString());
+      if (typeof value === 'object' && !Array.isArray(value)) {
+        searchParams.append(key, JSON.stringify(value));
+      } else if (Array.isArray(value)) {
+        searchParams.append(key, value.join(','));
+      } else {
+        searchParams.append(key, value.toString());
+      }
     }
   });
   const response = await fetch(url + "?" + searchParams.toString());

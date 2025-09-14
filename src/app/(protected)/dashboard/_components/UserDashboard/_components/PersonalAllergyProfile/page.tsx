@@ -115,7 +115,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
     handleAddAllergen({
       allergenId: allergen.id,
       discoveryDate: null,
-      discoveryMethod: "Potential" as DiscoveryMethod,
       doneTest: false,
       testDone: "",
       symptomsId: [],
@@ -176,10 +175,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                           <div>
                             <span className="text-sm font-medium text-gray-700">{t('discoveryDate')}:</span>
                             <span className="ml-2 text-sm">{formatDate(allergen.discoveryDate)}</span>
-                          </div>
-                          <div>
-                            <span className="text-sm font-medium text-gray-700">{t('discoveryMethod')}:</span>
-                            <span className="ml-2 text-sm">{allergen.discoveryMethod === "Clinical symptoms" ? t('clinicalSymptoms') : allergen.discoveryMethod === "Paraclinical tests" ? t('paraclinicalTests') : allergen.discoveryMethod === "Potential" ? t('potential') : ""}</span>
                           </div>
                         </div>
                       </div>

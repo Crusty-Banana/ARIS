@@ -58,7 +58,6 @@ export function AddAllergenModal({
     onAddAllergen({
       allergenId: selectedAllergen.id,
       discoveryDate: parseInputDate(discoveryDate),
-      discoveryMethod,
       doneTest,
       testDone,
       symptomsId: selectedSymptoms,
