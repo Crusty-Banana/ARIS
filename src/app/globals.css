@@ -187,3 +187,8 @@ input:checked + .slider:before {
     @apply bg-background text-foreground;
   }
 }
+
+.ProseMirror-selectednode {
+  outline: 3px solid #3b82f6; 
+  outline-offset: 2px;
+}
