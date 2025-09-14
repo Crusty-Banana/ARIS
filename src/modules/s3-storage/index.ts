@@ -1,4 +1,4 @@
-import { ObjectCannedACL, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { SERVER_ENV } from "@/modules/env/server";
 import { AddFileToS3$Params } from "../commands/AddFileToS3/typing";
 
@@ -19,7 +19,6 @@ export async function uploadFileToS3(
     Key: `${Date.now()}-${fileName}`,
     Body: file,
     ContentType: contentType,
-    ACL: "public-read" as ObjectCannedACL,
   };
 
   const command = new PutObjectCommand(params);

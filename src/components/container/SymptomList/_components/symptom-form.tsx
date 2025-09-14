@@ -1,7 +1,7 @@
 import { GradientSlider } from "@/components/gradient-slider";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { NameInput } from "@/components/name-input";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/rich-text-editor";
 
 import { DisplayString, Language } from "@/modules/business-types";
 import { useTranslations } from "next-intl";
@@ -50,12 +50,24 @@ export function SymptomForm(
         <label className="block text-sm font-medium text-gray-700 mb-1">
           {t("description")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})
         </label>
-        <Textarea
+        {/* <Textarea
           value={description[selectedLanguage]}
           onChange={(e) => handleDescriptionChange(e.target.value)}
           placeholder={t('detailModals.descriptionPlaceholder')}
           required
-          className="border-cyan-300 focus:border-cyan-500 min-h-[80px]" />
+          className="border-cyan-300 focus:border-cyan-500 min-h-[80px]" /> */}
+        {selectedLanguage == "vi" ? (<RichTextEditor 
+          content={description["vi"]}
+          key="symptom-text-editor-vi" 
+          onChange={(content) => handleDescriptionChange(content)}
+          placeholder={t('detailModals.descriptionPlaceholder')}
+        />) : 
+        (<RichTextEditor 
+          content={description["en"]}
+          key="symptom-text-editor-en" 
+          onChange={(content) => handleDescriptionChange(content)}
+          placeholder={t('detailModals.descriptionPlaceholder')}
+        />)}
       </div>
     </>
   )
