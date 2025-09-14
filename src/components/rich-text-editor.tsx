@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card"
 import { Bold, Italic, Undo, Redo, ImageIcon, Loader2, Underline } from "lucide-react"
 import { useCallback, useEffect, useState } from "react"
 import { httpPost$AddFileToS3 } from "@/modules/commands/AddFileToS3/fetcher"
+import { toast } from "sonner"
 
 interface RichTextEditorProps {
   content?: string
@@ -62,10 +63,10 @@ export function RichTextEditor({ content = "", onChange, placeholder = "Start wr
         if (result.success && result.result) {
           editor?.chain().focus().setImage({ src: result.result }).createParagraphNear().run()
         } else {
-          console.error("Upload failed:" + result.message)
+          toast.error("Upload failed:" + result.message)
         }
       } catch (error) {
-        console.error("Upload error:", error)
+        toast.error("Upload error:" + error)
       } finally {
         setIsUploading(false)
       }
