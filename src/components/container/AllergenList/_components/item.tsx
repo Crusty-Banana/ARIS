@@ -46,7 +46,7 @@ export function AllergenItem({allergen, symptoms, onClick, handleQuickAdd, userA
           </div>
         </div>
         <div className="flex gap-1 ml-2 flex-shrink-0">
-          {handleQuickAdd && !userAllergenIds?.includes(allergen.id) && (
+          {handleQuickAdd && !userAllergenIds?.includes(allergen.id) && allergen.isWholeAllergen && (
             <Button
               variant="ghost"
               size="sm"

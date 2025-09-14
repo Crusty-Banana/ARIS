@@ -14,6 +14,7 @@ import { PAPAllergen, UpdatePAPWithUserIdFetcher$Params } from "@/modules/comman
 import { httpPut$UpdatePAPWithUserId } from "@/modules/commands/UpdatePAPWithUserId/fetcher"
 import { SymptomList } from "@/components/container/SymptomList/page"
 import { AllergenList } from "@/components/container/AllergenList/page"
+import { GetAllergens$Result, GetBusinessType$Params } from "@/modules/commands/GetBusinessType/typing"
 
 export default function UserDashboard() {
   const t = useTranslations('userDashboard')
@@ -33,8 +34,23 @@ export default function UserDashboard() {
   const [allergens, setAllergens] = useState<Allergen[]>([])
   const [potentialCrossAllergens, setPotentialCrossAllergens] = useState<Allergen[]>([])
 
-  const availableAllergens = allergens.filter((allergen) => !pAP.allergens.some((pAPAllergen) => pAPAllergen.allergenId === allergen.id))
+  // const availableAllergens = allergens
+  //   .filter((allergen) => !pAP.allergens.some((pAPAllergen) => pAPAllergen.allergenId === allergen.id) && allergen.isWholeAllergen)
+  const [availableAllergens, setAvailableAllegerns] = useState<Allergen[]>([]);
 
+  const fetchAvailableAllergens = async () => {
+    const data = await httpGet$GetAllergens('/api/allergens', {filters: {isWholeAllergen: true}});
+    if (data.success) {
+      const filteredAllergens = (data.result as Allergen[]).filter(
+        (allergen) =>
+          !pAP.allergens.some((pAPAllergen) => pAPAllergen.allergenId === allergen.id)
+      );
+      setAvailableAllegerns(filteredAllergens);
+    } else {
+      toast.error(data.message);
+    }
+  };
+  
   const fetchPotentialCrossAllergens = async () => {
     const data = await httpGet$GetCrossAllergenFromUserID('/api/cross');
     if (data.success) {
@@ -103,6 +119,7 @@ export default function UserDashboard() {
     fetchPAP();
     fetchSymptoms();
     fetchAllergens();
+    fetchAvailableAllergens();
   }, [fetchPAP])
 
 
