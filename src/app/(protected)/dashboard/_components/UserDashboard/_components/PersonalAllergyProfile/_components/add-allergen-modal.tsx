@@ -61,7 +61,7 @@ export function AddAllergenModal({
     setIsUploading(true);
     const uploadToast = toast.loading('Uploading File');
 
-    const response = await httpPost$AddFileToS3('/api/s3-upload', selectedResultFile);
+    const response = await httpPost$AddFileToS3('/api/user-s3-upload', selectedResultFile);
 
     if (response.success && response.result) {
       setTestResultUrl(response.result)
