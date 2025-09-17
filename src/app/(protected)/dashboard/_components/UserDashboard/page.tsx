@@ -34,18 +34,15 @@ export default function UserDashboard() {
   const [allergens, setAllergens] = useState<Allergen[]>([])
   const [potentialCrossAllergens, setPotentialCrossAllergens] = useState<Allergen[]>([])
 
-  // const availableAllergens = allergens
-  //   .filter((allergen) => !pAP.allergens.some((pAPAllergen) => pAPAllergen.allergenId === allergen.id) && allergen.isWholeAllergen)
   const [availableAllergens, setAvailableAllegerns] = useState<Allergen[]>([]);
 
   const fetchAvailableAllergens = async () => {
-    const data = await httpGet$GetAllergens('/api/allergens', {filters: {isWholeAllergen: true}});
+    const excludedIds = pAP.allergens.map(pAPAllergen => pAPAllergen.allergenId);
+    console.log(pAP.allergens.map(pAPAllergen => pAPAllergen.allergenId));
+
+    const data = await httpGet$GetAllergens('/api/allergens', {filters: {isWholeAllergen: true, _id: { $nin: excludedIds }}});
     if (data.success) {
-      const filteredAllergens = (data.result as Allergen[]).filter(
-        (allergen) =>
-          !pAP.allergens.some((pAPAllergen) => pAPAllergen.allergenId === allergen.id)
-      );
-      setAvailableAllegerns(filteredAllergens);
+      setAvailableAllegerns(data.result as Allergen[]);
     } else {
       toast.error(data.message);
     }
@@ -122,6 +119,11 @@ export default function UserDashboard() {
     fetchAvailableAllergens();
   }, [fetchPAP])
 
+  useEffect(() => { // Ensure fetchAvailableAllergens() uses fetched PAP
+    if (pAP.id !== "000000000000000000000000") {
+      fetchAvailableAllergens();
+    }
+  }, [pAP]);
 
   return (
     <div className="flex-grow bg-gradient-to-br from-cyan-100 via-blue-50 to-blue-100">

@@ -13,10 +13,15 @@ import { Allergen, BusisnessTypeCollection, PAP, Recommendation, Symptom, User }
 async function handler$GetBusinessType(db: Db, params: GetBusinessType$Params, collectionName: string) {
   const { ids, limit, offset, lang, filters } = params;
 
+  const mongoFilter: any = { ...filters };
+  if (mongoFilter?._id?.$nin && Array.isArray(mongoFilter._id.$nin)) {
+    mongoFilter._id.$nin = mongoFilter._id.$nin.map((id: string) => ObjectId.createFromHexString(id));
+  }
+
   const filterTerm = (ids || filters) ? [{
     $match: {
       ...(ids ? { _id: { $in: ids.map((id) => ObjectId.createFromHexString(id)) } } : {}),
-      ...(filters ? filters : {})
+      ...(mongoFilter ? mongoFilter : {})
     }
   }] : [];
 
