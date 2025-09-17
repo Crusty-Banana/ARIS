@@ -13,7 +13,7 @@ import { Popover, PopoverTrigger } from "@/components/ui/popover"
 // 1. A custom PopoverContent that DOES NOT use a portal.
 // This ensures it renders inside the Dialog's DOM tree.
 const PopoverContentNoPortal = React.forwardRef<
-  React.ElementRef<typeof PopoverPrimitive.Content>,
+  React.ComponentRef<typeof PopoverPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
 >(({ className, align = "center", sideOffset = 4, ...props }, ref) => (
   <PopoverPrimitive.Content
