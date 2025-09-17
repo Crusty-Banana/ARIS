@@ -65,9 +65,9 @@ export function AddAllergenModal({
 
     if (response.success && response.result) {
       setTestResultUrl(response.result)
-      toast.success('Upload Success');
+      toast.success('Upload Success', { id: uploadToast });
     } else {
-      toast.error(response.message);
+      toast.error(response.message, { id: uploadToast });
     };
 
     setIsUploading(false);
