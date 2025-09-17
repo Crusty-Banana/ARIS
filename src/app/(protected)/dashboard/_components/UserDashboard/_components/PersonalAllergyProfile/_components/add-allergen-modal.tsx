@@ -38,9 +38,6 @@ export function AddAllergenModal({
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedAllergen, setSelectedAllergen] = useState<Allergen | null>(null)
   const [discoveryDate, setDiscoveryDate] = useState<string>("")
-  const [discoveryMethod, setDiscoveryMethod] = useState<DiscoveryMethod>(
-    "Clinical symptoms",
-  )
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([])
   const [doneTest, setDoneTest] = useState(false);
   const [testDone, setTestDone] = useState<TestType>("");
@@ -90,7 +87,6 @@ export function AddAllergenModal({
     // Reset form
     setSelectedAllergen(null)
     setDiscoveryDate("")
-    setDiscoveryMethod("Clinical symptoms")
     setSelectedSymptoms([])
     setSearchTerm("")
     setSelectedResultFile(null);
@@ -175,9 +171,6 @@ export function AddAllergenModal({
                 </div>
 
                 <div className="flex gap-6">
-                  <div className="flex-1">
-                    <DiscoveryMethodDropdown value={discoveryMethod} onValueChange={(value) => setDiscoveryMethod(value as DiscoveryMethod)}/>
-                  </div>
                   {doneTest && (
                     <div className="flex-1">
                       <TestTypeDropdown value={testDone} onValueChange={(value) => setTestDone(value as TestType)} />
@@ -185,8 +178,7 @@ export function AddAllergenModal({
                   )}
                 </div>
 
-                <div>
-                  {discoveryMethod === "Clinical symptoms" && (
+                <div> 
                     <DoneTestTickbox 
                       checked={doneTest} 
                       onCheckedChange={(checked) => {
@@ -194,7 +186,6 @@ export function AddAllergenModal({
                         if (!checked) setTestDone("")
                       }}
                     />
-                  )}
                 </div>
                 
                 { doneTest && (
