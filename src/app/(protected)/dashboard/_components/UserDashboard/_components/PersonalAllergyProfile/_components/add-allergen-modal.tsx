@@ -70,7 +70,7 @@ export function AddAllergenModal({
       toast.error(response.message);
     };
 
-    setIsUploading(false);    
+    setIsUploading(false);
   };
 
   const handleSubmit = () => {
