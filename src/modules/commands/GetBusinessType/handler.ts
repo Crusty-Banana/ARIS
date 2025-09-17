@@ -48,7 +48,6 @@ export async function handler$GetUsers(db: Db, params: GetUsers$Params) {
 
 export async function handler$GetAllergens(db: Db, params: GetAllergens$Params) {
   const { docs, lang } = await handler$GetBusinessType(db, params, BusisnessTypeCollection.allergens);
-
   if (lang !== "vi" && lang !== "en") {
     const parsedDocs = docs.map((doc) => {
       return Allergen.parse({
@@ -59,13 +58,17 @@ export async function handler$GetAllergens(db: Db, params: GetAllergens$Params) 
 
     return { result: parsedDocs };
   }
-
   const parsedDocs = docs.map((doc) => {
     return LocalizedAllergen.parse({
       ...doc,
       id: doc._id.toHexString(),
       name: doc.name[lang],
       description: doc.description[lang],
+      treatment:{
+        level_1: doc.treatment.level_1[lang],
+        level_2: doc.treatment.level_2[lang],
+        level_3: doc.treatment.level_3[lang]
+      }
     });
   });
   return { result: parsedDocs };

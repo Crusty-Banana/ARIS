@@ -61,9 +61,9 @@ export const Allergen = z.object({
     description: DisplayString,
     isWholeAllergen: z.boolean().default(true),
     treatment: z.object({
-        level_1: DisplayString,
-        level_2: DisplayString,
-        level_3: DisplayString
+        level_1: DisplayString.default({"en": "", "vi": ""}),
+        level_2: DisplayString.default({"en": "", "vi": ""}),
+        level_3: DisplayString.default({"en": "", "vi": ""})
     }).default({
         level_1: {"en": "", "vi": ""},
         level_2: {"en": "", "vi": ""},
