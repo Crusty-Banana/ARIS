@@ -16,6 +16,7 @@ import { DiscoveryMethodDropdown } from "@/components/discovery-method-dropdown"
 import { DoneTestTickbox } from "@/components/done-test-tickbox"
 import { toast } from "sonner"
 import { httpPost$AddFileToS3 } from "@/modules/commands/AddFileToS3/fetcher"
+import { DatePicker } from "@/components/ui/custom-date-picker"
 
 interface AddAllergenModalProps {
   open: boolean
@@ -37,7 +38,7 @@ export function AddAllergenModal({
 
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedAllergen, setSelectedAllergen] = useState<Allergen | null>(null)
-  const [discoveryDate, setDiscoveryDate] = useState<string>("")
+  const [discoveryDate, setDiscoveryDate] = useState<Date | undefined>()
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([])
   const [doneTest, setDoneTest] = useState(false);
   const [testDone, setTestDone] = useState<TestType>("");
@@ -50,9 +51,14 @@ export function AddAllergenModal({
     allergen.name[localLanguage].toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const parseInputDate = (dateString: string) => {
-    if (!dateString) return null
-    return Math.floor(new Date(dateString).getTime() / 1000)
+  // const parseInputDate = (dateString: string) => {
+  //   if (!dateString) return null
+  //   return Math.floor(new Date(dateString).getTime() / 1000)
+  // };
+
+  const parseInputDate = (date: Date | undefined) => {
+    if (!date) return null
+    return Math.floor(date.getTime() / 1000)
   };
 
   const handleResultFileUpload = async () => {
@@ -86,7 +92,7 @@ export function AddAllergenModal({
 
     // Reset form
     setSelectedAllergen(null)
-    setDiscoveryDate("")
+    setDiscoveryDate(undefined)
     setSelectedSymptoms([])
     setSearchTerm("")
     setSelectedResultFile(null);
@@ -103,7 +109,9 @@ export function AddAllergenModal({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl lg:max-w-5xl max-h-[90vh]">
+      <DialogContent 
+        className="max-w-3xl lg:max-w-5xl max-h-[90vh]"
+      >
         <DialogHeader>
           <DialogTitle className="text-cyan-800">{t("addNewAllergen")}</DialogTitle>
         </DialogHeader>
@@ -162,12 +170,18 @@ export function AddAllergenModal({
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">{t("discoveryDate")}</label>
-                  <Input
+                  {/* <Input
                     type="date"
                     value={discoveryDate}
                     onChange={(e) => setDiscoveryDate(e.target.value)}
-                    className="border-cyan-300 focus:border-cyan-500"
+                    className="border-cyan-300 focus:border-cyan-500 mt-1 block w-full text-transparent"
+                  /> */}
+                  <DatePicker
+                    value={discoveryDate}
+                    onChange={setDiscoveryDate}
+                    placeholder={"select date"}
                   />
+
                 </div>
 
                 <div className="flex gap-6">
