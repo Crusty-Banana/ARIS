@@ -1,4 +1,5 @@
 import { DoneTestTickbox } from "@/components/done-test-tickbox";
+import { GroupedSymptomSelect } from "@/components/grouped-symptoms-select";
 import { ScrollableSelect } from "@/components/scrollable-select";
 import { TestTypeDropdown } from "@/components/test-type-dropdown";
 import { Button } from "@/components/ui/button";
@@ -72,14 +73,13 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
                 }}
               />
           </div>
-          <ScrollableSelect
+          <GroupedSymptomSelect
             items={availableSymptoms.sort((a, b) => a.name[localLanguage].localeCompare(b.name[localLanguage]))}
             selectedItems={selectedSymptoms}
             onSelectionChange={setSelectedSymptoms}
             getItemId={(symptom) => symptom.id}
             getItemLabel={(symptom) => symptom.name[localLanguage]}
-            label={t('associatedSymptoms')}
-            maxHeight="max-h-48"
+            label={t("associatedSymptoms")}
           />
 
           <div className="flex gap-2 pt-4">
