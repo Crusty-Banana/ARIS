@@ -1,15 +1,17 @@
 import { DoneTestTickbox } from "@/components/done-test-tickbox";
 import { GroupedSymptomSelect } from "@/components/grouped-symptoms-select";
-import { ScrollableSelect } from "@/components/scrollable-select";
 import { TestTypeDropdown } from "@/components/test-type-dropdown";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/custom-date-picker";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Language, Symptom, TestType } from "@/modules/business-types";
+import { httpPost$AddFileToS3 } from "@/modules/commands/AddFileToS3/fetcher";
 import { DisplayPAPAllergen } from "@/modules/commands/GetPAPWithUserId/typing";
 import { UpdatePAPAllergen$Params } from "@/modules/commands/UpdatePAPWithUserId/typing";
+import { Paperclip, UploadCloud, XCircle } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface AllergenEditModalProps {
   allergen: DisplayPAPAllergen
@@ -26,6 +28,9 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
   const [selectedSymptoms, setSelectedSymptoms] = useState(allergen.symptoms.map((symptom) => symptom.symptomId));
   const [doneTest, setDoneTest] = useState(allergen.doneTest);
   const [testDone, setTestDone] = useState<TestType>(allergen.testDone ? allergen.testDone : "");
+  const [selectedResultFile, setSelectedResultFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [testResultUrl, setTestResultUrl] = useState<string | undefined>(allergen.testResult);
 
   const parseInputDate = (date: Date | undefined) => {
     if (!date) return null;
@@ -40,6 +45,24 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
       symptomsId: selectedSymptoms,
     })
   }
+
+  const handleResultFileUpload = async () => {
+      if (!selectedResultFile) return;
+  
+      setIsUploading(true);
+      const uploadToast = toast.loading('Uploading File');
+  
+      const response = await httpPost$AddFileToS3('/api/user-s3-upload', selectedResultFile);
+  
+      if (response.success && response.result) {
+        setTestResultUrl(response.result)
+        toast.success('Upload Success', { id: uploadToast });
+      } else {
+        toast.error(response.message, { id: uploadToast });
+      };
+  
+      setIsUploading(false);
+    };
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
@@ -57,13 +80,6 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
             />
           </div>
 
-          <div className="flex gap-6">
-            {doneTest && (
-              <div className="flex-1">
-                <TestTypeDropdown value={testDone} onValueChange={(value) => setTestDone(value as TestType)} />
-              </div>
-            )}
-          </div>
           <div>
               <DoneTestTickbox 
                 checked={doneTest} 
@@ -72,6 +88,54 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
                   if (!checked) setTestDone("")
                 }}
               />
+
+              <div className="flex gap-6">
+                {doneTest && (
+                  <div className="flex-1">
+                    <TestTypeDropdown value={testDone} onValueChange={(value) => setTestDone(value as TestType)} />
+                  </div>
+                )}
+              </div>
+              
+              {doneTest && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{'Test Result'}</label>
+                    {!testResultUrl && (
+                      <div className="relative border-2 border-dashed border-cyan-300 rounded-lg p-6 flex flex-col items-center justify-center text-center">
+                        <UploadCloud className="h-10 w-10 text-cyan-500 mb-2" />
+                        <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-cyan-600 hover:text-cyan-500 focus-within:outline-none">
+                          <span>{'Upload Test Result file'}</span>
+                          <input id="file-upload" name="file-upload" type="file" className="sr-only" accept=".pdf" onChange={(e) => setSelectedResultFile(e.target.files?.[0] || null)} />
+                        </label>
+                        <p className="text-xs text-gray-500 mt-1">{'pdf'}</p>
+                      </div>
+                    )}
+
+                  {selectedResultFile && !testResultUrl && (
+                    <div className="mt-2 flex items-center justify-between p-2 bg-gray-100 rounded-md">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Paperclip className="h-4 w-4" />
+                        <span>{selectedResultFile.name}</span>
+                      </div>
+                      <Button onClick={handleResultFileUpload} disabled={isUploading} size="sm">
+                        {isUploading ? 'Uploading' : 'Upload'}
+                      </Button>
+                    </div>
+                  )}
+
+                  {testResultUrl && (
+                    <div className="mt-2 flex items-center justify-between p-2 bg-green-100 border border-green-300 text-green-800 rounded-md">
+                      <a href={testResultUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm hover:underline">
+                        <Paperclip className="h-4 w-4" />
+                        <span>{'View Result'}</span>
+                      </a>
+                      <Button onClick={() => { setTestResultUrl(undefined); setSelectedResultFile(null); }} className="text-gray-500 hover:text-gray-700">
+                        <XCircle className="h-5 w-5" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
           </div>
           <GroupedSymptomSelect
             items={availableSymptoms.sort((a, b) => a.name[localLanguage].localeCompare(b.name[localLanguage]))}
