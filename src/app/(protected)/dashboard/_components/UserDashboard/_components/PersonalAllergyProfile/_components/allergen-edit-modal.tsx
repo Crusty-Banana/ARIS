@@ -1,6 +1,5 @@
 import { DoneTestTickbox } from "@/components/done-test-tickbox";
 import { GroupedSymptomSelect } from "@/components/grouped-symptoms-select";
-import { ScrollableSelect } from "@/components/scrollable-select";
 import { TestTypeDropdown } from "@/components/test-type-dropdown";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/custom-date-picker";
