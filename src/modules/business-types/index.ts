@@ -39,7 +39,6 @@ export type FetcherResult = z.infer<typeof FetcherResult>;
 export const BusisnessTypeCollection = {
     users: "users",
     allergens: "allergens_en",
-    allergies: "allergies_en",
     paps: "paps",
     symptoms: "symptoms_en",
     recommendations: "recommendations",
@@ -60,18 +59,21 @@ export const Allergen = z.object({
     type: AllergenType,
     name: DisplayString,
     description: DisplayString,
+    isWholeAllergen: z.boolean().default(true),
+    treatment: z.object({
+        level_1: DisplayString.default({"en": "", "vi": ""}),
+        level_2: DisplayString.default({"en": "", "vi": ""}),
+        level_3: DisplayString.default({"en": "", "vi": ""})
+    }).default({
+        level_1: {"en": "", "vi": ""},
+        level_2: {"en": "", "vi": ""},
+        level_3: {"en": "", "vi": ""}
+    }),
     symptomsId: z.array(ObjectIdAsHexString),
-    prevalence: z.number().min(1).max(5).default(1),
+    crossSensitivityId: z.array(ObjectIdAsHexString).default([]),
+    media: z.array(z.string().url()).default([]),
 });
 export type Allergen = z.infer<typeof Allergen>;
-
-export const Allergy = z.object({
-    id: ObjectIdAsHexString,
-    name: DisplayString,
-    allergensId: z.array(ObjectIdAsHexString).default([]),
-});
-
-export type Allergy = z.infer<typeof Allergy>;
 
 export const PAP = z.object({
     id: ObjectIdAsHexString,
@@ -86,10 +88,10 @@ export const PAP = z.object({
             z.object({
                 allergenId: ObjectIdAsHexString,
                 discoveryDate: UnixTimestamp.nullable().default(null),
-                discoveryMethod: DiscoveryMethod,
                 doneTest: z.boolean(),
-                testDone: TestType,
+                testDone: TestType.optional(),
                 symptomsId: z.array(ObjectIdAsHexString).default([]),
+                testResult: z.string().optional(),
             }),
         )
         .default([]),
@@ -100,7 +102,7 @@ export type PAP = z.infer<typeof PAP>;
 export const Symptom = z.object({
     id: ObjectIdAsHexString,
     name: DisplayString,
-    treatment: DisplayString,
+    description: DisplayString,
     severity: z.number().min(1).max(3),
     prevalence: z.number().min(1).max(5).default(1),
 });

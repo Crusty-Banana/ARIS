@@ -1,10 +1,16 @@
-import { GetAllergens$Result, GetAllergensLocalized$Result, GetAllergies$Result, GetAllergiesLocalized$Result, GetBusinessType$Params, GetPAPs$Result, GetRecommendations$Result, GetSymptoms$Result, GetSymptomsLocalized$Result, GetUsers$Result } from "./typing";
+import { GetAllergens$Result, GetAllergensLocalized$Result, GetBusinessType$Params, GetPAPs$Result, GetRecommendations$Result, GetSymptoms$Result, GetSymptomsLocalized$Result, GetUsers$Result } from "./typing";
 
 async function httpGet$GetBusinessType(url: string, params: GetBusinessType$Params) {
   const searchParams = new URLSearchParams();
   Object.entries(params).forEach(([key, value]) => {
     if (value) {
-      searchParams.append(key, value.toString());
+      if (typeof value === 'object' && !Array.isArray(value)) {
+        searchParams.append(key, JSON.stringify(value));
+      } else if (Array.isArray(value)) {
+        searchParams.append(key, value.join(','));
+      } else {
+        searchParams.append(key, value.toString());
+      }
     }
   });
   const response = await fetch(url + "?" + searchParams.toString());
@@ -30,20 +36,6 @@ export async function httpGet$GetAllergens(url: string, params: GetBusinessType$
     success: response.ok,
     ...data
   }) : GetAllergensLocalized$Result.parse({
-    success: response.ok,
-    ...data
-  });
-
-  return result;
-}
-
-export async function httpGet$GetAllergies(url: string, params: GetBusinessType$Params) {
-  const { response, data } = await httpGet$GetBusinessType(url, params);
-  const { lang } = params;
-  const result = (lang !== "vi" && lang !== "en") ? GetAllergies$Result.parse({
-    success: response.ok,
-    ...data
-  }) : GetAllergiesLocalized$Result.parse({
     success: response.ok,
     ...data
   });

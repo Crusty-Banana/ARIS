@@ -5,15 +5,17 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Search } from "lucide-react"
-import { ScrollableSelect } from "@/components/scrollable-select"
-import { Allergen, DiscoveryMethod, Language, Symptom, TestType } from "@/modules/business-types"
+import { Paperclip, Search, UploadCloud, X } from "lucide-react"
+import { Allergen, Language, Symptom, TestType } from "@/modules/business-types"
 import { useLocale, useTranslations } from "next-intl"
 import { PAPAllergen } from "@/modules/commands/UpdatePAPWithUserId/typing"
 import { getTypeColor } from "@/lib/client-side-utils"
 import { TestTypeDropdown } from "@/components/test-type-dropdown"
-import { DiscoveryMethodDropdown } from "@/components/discovery-method-dropdown"
 import { DoneTestTickbox } from "@/components/done-test-tickbox"
+import { toast } from "sonner"
+import { httpPost$AddFileToS3 } from "@/modules/commands/AddFileToS3/fetcher"
+import { DatePicker } from "@/components/ui/custom-date-picker"
+import { GroupedSymptomSelect } from "@/components/grouped-symptoms-select"
 
 interface AddAllergenModalProps {
   open: boolean
@@ -35,53 +37,83 @@ export function AddAllergenModal({
 
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedAllergen, setSelectedAllergen] = useState<Allergen | null>(null)
-  const [discoveryDate, setDiscoveryDate] = useState<string>("")
-  const [discoveryMethod, setDiscoveryMethod] = useState<DiscoveryMethod>(
-    "Clinical symptoms",
-  )
+  const [discoveryDate, setDiscoveryDate] = useState<Date | undefined>()
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([])
   const [doneTest, setDoneTest] = useState(false);
   const [testDone, setTestDone] = useState<TestType>("");
 
+  const [selectedResultFile, setSelectedResultFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [testResultUrl, setTestResultUrl] = useState<string | undefined>();
+
   const filteredAllergens = availableAllergens.filter((allergen) =>
     allergen.name[localLanguage].toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+  );
 
-  const parseInputDate = (dateString: string) => {
-    if (!dateString) return null
-    return Math.floor(new Date(dateString).getTime() / 1000)
-  }
+  // const parseInputDate = (dateString: string) => {
+  //   if (!dateString) return null
+  //   return Math.floor(new Date(dateString).getTime() / 1000)
+  // };
+
+  const parseInputDate = (date: Date | undefined) => {
+    if (!date) return null
+    return Math.floor(date.getTime() / 1000)
+  };
+
+  const handleResultFileUpload = async () => {
+    if (!selectedResultFile) return;
+
+    setIsUploading(true);
+    const uploadToast = toast.loading('Uploading File');
+
+    const response = await httpPost$AddFileToS3('/api/user-s3-upload', selectedResultFile);
+
+    if (response.success && response.result) {
+      setTestResultUrl(response.result)
+      toast.success('Upload Success', { id: uploadToast });
+    } else {
+      toast.error(response.message, { id: uploadToast });
+    };
+
+    setIsUploading(false);
+  };
 
   const handleSubmit = () => {
-    if (!selectedAllergen) return
+    if (!selectedAllergen) return;
 
     onAddAllergen({
       allergenId: selectedAllergen.id,
       discoveryDate: parseInputDate(discoveryDate),
-      discoveryMethod,
       doneTest,
       testDone,
       symptomsId: selectedSymptoms,
-    })
+      testResult: testResultUrl,
+    });
 
     // Reset form
-    setSelectedAllergen(null)
-    setDiscoveryDate("")
-    setDiscoveryMethod("Clinical symptoms")
-    setSelectedSymptoms([])
-    setSearchTerm("")
+    setSelectedAllergen(null);
+    setDiscoveryDate(undefined);
+    setSelectedSymptoms([]);
+    setSearchTerm("");
+    setDoneTest(false);
+    setTestDone("");
+    setSelectedResultFile(null);
+    setTestResultUrl(undefined);
+    setIsUploading(false);
     onClose()
-  }
+  };
 
   const handleAllergenSelect = (allergen: Allergen) => {
-    setSelectedAllergen(allergen)
+    setSelectedAllergen(allergen);
     // Pre-select symptoms that are associated with this allergen
-    setSelectedSymptoms(allergen.symptomsId)
-  }
+    setSelectedSymptoms(allergen.symptomsId);
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl lg:max-w-5xl max-h-[90vh]">
+      <DialogContent 
+        className="max-w-3xl lg:max-w-5xl max-h-[90vh]"
+      >
         <DialogHeader>
           <DialogTitle className="text-cyan-800">{t("addNewAllergen")}</DialogTitle>
         </DialogHeader>
@@ -140,18 +172,14 @@ export function AddAllergenModal({
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">{t("discoveryDate")}</label>
-                  <Input
-                    type="date"
+                  <DatePicker
                     value={discoveryDate}
-                    onChange={(e) => setDiscoveryDate(e.target.value)}
-                    className="border-cyan-300 focus:border-cyan-500"
+                    onChange={setDiscoveryDate}
+                    placeholder={"select date"}
                   />
                 </div>
 
                 <div className="flex gap-6">
-                  <div className="flex-1">
-                    <DiscoveryMethodDropdown value={discoveryMethod} onValueChange={(value) => setDiscoveryMethod(value as DiscoveryMethod)}/>
-                  </div>
                   {doneTest && (
                     <div className="flex-1">
                       <TestTypeDropdown value={testDone} onValueChange={(value) => setTestDone(value as TestType)} />
@@ -159,26 +187,71 @@ export function AddAllergenModal({
                   )}
                 </div>
 
-                <div>
-                  {discoveryMethod === "Clinical symptoms" && (
+                <div> 
                     <DoneTestTickbox 
                       checked={doneTest} 
                       onCheckedChange={(checked) => {
-                        setDoneTest(checked as boolean)
-                        if (!checked) setTestDone("")
+                        setDoneTest(checked as boolean);
+                        if (!checked) setTestDone("");
+                        setSelectedResultFile(null);
+                        setTestResultUrl(undefined);
                       }}
                     />
-                  )}
                 </div>
+                
+                { doneTest && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{'Test Result'}</label>
+                    {!testResultUrl && (
+                      <div className="relative border-2 border-dashed border-cyan-300 rounded-lg p-6 flex flex-col items-center justify-center text-center">
+                        <UploadCloud className="h-10 w-10 text-cyan-500 mb-2" />
+                        <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-cyan-600 hover:text-cyan-500 focus-within:outline-none">
+                          <span>{'Upload Test Result file'}</span>
+                          <input id="file-upload" name="file-upload" type="file" className="sr-only" accept=".pdf" onChange={(e) => setSelectedResultFile(e.target.files?.[0] || null)} />
+                        </label>
+                        <p className="text-xs text-gray-500 mt-1">{'pdf'}</p>
+                      </div>
+                    )}
 
-                <ScrollableSelect
+                    {selectedResultFile && !testResultUrl && (
+                      <div className="mt-2 flex items-center justify-between p-2 bg-gray-100 rounded-md">
+                        <div className="flex items-center gap-2 text-sm">
+                          <Paperclip className="h-4 w-4" />
+                          <span>{selectedResultFile.name}</span>
+                        </div>
+                        <Button onClick={handleResultFileUpload} disabled={isUploading} size="sm">
+                          {isUploading ? 'Uploading' : 'Upload'}
+                        </Button>
+                      </div>
+                    )}
+
+                    {testResultUrl && (
+                      <div className="mt-2 flex items-center justify-between p-2 bg-green-100 border border-green-300 text-green-800 rounded-md">
+                        <a href={testResultUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm hover:underline">
+                          <Paperclip className="h-4 w-4" />
+                          <span>{'View uploaded result'}</span>
+                        </a>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="h-4 w-4 p-0 hover:bg-red-100"
+                          onClick={() => { setTestResultUrl(undefined); setSelectedResultFile(null); }}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <GroupedSymptomSelect
                   items={availableSymptoms.sort((a, b) => a.name[localLanguage].localeCompare(b.name[localLanguage]))}
                   selectedItems={selectedSymptoms}
                   onSelectionChange={setSelectedSymptoms}
                   getItemId={(symptom) => symptom.id}
                   getItemLabel={(symptom) => symptom.name[localLanguage]}
                   label={t("associatedSymptoms")}
-                  maxHeight="max-h-32"
                 />
               </>
             )}

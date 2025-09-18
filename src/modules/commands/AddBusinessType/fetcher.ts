@@ -1,4 +1,4 @@
-import { AddAllergen$Params, AddAllergy$Params, AddBusinessType$Result, AddPAP$Params, AddRecommendation$Params, AddSymptom$Params, AddUser$Params } from "./typing";
+import { AddAllergen$Params, AddBusinessType$Result, AddPAP$Params, AddRecommendation$Params, AddSymptom$Params, AddUser$Params } from "./typing";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function httpPost$AddBusinessType(url: string, params: any) {
@@ -21,10 +21,6 @@ export async function httpPost$AddUser(url: string, params: AddUser$Params) {
 }
 
 export async function httpPost$AddAllergen(url: string, params: AddAllergen$Params) {
-  return await httpPost$AddBusinessType(url, params);
-}
-
-export async function httpPost$AddAllergy(url: string, params: AddAllergy$Params) {
   return await httpPost$AddBusinessType(url, params);
 }
 

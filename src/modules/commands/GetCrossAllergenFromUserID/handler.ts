@@ -2,49 +2,55 @@ import { Db, ObjectId } from "mongodb";
 import { GetCrossAllergenFromUserID$Params } from "./typing";
 import { Allergen, BusisnessTypeCollection } from "@/modules/business-types";
 
-
 export async function handler$GetCrossAllergenFromUserID(
     db: Db,
     params: GetCrossAllergenFromUserID$Params
 ) {
     const { userID } = params;
-    const result = await db.collection("paps").findOne({ userId: new ObjectId(userID) });
 
-    if (!result || !result.allergens || result.allergens.length === 0) {
+    // 1. Get user's allergen IDs from pap
+    const pap = await db.collection("paps").findOne({ userId: new ObjectId(userID) });
+    if (!pap || !pap.allergens || pap.allergens.length === 0) {
         return { result: [] as Allergen[] };
     }
-    const userAllergenIds = result.allergens.map((allergen: { allergenId: ObjectId, degree: number }) => (
-        allergen.allergenId.toString()
-    ));
 
-    // 2. Find all allergy categories that contain any of the user's allergens
-    const relatedAllergies = await db.collection(BusisnessTypeCollection.allergies).find({
-        allergensId: { $in: userAllergenIds }
+    const userAllergenIds = pap.allergens.map((a: { allergenId: string, }) => ObjectId.createFromHexString(a.allergenId));
+    // 2. Fetch user allergens from Allergens collection to get their cross sensitivities
+    const userAllergenDocs = await db.collection(BusisnessTypeCollection.allergens).find({
+        _id: { $in: userAllergenIds }
     }).toArray();
-
-    // 3. Collect all unique allergen IDs from these categories, excluding the user's own allergens
+    // 3. Collect cross-allergen IDs from those documents
     const crossAllergenIds = new Set<string>();
-    relatedAllergies.forEach(allergy => {
-        allergy.allergensId.forEach((allergenId: ObjectId) => {
-            const allergenIdStr = allergenId.toString();
-
-            if (!userAllergenIds.some((id: ObjectId) => id.toString() === allergenIdStr)) {
-                crossAllergenIds.add(allergenIdStr);
-            }
-        });
+    userAllergenDocs.forEach((doc) => {
+        if (Array.isArray(doc.crossSensitivityId)) {
+            doc.crossSensitivityId.forEach((allergenId: ObjectId) => {
+                const idStr = allergenId.toString();
+                if (!userAllergenIds.some((allergenId: ObjectId) => allergenId.toString() === idStr)) {
+                    crossAllergenIds.add(idStr);
+                }
+            });
+        }
     });
-    const uniqueCrossAllergenIds = Array.from(crossAllergenIds).map(id => ObjectId.createFromHexString(id));
 
-    // 4. Fetch the details of the cross-allergens
+    if (crossAllergenIds.size === 0) {
+        return { result: [] as Allergen[] };
+    }
+
+    // 4. Fetch details of unique cross-allergens
+    const uniqueCrossAllergenIds = Array.from(crossAllergenIds).map(id =>
+        ObjectId.createFromHexString(id)
+    );
+
     const crossAllergens = await db.collection(BusisnessTypeCollection.allergens).find({
         _id: { $in: uniqueCrossAllergenIds }
     }).toArray();
 
-    const allergens = crossAllergens.map((doc) => {
-        return Allergen.parse({
+    const allergens = crossAllergens.map((doc) =>
+        Allergen.parse({
             id: doc._id.toHexString(),
             ...doc,
-        });
-    });
+        })
+    );
+
     return { result: allergens };
 }

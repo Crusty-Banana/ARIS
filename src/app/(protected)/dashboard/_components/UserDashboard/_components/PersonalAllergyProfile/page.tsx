@@ -12,7 +12,7 @@ import { Edit, AlertTriangle, Plus, Trash2 } from "lucide-react"
 import { AddAllergenModal } from "./_components/add-allergen-modal"
 import { PotentialCrossAllergens } from "./_components/potential-cross-allergens"
 import { DisplayPAP } from "@/modules/commands/GetPAPWithUserId/typing"
-import { Allergen, DiscoveryMethod, Gender, Language, ObjectIdAsHexString, Symptom } from "@/modules/business-types"
+import { Allergen, Gender, Language, ObjectIdAsHexString, Symptom } from "@/modules/business-types"
 import { useLocale, useTranslations } from "next-intl"
 import { AllergenEditModal } from "./_components/allergen-edit-modal"
 import { UnderlyingMedicalConditionsCard } from "./_components/underlying-medical-condition"
@@ -54,8 +54,12 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
   }, [pAP]);
 
   const formatDate = (timestamp: number | null) => {
-    if (!timestamp) return t('notSpecified')
-    return new Date(timestamp * 1000).toLocaleDateString()
+    if (!timestamp) return t('notSpecified');
+    const date = new Date(timestamp * 1000);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth()+1).toString().padStart(2, '0');
+    const year = date.getFullYear().toString();
+    return `${day}/${month}/${year}`;
   }
 
   const formatDateForInput = (timestamp: number | null) => {
@@ -115,7 +119,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
     handleAddAllergen({
       allergenId: allergen.id,
       discoveryDate: null,
-      discoveryMethod: "Potential" as DiscoveryMethod,
       doneTest: false,
       testDone: "",
       symptomsId: [],
@@ -176,10 +179,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                           <div>
                             <span className="text-sm font-medium text-gray-700">{t('discoveryDate')}:</span>
                             <span className="ml-2 text-sm">{formatDate(allergen.discoveryDate)}</span>
-                          </div>
-                          <div>
-                            <span className="text-sm font-medium text-gray-700">{t('discoveryMethod')}:</span>
-                            <span className="ml-2 text-sm">{allergen.discoveryMethod === "Clinical symptoms" ? t('clinicalSymptoms') : allergen.discoveryMethod === "Paraclinical tests" ? t('paraclinicalTests') : allergen.discoveryMethod === "Potential" ? t('potential') : ""}</span>
                           </div>
                         </div>
                       </div>

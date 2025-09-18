@@ -6,7 +6,7 @@ import { useState } from "react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
-import { AllergenType, DisplayString, Language, Symptom } from "@/modules/business-types"
+import { Allergen, AllergenType, DisplayString, Language, Symptom } from "@/modules/business-types"
 import { useLocale, useTranslations } from "next-intl"
 import { AddAllergen$Params } from "@/modules/commands/AddBusinessType/typing"
 import { AllergenForm } from "./allergen-form"
@@ -14,9 +14,10 @@ import { AllergenForm } from "./allergen-form"
 interface AddAllergenButtonProps {
   symptoms: Symptom[],
   onAddAllergen: (allergen: AddAllergen$Params) => void,
+  allergens: Allergen[],
 }
 
-export function AddAllergenButton({ symptoms, onAddAllergen }: AddAllergenButtonProps) {
+export function AddAllergenButton({ symptoms, onAddAllergen, allergens }: AddAllergenButtonProps) {
   const t = useTranslations('allergenModal');
   const localLanguage = useLocale() as Language;
 
@@ -24,8 +25,13 @@ export function AddAllergenButton({ symptoms, onAddAllergen }: AddAllergenButton
   const [type, setType] = useState<AllergenType>("");
   const [name, setName] = useState<DisplayString>({en: "", vi: ""});
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
-  const [prevalence, setPrevalence] = useState(1);
+  const [selectedCrossSentitivity, setSelectedCrossSentitivity] = useState<string[]>([]);
+  const [isWholeAllergen, setIsWholeAllergen] = useState(true);
   const [description, setDescription] = useState<DisplayString>({en: "", vi: ""});
+  const dummyTreatment = {level_1: {en: "", vi: ""}, level_2: {en: "", vi: ""}, level_3: {en: "", vi: ""}}
+  const [treatment, setTreatment] = useState<{level_1: DisplayString, level_2: DisplayString, level_3: DisplayString}>
+  (dummyTreatment);
+
   const [selectedLanguage, setSelectedLanguage] = useState<Language>(localLanguage);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -35,15 +41,20 @@ export function AddAllergenButton({ symptoms, onAddAllergen }: AddAllergenButton
         type: type as AllergenType,
         name,
         symptomsId: selectedSymptoms,
-        prevalence: prevalence,
+        crossSensitivityId: selectedCrossSentitivity,
+        media: [],
+        isWholeAllergen: isWholeAllergen,
+        treatment: treatment,
         description,
       })
       setType("")
       setName({en: "", vi: ""})
       setSelectedSymptoms([])
-      setPrevalence(1)
       setDescription({en: "", vi: ""})
       setOpen(false)
+      setTreatment(dummyTreatment)
+      setSelectedCrossSentitivity([])
+      setIsWholeAllergen(true)
     }
   }
   const handleNameChange = (value: string) => {
@@ -59,6 +70,12 @@ export function AddAllergenButton({ symptoms, onAddAllergen }: AddAllergenButton
       [selectedLanguage]: value,
     }))
   }
+  const handleTreatmentChange = (level: 'level_1' | 'level_2' | 'level_3', value: string) => {
+    setTreatment((prev) => ({
+      ...prev,
+      [level]: {...prev[level], [selectedLanguage]: value},
+    }));
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -84,11 +101,16 @@ export function AddAllergenButton({ symptoms, onAddAllergen }: AddAllergenButton
               handleNameChange={handleNameChange}
               description={description}
               handleDescriptionChange={handleDescriptionChange}
-              prevalence={prevalence}
-              setPrevalence={setPrevalence}
               symptoms={symptoms}
+              allergens={allergens}
               selectedSymptoms={selectedSymptoms}
               setSelectedSymptoms={setSelectedSymptoms}
+              selectedCrossSensitivity={selectedCrossSentitivity}
+              setSelectedCrossSensitivity={setSelectedCrossSentitivity}
+              isWholeAllergen={isWholeAllergen}
+              setIsWholeAllergen={setIsWholeAllergen}
+              treatment={treatment}
+              handleTreatmentChange={handleTreatmentChange}
             />
             <Button
               type="submit"

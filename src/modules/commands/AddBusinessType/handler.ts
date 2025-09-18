@@ -1,5 +1,5 @@
 import { Db } from "mongodb";
-import { AddAllergen$Params, AddAllergy$Params, AddPAP$Params, AddRecommendation$Params, AddSymptom$Params, AddUser$Params } from "./typing";
+import { AddAllergen$Params, AddPAP$Params, AddRecommendation$Params, AddSymptom$Params, AddUser$Params } from "./typing";
 import { BusisnessTypeCollection } from "@/modules/business-types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -14,10 +14,6 @@ export async function handler$AddUser(db: Db, params: AddUser$Params) {
 
 export async function handler$AddAllergen(db: Db, params: AddAllergen$Params) {
   return await handler$AddBusinessType(db, params, BusisnessTypeCollection.allergens);
-}
-
-export async function handler$AddAllergy(db: Db, params: AddAllergy$Params) {
-  return await handler$AddBusinessType(db, params, BusisnessTypeCollection.allergies);
 }
 
 export async function handler$AddPAP(db: Db, params: AddPAP$Params) {
