@@ -88,6 +88,7 @@ export function AddAllergenModal({
       doneTest,
       testDone,
       symptomsId: selectedSymptoms,
+      testResult: testResultUrl,
     })
 
     // Reset form

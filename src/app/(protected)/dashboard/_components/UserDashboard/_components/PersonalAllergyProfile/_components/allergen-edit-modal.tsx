@@ -23,7 +23,6 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
   const localLanguage = useLocale() as Language;
 
   const [discoveryDate, setDiscoveryDate] = useState(allergen.discoveryDate)
-  const [discoveryMethod, setDiscoveryMethod] = useState(allergen.discoveryMethod)
   const [selectedSymptoms, setSelectedSymptoms] = useState(allergen.symptoms.map((symptom) => symptom.symptomId))
   const [doneTest, setDoneTest] = useState(false);
   const [testDone, setTestDone] = useState<TestType>("");
@@ -41,7 +40,6 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
   const handleSave = () => {
     onUpdate({
       discoveryDate,
-      discoveryMethod,
       doneTest,
       testDone,
       symptomsId: selectedSymptoms,
@@ -66,9 +64,6 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
           </div>
 
           <div className="flex gap-6">
-            <div className="flex-1">
-              <DiscoveryMethodDropdown value={discoveryMethod} onValueChange={(value) => setDiscoveryMethod(value as DiscoveryMethod)}/>
-            </div>
             {doneTest && (
               <div className="flex-1">
                 <TestTypeDropdown value={testDone} onValueChange={(value) => setTestDone(value as TestType)} />
@@ -76,7 +71,6 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
             )}
           </div>
           <div>
-            {discoveryMethod === "Clinical symptoms" && (
               <DoneTestTickbox 
                 checked={doneTest} 
                 onCheckedChange={(checked) => {
@@ -84,7 +78,6 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
                   if (!checked) setTestDone("")
                 }}
               />
-            )}
           </div>
           <ScrollableSelect
             items={availableSymptoms.sort((a, b) => a.name[localLanguage].localeCompare(b.name[localLanguage]))}
