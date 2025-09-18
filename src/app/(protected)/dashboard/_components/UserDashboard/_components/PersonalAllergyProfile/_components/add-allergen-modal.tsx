@@ -171,18 +171,11 @@ export function AddAllergenModal({
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">{t("discoveryDate")}</label>
-                  {/* <Input
-                    type="date"
-                    value={discoveryDate}
-                    onChange={(e) => setDiscoveryDate(e.target.value)}
-                    className="border-cyan-300 focus:border-cyan-500 mt-1 block w-full text-transparent"
-                  /> */}
                   <DatePicker
                     value={discoveryDate}
                     onChange={setDiscoveryDate}
                     placeholder={"select date"}
                   />
-
                 </div>
 
                 <div className="flex gap-6">
