@@ -1,7 +1,6 @@
 import { DoneTestTickbox } from "@/components/done-test-tickbox";
 import { GroupedSymptomSelect } from "@/components/grouped-symptoms-select";
 import { TestTypeDropdown } from "@/components/test-type-dropdown";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/custom-date-picker";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -9,7 +8,7 @@ import { Language, Symptom, TestType } from "@/modules/business-types";
 import { httpPost$AddFileToS3 } from "@/modules/commands/AddFileToS3/fetcher";
 import { DisplayPAPAllergen } from "@/modules/commands/GetPAPWithUserId/typing";
 import { UpdatePAPAllergen$Params } from "@/modules/commands/UpdatePAPWithUserId/typing";
-import { Paperclip, UploadCloud, X, XCircle } from "lucide-react";
+import { Paperclip, UploadCloud, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -134,10 +133,6 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
                     <Paperclip className="h-4 w-4" />
                     <span>{'View Result'}</span>
                   </a>
-                  {/* <Button onClick={() => { setTestResultUrl(undefined); setSelectedResultFile(null); }} className="text-gray-500 hover:text-gray-700">
-                    <XCircle className="h-5 w-5" />
-                  </Button> */}
-
                   <Button
                     type="button"
                     variant="ghost"
