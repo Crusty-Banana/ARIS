@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Paperclip, Search, UploadCloud, XCircle } from "lucide-react"
+import { Paperclip, Search, UploadCloud, X, XCircle } from "lucide-react"
 import { Allergen, Language, Symptom, TestType } from "@/modules/business-types"
 import { useLocale, useTranslations } from "next-intl"
 import { PAPAllergen } from "@/modules/commands/UpdatePAPWithUserId/typing"
@@ -231,8 +231,14 @@ export function AddAllergenModal({
                           <Paperclip className="h-4 w-4" />
                           <span>{'View uploaded result'}</span>
                         </a>
-                        <Button onClick={() => { setTestResultUrl(undefined); setSelectedResultFile(null); }} className="text-gray-500 hover:text-gray-700">
-                          <XCircle className="h-5 w-5" />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="h-4 w-4 p-0 hover:bg-red-100"
+                          onClick={() => { setTestResultUrl(undefined); setSelectedResultFile(null); }}
+                        >
+                          <X className="h-3 w-3" />
                         </Button>
                       </div>
                     )}
