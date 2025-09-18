@@ -134,10 +134,6 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
                     <Paperclip className="h-4 w-4" />
                     <span>{'View Result'}</span>
                   </a>
-                  {/* <Button onClick={() => { setTestResultUrl(undefined); setSelectedResultFile(null); }} className="text-gray-500 hover:text-gray-700">
-                    <XCircle className="h-5 w-5" />
-                  </Button> */}
-
                   <Button
                     type="button"
                     variant="ghost"

@@ -79,7 +79,7 @@ export function AddAllergenModal({
   };
 
   const handleSubmit = () => {
-    if (!selectedAllergen) return
+    if (!selectedAllergen) return;
 
     onAddAllergen({
       allergenId: selectedAllergen.id,
@@ -88,24 +88,26 @@ export function AddAllergenModal({
       testDone,
       symptomsId: selectedSymptoms,
       testResult: testResultUrl,
-    })
+    });
 
     // Reset form
-    setSelectedAllergen(null)
-    setDiscoveryDate(undefined)
-    setSelectedSymptoms([])
-    setSearchTerm("")
+    setSelectedAllergen(null);
+    setDiscoveryDate(undefined);
+    setSelectedSymptoms([]);
+    setSearchTerm("");
+    setDoneTest(false);
+    setTestDone("");
     setSelectedResultFile(null);
     setTestResultUrl(undefined);
     setIsUploading(false);
     onClose()
-  }
+  };
 
   const handleAllergenSelect = (allergen: Allergen) => {
-    setSelectedAllergen(allergen)
+    setSelectedAllergen(allergen);
     // Pre-select symptoms that are associated with this allergen
-    setSelectedSymptoms(allergen.symptomsId)
-  }
+    setSelectedSymptoms(allergen.symptomsId);
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -189,8 +191,10 @@ export function AddAllergenModal({
                     <DoneTestTickbox 
                       checked={doneTest} 
                       onCheckedChange={(checked) => {
-                        setDoneTest(checked as boolean)
-                        if (!checked) setTestDone("")
+                        setDoneTest(checked as boolean);
+                        if (!checked) setTestDone("");
+                        setSelectedResultFile(null);
+                        setTestResultUrl(undefined);
                       }}
                     />
                 </div>
