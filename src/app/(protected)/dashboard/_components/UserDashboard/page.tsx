@@ -35,9 +35,8 @@ export default function UserDashboard() {
 
   const [availableAllergens, setAvailableAllegerns] = useState<Allergen[]>([]);
 
-  const fetchAvailableAllergens = useCallback(async () => {
-    const excludedIds = pAP.allergens.map(pAPAllergen => pAPAllergen.allergenId);
-    console.log(pAP.allergens.map(pAPAllergen => pAPAllergen.allergenId));
+  const fetchAvailableAllergens = useCallback(async (papResult: DisplayPAP) => {
+    const excludedIds = papResult.allergens.map(pAPAllergen => pAPAllergen.allergenId);
 
     const data = await httpGet$GetAllergens('/api/allergens', {filters: {isWholeAllergen: true, _id: { $nin: excludedIds }}});
     if (data.success) {
@@ -45,7 +44,7 @@ export default function UserDashboard() {
     } else {
       toast.error(data.message);
     }
-  }, [pAP.allergens]);
+  }, []);
   
   const fetchPotentialCrossAllergens = async () => {
     const data = await httpGet$GetCrossAllergenFromUserID('/api/cross');
@@ -78,11 +77,12 @@ export default function UserDashboard() {
     const data = await httpGet$GetPAPWithUserId('api/user-pap');
     if (data.success) {
       setPAP(data.result!);
-      fetchPotentialCrossAllergens();
+      await fetchPotentialCrossAllergens();
+      await fetchAvailableAllergens(data.result!);
     } else {
       toast.error(data.message);
     }
-  }, [])
+  }, [fetchAvailableAllergens])
 
   const handlePAPUpdate = async (updateData: UpdatePAPWithUserIdFetcher$Params) => {
     const data = await httpPut$UpdatePAPWithUserId('/api/user-pap', updateData);
@@ -115,14 +115,7 @@ export default function UserDashboard() {
     fetchPAP();
     fetchSymptoms();
     fetchAllergens();
-    fetchAvailableAllergens();
-  }, [fetchPAP, fetchAvailableAllergens])
-
-  useEffect(() => { // Ensure fetchAvailableAllergens() uses fetched PAP
-    if (pAP.id !== "000000000000000000000000") {
-      fetchAvailableAllergens();
-    }
-  }, [pAP, fetchAvailableAllergens]);
+  }, [fetchPAP])
 
   return (
     <div className="flex-grow bg-gradient-to-br from-cyan-100 via-blue-50 to-blue-100">
