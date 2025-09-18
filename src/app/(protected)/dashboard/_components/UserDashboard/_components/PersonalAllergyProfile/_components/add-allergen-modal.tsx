@@ -6,17 +6,16 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Paperclip, Search, UploadCloud, XCircle } from "lucide-react"
-import { ScrollableSelect } from "@/components/scrollable-select"
-import { Allergen, DiscoveryMethod, Language, Symptom, TestType } from "@/modules/business-types"
+import { Allergen, Language, Symptom, TestType } from "@/modules/business-types"
 import { useLocale, useTranslations } from "next-intl"
 import { PAPAllergen } from "@/modules/commands/UpdatePAPWithUserId/typing"
 import { getTypeColor } from "@/lib/client-side-utils"
 import { TestTypeDropdown } from "@/components/test-type-dropdown"
-import { DiscoveryMethodDropdown } from "@/components/discovery-method-dropdown"
 import { DoneTestTickbox } from "@/components/done-test-tickbox"
 import { toast } from "sonner"
 import { httpPost$AddFileToS3 } from "@/modules/commands/AddFileToS3/fetcher"
 import { DatePicker } from "@/components/ui/custom-date-picker"
+import { GroupedSymptomSelect } from "@/components/grouped-symptoms-select"
 
 interface AddAllergenModalProps {
   open: boolean
@@ -236,14 +235,13 @@ export function AddAllergenModal({
                   </div>
                 )}
 
-                <ScrollableSelect
+                <GroupedSymptomSelect
                   items={availableSymptoms.sort((a, b) => a.name[localLanguage].localeCompare(b.name[localLanguage]))}
                   selectedItems={selectedSymptoms}
                   onSelectionChange={setSelectedSymptoms}
                   getItemId={(symptom) => symptom.id}
                   getItemLabel={(symptom) => symptom.name[localLanguage]}
                   label={t("associatedSymptoms")}
-                  maxHeight="max-h-32"
                 />
               </>
             )}
