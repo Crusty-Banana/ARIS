@@ -7,10 +7,8 @@ import { useTranslations } from "next-intl"
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
-import Checkbox from '@mui/material/Checkbox'
+import { Checkbox } from "@/components/ui/checkbox"
 import Box from '@mui/material/Box'
-import FormLabel from '@mui/material/FormLabel'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import Typography from '@mui/material/Typography'
 import { ChevronDown, X } from "lucide-react"
 import { Button } from "./ui/button"
@@ -35,10 +33,9 @@ export function GroupedSymptomSelect<T>({
 }: GroupedSymptomSelectProps<T>) {
   const t = useTranslations('common');
 
-  // Grouping logic: All items are placed into a single group.
   const symptomGroups = {
-    // You can dynamically create group names if needed
     "All Symptoms": items,
+    "Oral": items.slice(5,9),
   };
 
   const toggleItem = (itemId: string) => {
@@ -55,7 +52,7 @@ export function GroupedSymptomSelect<T>({
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-      <FormLabel>{label}</FormLabel>
+      <label className="block text-sm font-medium text-gray-700">{label}</label>
       {/* Selected items */}
       {selectedItems.length > 0 && (
         <div className="flex flex-wrap gap-2 p-2 border border-cyan-200 rounded-md bg-cyan-50">
@@ -81,13 +78,13 @@ export function GroupedSymptomSelect<T>({
       
       {/* Accordion for grouped symptoms */}
       {Object.entries(symptomGroups).map(([groupName, groupItems]) => (
-        <Accordion defaultExpanded key={groupName} variant="outlined">
+        <Accordion defaultExpanded={false} key={groupName} variant="outlined">
           <AccordionSummary
             expandIcon={<ChevronDown />}
             aria-controls={`${groupName}-content`}
             id={`${groupName}-header`}
           >
-            <Typography>{groupName}</Typography>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{groupName}</label>
           </AccordionSummary>
           <AccordionDetails sx={{ p: 1 }}>
             <Box sx={{ maxHeight: '200px', overflowY: 'auto' }}>
@@ -96,23 +93,20 @@ export function GroupedSymptomSelect<T>({
                   const itemId = getItemId(item);
                   const isSelected = selectedItems.includes(itemId);
                   return (
-                    <FormControlLabel
-                      key={itemId}
-                      control={
-                        <Checkbox
-                          checked={isSelected}
-                          onChange={() => toggleItem(itemId)}
-                          id={itemId}
-                        />
-                      }
-                      label={getItemLabel(item)}
-                      sx={{ width: '100%', m: 0 }}
-                    />
+                    <div key={itemId} className="flex items-center space-x-2 p-2 hover:bg-cyan-50 rounded">
+                        <Checkbox id={itemId} checked={isSelected} onCheckedChange={(checked) => {
+                          console.log(checked);
+                          toggleItem(itemId);
+                        }} />
+                        <label htmlFor={itemId} className="text-sm cursor-pointer flex-1">
+                          {getItemLabel(item)}
+                        </label>
+                      </div>
                   );
                 })
               ) : (
                 <Typography variant="body2" align="center" color="text.secondary" sx={{ p: 2 }}>
-                  {t('no_items_found')}
+                  {t('noSymptomsFound')}
                 </Typography>
               )}
             </Box>
