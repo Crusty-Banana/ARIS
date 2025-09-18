@@ -15,7 +15,6 @@ export type PublicPAPSymptom = z.infer<typeof PublicPAPSymptom>
 export const PublicPAPAllergen = DisplayPAP.shape.allergens.element.omit({
     symptoms: true,
     discoveryDate: true,
-    discoveryMethod: true,
 }).extend({
     symptoms: z.array(PublicPAPSymptom)
 })

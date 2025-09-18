@@ -121,7 +121,7 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
   }
 
   // Sort allergens by severity (highest first)
-  const sortedAllergens = [...profile.allergens].sort((a, b) => b.severity - a.severity)
+  const sortedAllergens = [...profile.allergens]
 
   // Get all unique symptoms and sort by severity (highest first)
   const allSymptoms = profile.allergens
@@ -182,9 +182,6 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
                       <div className="flex items-center gap-2">
                         <Badge className={`${getTypeColor(allergen.type)} text-white capitalize`}>
                           {allergen.type}
-                        </Badge>
-                        <Badge className={`${getSeverityColor(allergen.severity)} text-white`}>
-                          {getSeverityLabel(allergen.severity)} ({allergen.severity})
                         </Badge>
                       </div>
                     </div>
