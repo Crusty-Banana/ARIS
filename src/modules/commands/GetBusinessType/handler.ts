@@ -13,6 +13,7 @@ import { Allergen, BusisnessTypeCollection, PAP, Recommendation, Symptom, User }
 async function handler$GetBusinessType(db: Db, params: GetBusinessType$Params, collectionName: string) {
   const { ids, limit, offset, lang, filters } = params;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mongoFilter: any = { ...filters };
   if (mongoFilter?._id?.$nin && Array.isArray(mongoFilter._id.$nin)) {
     mongoFilter._id.$nin = mongoFilter._id.$nin.map((id: string) => ObjectId.createFromHexString(id));
@@ -69,7 +70,7 @@ export async function handler$GetAllergens(db: Db, params: GetAllergens$Params) 
       id: doc._id.toHexString(),
       name: doc.name[lang],
       description: doc.description[lang],
-      treatment:{
+      treatment: {
         level_1: doc.treatment.level_1[lang],
         level_2: doc.treatment.level_2[lang],
         level_3: doc.treatment.level_3[lang]

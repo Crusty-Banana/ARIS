@@ -14,7 +14,6 @@ import { PAPAllergen, UpdatePAPWithUserIdFetcher$Params } from "@/modules/comman
 import { httpPut$UpdatePAPWithUserId } from "@/modules/commands/UpdatePAPWithUserId/fetcher"
 import { SymptomList } from "@/components/container/SymptomList/page"
 import { AllergenList } from "@/components/container/AllergenList/page"
-import { GetAllergens$Result, GetBusinessType$Params } from "@/modules/commands/GetBusinessType/typing"
 
 export default function UserDashboard() {
   const t = useTranslations('userDashboard')
@@ -36,7 +35,7 @@ export default function UserDashboard() {
 
   const [availableAllergens, setAvailableAllegerns] = useState<Allergen[]>([]);
 
-  const fetchAvailableAllergens = async () => {
+  const fetchAvailableAllergens = useCallback(async () => {
     const excludedIds = pAP.allergens.map(pAPAllergen => pAPAllergen.allergenId);
     console.log(pAP.allergens.map(pAPAllergen => pAPAllergen.allergenId));
 
@@ -46,7 +45,7 @@ export default function UserDashboard() {
     } else {
       toast.error(data.message);
     }
-  };
+  }, [pAP.allergens]);
   
   const fetchPotentialCrossAllergens = async () => {
     const data = await httpGet$GetCrossAllergenFromUserID('/api/cross');
@@ -117,13 +116,13 @@ export default function UserDashboard() {
     fetchSymptoms();
     fetchAllergens();
     fetchAvailableAllergens();
-  }, [fetchPAP])
+  }, [fetchPAP, fetchAvailableAllergens])
 
   useEffect(() => { // Ensure fetchAvailableAllergens() uses fetched PAP
     if (pAP.id !== "000000000000000000000000") {
       fetchAvailableAllergens();
     }
-  }, [pAP]);
+  }, [pAP, fetchAvailableAllergens]);
 
   return (
     <div className="flex-grow bg-gradient-to-br from-cyan-100 via-blue-50 to-blue-100">
