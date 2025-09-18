@@ -138,17 +138,15 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
                     <XCircle className="h-5 w-5" />
                   </Button> */}
 
-                  <Badge variant="default" className="flex items-center gap-1">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="h-4 w-4 p-0 hover:bg-red-100"
-                      onClick={() => { setTestResultUrl(undefined); setSelectedResultFile(null); }}
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
-                  </Badge>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-4 w-4 p-0 hover:bg-red-100"
+                    onClick={() => { setTestResultUrl(undefined); setSelectedResultFile(null); }}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
                 </div>
               )}
             </div>
