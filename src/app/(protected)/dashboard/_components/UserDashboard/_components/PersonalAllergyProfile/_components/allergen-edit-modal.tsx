@@ -22,10 +22,10 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
   const t = useTranslations('personalAllergyProfile');
   const localLanguage = useLocale() as Language;
 
-  const [discoveryDate, setDiscoveryDate] = useState<Date | undefined>(undefined);
+  const [discoveryDate, setDiscoveryDate] = useState<Date | undefined>(allergen.discoveryDate ? new Date(allergen.discoveryDate * 1000) : undefined);
   const [selectedSymptoms, setSelectedSymptoms] = useState(allergen.symptoms.map((symptom) => symptom.symptomId));
-  const [doneTest, setDoneTest] = useState(false);
-  const [testDone, setTestDone] = useState<TestType>("");
+  const [doneTest, setDoneTest] = useState(allergen.doneTest);
+  const [testDone, setTestDone] = useState<TestType>(allergen.testDone ? allergen.testDone : "");
 
   const parseInputDate = (date: Date | undefined) => {
     if (!date) return null;
