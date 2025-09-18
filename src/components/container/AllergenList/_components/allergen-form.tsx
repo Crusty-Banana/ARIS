@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AllergenType, DisplayString, Language, Symptom, Allergen } from "@/modules/business-types";
 import { useLocale, useTranslations } from "next-intl";
+import { RichTextEditor } from "@/components/rich-text-editor";
 
 interface AllergenFormProps {
   type: AllergenType;
@@ -66,12 +67,25 @@ export function AllergenForm(
         <label className="block text-sm font-medium text-gray-700 mb-1">
           {t("description")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})
         </label>
-        <Textarea
+        {/* <Textarea
           value={description[selectedLanguage]}
           onChange={(e) => handleDescriptionChange(e.target.value)}
           placeholder={t('enterDescription')}
           required
-          className="border-cyan-300 focus:border-cyan-500 min-h-[80px]" />
+          className="border-cyan-300 focus:border-cyan-500 min-h-[80px]" /> */}
+
+          {selectedLanguage == "vi" ? (<RichTextEditor 
+            content={description["vi"]}
+            key="allergen-text-editor-vi" 
+            onChange={(content) => handleDescriptionChange(content)}
+            placeholder={t('enterDescription')}
+          />) : 
+          (<RichTextEditor 
+            content={description["en"]}
+            key="allergen-text-editor-en" 
+            onChange={(content) => handleDescriptionChange(content)}
+            placeholder={t('enterDescription')}
+          />)}
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">

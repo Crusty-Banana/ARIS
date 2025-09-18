@@ -75,7 +75,6 @@ export function AddAllergenButton({ symptoms, onAddAllergen, allergens }: AddAll
       ...prev,
       [level]: {...prev[level], [selectedLanguage]: value},
     }));
-    console.log("TREATMENT:", treatment)
   };
 
   return (

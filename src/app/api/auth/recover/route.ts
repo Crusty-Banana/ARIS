@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
 
             // --- Send password reset email here ---
             await sendPasswordResetEmail(email, resetToken);
-            console.log(`Password reset token for ${email}: ${resetToken}`);
+            // console.log(`Password reset token for ${email}: ${resetToken}`);
             // ------------------------------------
         }
 

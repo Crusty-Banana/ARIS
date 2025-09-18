@@ -144,8 +144,11 @@ export function AllergenDetailModal({
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('description')}</label>
-              <div className="p-2 bg-gray-50 rounded min-h-[100px]">{allergen.description[selectedLanguage]}</div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("description")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})</label>
+              <div 
+                className="p-2 bg-gray-50 rounded min-h-[100px] prose prose-sm max-w-none" 
+                dangerouslySetInnerHTML={{ __html: allergen.description[selectedLanguage] }} 
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t('level_1Treatment')}</label>
