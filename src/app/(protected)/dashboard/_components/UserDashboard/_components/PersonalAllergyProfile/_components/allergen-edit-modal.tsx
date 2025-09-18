@@ -1,11 +1,10 @@
-import { DiscoveryMethodDropdown } from "@/components/discovery-method-dropdown";
 import { DoneTestTickbox } from "@/components/done-test-tickbox";
 import { ScrollableSelect } from "@/components/scrollable-select";
 import { TestTypeDropdown } from "@/components/test-type-dropdown";
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/custom-date-picker";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { DiscoveryMethod, Language, Symptom, TestType } from "@/modules/business-types";
+import { Language, Symptom, TestType } from "@/modules/business-types";
 import { DisplayPAPAllergen } from "@/modules/commands/GetPAPWithUserId/typing";
 import { UpdatePAPAllergen$Params } from "@/modules/commands/UpdatePAPWithUserId/typing";
 import { useLocale, useTranslations } from "next-intl";
@@ -22,28 +21,21 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
   const t = useTranslations('personalAllergyProfile');
   const localLanguage = useLocale() as Language;
 
-  const [discoveryDate, setDiscoveryDate] = useState(allergen.discoveryDate)
-  const [discoveryMethod, setDiscoveryMethod] = useState(allergen.discoveryMethod)
-  const [selectedSymptoms, setSelectedSymptoms] = useState(allergen.symptoms.map((symptom) => symptom.symptomId))
-  const [doneTest, setDoneTest] = useState(false);
-  const [testDone, setTestDone] = useState<TestType>("");
+  const [discoveryDate, setDiscoveryDate] = useState<Date | undefined>(allergen.discoveryDate ? new Date(allergen.discoveryDate * 1000) : undefined);
+  const [selectedSymptoms, setSelectedSymptoms] = useState(allergen.symptoms.map((symptom) => symptom.symptomId));
+  const [doneTest, setDoneTest] = useState(allergen.doneTest);
+  const [testDone, setTestDone] = useState<TestType>(allergen.testDone ? allergen.testDone : "");
 
-  const formatDateForInput = (timestamp: number | null) => {
-    if (!timestamp) return ""
-    return new Date(timestamp * 1000).toISOString().split("T")[0]
-  }
-
-  const parseInputDate = (dateString: string) => {
-    if (!dateString) return null
-    return Math.floor(new Date(dateString).getTime() / 1000)
-  }
+  const parseInputDate = (date: Date | undefined) => {
+    if (!date) return null;
+    return Math.floor(date.getTime() / 1000);
+  };
 
   const handleSave = () => {
     onUpdate({
-      discoveryDate,
-      discoveryMethod,
-      doneTest,
-      testDone,
+      discoveryDate: parseInputDate(discoveryDate),
+      doneTest: doneTest,
+      testDone: testDone,
       symptomsId: selectedSymptoms,
     })
   }
@@ -57,18 +49,14 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">{t('discoveryDate')}</label>
-            <Input
-              type="date"
-              value={formatDateForInput(discoveryDate)}
-              onChange={(e) => setDiscoveryDate(parseInputDate(e.target.value))}
-              className="border-cyan-300 focus:border-cyan-500"
+            <DatePicker
+              value={discoveryDate}
+              onChange={setDiscoveryDate}
+              placeholder={"select date"}
             />
           </div>
 
           <div className="flex gap-6">
-            <div className="flex-1">
-              <DiscoveryMethodDropdown value={discoveryMethod} onValueChange={(value) => setDiscoveryMethod(value as DiscoveryMethod)}/>
-            </div>
             {doneTest && (
               <div className="flex-1">
                 <TestTypeDropdown value={testDone} onValueChange={(value) => setTestDone(value as TestType)} />
@@ -76,7 +64,6 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
             )}
           </div>
           <div>
-            {discoveryMethod === "Clinical symptoms" && (
               <DoneTestTickbox 
                 checked={doneTest} 
                 onCheckedChange={(checked) => {
@@ -84,7 +71,6 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
                   if (!checked) setTestDone("")
                 }}
               />
-            )}
           </div>
           <ScrollableSelect
             items={availableSymptoms.sort((a, b) => a.name[localLanguage].localeCompare(b.name[localLanguage]))}

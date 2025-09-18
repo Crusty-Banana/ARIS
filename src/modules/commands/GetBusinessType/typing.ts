@@ -22,6 +22,9 @@ export type LocalizedSymptom = z.infer<typeof LocalizedSymptom>;
 
 export const GetFilter = z.object({
   isWholeAllergen: z.boolean().optional(),
+  _id: z.object({
+    $nin: z.array(ObjectIdAsHexString).optional(),
+  }).optional(),
 });
 export type GetFilter = z.infer<typeof GetFilter>;
 
@@ -40,7 +43,7 @@ export const GetUsers$Params = GetBusinessType$Params.omit({ filters: true });
 export type GetUsers$Params = z.infer<typeof GetUsers$Params>;
 
 export const GetAllergens$Params = GetBusinessType$Params.omit({ filters: true }).extend(
-  { filters: GetFilter.pick({ isWholeAllergen: true }).optional() }
+  { filters: GetFilter.pick({ isWholeAllergen: true, _id: true }).optional() }
 )
 export type GetAllergens$Params = z.infer<typeof GetAllergens$Params>;
 

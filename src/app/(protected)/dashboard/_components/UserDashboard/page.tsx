@@ -14,6 +14,7 @@ import { PAPAllergen, UpdatePAPWithUserIdFetcher$Params } from "@/modules/comman
 import { httpPut$UpdatePAPWithUserId } from "@/modules/commands/UpdatePAPWithUserId/fetcher"
 import { SymptomList } from "@/components/container/SymptomList/page"
 import { AllergenList } from "@/components/container/AllergenList/page"
+import { GetAllergens$Result, GetBusinessType$Params } from "@/modules/commands/GetBusinessType/typing"
 
 export default function UserDashboard() {
   const t = useTranslations('userDashboard')
@@ -33,8 +34,20 @@ export default function UserDashboard() {
   const [allergens, setAllergens] = useState<Allergen[]>([])
   const [potentialCrossAllergens, setPotentialCrossAllergens] = useState<Allergen[]>([])
 
-  const availableAllergens = allergens.filter((allergen) => !pAP.allergens.some((pAPAllergen) => pAPAllergen.allergenId === allergen.id))
+  const [availableAllergens, setAvailableAllegerns] = useState<Allergen[]>([]);
 
+  const fetchAvailableAllergens = async () => {
+    const excludedIds = pAP.allergens.map(pAPAllergen => pAPAllergen.allergenId);
+    console.log(pAP.allergens.map(pAPAllergen => pAPAllergen.allergenId));
+
+    const data = await httpGet$GetAllergens('/api/allergens', {filters: {isWholeAllergen: true, _id: { $nin: excludedIds }}});
+    if (data.success) {
+      setAvailableAllegerns(data.result as Allergen[]);
+    } else {
+      toast.error(data.message);
+    }
+  };
+  
   const fetchPotentialCrossAllergens = async () => {
     const data = await httpGet$GetCrossAllergenFromUserID('/api/cross');
     if (data.success) {
@@ -103,8 +116,14 @@ export default function UserDashboard() {
     fetchPAP();
     fetchSymptoms();
     fetchAllergens();
+    fetchAvailableAllergens();
   }, [fetchPAP])
 
+  useEffect(() => { // Ensure fetchAvailableAllergens() uses fetched PAP
+    if (pAP.id !== "000000000000000000000000") {
+      fetchAvailableAllergens();
+    }
+  }, [pAP]);
 
   return (
     <div className="flex-grow bg-gradient-to-br from-cyan-100 via-blue-50 to-blue-100">
