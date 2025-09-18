@@ -128,7 +128,10 @@ export function SymptomDetailModal({ symptom, onClose, onUpdate, onDelete }: Sym
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t("description")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})</label>
-              <div className="p-2 bg-gray-50 rounded min-h-[100px]">{symptom.description[selectedLanguage]}</div>
+              <div 
+                className="p-2 bg-gray-50 rounded min-h-[100px] prose prose-sm max-w-none" 
+                dangerouslySetInnerHTML={{ __html: symptom.description[selectedLanguage] }} 
+              />
             </div>
           </>
         )}

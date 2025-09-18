@@ -54,8 +54,12 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
   }, [pAP]);
 
   const formatDate = (timestamp: number | null) => {
-    if (!timestamp) return t('notSpecified')
-    return new Date(timestamp * 1000).toLocaleDateString()
+    if (!timestamp) return t('notSpecified');
+    const date = new Date(timestamp * 1000);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth()+1).toString().padStart(2, '0');
+    const year = date.getFullYear().toString();
+    return `${day}/${month}/${year}`;
   }
 
   const formatDateForInput = (timestamp: number | null) => {

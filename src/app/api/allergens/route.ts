@@ -41,9 +41,9 @@ export async function GET(
 
     // Validate Input
     const searchParams = Object.fromEntries(req.nextUrl.searchParams);
-    console.log(searchParams)
+
     const parsedBody = GetAllergens$Params.safeParse({ ...searchParams, filters: searchParams.filters ? JSON.parse(searchParams.filters) : undefined });
-    console.log(parsedBody)
+
     if (!parsedBody.success) {
       return NextResponse.json(
         { message: parsedBody.error.message || "Invalid params" },
