@@ -63,7 +63,6 @@ export function PotentialCrossAllergens({
                   </Badge>
                 </div>
                 <div className="text-sm text-gray-600 line-clamp-2">{allergen.description[localLanguage]}</div>
-                <div className="text-xs text-gray-500 mt-1">{allergen.symptomsId.length} {t('associatedSymptoms')}</div>
               </div>
               <Button
                 size="sm"

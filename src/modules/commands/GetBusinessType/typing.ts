@@ -6,11 +6,6 @@ import { z } from "zod";
 export const LocalizedAllergen = Allergen.omit({ name: true, description: true }).extend({
   name: z.string(),
   description: z.string(),
-  treatment: z.object({
-    level_1: z.string(),
-    level_2: z.string(),
-    level_3: z.string(),
-  })
 });
 export type LocalizedAllergen = z.infer<typeof LocalizedAllergen>;
 

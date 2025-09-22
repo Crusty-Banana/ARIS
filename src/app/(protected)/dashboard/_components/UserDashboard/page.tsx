@@ -166,7 +166,6 @@ export default function UserDashboard() {
               <TabsContent value="wiki-allergens">
                 <AllergenList
                   allergens={allergens}
-                  symptoms={symptoms}
                   onQuickAdd={handleQuickAddFromWiki}
                   userAllergenIds={pAP.allergens.map((allergen) => allergen.allergenId)}
                 />
