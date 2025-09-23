@@ -9,7 +9,7 @@ import { Plus } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { AddSymptom$Params } from "@/modules/commands/AddBusinessType/typing"
 import { SymptomForm } from "./symptom-form"
-import { Language } from "@/modules/business-types"
+import { Language, Organ } from "@/modules/business-types"
 
 interface AddSymptomButtonProps {
   onAddSymptom: (symptom: AddSymptom$Params) => void
@@ -20,22 +20,22 @@ export function AddSymptomButton({ onAddSymptom }: AddSymptomButtonProps) {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState({"en": "", "vi": ""})
   const [severity, setSeverity] = useState(1)
-  const [prevalence, setPrevalence] = useState(1)
   const [description, setDescription] = useState({"en": "", "vi": ""})
+  const [organ, setOrgan] = useState<Organ>("")
   const [selectedLanguage, setSelectedLanguage] = useState<Language>("en")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (name && description) {
+    if (name && description && organ) {
       onAddSymptom({
         name,
         severity: severity,
-        prevalence: prevalence,
         description,
+        organ,
       })
       setName({"en": "", "vi": ""})
+      setOrgan("")
       setSeverity(1)
-      setPrevalence(1)
       setDescription({"en": "", "vi": ""})
       setOpen(false)
     }
@@ -75,10 +75,9 @@ export function AddSymptomButton({ onAddSymptom }: AddSymptomButtonProps) {
             handleNameChange={handleNameChange}
             severity={severity}
             setSeverity={setSeverity}
-            prevalence={prevalence}
-            setPrevalence={setPrevalence}
             description={description}
-
+            organ={organ}
+            setOrgan={setOrgan}
             handleDescriptionChange={handleDescriptionChange}
           />
           <Button

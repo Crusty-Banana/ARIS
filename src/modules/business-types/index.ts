@@ -15,6 +15,9 @@ export type DiscoveryMethod = z.infer<typeof DiscoveryMethod>;
 export const Gender = z.enum(["male", "female", "other", ""]).default("");
 export type Gender = z.infer<typeof Gender>;
 
+const Organ = z.enum(["throat", "chest", "skin", ""]).default("");
+export type Organ = z.infer<typeof Organ>;
+
 export const RecommendationType = z.enum(["Allergen Suggestion", "General Feedback", ""]).default("");
 export type RecommendationType = z.infer<typeof RecommendationType>;
 
@@ -93,7 +96,7 @@ export const Symptom = z.object({
     name: DisplayString,
     description: DisplayString,
     severity: z.number().min(1).max(3),
-    prevalence: z.number().min(1).max(5).default(1),
+    organ: Organ,
 });
 export type Symptom = z.infer<typeof Symptom>;
 

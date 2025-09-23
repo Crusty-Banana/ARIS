@@ -18,7 +18,7 @@ interface SymptomListProps {
 }
 
 
-type SymptomSortOption = "name" | "severity" | "prevalence"
+type SymptomSortOption = "name" | "severity"
 type SortDirection = "asc" | "desc"
 
 export function SymptomList({ symptoms, onUpdate, onDelete }: SymptomListProps) {
@@ -43,9 +43,6 @@ export function SymptomList({ symptoms, onUpdate, onDelete }: SymptomListProps) 
           break
         case "severity":
           comparison = a.severity - b.severity
-          break
-        case "prevalence":
-          comparison = a.prevalence - b.prevalence
           break
       }
       return sortDirection === "asc" ? comparison : -comparison
@@ -86,7 +83,6 @@ export function SymptomList({ symptoms, onUpdate, onDelete }: SymptomListProps) 
             <SelectContent>
               <SelectItem value="name">{t('sortByName')}</SelectItem>
               <SelectItem value="severity">{t('sortBySeverity')}</SelectItem>
-              <SelectItem value="prevalence">{t('sortByPrevalence')}</SelectItem>
             </SelectContent>
           </Select>
           <Button variant="outline" size="sm" onClick={toggleSortDirection} className="px-3 bg-transparent">

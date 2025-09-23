@@ -26,11 +26,6 @@ export function SymptomItem({symptom, onClick}: SymptomItemProps) {
           >
             {t('severity')}: {symptom.severity}
           </Badge>
-          <Badge
-            className={`${symptom.prevalence <= 2 ? "bg-green-500" : symptom.prevalence <= 3 ? "bg-yellow-500" : "bg-red-500"} text-white text-xs`}
-          >
-            {t('prevalence')}: {symptom.prevalence}
-          </Badge>
         </div>
       </div>
       <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-cyan-100 flex-shrink-0 ml-2">
