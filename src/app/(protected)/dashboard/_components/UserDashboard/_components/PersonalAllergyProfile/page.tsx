@@ -193,7 +193,10 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setEditingAllergen(allergen.allergenId)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingAllergen(allergen.allergenId);
+                          }}
                           className="bg-transparent"
                         >
                           <Edit className="h-4 w-4" />
