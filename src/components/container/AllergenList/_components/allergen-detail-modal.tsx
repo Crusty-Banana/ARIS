@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { getTypeColor } from "@/lib/client-side-utils"
-import { Allergen, Language, Symptom } from "@/modules/business-types"
+import { Allergen, Language } from "@/modules/business-types"
 import { Edit, Save, Trash2, X } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { useState } from "react"
@@ -11,7 +11,6 @@ import { AllergenForm } from "./allergen-form"
 
 interface AllergenDetailModalProps {
   allergen: Allergen
-  symptoms: Symptom[]
   onClose: () => void
   onUpdate?: (allergen: Allergen) => void
   onDelete?: (id: string) => void
@@ -20,7 +19,6 @@ interface AllergenDetailModalProps {
 
 export function AllergenDetailModal({
   allergen,
-  symptoms,
   onClose,
   onUpdate,
   onDelete,
@@ -103,22 +101,11 @@ export function AllergenDetailModal({
             handleNameChange={(value) => {setEditData({...editData!, name: {...editData!.name, [selectedLanguage]: value}})}}
             description={editData.description}
             handleDescriptionChange={(value) => {setEditData({...editData!, description: {...editData!.description, [selectedLanguage]: value}})}}
-            symptoms={symptoms}
             allergens={allergens}
-            selectedSymptoms={editData.symptomsId}
-            setSelectedSymptoms={(value) => {setEditData({...editData!, symptomsId: value})}}
             selectedCrossSensitivity={editData.crossSensitivityId}
             setSelectedCrossSensitivity={(value) => setEditData({...editData!, crossSensitivityId: value})}
             isWholeAllergen={editData.isWholeAllergen}
             setIsWholeAllergen={(value) => setEditData({...editData!, isWholeAllergen: value})}
-            treatment={editData.treatment}
-            handleTreatmentChange={(level, value) => setEditData({
-              ...editData,
-              treatment: {
-                ...editData.treatment,
-                [level]: {...editData.treatment[level], [selectedLanguage]: value},
-              },
-            })}
           />
         ) : (
           <>
@@ -149,31 +136,6 @@ export function AllergenDetailModal({
                 className="p-2 bg-gray-50 rounded min-h-[100px] prose prose-sm max-w-none" 
                 dangerouslySetInnerHTML={{ __html: allergen.description[selectedLanguage] }} 
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('level_1Treatment')}</label>
-              <div className="p-2 bg-gray-50 rounded min-h-[100px]">{allergen.treatment.level_1[selectedLanguage]}</div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('level_2Treatment')}</label>
-              <div className="p-2 bg-gray-50 rounded min-h-[100px]">{allergen.treatment.level_2[selectedLanguage]}</div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('level_3Treatment')}</label>
-              <div className="p-2 bg-gray-50 rounded min-h-[100px]">{allergen.treatment.level_3[selectedLanguage]}</div>
-            </div>
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t('associatedSymptoms')}</label>
-                <div className="flex flex-wrap gap-1">
-                  {allergen.symptomsId.map((symptomId) => {
-                    const symptom = symptoms.find((s) => s.id === symptomId)
-                    return symptom ? (
-                      <Badge key={symptomId} variant="outline" className="text-xs">
-                        {symptom.name[localLanguage]}
-                      </Badge>
-                    ) : null
-                  })}
-                </div>
             </div>
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t('crossSensitivity')}</label>

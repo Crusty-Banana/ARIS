@@ -3,17 +3,16 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Allergen, Language, ObjectIdAsHexString, Symptom } from "@/modules/business-types"
+import { Allergen, Language, ObjectIdAsHexString } from "@/modules/business-types"
 import { ArrowDown, ArrowUp, Search } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { useState } from "react"
 import { AllergenItem } from "./_components/item"
 import { AllergenDetailModal } from "./_components/allergen-detail-modal"
-import { localizeAllergen, localizeSymptom } from "@/lib/client-side-utils"
+import { localizeAllergen } from "@/lib/client-side-utils"
 
 interface AllergenListProps {
   allergens: Allergen[]
-  symptoms: Symptom[]
   onQuickAdd?: (allergen: Allergen) => void,
   userAllergenIds?: ObjectIdAsHexString[],
   onEdit?: (allergen: Allergen) => void
@@ -23,7 +22,7 @@ interface AllergenListProps {
 type AllergenSortOption = "name" | "severity"
 type SortDirection = "asc" | "desc"
 
-export function AllergenList({ allergens, symptoms, onQuickAdd, userAllergenIds, onEdit, onDelete }: AllergenListProps) {
+export function AllergenList({ allergens, onQuickAdd, userAllergenIds, onEdit, onDelete }: AllergenListProps) {
   const t = useTranslations('common');
   const localLanguage = useLocale() as Language;
   const [searchTerm, setSearchTerm] = useState("")
@@ -57,8 +56,6 @@ export function AllergenList({ allergens, symptoms, onQuickAdd, userAllergenIds,
       if (onDelete)onDelete(id)
     }
   }
-
-  const localizedSymptoms = symptoms.map((symptom) => localizeSymptom(symptom, localLanguage))
 
   return (
     <>
@@ -107,7 +104,6 @@ export function AllergenList({ allergens, symptoms, onQuickAdd, userAllergenIds,
             {filteredAndSortedAllergens.map((allergen) => (
               <AllergenItem 
                 allergen={localizeAllergen(allergen, localLanguage)} 
-                symptoms={localizedSymptoms} 
                 handleQuickAdd={onQuickAdd? () => onQuickAdd(allergen): undefined} 
                 userAllergenIds={userAllergenIds} 
                 onClick={() => setSelectedAllergen(allergen)} 
@@ -122,7 +118,6 @@ export function AllergenList({ allergens, symptoms, onQuickAdd, userAllergenIds,
       </Card>
       {(selectedAllergen !== null) && <AllergenDetailModal 
         allergen={selectedAllergen} 
-        symptoms={symptoms} 
         onClose={() => setSelectedAllergen(null)}
         onUpdate={onEdit} 
         onDelete={onDelete? handleDelete: undefined}

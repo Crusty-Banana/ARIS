@@ -49,11 +49,6 @@ export const localizeAllergen = (allergen: Allergen, language: Language) => {
     ...allergen,
     name: allergen.name[language],
     description: allergen.description[language],
-    treatment: {
-      level_1: allergen.treatment.level_1[language],
-      level_2: allergen.treatment.level_2[language],
-      level_3: allergen.treatment.level_3[language],
-    },
   })
 }
 

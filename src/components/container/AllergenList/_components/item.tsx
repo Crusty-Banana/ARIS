@@ -1,19 +1,18 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { getTypeColor } from "@/lib/client-side-utils"
-import { LocalizedAllergen, LocalizedSymptom } from "@/modules/commands/GetBusinessType/typing"
+import { LocalizedAllergen } from "@/modules/commands/GetBusinessType/typing"
 import { Check, Info, Plus } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 interface AllergenItemProps {
   allergen: LocalizedAllergen,
-  symptoms: LocalizedSymptom[],
   onClick: () => void,
   handleQuickAdd?: () => void,
   userAllergenIds?: string[]
 }
 
-export function AllergenItem({allergen, symptoms, onClick, handleQuickAdd, userAllergenIds}: AllergenItemProps) {
+export function AllergenItem({allergen, onClick, handleQuickAdd, userAllergenIds}: AllergenItemProps) {
   const t = useTranslations('wikiLists');
   return (              
     <div
@@ -28,21 +27,6 @@ export function AllergenItem({allergen, symptoms, onClick, handleQuickAdd, userA
             <Badge className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}>
               {t(allergen.type)}
             </Badge>
-          </div>
-          <div className="flex flex-wrap gap-1 mt-2">
-            {allergen.symptomsId.slice(0, 3).map((symptomId) => {
-              const symptom = symptoms.find((s) => s.id === symptomId)
-              return symptom ? (
-                <Badge key={symptomId} variant="outline" className="text-xs">
-                  {symptom.name}
-                </Badge>
-              ) : null
-            })}
-            {allergen.symptomsId.length > 3 && (
-              <Badge variant="outline" className="text-xs">
-                +{allergen.symptomsId.length - 3} {t('more')}
-              </Badge>
-            )}
           </div>
         </div>
         <div className="flex gap-1 ml-2 flex-shrink-0">
