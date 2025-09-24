@@ -2,7 +2,7 @@ import { LanguageDropdown } from "@/components/language-dropdown"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { getPrevalenceColor, getSeverityColor } from "@/lib/client-side-utils"
+import { getSeverityColor } from "@/lib/client-side-utils"
 import { Language, Symptom } from "@/modules/business-types"
 import { Edit, Save, Trash2, X } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
@@ -93,8 +93,8 @@ export function SymptomDetailModal({ symptom, onClose, onUpdate, onDelete }: Sym
             handleNameChange={(value) => {setEditData({...editData, name: {...editData.name, [selectedLanguage]: value}})}}
             severity={editData.severity}
             setSeverity={(value) => {setEditData({...editData, severity: value})}}
-            prevalence={editData.prevalence}
-            setPrevalence={(value) => {setEditData({...editData, prevalence: value})}}
+            organ={editData.organ}
+            setOrgan={(value) => {setEditData({...editData, organ: value})}}
             description={editData.description}
             handleDescriptionChange={(value) => {setEditData({...editData, description: {...editData.description, [selectedLanguage]: value}})}}
           />
@@ -116,15 +116,13 @@ export function SymptomDetailModal({ symptom, onClose, onUpdate, onDelete }: Sym
                   {t('severity')}: {symptom.severity}
                 </Badge>
               </div>
-
-              <div className="">
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t('prevalence')}</label>
-                <Badge
-                  className={`${getPrevalenceColor(symptom.prevalence)} text-white`}
-                >
-                  {t('prevalence')}: {symptom.prevalence}
-                </Badge>
-              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("organ")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})</label>
+              <div 
+                className="p-2 bg-gray-50 rounded min-h-[100px] prose prose-sm max-w-none" 
+                dangerouslySetInnerHTML={{ __html: symptom.organ }} 
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t("description")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})</label>

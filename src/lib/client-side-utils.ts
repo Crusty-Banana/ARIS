@@ -14,22 +14,22 @@ export const getTypeColor = (type: string) => {
   }
 }
 
-export const getPrevalenceColor = (prevalence: number) => {
-  switch (prevalence) {
-    case 1:
-      return "bg-green-500"
-    case 2:
-      return "bg-green-500"
-    case 3:
-      return "bg-yellow-500"
-    case 4:
-      return "bg-red-500"
-    case 5:
-      return "bg-red-500"
-    default:
-      return "bg-gray-500"
-  }
-}
+// export const getPrevalenceColor = (prevalence: number) => {
+//   switch (prevalence) {
+//     case 1:
+//       return "bg-green-500"
+//     case 2:
+//       return "bg-green-500"
+//     case 3:
+//       return "bg-yellow-500"
+//     case 4:
+//       return "bg-red-500"
+//     case 5:
+//       return "bg-red-500"
+//     default:
+//       return "bg-gray-500"
+//   }
+// }
 
 export const getSeverityColor = (severity: number) => {
   switch (severity) {
