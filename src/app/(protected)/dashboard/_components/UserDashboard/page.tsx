@@ -37,9 +37,15 @@ export default function UserDashboard() {
 
   const fetchAvailableAllergens = useCallback(async (papResult: DisplayPAP) => {
     const excludedIds = papResult.allergens.map(pAPAllergen => pAPAllergen.allergenId);
+    console.log(`excludedIDs:${excludedIds}`)
 
-    const data = await httpGet$GetAllergens('/api/allergens', {filters: {isWholeAllergen: true, _id: { $nin: excludedIds }}});
+    const data = await httpGet$GetAllergens(
+      '/api/allergens', 
+      {filters: {_id: { $nin: excludedIds }}}
+    );
+
     if (data.success) {
+      console.log(`avai:${data.result}`)
       setAvailableAllegerns(data.result as Allergen[]);
     } else {
       toast.error(data.message);
