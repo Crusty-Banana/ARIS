@@ -39,7 +39,7 @@ export async function httpGet$GetAllergens(url: string, params: GetBusinessType$
     success: response.ok,
     ...data
   });
-
+  
   return result;
 }
 
