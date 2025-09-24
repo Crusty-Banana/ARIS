@@ -37,7 +37,6 @@ export default function UserDashboard() {
 
   const fetchAvailableAllergens = useCallback(async (papResult: DisplayPAP) => {
     const excludedIds = papResult.allergens.map(pAPAllergen => pAPAllergen.allergenId);
-    console.log(`excludedIDs:${excludedIds}`)
 
     const data = await httpGet$GetAllergens(
       '/api/allergens', 
@@ -45,7 +44,6 @@ export default function UserDashboard() {
     );
 
     if (data.success) {
-      console.log(`avai:${data.result}`)
       setAvailableAllegerns(data.result as Allergen[]);
     } else {
       toast.error(data.message);
@@ -150,7 +148,14 @@ export default function UserDashboard() {
           </TabsList>
 
           <TabsContent value="profile">
-            <PersonalAllergyProfile pAP={pAP} availableSymptoms={symptoms} potentialCrossAllergens={potentialCrossAllergens} availableAllergens={availableAllergens} onUpdate={handlePAPUpdate} />
+            <PersonalAllergyProfile
+              pAP={pAP} 
+              availableSymptoms={symptoms} 
+              potentialCrossAllergens={potentialCrossAllergens} 
+              availableAllergens={availableAllergens} 
+              allergens={allergens}
+              onUpdate={handlePAPUpdate}
+            />
           </TabsContent>
 
           <TabsContent value="wiki" className="space-y-6">
