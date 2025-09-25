@@ -14,22 +14,22 @@ export const getTypeColor = (type: string) => {
   }
 }
 
-export const getPrevalenceColor = (prevalence: number) => {
-  switch (prevalence) {
-    case 1:
-      return "bg-green-500"
-    case 2:
-      return "bg-green-500"
-    case 3:
-      return "bg-yellow-500"
-    case 4:
-      return "bg-red-500"
-    case 5:
-      return "bg-red-500"
-    default:
-      return "bg-gray-500"
-  }
-}
+// export const getPrevalenceColor = (prevalence: number) => {
+//   switch (prevalence) {
+//     case 1:
+//       return "bg-green-500"
+//     case 2:
+//       return "bg-green-500"
+//     case 3:
+//       return "bg-yellow-500"
+//     case 4:
+//       return "bg-red-500"
+//     case 5:
+//       return "bg-red-500"
+//     default:
+//       return "bg-gray-500"
+//   }
+// }
 
 export const getSeverityColor = (severity: number) => {
   switch (severity) {
@@ -49,11 +49,6 @@ export const localizeAllergen = (allergen: Allergen, language: Language) => {
     ...allergen,
     name: allergen.name[language],
     description: allergen.description[language],
-    treatment: {
-      level_1: allergen.treatment.level_1[language],
-      level_2: allergen.treatment.level_2[language],
-      level_3: allergen.treatment.level_3[language],
-    },
   })
 }
 

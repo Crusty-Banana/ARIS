@@ -106,7 +106,7 @@ export function AddAllergenModal({
   const handleAllergenSelect = (allergen: Allergen) => {
     setSelectedAllergen(allergen);
     // Pre-select symptoms that are associated with this allergen
-    setSelectedSymptoms(allergen.symptomsId);
+    setSelectedSymptoms([]);
   };
 
   return (
@@ -148,7 +148,7 @@ export function AddAllergenModal({
                     <Badge className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}>
                       {t(allergen.type)}
                     </Badge>
-                    <span className="text-xs text-gray-500">{allergen.symptomsId.length} {t("symptoms")}</span>
+                    <span className="text-xs text-gray-500">{0} {t("symptoms")}</span>
                   </div>
                 </div>
               ))}

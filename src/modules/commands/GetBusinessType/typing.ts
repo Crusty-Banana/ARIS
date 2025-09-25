@@ -1,4 +1,4 @@
-import { Allergen, FetcherResult, ObjectIdAsHexString, PAP, Recommendation, Symptom, User } from "@/modules/business-types";
+import { ActionPlan, Allergen, FetcherResult, ObjectIdAsHexString, PAP, Recommendation, Symptom, User } from "@/modules/business-types";
 import { z } from "zod";
 
 // Conveniently Defined Types
@@ -6,11 +6,6 @@ import { z } from "zod";
 export const LocalizedAllergen = Allergen.omit({ name: true, description: true }).extend({
   name: z.string(),
   description: z.string(),
-  treatment: z.object({
-    level_1: z.string(),
-    level_2: z.string(),
-    level_3: z.string(),
-  })
 });
 export type LocalizedAllergen = z.infer<typeof LocalizedAllergen>;
 
@@ -19,6 +14,11 @@ export const LocalizedSymptom = Symptom.omit({ name: true, description: true }).
   description: z.string(),
 });
 export type LocalizedSymptom = z.infer<typeof LocalizedSymptom>;
+
+export const LocalizedActionPlan = ActionPlan.omit({ text: true }).extend({
+  text: z.string(),
+});
+export type LocalizedActionPlan = z.infer<typeof LocalizedActionPlan>;
 
 export const GetFilter = z.object({
   isWholeAllergen: z.boolean().optional(),
@@ -56,6 +56,9 @@ export type GetSymptoms$Params = z.infer<typeof GetSymptoms$Params>;
 export const GetRecommendations$Params = GetBusinessType$Params.omit({ filters: true });
 export type GetRecommendations$Params = z.infer<typeof GetRecommendations$Params>;
 
+export const GetActionPlans$Params = GetBusinessType$Params.omit({ filters: true });
+export type GetActionPlans$Params = z.infer<typeof GetActionPlans$Params>;
+
 // Fetcher Results
 
 export const GetUsers$Result = FetcherResult.extend({
@@ -78,6 +81,11 @@ export const GetSymptoms$Result = FetcherResult.extend({
 });
 export type GetSymptoms$Result = z.infer<typeof GetSymptoms$Result>;
 
+export const GetActionPlans$Result = FetcherResult.extend({
+  result: z.array(ActionPlan).optional()
+});
+export type GetActionPlans$Result = z.infer<typeof GetActionPlans$Result>;
+
 export const GetRecommendations$Result = FetcherResult.extend({
   result: z.array(Recommendation).optional()
 });
@@ -94,3 +102,8 @@ export const GetSymptomsLocalized$Result = FetcherResult.extend({
   result: z.array(LocalizedSymptom).optional()
 });
 export type GetSymptomsLocalized$Result = z.infer<typeof GetSymptomsLocalized$Result>;
+
+export const GetActionPlansLocalized$Result = FetcherResult.extend({
+  result: z.array(LocalizedActionPlan).optional()
+});
+export type GetActionPlansLocalized$Result = z.infer<typeof GetActionPlansLocalized$Result>;

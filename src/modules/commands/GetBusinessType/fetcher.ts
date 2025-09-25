@@ -1,4 +1,4 @@
-import { GetAllergens$Result, GetAllergensLocalized$Result, GetBusinessType$Params, GetPAPs$Result, GetRecommendations$Result, GetSymptoms$Result, GetSymptomsLocalized$Result, GetUsers$Result } from "./typing";
+import { GetActionPlans$Result, GetActionPlansLocalized$Result, GetAllergens$Result, GetAllergensLocalized$Result, GetBusinessType$Params, GetPAPs$Result, GetRecommendations$Result, GetSymptoms$Result, GetSymptomsLocalized$Result, GetUsers$Result } from "./typing";
 
 async function httpGet$GetBusinessType(url: string, params: GetBusinessType$Params) {
   const searchParams = new URLSearchParams();
@@ -39,7 +39,7 @@ export async function httpGet$GetAllergens(url: string, params: GetBusinessType$
     success: response.ok,
     ...data
   });
-
+  
   return result;
 }
 
@@ -61,6 +61,21 @@ export async function httpGet$GetSymptoms(url: string, params: GetBusinessType$P
     success: response.ok,
     ...data
   }) : GetSymptomsLocalized$Result.parse({
+    success: response.ok,
+    ...data
+  });
+
+  return result;
+}
+
+export async function httpGet$GetActionPlans(url: string, params: GetBusinessType$Params) {
+  const { response, data } = await httpGet$GetBusinessType(url, params);
+  const { lang } = params;
+
+  const result = (lang !== "vi" && lang !== "en") ? GetActionPlans$Result.parse({
+    success: response.ok,
+    ...data
+  }) : GetActionPlansLocalized$Result.parse({
     success: response.ok,
     ...data
   });

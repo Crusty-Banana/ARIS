@@ -14,7 +14,6 @@ export type DisplayPAPSymptom = z.infer<typeof DisplayPAPSymptom>;
 export const DisplayPAPAllergen = Allergen.omit({
     id: true,
     description: true,
-    symptomsId: true,
 }).extend(PAPAllergen.shape).extend({
     severity: z.number().min(1).max(3),
     symptoms: z.array(DisplayPAPSymptom),

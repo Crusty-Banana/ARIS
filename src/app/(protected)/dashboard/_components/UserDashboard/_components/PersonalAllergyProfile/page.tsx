@@ -12,33 +12,38 @@ import { Edit, AlertTriangle, Plus, Trash2 } from "lucide-react"
 import { AddAllergenModal } from "./_components/add-allergen-modal"
 import { PotentialCrossAllergens } from "./_components/potential-cross-allergens"
 import { DisplayPAP } from "@/modules/commands/GetPAPWithUserId/typing"
-import { Allergen, Gender, Language, ObjectIdAsHexString, Symptom } from "@/modules/business-types"
+import { ActionPlan, Allergen, Gender, Language, ObjectIdAsHexString, Symptom } from "@/modules/business-types"
 import { useLocale, useTranslations } from "next-intl"
 import { AllergenEditModal } from "./_components/allergen-edit-modal"
 import { UnderlyingMedicalConditionsCard } from "./_components/underlying-medical-condition"
 import { AddAllergenButton } from "./_components/add-allergen-button"
 import { Label } from "@/components/ui/label"
 import { PAPAllergen, UpdatePAPAllergen$Params, UpdatePAPWithUserIdFetcher$Params } from "@/modules/commands/UpdatePAPWithUserId/typing"
-import { SymptomDetailModal } from "@/components/container/SymptomList/_components/symptom-detail-modal"
+// import { SymptomDetailModal } from "@/components/container/SymptomList/_components/symptom-detail-modal"
 import { getTypeColor } from "@/lib/client-side-utils"
+import { AllergenDetailModal } from "@/components/container/AllergenList/_components/allergen-detail-modal"
+import { useSymptomDetail } from "@/app/context/symptom-detail-context"
 
 interface PersonalAllergyProfileProps {
   pAP: DisplayPAP
   availableSymptoms: Symptom[]
   availableAllergens: Allergen[]
+  allergens: Allergen[]
   potentialCrossAllergens: Allergen[]
+  actionPlans: ActionPlan[]
   onUpdate: (params: UpdatePAPWithUserIdFetcher$Params) => void
 }
 
-export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossAllergens, availableAllergens, onUpdate }: PersonalAllergyProfileProps) {
+export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossAllergens, availableAllergens, actionPlans,  allergens, onUpdate }: PersonalAllergyProfileProps) {
   const t = useTranslations('personalAllergyProfile');
   const localLanguage = useLocale() as Language;
 
   const [isEditingProfile, setIsEditingProfile] = useState(false)
   const [editingAllergen, setEditingAllergen] = useState<string | null>(null)
   const [showAddAllergen, setShowAddAllergen] = useState(false)
-  const [selectedSymptom, setSelectedSymptom] = useState<Symptom | null>(null)
-
+  const { showSymptomDetail } = useSymptomDetail();
+  const [selectedAllergen, setSelectedAllergen] = useState<Allergen | undefined>(undefined);
+  const [selectedActionPlan, setSelectedActionPlan] = useState<string | undefined>(undefined);
   const [profileData, setProfileData] = useState({
     gender: pAP.gender,
     doB: pAP.doB,
@@ -136,6 +141,8 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
     }
   }
 
+  console.log("DEBUG", actionPlans)
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -161,7 +168,11 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                 {pAP.allergens.map((allergen) => (
                   <div
                     key={allergen.allergenId}
-                    className="bg-white/70 backdrop-blur-sm p-4 rounded-lg border border-cyan-200"
+                    className="bg-white/70 backdrop-blur-sm p-4 rounded-lg border border-cyan-200 cursor-pointer hover:bg-cyan-50"
+                    onClick={() => {
+                      setSelectedAllergen(allergens.find((avaiAllergen) => avaiAllergen.id === allergen.allergenId))
+                      setSelectedActionPlan(actionPlans.find((ap) => ap.severity === allergen.severity)!.text[localLanguage]);
+                     }}
                   >
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-3">
                       <div className="flex-1">
@@ -187,7 +198,10 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setEditingAllergen(allergen.allergenId)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingAllergen(allergen.allergenId);
+                          }}
                           className="bg-transparent"
                         >
                           <Edit className="h-4 w-4" />
@@ -211,7 +225,11 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                             key={symptom.symptomId} 
                             variant="outline" 
                             className="text-xs hover:bg-cyan-100 hover:cursor-pointer"
-                            onClick={() => setSelectedSymptom(Symptom.parse({id: symptom.symptomId, ...symptom}))}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const fullSymptom = Symptom.parse({ id: symptom.symptomId, ...symptom });
+                              showSymptomDetail(fullSymptom);
+                            }}
                           >
                             {symptom.name[localLanguage]}
                           </Badge>
@@ -232,6 +250,14 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
             </CardContent>
           </Card>
         </div>
+
+
+        {(selectedAllergen !== undefined) && <AllergenDetailModal 
+          allergen={selectedAllergen} 
+          onClose={() => {setSelectedAllergen(undefined); setSelectedActionPlan(undefined)}}
+          allergens ={availableAllergens}
+          actionPlan={selectedActionPlan}
+        />}
 
         {/* Right Column */}
         <div className="space-y-6">
@@ -314,11 +340,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
           </div>
         </DialogContent>
       </Dialog>
-
-      {selectedSymptom && <SymptomDetailModal
-        symptom={selectedSymptom}
-        onClose={() => setSelectedSymptom(null)}
-      />}
 
       {editingAllergen && (
         <AllergenEditModal

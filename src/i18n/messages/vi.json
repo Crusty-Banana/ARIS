@@ -145,12 +145,11 @@
         "respiratory": "Hô hấp",
         "quickAddSuccess": "{allergenName} đã được thêm vào danh sách dị nguyên của bạn!",
         "crossSensitivity": "Mẫn cảm chéo",
-        "level_1Treatment": "Điều trị mức 1",
-        "level_2Treatment": "Điều trị mức 2",
-        "level_3Treatment": "Điều trị mức 3",
         "isWholeAllergen": "Phân loại",
         "wholeAllergen": "Dị nguyên toàn phần",
-        "componentAllergen": "Dị nguyên thành phần"
+        "componentAllergen": "Dị nguyên thành phần",
+        "actionPlans": "Kế hoạch xử trí",
+        "organ": "Bộ phận"
     },
     "personalAllergyProfile": {
         "personalInformation": "Thông tin cá nhân",
@@ -197,7 +196,8 @@
         "potential": "Có khả năng",
         "food": "Thực phẩm",
         "drug": "Thuốc",
-        "respiratory": "Hô hấp"
+        "respiratory": "Hô hấp",
+        "actionPlans": "Kế hoạch xử trí"
     },
     "potentialCrossAllergens": {
         "title": "Dị nguyên chéo tiềm ẩn",
@@ -206,7 +206,10 @@
         "noPotentialCrossAllergensFound": "Không tìm thấy dị nguyên chéo tiềm ẩn nào",
         "basedOnProfile": "Điều này dựa trên hồ sơ dị nguyên hiện tại của bạn",
         "addAllergen": "Thêm vào dị nguyên của tôi",
-        "alreadyInAllergens": "Đã có trong dị nguyên của bạn"
+        "alreadyInAllergens": "Đã có trong dị nguyên của bạn",
+        "food": "Thực phẩm",
+        "drug": "Thuốc",
+        "respiratory": "Hô hấp"
     },
     "wikiLists": {
         "potentialCrossAllergens": {
@@ -358,7 +361,10 @@
             "prevalenceLabel": "Độ phổ biến (1-5)",
             "descriptionPlaceholder": "Không tìm thấy mô tả..."
         },
-        "description":"Mô tả"
+        "description":"Mô tả",
+        "systemic": "Toàn thân",
+        "digestive": "Tiêu hóa",
+        "localized": "Tại chỗ"
     },
     "profile": {
         "title": "Hồ sơ người dùng",
