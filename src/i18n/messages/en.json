@@ -193,7 +193,10 @@
         "food": "Food",
         "drug": "Drug",
         "respiratory": "Respiratory",
-        "actionPlans": "Action Plans"
+        "actionPlans": "Action Plans",
+        "selectDate": "Select Date",
+        "testResult": "Test Result",
+        "uploadTestResultFile": "Upload Test Result File"
     },
     "potentialCrossAllergens": {
         "title": "Potential Cross-Allergens",
@@ -314,7 +317,11 @@
         "testDone": "Type of Test",
         "skinTest": "Prick Test",
         "bloodTest": "Blood Test",
-        "provocationTest": "Provocation Test"
+        "provocationTest": "Provocation Test",
+        "selectDate": "Select Date",
+        "selectTestType": "Select test type",
+        "testResult": "Test Result",
+        "uploadTestResultFile": "Upload Test Result File"
     },
     "recommendationModal": {
         "title": "Send Feedback",
