@@ -34,19 +34,14 @@ export function GroupedSymptomSelect<T extends { organ: string }>({
 }: GroupedSymptomSelectProps<T>) {
   const t = useTranslations('common');
 
-  const groupedByOrgan = items.reduce((symptomGroups, item) => {
+  const symptomGroups = items.reduce((groups, item) => {
     const organ = item.organ;
-    if (!symptomGroups[organ]) {
-      symptomGroups[organ] = [];
+    if (!groups[organ]) {
+      groups[organ] = [];
     };
-    symptomGroups[organ].push(item);
-    return symptomGroups;
+    groups[organ].push(item);
+    return groups;
   }, {} as Record<string, T[]>);
-
-  const symptomGroups = {
-    "All Symptoms": items,
-    ...groupedByOrgan
-  };
 
   const toggleItem = (itemId: string) => {
     onSelectionChange(
