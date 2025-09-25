@@ -139,7 +139,7 @@
         "cancel": "Hủy",
         "mild": "Nhẹ",
         "moderate": "Trung bình",
-        "severe": "Nghiêm trọng",
+        "severe": "Nặng",
         "food": "Thực phẩm",
         "drug": "Thuốc",
         "respiratory": "Hô hấp",
@@ -246,7 +246,10 @@
         "allergenAddButton": "Thêm vào dị nguyên của tôi",
         "allergenAddButtonTitle": "Thêm vào dị nguyên của tôi",
         "allergen(s) associated": "Dị nguyên liên quan",
-        "name": "Tên"
+        "name": "Tên",
+        "mild": "Nhẹ",
+        "moderate": "Trung bình",
+        "severe": "Nặng"
     },
     "publicPAPView": {
         "publicAllergyProfile": "Hồ sơ Dị ứng Công khai",
@@ -364,7 +367,9 @@
         "description":"Mô tả",
         "systemic": "Toàn thân",
         "digestive": "Tiêu hóa",
-        "localized": "Tại chỗ"
+        "localized": "Ngoài da",
+        "organ":"Bộ phận",
+        "selectOrgan": "Chọn bộ phận"
     },
     "profile": {
         "title": "Hồ sơ người dùng",

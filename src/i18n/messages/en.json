@@ -242,7 +242,10 @@
         "allergenAddButton": "Add to my allergens",
         "allergenAddButtonTitle": "Add to my allergens",
         "allergen(s) associated": "Allergen(s) associated",
-        "name": "Name"
+        "name": "Name",
+        "mild": "Mild",
+        "moderate": "Moderate",
+        "severe": "Severe"
     },
     "publicPAPView": {
         "publicAllergyProfile": "Public Allergy Profile",
@@ -360,7 +363,9 @@
         "description": "Description",
         "systemic": "Systemic",
         "digestive": "Digestive",
-        "localized": "Localized"
+        "localized": "Localized",
+        "organ":"Organ",
+        "selectOrgan": "Select Organ"
     },
     "profile": {
         "title": "User Profile",

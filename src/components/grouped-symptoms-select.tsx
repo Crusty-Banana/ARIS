@@ -24,6 +24,8 @@ interface GroupedSymptomSelectProps<T> {
   label: string;
 }
 
+const groupOrder = ["localized", "respiratory", "digestive", "systemic"];
+
 export function GroupedSymptomSelect<T extends { organ: string }>({
   items,
   selectedItems,
@@ -88,65 +90,63 @@ export function GroupedSymptomSelect<T extends { organ: string }>({
       )}
 
       {/* Accordion for grouped symptoms */}
-      {Object.entries(symptomGroups).map(([groupName, groupItems]) => (
-        <Accordion defaultExpanded={false} key={groupName} variant="outlined">
-          <AccordionSummary
-            expandIcon={<ChevronDown />}
-            aria-controls={`${groupName}-content`}
-            id={`${groupName}-header`}
-          >
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              {t(groupName)}
-            </label>
-          </AccordionSummary>
-          <AccordionDetails sx={{ p: 1 }}>
-            <Box sx={{ maxHeight: "200px", overflowY: "auto" }}>
-              {groupItems.length > 0 ? (
-                groupItems.map((item) => {
-                  const itemId = getItemId(item);
-                  const isSelected = selectedItems.includes(itemId);
-                  return (
-                    <div
-                      key={itemId}
-                      className="flex items-center space-x-2 p-2 hover:bg-cyan-50 rounded"
-                    >
-                      <Checkbox
-                        id={itemId}
-                        checked={isSelected}
-                        onCheckedChange={() => {
-                          toggleItem(itemId);
-                        }}
-                      />
-                      <label
-                        htmlFor={itemId}
-                        className="text-sm cursor-pointer flex-1"
+      {Object.entries(symptomGroups)
+        .sort(([a], [b]) => groupOrder.indexOf(a) - groupOrder.indexOf(b))
+        .map(([groupName, groupItems]) => (
+          <Accordion defaultExpanded={false} key={groupName} variant="outlined">
+            <AccordionSummary
+              expandIcon={<ChevronDown />}
+              aria-controls={`${groupName}-content`}
+              id={`${groupName}-header`}
+            >
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t(groupName)}
+              </label>
+            </AccordionSummary>
+            <AccordionDetails sx={{ p: 1 }}>
+              <Box sx={{ maxHeight: "200px", overflowY: "auto" }}>
+                {groupItems.length > 0 ? (
+                  groupItems.map((item) => {
+                    const itemId = getItemId(item);
+                    const isSelected = selectedItems.includes(itemId);
+                    return (
+                      <div
+                        key={itemId}
+                        className="flex items-center space-x-2 p-2 hover:bg-cyan-50 rounded"
                       >
-                        {getItemLabel(item)}
-                      </label>
-                      <Info
-                        id={itemId}
-                        opacity={0.5}
-                        className="cursor-pointer hover:opacity-70"
-                        onClick={() =>
-                          showSymptomDetail(item as unknown as Symptom)
-                        }
-                      ></Info>
-                    </div>
-                  );
-                })
-              ) : (
-                <Typography
-                  variant="body2"
-                  align="center"
-                  color="text.secondary"
-                  sx={{ p: 2 }}
-                >
-                  {t("noSymptomsFound")}
-                </Typography>
-              )}
-            </Box>
-          </AccordionDetails>
-        </Accordion>
+                        <Checkbox
+                          id={itemId}
+                          checked={isSelected}
+                          onCheckedChange={() => toggleItem(itemId)}
+                        />
+                        <label
+                          htmlFor={itemId}
+                          className="text-sm cursor-pointer flex-1"
+                        >
+                          {getItemLabel(item)}
+                        </label>
+                        <Info
+                          id={itemId}
+                          opacity={0.5}
+                          className="cursor-pointer hover:opacity-70"
+                          onClick={() => showSymptomDetail(item as unknown as Symptom)}
+                        />
+                      </div>
+                    );
+                  })
+                ) : (
+                  <Typography
+                    variant="body2"
+                    align="center"
+                    color="text.secondary"
+                    sx={{ p: 2 }}
+                  >
+                    {t("noSymptomsFound")}
+                  </Typography>
+                )}
+              </Box>
+            </AccordionDetails>
+          </Accordion>
       ))}
     </Box>
   );
