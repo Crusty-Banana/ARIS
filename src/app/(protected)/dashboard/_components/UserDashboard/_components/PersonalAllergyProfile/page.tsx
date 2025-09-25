@@ -220,7 +220,10 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                             key={symptom.symptomId} 
                             variant="outline" 
                             className="text-xs hover:bg-cyan-100 hover:cursor-pointer"
-                            onClick={() => setSelectedSymptom(Symptom.parse({id: symptom.symptomId, ...symptom}))}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedSymptom(Symptom.parse({id: symptom.symptomId, ...symptom}));
+                            }}
                           >
                             {symptom.name[localLanguage]}
                           </Badge>
