@@ -2,13 +2,13 @@ import nodemailer from "nodemailer";
 
 // Basic email sending configuration
 const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_SERVER_HOST,
-    port: Number(process.env.EMAIL_SERVER_PORT),
-    secure: true, // true for port 465, false for other ports
-    auth: {
-        user: process.env.EMAIL_SERVER_USER,
-        pass: process.env.EMAIL_SERVER_PASSWORD,
-    },
+  host: process.env.EMAIL_SERVER_HOST,
+  port: Number(process.env.EMAIL_SERVER_PORT),
+  secure: true, // true for port 465, false for other ports
+  auth: {
+    user: process.env.EMAIL_SERVER_USER,
+    pass: process.env.EMAIL_SERVER_PASSWORD,
+  },
 });
 
 // --- EMAIL TEMPLATES ---
@@ -40,32 +40,35 @@ const getPasswordResetEmailHtml = (url: string) => `
   </div>
 `;
 
-
 // --- EMAIL SENDING FUNCTIONS ---
 
 /**
  * Sends an email verification link to a new user.
  */
-export async function sendVerificationEmail(to: string, name: string, token: string) {
-    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/verify/${token}`;
-    await transporter.sendMail({
-        from: process.env.EMAIL_FROM,
-        to,
-        subject: "Verify Your Email Address",
-        html: getVerificationEmailHtml(name, verificationUrl),
-    });
+export async function sendVerificationEmail(
+  to: string,
+  name: string,
+  token: string
+) {
+  const verificationUrl = `${process.env.VERCEL_URL}/api/verify/${token}`;
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to,
+    subject: "Verify Your Email Address",
+    html: getVerificationEmailHtml(name, verificationUrl),
+  });
 }
 
 /**
  * Sends a password reset link to a user.
  */
 export async function sendPasswordResetEmail(to: string, token: string) {
-    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset/${token}`; // Link to your frontend page
-    
-    await transporter.sendMail({
-        from: process.env.EMAIL_FROM,
-        to,
-        subject: "Reset Your Password",
-        html: getPasswordResetEmailHtml(resetUrl),
-    });
+  const resetUrl = `${process.env.VERCEL_URL}/reset/${token}`; // Link to your frontend page
+
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to,
+    subject: "Reset Your Password",
+    html: getPasswordResetEmailHtml(resetUrl),
+  });
 }
