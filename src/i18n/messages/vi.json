@@ -145,12 +145,10 @@
         "respiratory": "Hô hấp",
         "quickAddSuccess": "{allergenName} đã được thêm vào danh sách dị nguyên của bạn!",
         "crossSensitivity": "Mẫn cảm chéo",
-        "level_1Treatment": "Điều trị mức 1",
-        "level_2Treatment": "Điều trị mức 2",
-        "level_3Treatment": "Điều trị mức 3",
         "isWholeAllergen": "Phân loại",
         "wholeAllergen": "Dị nguyên toàn phần",
-        "componentAllergen": "Dị nguyên thành phần"
+        "componentAllergen": "Dị nguyên thành phần",
+        "actionPlans": "Kế hoạch xử trí"
     },
     "personalAllergyProfile": {
         "personalInformation": "Thông tin cá nhân",
@@ -197,7 +195,8 @@
         "potential": "Có khả năng",
         "food": "Thực phẩm",
         "drug": "Thuốc",
-        "respiratory": "Hô hấp"
+        "respiratory": "Hô hấp",
+        "actionPlans": "Kế hoạch xử trí"
     },
     "potentialCrossAllergens": {
         "title": "Dị nguyên chéo tiềm ẩn",

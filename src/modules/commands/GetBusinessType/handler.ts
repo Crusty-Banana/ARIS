@@ -6,9 +6,11 @@ import {
   GetUsers$Params,
   GetPAP$Params,
   GetSymptoms$Params,
-  GetRecommendations$Params
+  GetRecommendations$Params,
+  GetActionPlans$Params,
+  LocalizedActionPlan
 } from "./typing";
-import { Allergen, BusisnessTypeCollection, PAP, Recommendation, Symptom, User } from "@/modules/business-types";
+import { ActionPlan, Allergen, BusisnessTypeCollection, PAP, Recommendation, Symptom, User } from "@/modules/business-types";
 
 async function handler$GetBusinessType(db: Db, params: GetBusinessType$Params, collectionName: string) {
   const { ids, limit, offset, lang, filters } = params;
@@ -70,11 +72,6 @@ export async function handler$GetAllergens(db: Db, params: GetAllergens$Params) 
       id: doc._id.toHexString(),
       name: doc.name[lang],
       description: doc.description[lang],
-      treatment: {
-        level_1: doc.treatment.level_1[lang],
-        level_2: doc.treatment.level_2[lang],
-        level_3: doc.treatment.level_3[lang]
-      }
     });
   });
   return { result: parsedDocs };
@@ -129,5 +126,29 @@ export async function handler$GetRecommendations(db: Db, params: GetRecommendati
     });
   });
 
+  return { result: parsedDocs };
+}
+
+export async function handler$GetActionPlans(db: Db, params: GetActionPlans$Params) {
+  const { docs, lang } = await handler$GetBusinessType(db, params, BusisnessTypeCollection.actionPlans);
+
+  if (lang !== "vi" && lang !== "en") {
+    const parsedDocs = docs.map((doc) => {
+      return ActionPlan.parse({
+        ...doc,
+        id: doc._id.toHexString(),
+      });
+    });
+
+    return { result: parsedDocs };
+  }
+
+  const parsedDocs = docs.map((doc) => {
+    return LocalizedActionPlan.parse({
+      ...doc,
+      id: doc._id.toHexString(),
+      text: doc.text[lang],
+    });
+  });
   return { result: parsedDocs };
 }

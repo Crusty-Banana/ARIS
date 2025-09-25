@@ -56,6 +56,7 @@ export const BusisnessTypeCollection = {
     paps: "paps",
     symptoms: "symptoms_en",
     recommendations: "recommendations",
+    actionPlans: "action_plans_en"
 };
 
 export const User = z.object({
@@ -106,7 +107,7 @@ export const Symptom = z.object({
     id: ObjectIdAsHexString,
     name: DisplayString,
     description: DisplayString,
-    severity: z.number().min(1).max(3),
+    severity: z.number().min(1).max(2),
     organ: Organ,
 });
 export type Symptom = z.infer<typeof Symptom>;
@@ -120,8 +121,8 @@ export type Recommendation = z.infer<typeof Recommendation>;
 
 export const ActionPlan = z.object({
     id: ObjectIdAsHexString,
-    severity: z.number().int().min(1).max(2),
-    content: z.string().default(""),
+    severity: z.number().min(1).max(2),
+    text: DisplayString
 });
 
 export type ActionPlan = z.infer<typeof ActionPlan>;
