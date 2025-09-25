@@ -22,6 +22,7 @@ import { PAPAllergen, UpdatePAPAllergen$Params, UpdatePAPWithUserIdFetcher$Param
 import { SymptomDetailModal } from "@/components/container/SymptomList/_components/symptom-detail-modal"
 import { getTypeColor } from "@/lib/client-side-utils"
 import { AllergenDetailModal } from "@/components/container/AllergenList/_components/allergen-detail-modal"
+import { useSymptomDetail } from "@/app/context/symptom-detail-context"
 
 interface PersonalAllergyProfileProps {
   pAP: DisplayPAP
@@ -39,7 +40,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
   const [isEditingProfile, setIsEditingProfile] = useState(false)
   const [editingAllergen, setEditingAllergen] = useState<string | null>(null)
   const [showAddAllergen, setShowAddAllergen] = useState(false)
-  const [selectedSymptom, setSelectedSymptom] = useState<Symptom | null>(null)
+  const { showSymptomDetail } = useSymptomDetail();
   const [selectedAllergen, setSelectedAllergen] = useState<Allergen | undefined>(undefined);
 
   const [profileData, setProfileData] = useState({
@@ -222,7 +223,8 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                             className="text-xs hover:bg-cyan-100 hover:cursor-pointer"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setSelectedSymptom(Symptom.parse({id: symptom.symptomId, ...symptom}));
+                              const fullSymptom = Symptom.parse({ id: symptom.symptomId, ...symptom });
+                              showSymptomDetail(fullSymptom);
                             }}
                           >
                             {symptom.name[localLanguage]}
@@ -332,11 +334,6 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
           </div>
         </DialogContent>
       </Dialog>
-
-      {selectedSymptom && <SymptomDetailModal
-        symptom={selectedSymptom}
-        onClose={() => setSelectedSymptom(null)}
-      />}
 
       {editingAllergen && (
         <AllergenEditModal

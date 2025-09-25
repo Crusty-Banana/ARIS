@@ -12,6 +12,8 @@ import Typography from '@mui/material/Typography'
 import { ChevronDown, Info, X } from "lucide-react"
 import { Button } from "./ui/button"
 import { Badge } from "./ui/badge"
+import { useSymptomDetail } from "@/app/context/symptom-detail-context"
+import { Symptom } from "@/modules/business-types"
 
 interface GroupedSymptomSelectProps<T> {
   items: T[]
@@ -48,6 +50,8 @@ export function GroupedSymptomSelect<T>({
   const removeItem = (itemId: string) => {
     onSelectionChange(selectedItems.filter((id) => id !== itemId))
   }
+
+  const { showSymptomDetail } = useSymptomDetail();
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -99,7 +103,12 @@ export function GroupedSymptomSelect<T>({
                         <label htmlFor={itemId} className="text-sm cursor-pointer flex-1">
                           {getItemLabel(item)}
                         </label>
-                        <Info id={itemId} opacity={0.5} className="cursor-pointer hover:opacity-70">
+                        <Info
+                          id={itemId} 
+                          opacity={0.5} 
+                          className="cursor-pointer hover:opacity-70"
+                          onClick={() => showSymptomDetail(item as unknown as Symptom)}
+                        >
                         </Info>
                       </div>
                   );

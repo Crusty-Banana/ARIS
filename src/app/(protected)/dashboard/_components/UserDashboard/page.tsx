@@ -14,6 +14,7 @@ import { PAPAllergen, UpdatePAPWithUserIdFetcher$Params } from "@/modules/comman
 import { httpPut$UpdatePAPWithUserId } from "@/modules/commands/UpdatePAPWithUserId/fetcher"
 import { SymptomList } from "@/components/container/SymptomList/page"
 import { AllergenList } from "@/components/container/AllergenList/page"
+import { SymptomDetailProvider } from "@/app/context/symptom-detail-context"
 
 export default function UserDashboard() {
   const t = useTranslations('userDashboard')
@@ -148,14 +149,17 @@ export default function UserDashboard() {
           </TabsList>
 
           <TabsContent value="profile">
-            <PersonalAllergyProfile
-              pAP={pAP} 
-              availableSymptoms={symptoms} 
-              potentialCrossAllergens={potentialCrossAllergens} 
-              availableAllergens={availableAllergens} 
-              allergens={allergens}
-              onUpdate={handlePAPUpdate}
-            />
+            <SymptomDetailProvider>
+              <PersonalAllergyProfile
+                pAP={pAP} 
+                availableSymptoms={symptoms} 
+                potentialCrossAllergens={potentialCrossAllergens} 
+                availableAllergens={availableAllergens} 
+                allergens={allergens}
+                onUpdate={handlePAPUpdate}
+              />
+            </SymptomDetailProvider>
+            
           </TabsContent>
 
           <TabsContent value="wiki" className="space-y-6">
