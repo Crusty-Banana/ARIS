@@ -144,7 +144,8 @@
         "isWholeAllergen": "Classification",
         "wholeAllergen": "Whole allergen",
         "componentAllergen": "Component allergen",
-        "actionPlans": "Action Plans"
+        "actionPlans": "Action Plans",
+        "organ": "Organ"
     },
     "personalAllergyProfile": {
         "personalInformation": "Personal Information",
@@ -201,7 +202,10 @@
         "noPotentialCrossAllergensFound": "No potential cross-allergens found",
         "basedOnProfile": "This is based on your current allergen profile",
         "addAllergen": "Add to my allergens",
-        "alreadyInAllergens": "Already in your allergens"
+        "alreadyInAllergens": "Already in your allergens",
+        "food": "Food",
+        "drug": "Drug",
+        "respiratory": "Respiratory"
     },
     "wikiLists": {
         "potentialCrossAllergens": {
@@ -353,7 +357,10 @@
             "prevalenceLabel": "Prevalence (1-5)",
             "descriptionPlaceholder": "Description Missing..."
         },
-        "description": "Description"
+        "description": "Description",
+        "systemic": "Systemic",
+        "digestive": "Digestive",
+        "localized": "Localized"
     },
     "profile": {
         "title": "User Profile",

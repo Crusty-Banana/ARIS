@@ -148,7 +148,8 @@
         "isWholeAllergen": "Phân loại",
         "wholeAllergen": "Dị nguyên toàn phần",
         "componentAllergen": "Dị nguyên thành phần",
-        "actionPlans": "Kế hoạch xử trí"
+        "actionPlans": "Kế hoạch xử trí",
+        "organ": "Bộ phận"
     },
     "personalAllergyProfile": {
         "personalInformation": "Thông tin cá nhân",
@@ -205,7 +206,10 @@
         "noPotentialCrossAllergensFound": "Không tìm thấy dị nguyên chéo tiềm ẩn nào",
         "basedOnProfile": "Điều này dựa trên hồ sơ dị nguyên hiện tại của bạn",
         "addAllergen": "Thêm vào dị nguyên của tôi",
-        "alreadyInAllergens": "Đã có trong dị nguyên của bạn"
+        "alreadyInAllergens": "Đã có trong dị nguyên của bạn",
+        "food": "Thực phẩm",
+        "drug": "Thuốc",
+        "respiratory": "Hô hấp"
     },
     "wikiLists": {
         "potentialCrossAllergens": {
@@ -357,7 +361,10 @@
             "prevalenceLabel": "Độ phổ biến (1-5)",
             "descriptionPlaceholder": "Không tìm thấy mô tả..."
         },
-        "description":"Mô tả"
+        "description":"Mô tả",
+        "systemic": "Toàn thân",
+        "digestive": "Tiêu hóa",
+        "localized": "Tại chỗ"
     },
     "profile": {
         "title": "Hồ sơ người dùng",
