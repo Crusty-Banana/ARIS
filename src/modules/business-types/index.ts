@@ -9,22 +9,33 @@ export type UnixTimestamp = z.infer<typeof UnixTimestamp>;
 export const Role = z.enum(["admin", "user"]).default("user");
 export type Role = z.infer<typeof Role>;
 
-export const DiscoveryMethod = z.enum(["Clinical symptoms", "Paraclinical tests", "Potential", ""]).default("");
+export const DiscoveryMethod = z
+    .enum(["Clinical symptoms", "Paraclinical tests", "Potential", ""])
+    .default("");
 export type DiscoveryMethod = z.infer<typeof DiscoveryMethod>;
 
 export const Gender = z.enum(["male", "female", "other", ""]).default("");
 export type Gender = z.infer<typeof Gender>;
 
-const Organ = z.enum(["throat", "chest", "skin", ""]).default("");
+const Organ = z
+    .enum(["localized", "respiratory", "digestive", "systemic"])
+    .default("localized");
 export type Organ = z.infer<typeof Organ>;
 
-export const RecommendationType = z.enum(["Allergen Suggestion", "General Feedback", ""]).default("");
+export const RecommendationType = z
+    .enum(["Allergen Suggestion", "General Feedback", ""])
+    .default("");
 export type RecommendationType = z.infer<typeof RecommendationType>;
 
-export const DisplayString = z.object({ "en": z.string().default(""), "vi": z.string().default("") })
+export const DisplayString = z.object({
+    en: z.string().default(""),
+    vi: z.string().default(""),
+});
 export type DisplayString = z.infer<typeof DisplayString>;
 
-export const AllergenType = z.enum(["food", "drug", "respiratory", ""]).default("");
+export const AllergenType = z
+    .enum(["food", "drug", "respiratory", ""])
+    .default("");
 export type AllergenType = z.infer<typeof AllergenType>;
 
 export const Language = z.enum(["en", "vi"]);
@@ -45,7 +56,7 @@ export const BusisnessTypeCollection = {
     paps: "paps",
     symptoms: "symptoms_en",
     recommendations: "recommendations",
-}
+};
 
 export const User = z.object({
     id: ObjectIdAsHexString,
@@ -84,7 +95,7 @@ export const PAP = z.object({
                 testDone: TestType.optional(),
                 symptomsId: z.array(ObjectIdAsHexString).default([]),
                 testResult: z.string().optional(),
-            }),
+            })
         )
         .default([]),
 });
@@ -103,6 +114,14 @@ export type Symptom = z.infer<typeof Symptom>;
 export const Recommendation = z.object({
     id: ObjectIdAsHexString,
     type: RecommendationType,
-    content: z.string().default("")
+    content: z.string().default(""),
 });
 export type Recommendation = z.infer<typeof Recommendation>;
+
+export const ActionPlan = z.object({
+    id: ObjectIdAsHexString,
+    severity: z.number().int().min(1).max(2),
+    content: z.string().default(""),
+});
+
+export type ActionPlan = z.infer<typeof ActionPlan>;
