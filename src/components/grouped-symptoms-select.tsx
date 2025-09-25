@@ -24,7 +24,7 @@ interface GroupedSymptomSelectProps<T> {
   label: string
 }
 
-export function GroupedSymptomSelect<T>({
+export function GroupedSymptomSelect<T extends { organ: string }>({
   items,
   selectedItems,
   onSelectionChange,
@@ -34,10 +34,14 @@ export function GroupedSymptomSelect<T>({
 }: GroupedSymptomSelectProps<T>) {
   const t = useTranslations('common');
 
-  const symptomGroups = {
-    "All Symptoms": items,
-    "Oral": items.slice(5,9),
-  };
+  const symptomGroups = items.reduce((groups, item) => {
+    const organ = item.organ;
+    if (!groups[organ]) {
+      groups[organ] = [];
+    };
+    groups[organ].push(item);
+    return groups;
+  }, {} as Record<string, T[]>);
 
   const toggleItem = (itemId: string) => {
     onSelectionChange(
