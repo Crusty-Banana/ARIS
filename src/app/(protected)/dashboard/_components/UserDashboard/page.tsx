@@ -3,11 +3,11 @@
 import { useCallback, useEffect, useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { DisplayPAP } from "@/modules/commands/GetPAPWithUserId/typing"
-import { Allergen, DiscoveryMethod, Language, Symptom } from "@/modules/business-types"
+import { ActionPlan, Allergen, DiscoveryMethod, Language, Symptom } from "@/modules/business-types"
 import { PersonalAllergyProfile } from "./_components/PersonalAllergyProfile/page"
 import { httpGet$GetCrossAllergenFromUserID } from "@/modules/commands/GetCrossAllergenFromUserID/fetcher"
 import { useLocale, useTranslations } from "next-intl"
-import { httpGet$GetAllergens, httpGet$GetSymptoms } from "@/modules/commands/GetBusinessType/fetcher"
+import { httpGet$GetActionPlans, httpGet$GetAllergens, httpGet$GetSymptoms } from "@/modules/commands/GetBusinessType/fetcher"
 import { toast } from "sonner"
 import { httpGet$GetPAPWithUserId } from "@/modules/commands/GetPAPWithUserId/fetcher"
 import { PAPAllergen, UpdatePAPWithUserIdFetcher$Params } from "@/modules/commands/UpdatePAPWithUserId/typing"
@@ -32,6 +32,7 @@ export default function UserDashboard() {
   })
   const [symptoms, setSymptoms] = useState<Symptom[]>([])
   const [allergens, setAllergens] = useState<Allergen[]>([])
+  const [actionPlans, setActionPlans] = useState<ActionPlan[]>([])
   const [potentialCrossAllergens, setPotentialCrossAllergens] = useState<Allergen[]>([])
 
   const [availableAllergens, setAvailableAllegerns] = useState<Allergen[]>([]);
@@ -64,6 +65,16 @@ export default function UserDashboard() {
     const data = await httpGet$GetSymptoms('/api/symptoms', {});
     if (data.success) {
       setSymptoms(data.result as Symptom[]);
+    } else {
+      toast.error(data.message);
+    }
+  }
+
+  const fetchActionPlans = async () => {
+    const data = await httpGet$GetActionPlans('/api/action-plans', {});
+    if (data.success) {
+      setActionPlans(data.result as ActionPlan[]);
+      console.log("DEBUG:", data.result, actionPlans)
     } else {
       toast.error(data.message);
     }
@@ -120,6 +131,7 @@ export default function UserDashboard() {
     fetchPAP();
     fetchSymptoms();
     fetchAllergens();
+    fetchActionPlans();
   }, [fetchPAP])
 
   return (
@@ -152,7 +164,7 @@ export default function UserDashboard() {
             <SymptomDetailProvider>
               <PersonalAllergyProfile
                 pAP={pAP} 
-                availableSymptoms={symptoms} 
+                availableSymptoms={symptoms} actionPlans ={actionPlans} 
                 potentialCrossAllergens={potentialCrossAllergens} 
                 availableAllergens={availableAllergens} 
                 allergens={allergens}

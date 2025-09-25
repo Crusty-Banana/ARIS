@@ -21,7 +21,7 @@ export function AddSymptomButton({ onAddSymptom }: AddSymptomButtonProps) {
   const [name, setName] = useState({"en": "", "vi": ""})
   const [severity, setSeverity] = useState(1)
   const [description, setDescription] = useState({"en": "", "vi": ""})
-  const [organ, setOrgan] = useState<Organ>("")
+  const [organ, setOrgan] = useState<Organ>("respiratory")
   const [selectedLanguage, setSelectedLanguage] = useState<Language>("en")
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -34,7 +34,7 @@ export function AddSymptomButton({ onAddSymptom }: AddSymptomButtonProps) {
         organ,
       })
       setName({"en": "", "vi": ""})
-      setOrgan("")
+      setOrgan("respiratory")
       setSeverity(1)
       setDescription({"en": "", "vi": ""})
       setOpen(false)

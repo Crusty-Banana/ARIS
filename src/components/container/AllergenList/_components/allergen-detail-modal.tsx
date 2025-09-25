@@ -14,7 +14,8 @@ interface AllergenDetailModalProps {
   onClose: () => void
   onUpdate?: (allergen: Allergen) => void
   onDelete?: (id: string) => void
-  allergens: Allergen[]
+  allergens: Allergen[],
+  actionPlan?: string
 }
 
 export function AllergenDetailModal({
@@ -23,6 +24,7 @@ export function AllergenDetailModal({
   onUpdate,
   onDelete,
   allergens,
+  actionPlan
 }: AllergenDetailModalProps) {
   const t = useTranslations('detailModals');
   const localLanguage = useLocale() as Language;
@@ -137,6 +139,14 @@ export function AllergenDetailModal({
                 dangerouslySetInnerHTML={{ __html: allergen.description[selectedLanguage] }} 
               />
             </div>
+
+            {actionPlan && <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("actionPlans")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})</label>
+              <div 
+                className="p-2 bg-gray-50 rounded min-h-[100px] prose prose-sm max-w-none" 
+                dangerouslySetInnerHTML={{ __html: actionPlan }} 
+              />
+            </div>}
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t('crossSensitivity')}</label>
                 <div className="flex flex-wrap gap-1">

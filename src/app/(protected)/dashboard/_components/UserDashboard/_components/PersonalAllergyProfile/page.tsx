@@ -12,14 +12,14 @@ import { Edit, AlertTriangle, Plus, Trash2 } from "lucide-react"
 import { AddAllergenModal } from "./_components/add-allergen-modal"
 import { PotentialCrossAllergens } from "./_components/potential-cross-allergens"
 import { DisplayPAP } from "@/modules/commands/GetPAPWithUserId/typing"
-import { Allergen, Gender, Language, ObjectIdAsHexString, Symptom } from "@/modules/business-types"
+import { ActionPlan, Allergen, Gender, Language, ObjectIdAsHexString, Symptom } from "@/modules/business-types"
 import { useLocale, useTranslations } from "next-intl"
 import { AllergenEditModal } from "./_components/allergen-edit-modal"
 import { UnderlyingMedicalConditionsCard } from "./_components/underlying-medical-condition"
 import { AddAllergenButton } from "./_components/add-allergen-button"
 import { Label } from "@/components/ui/label"
 import { PAPAllergen, UpdatePAPAllergen$Params, UpdatePAPWithUserIdFetcher$Params } from "@/modules/commands/UpdatePAPWithUserId/typing"
-import { SymptomDetailModal } from "@/components/container/SymptomList/_components/symptom-detail-modal"
+// import { SymptomDetailModal } from "@/components/container/SymptomList/_components/symptom-detail-modal"
 import { getTypeColor } from "@/lib/client-side-utils"
 import { AllergenDetailModal } from "@/components/container/AllergenList/_components/allergen-detail-modal"
 import { useSymptomDetail } from "@/app/context/symptom-detail-context"
@@ -30,10 +30,11 @@ interface PersonalAllergyProfileProps {
   availableAllergens: Allergen[]
   allergens: Allergen[]
   potentialCrossAllergens: Allergen[]
+  actionPlans: ActionPlan[]
   onUpdate: (params: UpdatePAPWithUserIdFetcher$Params) => void
 }
 
-export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossAllergens, availableAllergens, allergens, onUpdate }: PersonalAllergyProfileProps) {
+export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossAllergens, availableAllergens, actionPlans,  allergens, onUpdate }: PersonalAllergyProfileProps) {
   const t = useTranslations('personalAllergyProfile');
   const localLanguage = useLocale() as Language;
 
@@ -42,7 +43,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
   const [showAddAllergen, setShowAddAllergen] = useState(false)
   const { showSymptomDetail } = useSymptomDetail();
   const [selectedAllergen, setSelectedAllergen] = useState<Allergen | undefined>(undefined);
-
+  const [selectedActionPlan, setSelectedActionPlan] = useState<string | undefined>(undefined);
   const [profileData, setProfileData] = useState({
     gender: pAP.gender,
     doB: pAP.doB,
@@ -140,6 +141,8 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
     }
   }
 
+  console.log("DEBUG", actionPlans)
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -167,7 +170,8 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                     key={allergen.allergenId}
                     className="bg-white/70 backdrop-blur-sm p-4 rounded-lg border border-cyan-200 cursor-pointer hover:bg-cyan-50"
                     onClick={() => {
-                      setSelectedAllergen(allergens.find((avaiAllergen) => avaiAllergen.id === allergen.allergenId));
+                      setSelectedAllergen(allergens.find((avaiAllergen) => avaiAllergen.id === allergen.allergenId))
+                      setSelectedActionPlan(actionPlans.find((ap) => ap.severity === allergen.severity)!.text[localLanguage]);
                      }}
                   >
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-3">
@@ -247,10 +251,12 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
           </Card>
         </div>
 
+
         {(selectedAllergen !== undefined) && <AllergenDetailModal 
           allergen={selectedAllergen} 
-          onClose={() => setSelectedAllergen(undefined)}
+          onClose={() => {setSelectedAllergen(undefined); setSelectedActionPlan(undefined)}}
           allergens ={availableAllergens}
+          actionPlan={selectedActionPlan}
         />}
 
         {/* Right Column */}
