@@ -14,7 +14,6 @@ import { PAPAllergen, UpdatePAPWithUserIdFetcher$Params } from "@/modules/comman
 import { httpPut$UpdatePAPWithUserId } from "@/modules/commands/UpdatePAPWithUserId/fetcher"
 import { SymptomList } from "@/components/container/SymptomList/page"
 import { AllergenList } from "@/components/container/AllergenList/page"
-import { LocalizedActionPlan } from "@/modules/commands/GetBusinessType/typing"
 import { SymptomDetailProvider } from "@/app/context/symptom-detail-context"
 
 export default function UserDashboard() {
