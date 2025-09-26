@@ -139,7 +139,7 @@
         "cancel": "Hủy",
         "mild": "Nhẹ",
         "moderate": "Trung bình",
-        "severe": "Nghiêm trọng",
+        "severe": "Nặng",
         "food": "Thực phẩm",
         "drug": "Thuốc",
         "respiratory": "Hô hấp",
@@ -197,7 +197,10 @@
         "food": "Thực phẩm",
         "drug": "Thuốc",
         "respiratory": "Hô hấp",
-        "actionPlans": "Kế hoạch xử trí"
+        "actionPlans": "Kế hoạch xử trí",
+        "selectDate": "Chọn ngày",
+        "testResult": "Kết quả xét nghiệm",
+        "uploadTestResultFile": "Tải Thư mục Kết quả xét nghiệm lên"
     },
     "potentialCrossAllergens": {
         "title": "Dị nguyên chéo tiềm ẩn",
@@ -246,7 +249,10 @@
         "allergenAddButton": "Thêm vào dị nguyên của tôi",
         "allergenAddButtonTitle": "Thêm vào dị nguyên của tôi",
         "allergen(s) associated": "Dị nguyên liên quan",
-        "name": "Tên"
+        "name": "Tên",
+        "mild": "Nhẹ",
+        "moderate": "Trung bình",
+        "severe": "Nặng"
     },
     "publicPAPView": {
         "publicAllergyProfile": "Hồ sơ Dị ứng Công khai",
@@ -313,9 +319,13 @@
         "cancel": "Hủy bỏ",
         "doneTest": "Đã xét nghiệm",
         "testDone": "Loại xét nghiệm",
-        "skinTest": "Xét Nghiệm Da",
+        "skinTest": "Test Lẩy Da",
         "bloodTest": "Xét Nghiệm Máu",
-        "provocationTest": "Xét Nghiệm Kích Thích"
+        "provocationTest": "Xét Nghiệm Kích Thích",
+        "selectDate": "Chọn ngày",
+        "selectTestType": "Chọn xét nghiệm",
+        "testResult": "Kết quả xét nghiệm",
+        "uploadTestResultFile": "Tải Thư mục Kết quả Xét nghiệm lên"
     },
     "recommendationModal": {
         "title": "Đóng Góp Ý Kiến",
@@ -364,7 +374,9 @@
         "description":"Mô tả",
         "systemic": "Toàn thân",
         "digestive": "Tiêu hóa",
-        "localized": "Tại chỗ"
+        "localized": "Ngoài da",
+        "organ":"Bộ phận",
+        "selectOrgan": "Chọn bộ phận"
     },
     "profile": {
         "title": "Hồ sơ người dùng",

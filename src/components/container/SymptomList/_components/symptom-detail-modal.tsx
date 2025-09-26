@@ -156,22 +156,12 @@ export function SymptomDetailModal({
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   {t("severity")}
                 </label>
-                <Badge
-                  className={`${getSeverityColor(symptom.severity)} text-white`}
-                >
-                  {t("severity")}: {symptom.severity}
+                <Badge className={`${getSeverityColor(symptom.severity)} text-white text-xs`}>
+                  {symptom.severity === 1
+                    ? t('mild')
+                    : t('severe')}
                 </Badge>
               </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t("organ")} (
-                {selectedLanguage === "en" ? "English" : "Tiếng Việt"})
-              </label>
-              <div
-                className="p-2 bg-gray-50 rounded min-h-[100px] prose prose-sm max-w-none"
-                dangerouslySetInnerHTML={{ __html: symptom.organ }}
-              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">

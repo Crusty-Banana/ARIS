@@ -13,7 +13,7 @@ export function TestTypeDropdown({value, onValueChange} : TestTypeDropdownProps)
       <label className="block text-sm font-medium text-gray-700 mb-1">{t("testDone")}</label>
       <Select value={value} onValueChange={onValueChange}>
         <SelectTrigger className="border-cyan-300 focus:border-cyan-500">
-          <SelectValue placeholder="Select test type" />
+          <SelectValue placeholder={t("selectTestType")} />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="skin">{t("skinTest")}</SelectItem>

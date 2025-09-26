@@ -182,7 +182,10 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                             {t(allergen.type)}
                           </Badge>
                           <Badge className={`${getSeverityColor(allergen.severity)} text-white text-xs`}>
-                            {t('detailModals.severity')}: {allergen.severity}
+                            {t('detailModals.severity')}:{' '}
+                            {allergen.severity === 1
+                              ? t('detailModals.mild')
+                              : t('detailModals.severe')}
                           </Badge>
                         </div>
 

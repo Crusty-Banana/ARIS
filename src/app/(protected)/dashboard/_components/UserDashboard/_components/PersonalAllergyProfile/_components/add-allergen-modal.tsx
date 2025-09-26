@@ -175,7 +175,7 @@ export function AddAllergenModal({
                   <DatePicker
                     value={discoveryDate}
                     onChange={setDiscoveryDate}
-                    placeholder={"select date"}
+                    placeholder={t("selectDate")}
                   />
                 </div>
 
@@ -201,12 +201,12 @@ export function AddAllergenModal({
                 
                 { doneTest && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">{'Test Result'}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t("testResult")}</label>
                     {!testResultUrl && (
                       <div className="relative border-2 border-dashed border-cyan-300 rounded-lg p-6 flex flex-col items-center justify-center text-center">
                         <UploadCloud className="h-10 w-10 text-cyan-500 mb-2" />
                         <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-cyan-600 hover:text-cyan-500 focus-within:outline-none">
-                          <span>{'Upload Test Result file'}</span>
+                          <span>{t("uploadTestResultFile")}</span>
                           <input id="file-upload" name="file-upload" type="file" className="sr-only" accept=".pdf" onChange={(e) => setSelectedResultFile(e.target.files?.[0] || null)} />
                         </label>
                         <p className="text-xs text-gray-500 mt-1">{'pdf'}</p>

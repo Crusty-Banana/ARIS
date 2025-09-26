@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { getSeverityColor } from "@/lib/client-side-utils"
 import { LocalizedSymptom } from "@/modules/commands/GetBusinessType/typing"
 import { Info } from "lucide-react"
 import { useTranslations } from "next-intl"
@@ -21,10 +22,11 @@ export function SymptomItem({symptom, onClick}: SymptomItemProps) {
       <div className="flex-1">
         <div className="font-medium text-cyan-800">{symptom.name}</div>
         <div className="text-sm text-gray-600 flex items-center flex-wrap gap-2 mt-1">
-          <Badge
-            className={`${symptom.severity === 1 ? "bg-green-500" : symptom.severity === 2 ? "bg-yellow-500" : "bg-red-500"} text-white text-xs`}
-          >
-            {t('severity')}: {symptom.severity}
+          <Badge className={`${getSeverityColor(symptom.severity)} text-white text-xs`}>
+            {t('severity')}:{' '}
+            {symptom.severity === 1
+              ? t('mild')
+              : t('severe')}
           </Badge>
         </div>
       </div>
