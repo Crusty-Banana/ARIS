@@ -71,7 +71,7 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
         <DialogHeader>
           <DialogTitle className="text-cyan-800">{t('editAllergenTitle', {allergenName: allergen.name[localLanguage]})}</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-4 max-h-[70vh] overflow-y-auto">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">{t('discoveryDate')}</label>
             <DatePicker
@@ -155,18 +155,18 @@ export function AllergenEditModal({ allergen, availableSymptoms, onUpdate, onClo
             getItemLabel={(symptom) => symptom.name[localLanguage]}
             label={t("associatedSymptoms")}
           />
+        </div>
 
-          <div className="flex gap-2 pt-4">
-            <Button
-              onClick={handleSave}
-              className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
-            >
-              {t('saveChanges')}
-            </Button>
-            <Button variant="outline" onClick={onClose} className="flex-1 bg-transparent">
-              {t('cancel')}
-            </Button>
-          </div>
+        <div className="flex gap-2 pt-4">
+          <Button
+            onClick={handleSave}
+            className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
+          >
+            {t('saveChanges')}
+          </Button>
+          <Button variant="outline" onClick={onClose} className="flex-1 bg-transparent">
+            {t('cancel')}
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
