@@ -185,7 +185,9 @@
         "detailModals": {
             "severity": "Severity",
             "prevalence": "Prevalence",
-            "treatment": "Treatment"
+            "treatment": "Treatment",
+            "mild": "Mild",
+            "severe": "Severe"
         },
         "clinicalSymptoms": "Clinical Symptoms",
         "paraclinicalTests": "Paraclinical Test",

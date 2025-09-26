@@ -189,7 +189,9 @@
         "detailModals": {
             "severity": "Độ nghiêm trọng",
             "prevalence": "Độ phổ biến",
-            "treatment": "Điều trị"
+            "treatment": "Điều trị",
+            "mild": "Nhẹ",
+            "severe":"Nặng"
         },
         "clinicalSymptoms": "Triệu chứng lâm sàng",
         "paraclinicalTests": "Xét nghiệm cận lâm sàng",
