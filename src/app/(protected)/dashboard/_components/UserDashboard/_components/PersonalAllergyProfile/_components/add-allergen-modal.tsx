@@ -1,28 +1,38 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Paperclip, Search, UploadCloud, X } from "lucide-react"
-import { Allergen, Language, Symptom, TestType } from "@/modules/business-types"
-import { useLocale, useTranslations } from "next-intl"
-import { PAPAllergen } from "@/modules/commands/UpdatePAPWithUserId/typing"
-import { getTypeColor } from "@/lib/client-side-utils"
-import { TestTypeDropdown } from "@/components/test-type-dropdown"
-import { DoneTestTickbox } from "@/components/done-test-tickbox"
-import { toast } from "sonner"
-import { httpPost$AddFileToS3 } from "@/modules/commands/AddFileToS3/fetcher"
-import { DatePicker } from "@/components/ui/custom-date-picker"
-import { GroupedSymptomSelect } from "@/components/grouped-symptoms-select"
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Paperclip, Search, UploadCloud, X } from "lucide-react";
+import {
+  Allergen,
+  Language,
+  Symptom,
+  TestType,
+} from "@/modules/business-types";
+import { useLocale, useTranslations } from "next-intl";
+import { PAPAllergen } from "@/modules/commands/UpdatePAPWithUserId/typing";
+import { getTypeColor } from "@/lib/client-side-utils";
+import { TestTypeDropdown } from "@/components/test-type-dropdown";
+import { DoneTestTickbox } from "@/components/done-test-tickbox";
+import { toast } from "sonner";
+import { httpPost$AddFileToS3 } from "@/modules/commands/AddFileToS3/fetcher";
+import { DatePicker } from "@/components/ui/custom-date-picker";
+import { GroupedSymptomSelect } from "@/components/grouped-symptoms-select";
 
 interface AddAllergenModalProps {
-  open: boolean
-  onClose: () => void
-  availableAllergens: Allergen[]
-  availableSymptoms: Symptom[]
-  onAddAllergen: (allergen: PAPAllergen) => void
+  open: boolean;
+  onClose: () => void;
+  availableAllergens: Allergen[];
+  availableSymptoms: Symptom[];
+  onAddAllergen: (allergen: PAPAllergen) => void;
 }
 
 export function AddAllergenModal({
@@ -32,22 +42,28 @@ export function AddAllergenModal({
   availableSymptoms,
   onAddAllergen,
 }: AddAllergenModalProps) {
-  const t = useTranslations('addAllergenModal');
+  const t = useTranslations("addAllergenModal");
   const localLanguage = useLocale() as Language;
 
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedAllergen, setSelectedAllergen] = useState<Allergen | null>(null)
-  const [discoveryDate, setDiscoveryDate] = useState<Date | undefined>()
-  const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([])
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedAllergen, setSelectedAllergen] = useState<Allergen | null>(
+    null
+  );
+  const [discoveryDate, setDiscoveryDate] = useState<Date | undefined>();
+  const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [doneTest, setDoneTest] = useState(false);
   const [testDone, setTestDone] = useState<TestType>("");
 
-  const [selectedResultFile, setSelectedResultFile] = useState<File | null>(null);
+  const [selectedResultFile, setSelectedResultFile] = useState<File | null>(
+    null
+  );
   const [isUploading, setIsUploading] = useState(false);
   const [testResultUrl, setTestResultUrl] = useState<string | undefined>();
 
   const filteredAllergens = availableAllergens.filter((allergen) =>
-    allergen.name[localLanguage].toLowerCase().includes(searchTerm.toLowerCase()),
+    allergen.name[localLanguage]
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
   );
 
   // const parseInputDate = (dateString: string) => {
@@ -56,24 +72,27 @@ export function AddAllergenModal({
   // };
 
   const parseInputDate = (date: Date | undefined) => {
-    if (!date) return null
-    return Math.floor(date.getTime() / 1000)
+    if (!date) return null;
+    return Math.floor(date.getTime() / 1000);
   };
 
   const handleResultFileUpload = async () => {
     if (!selectedResultFile) return;
 
     setIsUploading(true);
-    const uploadToast = toast.loading('Uploading File');
+    const uploadToast = toast.loading("Uploading File");
 
-    const response = await httpPost$AddFileToS3('/api/user-s3-upload', selectedResultFile);
+    const response = await httpPost$AddFileToS3(
+      "/api/user-s3-upload",
+      selectedResultFile
+    );
 
     if (response.success && response.result) {
-      setTestResultUrl(response.result)
-      toast.success('Upload Success', { id: uploadToast });
+      setTestResultUrl(response.result);
+      toast.success("Upload Success", { id: uploadToast });
     } else {
       toast.error(response.message, { id: uploadToast });
-    };
+    }
 
     setIsUploading(false);
   };
@@ -100,7 +119,7 @@ export function AddAllergenModal({
     setSelectedResultFile(null);
     setTestResultUrl(undefined);
     setIsUploading(false);
-    onClose()
+    onClose();
   };
 
   const handleAllergenSelect = (allergen: Allergen) => {
@@ -111,18 +130,20 @@ export function AddAllergenModal({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent 
-        className="max-w-3xl lg:max-w-5xl max-h-[90vh]"
-      >
+      <DialogContent className="max-w-3xl lg:max-w-5xl max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle className="text-cyan-800">{t("addNewAllergen")}</DialogTitle>
+          <DialogTitle className="text-cyan-800">
+            {t("addNewAllergen")}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto">
           {/* Left Column - Allergen Selection */}
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t("searchAllergen")}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t("searchAllergen")}
+              </label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
@@ -143,16 +164,24 @@ export function AddAllergenModal({
                   }`}
                   onClick={() => handleAllergenSelect(allergen)}
                 >
-                  <div className="font-medium text-cyan-800">{allergen.name[localLanguage]}</div>
+                  <div className="font-medium text-cyan-800">
+                    {allergen.name[localLanguage]}
+                  </div>
                   <div className="flex items-center gap-2 mt-1">
-                    <Badge className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}>
+                    <Badge
+                      className={`${getTypeColor(
+                        allergen.type
+                      )} text-white text-xs capitalize`}
+                    >
                       {t(allergen.type)}
                     </Badge>
                   </div>
                 </div>
               ))}
               {filteredAllergens.length === 0 && (
-                <div className="p-4 text-center text-gray-500">No allergens found</div>
+                <div className="p-4 text-center text-gray-500">
+                  No allergens found
+                </div>
               )}
             </div>
           </div>
@@ -162,15 +191,23 @@ export function AddAllergenModal({
             {selectedAllergen && (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t("selectedAllergen")}</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t("selectedAllergen")}
+                  </label>
                   <div className="p-2 bg-cyan-50 rounded border">
-                    <div className="font-medium">{selectedAllergen.name[localLanguage]}</div>
-                    <div className="text-sm text-gray-600 mt-1">{selectedAllergen.description[localLanguage]}</div>
+                    <div className="font-medium">
+                      {selectedAllergen.name[localLanguage]}
+                    </div>
+                    <div className="text-sm text-gray-600 mt-1">
+                      {selectedAllergen.description[localLanguage]}
+                    </div>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t("discoveryDate")}</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t("discoveryDate")}
+                  </label>
                   <DatePicker
                     value={discoveryDate}
                     onChange={setDiscoveryDate}
@@ -181,34 +218,52 @@ export function AddAllergenModal({
                 <div className="flex gap-6">
                   {doneTest && (
                     <div className="flex-1">
-                      <TestTypeDropdown value={testDone} onValueChange={(value) => setTestDone(value as TestType)} />
+                      <TestTypeDropdown
+                        value={testDone}
+                        onValueChange={(value) =>
+                          setTestDone(value as TestType)
+                        }
+                      />
                     </div>
                   )}
                 </div>
 
-                <div> 
-                    <DoneTestTickbox 
-                      checked={doneTest} 
-                      onCheckedChange={(checked) => {
-                        setDoneTest(checked as boolean);
-                        if (!checked) setTestDone("");
-                        setSelectedResultFile(null);
-                        setTestResultUrl(undefined);
-                      }}
-                    />
+                <div>
+                  <DoneTestTickbox
+                    checked={doneTest}
+                    onCheckedChange={(checked) => {
+                      setDoneTest(checked as boolean);
+                      if (!checked) setTestDone("");
+                      setSelectedResultFile(null);
+                      setTestResultUrl(undefined);
+                    }}
+                  />
                 </div>
-                
-                { doneTest && (
+
+                {doneTest && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">{t("testResult")}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {t("testResult")}
+                    </label>
                     {!testResultUrl && (
                       <div className="relative border-2 border-dashed border-cyan-300 rounded-lg p-6 flex flex-col items-center justify-center text-center">
                         <UploadCloud className="h-10 w-10 text-cyan-500 mb-2" />
-                        <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-cyan-600 hover:text-cyan-500 focus-within:outline-none">
+                        <label
+                          htmlFor="file-upload"
+                          className="relative cursor-pointer bg-white rounded-md font-medium text-cyan-600 hover:text-cyan-500 focus-within:outline-none"
+                        >
                           <span>{t("uploadTestResultFile")}</span>
-                          <input id="file-upload" name="file-upload" type="file" className="sr-only" accept=".pdf" onChange={(e) => setSelectedResultFile(e.target.files?.[0] || null)} />
+                          <input
+                            id="file-upload"
+                            name="file-upload"
+                            type="file"
+                            className="sr-only"
+                            onChange={(e) =>
+                              setSelectedResultFile(e.target.files?.[0] || null)
+                            }
+                          />
                         </label>
-                        <p className="text-xs text-gray-500 mt-1">{'pdf'}</p>
+                        <p className="text-xs text-gray-500 mt-1">{""}</p>
                       </div>
                     )}
 
@@ -218,24 +273,36 @@ export function AddAllergenModal({
                           <Paperclip className="h-4 w-4" />
                           <span>{selectedResultFile.name}</span>
                         </div>
-                        <Button onClick={handleResultFileUpload} disabled={isUploading} size="sm">
-                          {isUploading ? 'Uploading' : 'Upload'}
+                        <Button
+                          onClick={handleResultFileUpload}
+                          disabled={isUploading}
+                          size="sm"
+                        >
+                          {isUploading ? "Uploading" : "Upload"}
                         </Button>
                       </div>
                     )}
 
                     {testResultUrl && (
                       <div className="mt-2 flex items-center justify-between p-2 bg-green-100 border border-green-300 text-green-800 rounded-md">
-                        <a href={testResultUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm hover:underline">
+                        <a
+                          href={testResultUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-sm hover:underline"
+                        >
                           <Paperclip className="h-4 w-4" />
-                          <span>{'View uploaded result'}</span>
+                          <span>{"View uploaded result"}</span>
                         </a>
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
                           className="h-4 w-4 p-0 hover:bg-red-100"
-                          onClick={() => { setTestResultUrl(undefined); setSelectedResultFile(null); }}
+                          onClick={() => {
+                            setTestResultUrl(undefined);
+                            setSelectedResultFile(null);
+                          }}
                         >
                           <X className="h-3 w-3" />
                         </Button>
@@ -245,7 +312,9 @@ export function AddAllergenModal({
                 )}
 
                 <GroupedSymptomSelect
-                  items={availableSymptoms.sort((a, b) => a.name[localLanguage].localeCompare(b.name[localLanguage]))}
+                  items={availableSymptoms.sort((a, b) =>
+                    a.name[localLanguage].localeCompare(b.name[localLanguage])
+                  )}
                   selectedItems={selectedSymptoms}
                   onSelectionChange={setSelectedSymptoms}
                   getItemId={(symptom) => symptom.id}
@@ -265,11 +334,15 @@ export function AddAllergenModal({
           >
             {t("addAllergen")}
           </Button>
-          <Button variant="outline" onClick={onClose} className="flex-1 bg-transparent">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            className="flex-1 bg-transparent"
+          >
             {t("cancel")}
           </Button>
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
