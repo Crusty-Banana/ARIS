@@ -148,7 +148,6 @@ export function AddAllergenModal({
                     <Badge className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}>
                       {t(allergen.type)}
                     </Badge>
-                    <span className="text-xs text-gray-500">{0} {t("symptoms")}</span>
                   </div>
                 </div>
               ))}
