@@ -98,7 +98,7 @@ export function AllergenEditModal({
             })}
           </DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-4 max-h-[70vh] overflow-y-auto">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               {t("discoveryDate")}
@@ -214,7 +214,7 @@ export function AllergenEditModal({
             getItemLabel={(symptom) => symptom.name[localLanguage]}
             label={t("associatedSymptoms")}
           />
-
+        </div>
           <div className="flex gap-2 pt-4">
             <Button
               onClick={handleSave}

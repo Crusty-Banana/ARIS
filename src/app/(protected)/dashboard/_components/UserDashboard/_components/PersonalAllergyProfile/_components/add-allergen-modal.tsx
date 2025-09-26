@@ -175,9 +175,6 @@ export function AddAllergenModal({
                     >
                       {t(allergen.type)}
                     </Badge>
-                    <span className="text-xs text-gray-500">
-                      {0} {t("symptoms")}
-                    </span>
                   </div>
                 </div>
               ))}
