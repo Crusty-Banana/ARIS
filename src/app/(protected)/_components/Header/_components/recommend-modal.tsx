@@ -21,6 +21,15 @@ import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { AddRecommendation$Params } from "@/modules/commands/AddBusinessType/typing";
 import { httpPost$AddRecommendation } from "@/modules/commands/AddBusinessType/fetcher";
+// import confetti from "canvas-confetti";
+// const showConfetti = () => {
+//   confetti({
+//     particleCount: 100,
+//     spread: 70,
+//     origin: { y: 0.6 },
+//   });
+// };
+
 
 interface AddRecommendationModalProps {
   open: boolean;
@@ -39,11 +48,15 @@ export function AddRecommendationModal({
   const handleAddRecommendation = async (rec: AddRecommendation$Params) => {
     const data = await httpPost$AddRecommendation("/api/recommendations", rec);
     if (!data.success) {
-      toast.error("An error occured when sending feedback.", {
+      toast.error(t("anErrorOccured"), {
         description: data.message,
       });
     } else {
-      toast.success("Thank you for your feedback!");
+      toast.success(t("thankYouForFeedback"), {
+        description: t("weTrulyAppreciateYourHelp"),
+        duration: 6000,
+      });
+      // showConfetti();
       setType("");
       setContent("");
       onClose();

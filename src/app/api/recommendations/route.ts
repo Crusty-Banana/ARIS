@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { checkAdmin, checkAuth, processError } from "@/lib/utils";
+import { checkAuth, processError } from "@/lib/utils";
 import { getDb } from "@/modules/mongodb";
 import { handler$AddRecommendation } from "@/modules/commands/AddBusinessType/handler";
 import { handler$GetRecommendations } from "@/modules/commands/GetBusinessType/handler";
@@ -9,7 +9,7 @@ import { GetRecommendations$Params } from "@/modules/commands/GetBusinessType/ty
 export async function POST(req: NextRequest) {
   try {
     // Check Authentication
-    const authCheck = await checkAdmin(req);
+    const authCheck = await checkAuth(req);
     if (!authCheck.success) return authCheck.result;
 
     // Validate Input

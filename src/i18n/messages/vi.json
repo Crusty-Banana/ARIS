@@ -336,7 +336,10 @@
     "content": "Nội Dung",
     "defaultContentText": "Góp ý của bạn...",
     "allergenSuggestion": "Gợi ý dị nguyên mới",
-    "generalFeedback": "Góp ý chung"
+    "generalFeedback": "Góp ý chung",
+    "anErrorOccured": "Có lỗi xảy ra: ",
+    "thankYouForFeedback": "Cảm ơn đóng góp của bạn!",
+    "weTrulyAppreciateYourHelp": "Đóng góp của bạn sẽ giúp chúng tôi cải thiện chất lượng và nội dung."
   },
   "common": {
     "searchItems": "Tìm kiếm tên...",

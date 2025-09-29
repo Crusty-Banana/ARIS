@@ -332,7 +332,10 @@
     "content": "Content",
     "defaultContentText": "Your feedback...",
     "allergenSuggestion": "Allergen Suggestion",
-    "generalFeedback": "General Feedback"
+    "generalFeedback": "General Feedback",
+    "anErrorOccured": "An error occured: ",
+    "thankYouForFeedback": "Thank you for your feedback!",
+    "weTrulyAppreciateYourHelp": "You recommendation helps us improve our quality and content."
   },
   "common": {
     "searchItems": "Search items...",
