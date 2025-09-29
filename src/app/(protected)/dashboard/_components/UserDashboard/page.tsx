@@ -90,7 +90,6 @@ export default function UserDashboard() {
     const data = await httpGet$GetActionPlans("/api/action-plans", {});
     if (data.success) {
       setActionPlans(data.result as ActionPlan[]);
-      console.log("DEBUG:", data.result, actionPlans);
     } else {
       toast.error(data.message);
     }

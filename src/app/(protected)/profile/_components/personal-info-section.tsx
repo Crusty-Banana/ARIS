@@ -82,7 +82,6 @@ export function PersonalInfoSection() {
         console.error(data.message);
       }
       setIsLoading(false);
-      console.log("Form data is: ", formData);
     }
   }, [session]);
 

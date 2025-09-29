@@ -8,9 +8,9 @@ import {
 } from "./typing";
 import { BusisnessTypeCollection } from "@/modules/business-types";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function handler$AddBusinessType(
   db: Db,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   params: any,
   collectionName: string
 ) {

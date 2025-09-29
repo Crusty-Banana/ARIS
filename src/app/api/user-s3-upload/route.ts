@@ -27,7 +27,6 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    console.log(parsedBody.data.contentType);
 
     // Handle action
     const { result } = await handler$AddFileToS3(parsedBody.data);
