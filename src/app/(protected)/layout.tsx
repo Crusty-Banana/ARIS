@@ -1,5 +1,5 @@
-import Header from './_components/Header/page';
-import React from 'react';
+import Header from "./_components/Header/page";
+import React from "react";
 
 export default async function Layout({
   children,
@@ -7,11 +7,9 @@ export default async function Layout({
   children: React.ReactNode;
 }) {
   return (
-    <div className='flex flex-col h-screen'>
+    <div className="flex flex-col h-screen">
       <Header />
-      <div className='flex flex-grow'>
-        {children}
-      </div>
+      <div className="flex flex-grow">{children}</div>
     </div>
   );
 }

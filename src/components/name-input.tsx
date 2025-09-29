@@ -8,10 +8,13 @@ interface NameInputProps {
   handleNameChange: (value: string) => void;
 }
 
-
-export function NameInput({ selectedLanguage, name, handleNameChange }: NameInputProps) {
+export function NameInput({
+  selectedLanguage,
+  name,
+  handleNameChange,
+}: NameInputProps) {
   const t = useTranslations("common");
-  return (              
+  return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-1">
         {t("name")} ({selectedLanguage === "en" ? "English" : "Tiếng Việt"})
@@ -19,7 +22,7 @@ export function NameInput({ selectedLanguage, name, handleNameChange }: NameInpu
       <Input
         value={name[selectedLanguage]}
         onChange={(e) => handleNameChange(e.target.value)}
-        placeholder={t('enterName')}
+        placeholder={t("enterName")}
         required
         className="border-cyan-300 focus:border-cyan-500"
       />

@@ -44,5 +44,4 @@ pnpm-workspace.yaml
 .env
 
 # Additional files to ignore
-.prettierrc
 .vscode

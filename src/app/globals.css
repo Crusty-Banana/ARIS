@@ -189,6 +189,6 @@ input:checked + .slider:before {
 }
 
 .ProseMirror-selectednode {
-  outline: 3px solid #3b82f6; 
+  outline: 3px solid #3b82f6;
   outline-offset: 2px;
 }

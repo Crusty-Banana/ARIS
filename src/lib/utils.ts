@@ -1,10 +1,10 @@
-import { clsx, type ClassValue } from "clsx"
+import { clsx, type ClassValue } from "clsx";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
-import { twMerge } from "tailwind-merge"
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export async function checkAuth(req: NextRequest) {
@@ -12,8 +12,9 @@ export async function checkAuth(req: NextRequest) {
 
   if (!token) {
     return {
-      success: false, result: NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-    }
+      success: false,
+      result: NextResponse.json({ message: "Unauthorized" }, { status: 401 }),
+    };
   }
   return { success: true, token: token };
 }
@@ -21,10 +22,11 @@ export async function checkAuth(req: NextRequest) {
 export async function checkAdmin(req: NextRequest) {
   const token = await getToken({ req });
 
-  if (!token || token.role !== 'admin') {
+  if (!token || token.role !== "admin") {
     return {
-      success: false, result: NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-    }
+      success: false,
+      result: NextResponse.json({ message: "Unauthorized" }, { status: 401 }),
+    };
   }
   return { success: true, token: token };
 }
@@ -35,8 +37,5 @@ export function processError(error: any) {
   if (error instanceof Error) {
     message += `: ${error.message}`;
   }
-  return NextResponse.json(
-    { message },
-    { status: 500 }
-  );
+  return NextResponse.json({ message }, { status: 500 });
 }

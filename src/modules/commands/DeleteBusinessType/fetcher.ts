@@ -2,13 +2,13 @@ import { FetcherResult } from "@/modules/business-types";
 
 async function httpDelete$DeleteBusinessType(url: string) {
   const response = await fetch(url, {
-    method: 'DELETE'
+    method: "DELETE",
   });
   const text = await response.text();
   const data = JSON.parse(text);
   const result = FetcherResult.parse({
     success: response.ok,
-    ...data
+    ...data,
   });
   return result;
 }

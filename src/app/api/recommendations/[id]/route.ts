@@ -8,10 +8,11 @@ import { DeleteBusinessType$Params } from "@/modules/commands/DeleteBusinessType
 
 export async function PUT(
   req: NextRequest,
-  { params }:
-    {
-      params: Promise<{ id: string }>
-    }
+  {
+    params,
+  }: {
+    params: Promise<{ id: string }>;
+  }
 ) {
   try {
     // Check Authentication
@@ -23,7 +24,10 @@ export async function PUT(
     const body = await req.json();
     const parsedBody = UpdateRecommendation$Params.safeParse({ ...body, id });
     if (!parsedBody.success) {
-      return NextResponse.json({ message: parsedBody.error.message || "Invalid params" }, { status: 400 });
+      return NextResponse.json(
+        { message: parsedBody.error.message || "Invalid params" },
+        { status: 400 }
+      );
     }
 
     // Handle action
@@ -31,21 +35,27 @@ export async function PUT(
     const { result } = await handler$UpdateRecommendation(db, parsedBody.data);
 
     if (result != 1) {
-      return NextResponse.json({ message: "Recommendation not found." }, { status: 404 });
+      return NextResponse.json(
+        { message: "Recommendation not found." },
+        { status: 404 }
+      );
     }
-    return NextResponse.json({ message: "Recommendation updated successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Recommendation updated successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     return processError(error);
   }
 }
 
-
 export async function DELETE(
   req: NextRequest,
-  { params }:
-    {
-      params: Promise<{ id: string }>
-    }
+  {
+    params,
+  }: {
+    params: Promise<{ id: string }>;
+  }
 ) {
   try {
     // Check Authentication
@@ -56,7 +66,10 @@ export async function DELETE(
     const { id } = await params;
     const parsedBody = DeleteBusinessType$Params.safeParse({ id });
     if (!parsedBody.success) {
-      return NextResponse.json({ message: parsedBody.error.message || "Invalid params" }, { status: 400 });
+      return NextResponse.json(
+        { message: parsedBody.error.message || "Invalid params" },
+        { status: 400 }
+      );
     }
 
     // Handle action
@@ -64,9 +77,15 @@ export async function DELETE(
     const { result } = await handler$DeleteRecommendation(db, parsedBody.data);
 
     if (result != 1) {
-      return NextResponse.json({ message: "Recommendation not found." }, { status: 404 });
+      return NextResponse.json(
+        { message: "Recommendation not found." },
+        { status: 404 }
+      );
     }
-    return NextResponse.json({ message: "Recommendation deleted successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Recommendation deleted successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     return processError(error);
   }

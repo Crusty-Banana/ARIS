@@ -36,14 +36,17 @@ export function GroupedSymptomSelect<T extends { organ: string }>({
 }: GroupedSymptomSelectProps<T>) {
   const t = useTranslations("common");
 
-  const symptomGroups = items.reduce((groups, item) => {
-    const organ = item.organ;
-    if (!groups[organ]) {
-      groups[organ] = [];
-    }
-    groups[organ].push(item);
-    return groups;
-  }, {} as Record<string, T[]>);
+  const symptomGroups = items.reduce(
+    (groups, item) => {
+      const organ = item.organ;
+      if (!groups[organ]) {
+        groups[organ] = [];
+      }
+      groups[organ].push(item);
+      return groups;
+    },
+    {} as Record<string, T[]>
+  );
 
   const toggleItem = (itemId: string) => {
     onSelectionChange(
@@ -129,7 +132,9 @@ export function GroupedSymptomSelect<T extends { organ: string }>({
                           id={itemId}
                           opacity={0.5}
                           className="cursor-pointer hover:opacity-70"
-                          onClick={() => showSymptomDetail(item as unknown as Symptom)}
+                          onClick={() =>
+                            showSymptomDetail(item as unknown as Symptom)
+                          }
                         />
                       </div>
                     );
@@ -147,7 +152,7 @@ export function GroupedSymptomSelect<T extends { organ: string }>({
               </Box>
             </AccordionDetails>
           </Accordion>
-      ))}
+        ))}
     </Box>
   );
 }

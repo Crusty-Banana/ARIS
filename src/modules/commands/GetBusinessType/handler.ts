@@ -2,31 +2,57 @@ import { Db, ObjectId } from "mongodb";
 import {
   GetBusinessType$Params,
   GetAllergens$Params,
-  LocalizedAllergen, LocalizedSymptom,
+  LocalizedAllergen,
+  LocalizedSymptom,
   GetUsers$Params,
   GetPAP$Params,
   GetSymptoms$Params,
   GetRecommendations$Params,
   GetActionPlans$Params,
-  LocalizedActionPlan
+  LocalizedActionPlan,
 } from "./typing";
-import { ActionPlan, Allergen, BusisnessTypeCollection, PAP, Recommendation, Symptom, User } from "@/modules/business-types";
+import {
+  ActionPlan,
+  Allergen,
+  BusisnessTypeCollection,
+  PAP,
+  Recommendation,
+  Symptom,
+  User,
+} from "@/modules/business-types";
 
-async function handler$GetBusinessType(db: Db, params: GetBusinessType$Params, collectionName: string) {
+async function handler$GetBusinessType(
+  db: Db,
+  params: GetBusinessType$Params,
+  collectionName: string
+) {
   const { ids, limit, offset, lang, filters } = params;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mongoFilter: any = { ...filters };
   if (mongoFilter?._id?.$nin && Array.isArray(mongoFilter._id.$nin)) {
-    mongoFilter._id.$nin = mongoFilter._id.$nin.map((id: string) => ObjectId.createFromHexString(id));
+    mongoFilter._id.$nin = mongoFilter._id.$nin.map((id: string) =>
+      ObjectId.createFromHexString(id)
+    );
   }
 
-  const filterTerm = (ids || filters) ? [{
-    $match: {
-      ...(ids ? { _id: { $in: ids.map((id) => ObjectId.createFromHexString(id)) } } : {}),
-      ...(mongoFilter ? mongoFilter : {})
-    }
-  }] : [];
+  const filterTerm =
+    ids || filters
+      ? [
+          {
+            $match: {
+              ...(ids
+                ? {
+                    _id: {
+                      $in: ids.map((id) => ObjectId.createFromHexString(id)),
+                    },
+                  }
+                : {}),
+              ...(mongoFilter ? mongoFilter : {}),
+            },
+          },
+        ]
+      : [];
 
   const pagingTerm = [
     ...(offset ? [{ $skip: offset }] : []),
@@ -42,7 +68,11 @@ async function handler$GetBusinessType(db: Db, params: GetBusinessType$Params, c
 }
 
 export async function handler$GetUsers(db: Db, params: GetUsers$Params) {
-  const { docs } = await handler$GetBusinessType(db, params, BusisnessTypeCollection.users);
+  const { docs } = await handler$GetBusinessType(
+    db,
+    params,
+    BusisnessTypeCollection.users
+  );
 
   const parsedDocs = docs.map((doc) => {
     return User.parse({
@@ -54,8 +84,15 @@ export async function handler$GetUsers(db: Db, params: GetUsers$Params) {
   return { result: parsedDocs };
 }
 
-export async function handler$GetAllergens(db: Db, params: GetAllergens$Params) {
-  const { docs, lang } = await handler$GetBusinessType(db, params, BusisnessTypeCollection.allergens);
+export async function handler$GetAllergens(
+  db: Db,
+  params: GetAllergens$Params
+) {
+  const { docs, lang } = await handler$GetBusinessType(
+    db,
+    params,
+    BusisnessTypeCollection.allergens
+  );
   if (lang !== "vi" && lang !== "en") {
     const parsedDocs = docs.map((doc) => {
       return Allergen.parse({
@@ -77,9 +114,12 @@ export async function handler$GetAllergens(db: Db, params: GetAllergens$Params) 
   return { result: parsedDocs };
 }
 
-
 export async function handler$GetPAPs(db: Db, params: GetPAP$Params) {
-  const { docs } = await handler$GetBusinessType(db, params, BusisnessTypeCollection.paps);
+  const { docs } = await handler$GetBusinessType(
+    db,
+    params,
+    BusisnessTypeCollection.paps
+  );
 
   const parsedDocs = docs.map((doc) => {
     return PAP.parse({
@@ -92,7 +132,11 @@ export async function handler$GetPAPs(db: Db, params: GetPAP$Params) {
 }
 
 export async function handler$GetSymptoms(db: Db, params: GetSymptoms$Params) {
-  const { docs, lang } = await handler$GetBusinessType(db, params, BusisnessTypeCollection.symptoms);
+  const { docs, lang } = await handler$GetBusinessType(
+    db,
+    params,
+    BusisnessTypeCollection.symptoms
+  );
 
   if (lang !== "vi" && lang !== "en") {
     const parsedDocs = docs.map((doc) => {
@@ -116,8 +160,15 @@ export async function handler$GetSymptoms(db: Db, params: GetSymptoms$Params) {
   return { result: parsedDocs };
 }
 
-export async function handler$GetRecommendations(db: Db, params: GetRecommendations$Params) {
-  const { docs } = await handler$GetBusinessType(db, params, BusisnessTypeCollection.recommendations);
+export async function handler$GetRecommendations(
+  db: Db,
+  params: GetRecommendations$Params
+) {
+  const { docs } = await handler$GetBusinessType(
+    db,
+    params,
+    BusisnessTypeCollection.recommendations
+  );
 
   const parsedDocs = docs.map((doc) => {
     return Recommendation.parse({
@@ -129,8 +180,15 @@ export async function handler$GetRecommendations(db: Db, params: GetRecommendati
   return { result: parsedDocs };
 }
 
-export async function handler$GetActionPlans(db: Db, params: GetActionPlans$Params) {
-  const { docs, lang } = await handler$GetBusinessType(db, params, BusisnessTypeCollection.actionPlans);
+export async function handler$GetActionPlans(
+  db: Db,
+  params: GetActionPlans$Params
+) {
+  const { docs, lang } = await handler$GetBusinessType(
+    db,
+    params,
+    BusisnessTypeCollection.actionPlans
+  );
 
   if (lang !== "vi" && lang !== "en") {
     const parsedDocs = docs.map((doc) => {

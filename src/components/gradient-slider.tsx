@@ -1,14 +1,14 @@
-"use client"
-import { Slider } from "@/components/ui/slider"
+"use client";
+import { Slider } from "@/components/ui/slider";
 
 interface GradientSliderProps {
-  value: number[]
-  onValueChange: (value: number[]) => void
-  min: number
-  max: number
-  step?: number
-  label: string
-  className?: string
+  value: number[];
+  onValueChange: (value: number[]) => void;
+  min: number;
+  max: number;
+  step?: number;
+  label: string;
+  className?: string;
 }
 
 export function GradientSlider({
@@ -21,22 +21,22 @@ export function GradientSlider({
   className = "",
 }: GradientSliderProps) {
   const getGradientColor = (val: number) => {
-    const percentage = (val - min) / (max - min)
+    const percentage = (val - min) / (max - min);
     if (percentage <= 0.5) {
       // Green to slightly darker Yellow
-      const r = Math.round(255 * (percentage * 2))
+      const r = Math.round(255 * (percentage * 2));
       // Reduce green slightly as it approaches yellow
-      const g = Math.round(255 * (1 - percentage * 0.3))
-      const b = 0
-      return `rgb(${r}, ${g}, ${b})`
+      const g = Math.round(255 * (1 - percentage * 0.3));
+      const b = 0;
+      return `rgb(${r}, ${g}, ${b})`;
     } else {
       // Yellow to Red
-      const r = 255
-      const g = Math.round(255 * (2 - percentage * 2))
-      const b = 0
-      return `rgb(${r}, ${g}, ${b})`
+      const r = 255;
+      const g = Math.round(255 * (2 - percentage * 2));
+      const b = 0;
+      return `rgb(${r}, ${g}, ${b})`;
     }
-  }
+  };
 
   return (
     <div className={`space-y-2 ${className}`}>
@@ -66,5 +66,5 @@ export function GradientSlider({
         />
       </div>
     </div>
-  )
+  );
 }

@@ -1,54 +1,88 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Edit, AlertTriangle, Plus, Trash2 } from "lucide-react"
-import { AddAllergenModal } from "./_components/add-allergen-modal"
-import { PotentialCrossAllergens } from "./_components/potential-cross-allergens"
-import { DisplayPAP } from "@/modules/commands/GetPAPWithUserId/typing"
-import { ActionPlan, Allergen, Gender, Language, ObjectIdAsHexString, Symptom } from "@/modules/business-types"
-import { useLocale, useTranslations } from "next-intl"
-import { AllergenEditModal } from "./_components/allergen-edit-modal"
-import { UnderlyingMedicalConditionsCard } from "./_components/underlying-medical-condition"
-import { AddAllergenButton } from "./_components/add-allergen-button"
-import { Label } from "@/components/ui/label"
-import { PAPAllergen, UpdatePAPAllergen$Params, UpdatePAPWithUserIdFetcher$Params } from "@/modules/commands/UpdatePAPWithUserId/typing"
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Edit, AlertTriangle, Plus, Trash2 } from "lucide-react";
+import { AddAllergenModal } from "./_components/add-allergen-modal";
+import { PotentialCrossAllergens } from "./_components/potential-cross-allergens";
+import { DisplayPAP } from "@/modules/commands/GetPAPWithUserId/typing";
+import {
+  ActionPlan,
+  Allergen,
+  Gender,
+  Language,
+  ObjectIdAsHexString,
+  Symptom,
+} from "@/modules/business-types";
+import { useLocale, useTranslations } from "next-intl";
+import { AllergenEditModal } from "./_components/allergen-edit-modal";
+import { UnderlyingMedicalConditionsCard } from "./_components/underlying-medical-condition";
+import { AddAllergenButton } from "./_components/add-allergen-button";
+import { Label } from "@/components/ui/label";
+import {
+  PAPAllergen,
+  UpdatePAPAllergen$Params,
+  UpdatePAPWithUserIdFetcher$Params,
+} from "@/modules/commands/UpdatePAPWithUserId/typing";
 // import { SymptomDetailModal } from "@/components/container/SymptomList/_components/symptom-detail-modal"
-import { getTypeColor } from "@/lib/client-side-utils"
-import { AllergenDetailModal } from "@/components/container/AllergenList/_components/allergen-detail-modal"
-import { useSymptomDetail } from "@/app/context/symptom-detail-context"
+import { getTypeColor } from "@/lib/client-side-utils";
+import { AllergenDetailModal } from "@/components/container/AllergenList/_components/allergen-detail-modal";
+import { useSymptomDetail } from "@/app/context/symptom-detail-context";
 
 interface PersonalAllergyProfileProps {
-  pAP: DisplayPAP
-  availableSymptoms: Symptom[]
-  availableAllergens: Allergen[]
-  allergens: Allergen[]
-  potentialCrossAllergens: Allergen[]
-  actionPlans: ActionPlan[]
-  onUpdate: (params: UpdatePAPWithUserIdFetcher$Params) => void
+  pAP: DisplayPAP;
+  availableSymptoms: Symptom[];
+  availableAllergens: Allergen[];
+  allergens: Allergen[];
+  potentialCrossAllergens: Allergen[];
+  actionPlans: ActionPlan[];
+  onUpdate: (params: UpdatePAPWithUserIdFetcher$Params) => void;
 }
 
-export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossAllergens, availableAllergens, actionPlans,  allergens, onUpdate }: PersonalAllergyProfileProps) {
-  const t = useTranslations('personalAllergyProfile');
+export function PersonalAllergyProfile({
+  pAP,
+  availableSymptoms,
+  potentialCrossAllergens,
+  availableAllergens,
+  actionPlans,
+  allergens,
+  onUpdate,
+}: PersonalAllergyProfileProps) {
+  const t = useTranslations("personalAllergyProfile");
   const localLanguage = useLocale() as Language;
 
-  const [isEditingProfile, setIsEditingProfile] = useState(false)
-  const [editingAllergen, setEditingAllergen] = useState<string | null>(null)
-  const [showAddAllergen, setShowAddAllergen] = useState(false)
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [editingAllergen, setEditingAllergen] = useState<string | null>(null);
+  const [showAddAllergen, setShowAddAllergen] = useState(false);
   const { showSymptomDetail } = useSymptomDetail();
-  const [selectedAllergen, setSelectedAllergen] = useState<Allergen | undefined>(undefined);
-  const [selectedActionPlan, setSelectedActionPlan] = useState<string | undefined>(undefined);
+  const [selectedAllergen, setSelectedAllergen] = useState<
+    Allergen | undefined
+  >(undefined);
+  const [selectedActionPlan, setSelectedActionPlan] = useState<
+    string | undefined
+  >(undefined);
   const [profileData, setProfileData] = useState({
     gender: pAP.gender,
     doB: pAP.doB,
     allowPublic: pAP.allowPublic,
-  })
+  });
 
   useEffect(() => {
     setProfileData({
@@ -59,66 +93,76 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
   }, [pAP]);
 
   const formatDate = (timestamp: number | null) => {
-    if (!timestamp) return t('notSpecified');
+    if (!timestamp) return t("notSpecified");
     const date = new Date(timestamp * 1000);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth()+1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear().toString();
     return `${day}/${month}/${year}`;
-  }
+  };
 
   const formatDateForInput = (timestamp: number | null) => {
-    if (!timestamp) return ""
-    return new Date(timestamp * 1000).toISOString().split("T")[0]
-  }
+    if (!timestamp) return "";
+    return new Date(timestamp * 1000).toISOString().split("T")[0];
+  };
 
   const parseInputDate = (dateString: string) => {
-    if (!dateString) return null
-    return Math.floor(new Date(dateString).getTime() / 1000)
-  }
+    if (!dateString) return null;
+    return Math.floor(new Date(dateString).getTime() / 1000);
+  };
 
   const getSeverityColor = (severity: number) => {
-    if (severity === 1) return "bg-green-500"
-    if (severity === 2) return "bg-yellow-500"
-    return "bg-red-500"
-  }
+    if (severity === 1) return "bg-green-500";
+    if (severity === 2) return "bg-yellow-500";
+    return "bg-red-500";
+  };
 
   const handleProfileUpdate = () => {
     onUpdate({
       ...profileData,
-    })
-    setIsEditingProfile(false)
-  }
+    });
+    setIsEditingProfile(false);
+  };
 
-  const handleAllergenUpdate = (allergenId: ObjectIdAsHexString, updates: UpdatePAPAllergen$Params) => {
-    const pAPAllergens = pAP.allergens.map((allergen) => (PAPAllergen.parse({
-      ...allergen,
-      symptomsId: allergen.symptoms.map((symptom) => symptom.symptomId),
-    })))
+  const handleAllergenUpdate = (
+    allergenId: ObjectIdAsHexString,
+    updates: UpdatePAPAllergen$Params
+  ) => {
+    const pAPAllergens = pAP.allergens.map((allergen) =>
+      PAPAllergen.parse({
+        ...allergen,
+        symptomsId: allergen.symptoms.map((symptom) => symptom.symptomId),
+      })
+    );
     const allergensUpdate = pAPAllergens.map((allergen) => {
       if (allergen.allergenId === allergenId) {
         return PAPAllergen.parse({
           ...allergen,
           ...updates,
-        })
+        });
       }
-      return allergen
-    })
+      return allergen;
+    });
 
     onUpdate({
       allergens: allergensUpdate,
-    })
-    setEditingAllergen(null)
-  }
+    });
+    setEditingAllergen(null);
+  };
 
   const handleAddAllergen = (allergenData: PAPAllergen) => {
-      const allergens = [...pAP.allergens.map(allergen => PAPAllergen.parse({
-        ...allergen,
-        symptomsId: allergen.symptoms.map(symptom => symptom.symptomId),
-        })), allergenData]
-  
-    onUpdate({ allergens })
-  }
+    const allergens = [
+      ...pAP.allergens.map((allergen) =>
+        PAPAllergen.parse({
+          ...allergen,
+          symptomsId: allergen.symptoms.map((symptom) => symptom.symptomId),
+        })
+      ),
+      allergenData,
+    ];
+
+    onUpdate({ allergens });
+  };
 
   const handleQuickAddAllergen = (allergen: Allergen) => {
     handleAddAllergen({
@@ -127,21 +171,25 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
       doneTest: false,
       testDone: "",
       symptomsId: [],
-    })
-  }
+    });
+  };
 
   const handleDeleteAllergen = (allergenId: string) => {
-    if (confirm(t('areYouSureRemoveAllergen'))) {
-      const pAPAllergens = pAP.allergens.map((allergen) => PAPAllergen.parse({
-        ...allergen,
-        symptomsId: allergen.symptoms.map((symptom) => symptom.symptomId),
-      }))
-      const updatedAllergens = pAPAllergens.filter((allergen) => allergen.allergenId !== allergenId)
-      onUpdate({ allergens: updatedAllergens })
+    if (confirm(t("areYouSureRemoveAllergen"))) {
+      const pAPAllergens = pAP.allergens.map((allergen) =>
+        PAPAllergen.parse({
+          ...allergen,
+          symptomsId: allergen.symptoms.map((symptom) => symptom.symptomId),
+        })
+      );
+      const updatedAllergens = pAPAllergens.filter(
+        (allergen) => allergen.allergenId !== allergenId
+      );
+      onUpdate({ allergens: updatedAllergens });
     }
-  }
+  };
 
-  console.log("DEBUG", actionPlans)
+  console.log("DEBUG", actionPlans);
 
   return (
     <div className="space-y-6">
@@ -152,7 +200,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
             <CardHeader className="flex justify-between items-start">
               <CardTitle className="text-cyan-800 flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5" />
-                {t('myAllergens')} ({pAP.allergens.length})
+                {t("myAllergens")} ({pAP.allergens.length})
               </CardTitle>
 
               <Button
@@ -160,7 +208,7 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                 className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 h-9 px-3 text-sm lg:hidden"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                {t('addAllergenButton')}
+                {t("addAllergenButton")}
               </Button>
             </CardHeader>
             <CardContent>
@@ -170,29 +218,48 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                     key={allergen.allergenId}
                     className="bg-white/70 backdrop-blur-sm p-4 rounded-lg border border-cyan-200 cursor-pointer hover:bg-cyan-50"
                     onClick={() => {
-                      setSelectedAllergen(allergens.find((avaiAllergen) => avaiAllergen.id === allergen.allergenId))
-                      setSelectedActionPlan(actionPlans.find((ap) => ap.severity === allergen.severity)!.text[localLanguage]);
-                     }}
+                      setSelectedAllergen(
+                        allergens.find(
+                          (avaiAllergen) =>
+                            avaiAllergen.id === allergen.allergenId
+                        )
+                      );
+                      setSelectedActionPlan(
+                        actionPlans.find(
+                          (ap) => ap.severity === allergen.severity
+                        )!.text[localLanguage]
+                      );
+                    }}
                   >
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-3">
                       <div className="flex-1">
                         <div className="flex items-center flex-wrap gap-2 mb-2">
-                          <h3 className="font-semibold text-cyan-800">{allergen.name[localLanguage]}</h3>
-                          <Badge className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}>
+                          <h3 className="font-semibold text-cyan-800">
+                            {allergen.name[localLanguage]}
+                          </h3>
+                          <Badge
+                            className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}
+                          >
                             {t(allergen.type)}
                           </Badge>
-                          <Badge className={`${getSeverityColor(allergen.severity)} text-white text-xs`}>
-                            {t('detailModals.severity')}:{' '}
+                          <Badge
+                            className={`${getSeverityColor(allergen.severity)} text-white text-xs`}
+                          >
+                            {t("detailModals.severity")}:{" "}
                             {allergen.severity === 1
-                              ? t('detailModals.mild')
-                              : t('detailModals.severe')}
+                              ? t("detailModals.mild")
+                              : t("detailModals.severe")}
                           </Badge>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 mb-3">
                           <div>
-                            <span className="text-sm font-medium text-gray-700">{t('discoveryDate')}:</span>
-                            <span className="ml-2 text-sm">{formatDate(allergen.discoveryDate)}</span>
+                            <span className="text-sm font-medium text-gray-700">
+                              {t("discoveryDate")}:
+                            </span>
+                            <span className="ml-2 text-sm">
+                              {formatDate(allergen.discoveryDate)}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -212,7 +279,9 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleDeleteAllergen(allergen.allergenId)}
+                          onClick={() =>
+                            handleDeleteAllergen(allergen.allergenId)
+                          }
                           className="bg-transparent text-red-600 hover:text-red-700 hover:bg-red-50"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -222,15 +291,20 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
 
                     <div className="flex gap-[1vw]">
                       <div className="flex gap-[0.5vw] flex-wrap">
-                        <Label className="text-sm font-medium text-gray-700 whitespace-nowrap">{t('associatedSymptoms')}:</Label>
+                        <Label className="text-sm font-medium text-gray-700 whitespace-nowrap">
+                          {t("associatedSymptoms")}:
+                        </Label>
                         {allergen.symptoms.map((symptom) => (
-                          <Badge 
-                            key={symptom.symptomId} 
-                            variant="outline" 
+                          <Badge
+                            key={symptom.symptomId}
+                            variant="outline"
                             className="text-xs hover:bg-cyan-100 hover:cursor-pointer"
                             onClick={(e) => {
                               e.stopPropagation();
-                              const fullSymptom = Symptom.parse({ id: symptom.symptomId, ...symptom });
+                              const fullSymptom = Symptom.parse({
+                                id: symptom.symptomId,
+                                ...symptom,
+                              });
                               showSymptomDetail(fullSymptom);
                             }}
                           >
@@ -245,8 +319,10 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                 {pAP.allergens.length === 0 && (
                   <div className="text-center text-gray-500 py-8">
                     <AlertTriangle className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                    <p>{t('noAllergensRecorded')}</p>
-                    <p className="text-sm text-gray-400 mt-1">{t('clickAddAllergen')}</p>
+                    <p>{t("noAllergensRecorded")}</p>
+                    <p className="text-sm text-gray-400 mt-1">
+                      {t("clickAddAllergen")}
+                    </p>
                   </div>
                 )}
               </div>
@@ -254,13 +330,17 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
           </Card>
         </div>
 
-
-        {(selectedAllergen !== undefined) && <AllergenDetailModal 
-          allergen={selectedAllergen} 
-          onClose={() => {setSelectedAllergen(undefined); setSelectedActionPlan(undefined)}}
-          allergens ={availableAllergens}
-          actionPlan={selectedActionPlan}
-        />}
+        {selectedAllergen !== undefined && (
+          <AllergenDetailModal
+            allergen={selectedAllergen}
+            onClose={() => {
+              setSelectedAllergen(undefined);
+              setSelectedActionPlan(undefined);
+            }}
+            allergens={availableAllergens}
+            actionPlan={selectedActionPlan}
+          />
+        )}
 
         {/* Right Column */}
         <div className="space-y-6">
@@ -271,12 +351,13 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
             userAllergenIds={pAP.allergens.map((a) => a.allergenId)}
             onQuickAdd={handleQuickAddAllergen}
           />
-          
-          <UnderlyingMedicalConditionsCard 
-            conditions={pAP.underlyingMedCon}
-            onUpdate={(updatedConditions) => onUpdate({ underlyingMedCon: updatedConditions })}
-          />
 
+          <UnderlyingMedicalConditionsCard
+            conditions={pAP.underlyingMedCon}
+            onUpdate={(updatedConditions) =>
+              onUpdate({ underlyingMedCon: updatedConditions })
+            }
+          />
         </div>
       </div>
 
@@ -291,41 +372,58 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
       <Dialog open={isEditingProfile} onOpenChange={setIsEditingProfile}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-cyan-800">{t('editPersonalInfo')}</DialogTitle>
+            <DialogTitle className="text-cyan-800">
+              {t("editPersonalInfo")}
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('gender')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t("gender")}
+              </label>
               <Select
                 value={profileData.gender || ""}
-                onValueChange={(value: Gender) => setProfileData({ ...profileData, gender: value as Gender })}
+                onValueChange={(value: Gender) =>
+                  setProfileData({ ...profileData, gender: value as Gender })
+                }
               >
                 <SelectTrigger className="border-cyan-300 focus:border-cyan-500">
-                  <SelectValue placeholder={t('selectGender')} />
+                  <SelectValue placeholder={t("selectGender")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="male">{t('male')}</SelectItem>
-                  <SelectItem value="female">{t('female')}</SelectItem>
-                  <SelectItem value="other">{t('other')}</SelectItem>
+                  <SelectItem value="male">{t("male")}</SelectItem>
+                  <SelectItem value="female">{t("female")}</SelectItem>
+                  <SelectItem value="other">{t("other")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('dateOfBirth')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t("dateOfBirth")}
+              </label>
               <Input
                 type="date"
                 value={formatDateForInput(profileData.doB)}
-                onChange={(e) => setProfileData({ ...profileData, doB: parseInputDate(e.target.value) })}
+                onChange={(e) =>
+                  setProfileData({
+                    ...profileData,
+                    doB: parseInputDate(e.target.value),
+                  })
+                }
                 className="border-cyan-300 focus:border-cyan-500"
               />
             </div>
 
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700">{t('allowPublicProfile')}</label>
+              <label className="text-sm font-medium text-gray-700">
+                {t("allowPublicProfile")}
+              </label>
               <Switch
                 checked={profileData.allowPublic}
-                onCheckedChange={(checked: boolean) => setProfileData({ ...profileData, allowPublic: checked })}
+                onCheckedChange={(checked: boolean) =>
+                  setProfileData({ ...profileData, allowPublic: checked })
+                }
               />
             </div>
 
@@ -334,10 +432,14 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
                 onClick={handleProfileUpdate}
                 className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
               >
-                {t('saveChanges')}
+                {t("saveChanges")}
               </Button>
-              <Button variant="outline" onClick={() => setIsEditingProfile(false)} className="flex-1">
-                {t('cancel')}
+              <Button
+                variant="outline"
+                onClick={() => setIsEditingProfile(false)}
+                className="flex-1"
+              >
+                {t("cancel")}
               </Button>
             </div>
           </div>
@@ -346,12 +448,16 @@ export function PersonalAllergyProfile({ pAP, availableSymptoms, potentialCrossA
 
       {editingAllergen && (
         <AllergenEditModal
-          allergen={pAP.allergens.find((allergen) => allergen.allergenId === editingAllergen)!}
+          allergen={
+            pAP.allergens.find(
+              (allergen) => allergen.allergenId === editingAllergen
+            )!
+          }
           availableSymptoms={availableSymptoms}
           onUpdate={(updates) => handleAllergenUpdate(editingAllergen, updates)}
           onClose={() => setEditingAllergen(null)}
         />
       )}
     </div>
-  )
+  );
 }

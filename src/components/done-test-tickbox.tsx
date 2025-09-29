@@ -1,13 +1,16 @@
-import { useTranslations } from "next-intl"
-import { Checkbox } from "./ui/checkbox"
+import { useTranslations } from "next-intl";
+import { Checkbox } from "./ui/checkbox";
 
 interface DoneTestTickboxProb {
-  checked: boolean,
-  onCheckedChange: (checked: boolean) => void
+  checked: boolean;
+  onCheckedChange: (checked: boolean) => void;
 }
 
-export function DoneTestTickbox({checked, onCheckedChange} : DoneTestTickboxProb) {
-  const t = useTranslations("addAllergenModal")
+export function DoneTestTickbox({
+  checked,
+  onCheckedChange,
+}: DoneTestTickboxProb) {
+  const t = useTranslations("addAllergenModal");
   return (
     <div className="space-y-4">
       <div className="flex items-center space-x-2">
@@ -24,5 +27,5 @@ export function DoneTestTickbox({checked, onCheckedChange} : DoneTestTickboxProb
         </label>
       </div>
     </div>
-  )
+  );
 }

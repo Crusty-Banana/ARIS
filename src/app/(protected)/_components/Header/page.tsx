@@ -1,17 +1,22 @@
-"use client"
+"use client";
 
-import { User, LogOut, MessageSquareWarning, Blocks } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { signOut, useSession } from "next-auth/react"
-import LocaleDropdown from "./_components/locale-change"
-import { useTranslations } from "next-intl"
-import React, { useState } from "react"
-import { AddRecommendationModal } from "./_components/recommend-modal"
-import { useRouter } from "next/navigation"
+import { User, LogOut, MessageSquareWarning, Blocks } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { signOut, useSession } from "next-auth/react";
+import LocaleDropdown from "./_components/locale-change";
+import { useTranslations } from "next-intl";
+import React, { useState } from "react";
+import { AddRecommendationModal } from "./_components/recommend-modal";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
-  const t = useTranslations('header');
+  const t = useTranslations("header");
   const { data, status } = useSession();
   const router = useRouter();
   const [showFeedback, setShowFeedback] = useState(false);
@@ -27,7 +32,7 @@ export default function Header() {
             onClick={() => router.push("/dashboard")}
           >
             <Blocks className="h-6 w-6" />
-            <span>{t('dashboard')}</span>
+            <span>{t("dashboard")}</span>
           </Button>
 
           <div className="flex items-center gap-4 ml-auto">
@@ -44,35 +49,50 @@ export default function Header() {
             {status === "authenticated" && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-10 w-10 rounded-full bg-white/20 hover:bg-white/30 p-0">
+                  <Button
+                    variant="ghost"
+                    className="relative h-10 w-10 rounded-full bg-white/20 hover:bg-white/30 p-0"
+                  >
                     <User className="h-5 w-5 text-white" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-48" align="end">
-                  <DropdownMenuItem className="cursor-pointer" onClick={() => router.push("/profile")}>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => router.push("/profile")}
+                  >
                     <User className="mr-2 h-4 w-4" />
-                    <span>{t('profile')}</span>
+                    <span>{t("profile")}</span>
                   </DropdownMenuItem>
 
                   {data.user.role === "user" && (
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => setShowFeedback(true)}>
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={() => setShowFeedback(true)}
+                    >
                       <MessageSquareWarning className="mr-2 h-4 w-4" />
                       <span>{t("feedback")}</span>
-                    </DropdownMenuItem>)}
+                    </DropdownMenuItem>
+                  )}
 
-                  <DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => signOut()}
+                  >
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>{t('logout')}</span>
+                    <span>{t("logout")}</span>
                   </DropdownMenuItem>
-
-
                 </DropdownMenuContent>
-              </DropdownMenu>)}
+              </DropdownMenu>
+            )}
           </div>
         </div>
       </header>
 
-      <AddRecommendationModal open={showFeedback} onClose={() => setShowFeedback(false)} />
+      <AddRecommendationModal
+        open={showFeedback}
+        onClose={() => setShowFeedback(false)}
+      />
     </React.Fragment>
-  )
+  );
 }
