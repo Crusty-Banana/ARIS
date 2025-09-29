@@ -107,6 +107,7 @@ export function AllergenEditModal({
               value={discoveryDate}
               onChange={setDiscoveryDate}
               placeholder={t("selectDate")}
+              localLanguage={localLanguage}
             />
           </div>
 

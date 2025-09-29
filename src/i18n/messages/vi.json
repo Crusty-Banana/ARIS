@@ -409,7 +409,8 @@
         "medicalConditionsTitle": "Bệnh lý nền",
         "medicalConditions": "Bệnh nền",
         "addCondition": "Thêm bệnh nền",
-        "noCondition": "Không có bệnh nền nào được ghi trong hồ sơ của bạn"
+        "noCondition": "Không có bệnh nền nào được ghi trong hồ sơ của bạn",
+        "selectDate":"Chọn ngày"
     },
     "changePassword": {
         "title": "Đổi mật khẩu",

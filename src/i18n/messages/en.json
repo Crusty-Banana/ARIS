@@ -405,7 +405,8 @@
         "medicalConditionsTitle": "Underlying Medical Conditions",
         "medicalConditions": "Medical Conditions",
         "addCondition": "Add Condition",
-        "noCondition": "No medical conditions listed"
+        "noCondition": "No medical conditions listed",
+        "selectDate":"Select Date"
     },
     "changePassword": {
         "title": "Change Password",
