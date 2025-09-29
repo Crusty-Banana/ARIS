@@ -17,9 +17,11 @@ import {
 import { Edit3, Save, X, Loader2, Trash2, Plus } from "lucide-react";
 import { z } from "zod";
 import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { httpGet$GetProfileWithUserId } from "@/modules/commands/GetProfileWithUserId/fetcher";
 import { httpPut$UpdateProfileWithUserId } from "@/modules/commands/UpdateProfileWithUserId/fetcher";
+import { DatePicker } from "@/components/ui/custom-date-picker";
+import { Language } from "@/modules/business-types";
 const personalInfoSchema = z.object({
     firstName: z.string().min(1, "First name is required"),
     lastName: z.string().min(1, "Last name is required"),
@@ -56,6 +58,7 @@ export function PersonalInfoSection() {
         allowPublic: false,
     });
     const t = useTranslations("personalInfo");
+    const localLanguage = useLocale() as Language;
     const { data: session } = useSession();
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -92,9 +95,9 @@ export function PersonalInfoSection() {
         getUserData();
     }, [session, getUserData]);
 
-    const handleInputChange = (field: string, value: string | boolean) => {
-        if (field === "doB") {
-            const timestamp = Date.parse(value as string);
+    const handleInputChange = (field: string, value: string | boolean | Date | undefined) => {
+        if (field === "doB" && value instanceof Date) {
+            const timestamp = value.getTime();
             setFormData((prev) => ({ ...prev, doB: timestamp }));
         } else {
             setFormData((prev) => ({ ...prev, [field]: value }));
@@ -315,26 +318,12 @@ export function PersonalInfoSection() {
                                     <Label htmlFor="dateOfBirth">
                                         {t("dateOfBirth")}
                                     </Label>
-                                    <Input
-                                        id="dateOfBirth"
-                                        type="date"
-                                        value={
-                                            formData.doB === null
-                                                ? ""
-                                                : new Date(formData.doB)
-                                                      .toISOString()
-                                                      .split("T")[0]
-                                        }
-                                        onChange={(e) =>
-                                            handleInputChange(
-                                                "doB",
-                                                e.target.value
-                                            )
-                                        }
+                                    <DatePicker
+                                        value={formData.doB ? new Date(formData.doB) : undefined}
+                                        onChange={(value) => handleInputChange("doB", value)}
+                                        placeholder={t("selectDate")}
+                                        localLanguage={localLanguage}
                                         disabled={!isEditing}
-                                        className={
-                                            !isEditing ? "bg-gray-50" : ""
-                                        }
                                     />
                                 </div>
                                 <div className="space-y-2">

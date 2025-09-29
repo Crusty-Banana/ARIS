@@ -36,9 +36,10 @@ interface DatePickerProps {
   onChange: (date: Date | undefined) => void
   placeholder?: string
   localLanguage?: string
+  disabled?: boolean
 }
 
-export function DatePicker({ value, onChange, placeholder, localLanguage }: DatePickerProps) {
+export function DatePicker({ value, onChange, placeholder, localLanguage, disabled }: DatePickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -48,6 +49,7 @@ export function DatePicker({ value, onChange, placeholder, localLanguage }: Date
             "w-full justify-start text-left font-normal border-cyan-300",
             !value && "text-muted-foreground",
           )}
+          disabled={disabled}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {value ? format(value, "dd/MM/yyyy", { locale: vi}) : <span>{placeholder || "Pick a date"}</span>}
