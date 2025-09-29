@@ -4,7 +4,6 @@ import * as React from "react"
 import { format } from "date-fns"
 import { vi } from "date-fns/locale/vi"
 import { Calendar as CalendarIcon } from "lucide-react"
-import * as PopoverPrimitive from "@radix-ui/react-popover"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
