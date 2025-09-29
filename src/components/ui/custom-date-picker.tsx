@@ -60,6 +60,7 @@ export function DatePicker({ value, onChange, placeholder, localLanguage }: Date
           selected={value}
           onSelect={onChange}
           locale={localLanguage === "vi" ? vi : undefined}
+          disabled={(date) => date > new Date()}
         />
       </PopoverContentNoPortal>
     </Popover>
