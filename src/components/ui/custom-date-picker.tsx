@@ -9,7 +9,7 @@ import * as PopoverPrimitive from "@radix-ui/react-popover"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverTrigger } from "@/components/ui/popover"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 // A custom PopoverContent that DOES NOT use a portal.
 // This ensures it renders inside the Dialog's DOM tree.
@@ -41,7 +41,7 @@ interface DatePickerProps {
 
 export function DatePicker({ value, onChange, placeholder, localLanguage, disabled }: DatePickerProps) {
   return (
-    <Popover>
+    <Popover modal={true}>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
@@ -56,7 +56,7 @@ export function DatePicker({ value, onChange, placeholder, localLanguage, disabl
         </Button>
       </PopoverTrigger>
 
-      <PopoverContentNoPortal className="w-auto p-0">
+      <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
           selected={value}
@@ -68,7 +68,7 @@ export function DatePicker({ value, onChange, placeholder, localLanguage, disabl
             formatMonthDropdown: (month) => localLanguage === "vi" ? format(month, "'Tháng' MM", {locale: vi}) : format(month, "LLLL"),
           }}
         />
-      </PopoverContentNoPortal>
+      </PopoverContent>
     </Popover>
   )
 }
