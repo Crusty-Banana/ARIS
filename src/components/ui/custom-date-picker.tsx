@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { format } from "date-fns"
+import { vi } from "date-fns/locale/vi"
 import { Calendar as CalendarIcon } from "lucide-react"
 import * as PopoverPrimitive from "@radix-ui/react-popover"
 
@@ -10,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverTrigger } from "@/components/ui/popover"
 
-// 1. A custom PopoverContent that DOES NOT use a portal.
+// A custom PopoverContent that DOES NOT use a portal.
 // This ensures it renders inside the Dialog's DOM tree.
 const PopoverContentNoPortal = React.forwardRef<
   React.ComponentRef<typeof PopoverPrimitive.Content>,
@@ -34,9 +35,10 @@ interface DatePickerProps {
   value: Date | undefined
   onChange: (date: Date | undefined) => void
   placeholder?: string
+  localLanguage?: string
 }
 
-export function DatePicker({ value, onChange, placeholder }: DatePickerProps) {
+export function DatePicker({ value, onChange, placeholder, localLanguage }: DatePickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -48,7 +50,7 @@ export function DatePicker({ value, onChange, placeholder }: DatePickerProps) {
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {value ? format(value, "dd/MM/yyyy") : <span>{placeholder || "Pick a date"}</span>}
+          {value ? format(value, "dd/MM/yyyy", { locale: vi}) : <span>{placeholder || "Pick a date"}</span>}
         </Button>
       </PopoverTrigger>
 
@@ -57,6 +59,7 @@ export function DatePicker({ value, onChange, placeholder }: DatePickerProps) {
           mode="single"
           selected={value}
           onSelect={onChange}
+          locale={localLanguage === "vi" ? vi : undefined}
         />
       </PopoverContentNoPortal>
     </Popover>

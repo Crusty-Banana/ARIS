@@ -212,6 +212,7 @@ export function AddAllergenModal({
                     value={discoveryDate}
                     onChange={setDiscoveryDate}
                     placeholder={t("selectDate")}
+                    localLanguage={localLanguage}
                   />
                 </div>
 
