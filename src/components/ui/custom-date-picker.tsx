@@ -61,6 +61,10 @@ export function DatePicker({ value, onChange, placeholder, localLanguage }: Date
           onSelect={onChange}
           locale={localLanguage === "vi" ? vi : undefined}
           disabled={(date) => date > new Date()}
+          captionLayout="dropdown"
+          formatters={{
+            formatMonthDropdown: (month) => format(month, "LLLL", { locale: vi }),
+          }}
         />
       </PopoverContentNoPortal>
     </Popover>
