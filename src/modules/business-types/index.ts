@@ -18,8 +18,8 @@ export const Gender = z.enum(["male", "female", "other", ""]).default("");
 export type Gender = z.infer<typeof Gender>;
 
 const Organ = z
-  .enum(["localized", "respiratory", "digestive", "systemic"])
-  .default("localized");
+  .enum(["skin", "respiratory", "digestive", "systemic"])
+  .default("skin");
 export type Organ = z.infer<typeof Organ>;
 
 export const RecommendationType = z
@@ -52,11 +52,11 @@ export type FetcherResult = z.infer<typeof FetcherResult>;
 
 export const BusisnessTypeCollection = {
   users: "users",
-  allergens: "allergens_en",
+  allergens: "allergens",
   paps: "paps",
-  symptoms: "symptoms_en",
+  symptoms: "symptoms",
   recommendations: "recommendations",
-  actionPlans: "action_plans_en",
+  actionPlans: "action_plans",
 };
 
 export const User = z.object({
