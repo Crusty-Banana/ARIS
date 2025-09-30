@@ -105,7 +105,7 @@ export default function AuthPage() {
 
       if (res.success) {
         setAuthMode("login"); // Switch to login view
-        setNotification({ message: t("accountCreated"), type: "success" });
+        setNotification({ message: t("accountCreated") + "\n" + t("pleaseVerifyEmail"), type: "success" });
       } else {
         setNotification({ message: t("registrationFailed"), type: "error" });
       }

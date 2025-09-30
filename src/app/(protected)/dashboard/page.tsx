@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import AdminDashboard from "./_components/AdminDashboard/page";
-import AuthPage from "./_components/AuthPage/page";
+import AuthPage from "../_components/AuthPage/page";
 import UserDashboard from "./_components/UserDashboard/page";
 import LoadingScreen from "@/components/loading-screen";
 

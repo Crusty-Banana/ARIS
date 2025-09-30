@@ -48,7 +48,7 @@
     "createAPassword": "Tạo mật khẩu",
     "confirmYourPassword": "Xác nhận mật khẩu của bạn",
     "passwordsDoNotMatch": "Mật khẩu không khớp",
-    "accountCreated": "Tài khoản đã được tạo thành công! Vui lòng đăng nhập.",
+    "accountCreated": "Tài khoản đã được tạo thành công!",
     "registrationFailed": "Đăng ký thất bại. Vui lòng thử lại.",
     "termsAgreement": "Tôi đồng ý với<termsOfService>Điều Khoản</termsOfService>và<privacyPolicy>Quyền Riêng Tư</privacyPolicy>",
     "termsOfService": "Điều khoản dịch vụ",
