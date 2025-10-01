@@ -7,12 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Lock, Mail, User, ArrowLeft } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type RegisterFormProps = {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   isLoading: boolean;
   onSwitchToLogin: () => void;
-  t: any;
+  t: ReturnType<typeof useTranslations>;
 };
 
 export function RegisterForm({

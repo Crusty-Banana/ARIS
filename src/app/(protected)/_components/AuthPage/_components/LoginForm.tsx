@@ -6,13 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type LoginFormProps = {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   isLoading: boolean;
   onSwitchToRegister: () => void;
   onSwitchToForgotPassword: () => void;
-  t: any;
+  t: ReturnType<typeof useTranslations>;
 };
 
 export function LoginForm({
