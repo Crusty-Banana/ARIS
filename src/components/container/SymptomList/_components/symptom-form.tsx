@@ -57,7 +57,7 @@ export function SymptomForm({
           value={[severity]}
           onValueChange={(value) => setSeverity(value[0])}
           min={1}
-          max={3}
+          max={2}
           label={t("detailModals.severityLabel")}
         />
       </div>

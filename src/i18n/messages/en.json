@@ -82,7 +82,7 @@
     "addNewSymptom": "Add New Symptom",
     "symptomName": "Symptom Name",
     "enterSymptomName": "Enter symptom name",
-    "severityLabel": "Severity (1-3)",
+    "severityLabel": "Severity (1-2)",
     "prevalenceLabel": "Prevalence (1-5)",
     "treatment": "Treatment",
     "treatmentPlaceholder": "Enter treatment information"
