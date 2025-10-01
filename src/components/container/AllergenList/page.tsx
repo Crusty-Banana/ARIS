@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -29,7 +28,6 @@ interface AllergenListProps {
   onDelete?: (id: string) => void;
 }
 
-type AllergenSortOption = "name" | "severity";
 type SortDirection = "asc" | "desc";
 
 export function AllergenList({
