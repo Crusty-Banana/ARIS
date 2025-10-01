@@ -85,7 +85,6 @@ export function AllergenList({
         <CardHeader>
           <CardTitle className="text-cyan-800 flex items-center justify-between">
             {t("allergens")}
-            <Badge variant="secondary">{allergens.length}</Badge>
           </CardTitle>
           <div className="flex gap-2">
             <div className="relative flex-1">
