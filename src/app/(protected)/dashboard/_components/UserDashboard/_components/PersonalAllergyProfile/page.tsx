@@ -42,7 +42,7 @@ import {
   UpdatePAPWithUserIdFetcher$Params,
 } from "@/modules/commands/UpdatePAPWithUserId/typing";
 // import { SymptomDetailModal } from "@/components/container/SymptomList/_components/symptom-detail-modal"
-import { getTypeColor } from "@/lib/client-side-utils";
+import { getSeverityColor, getTypeColor } from "@/lib/client-side-utils";
 import { AllergenDetailModal } from "@/components/container/AllergenList/_components/allergen-detail-modal";
 import { useSymptomDetail } from "@/app/context/symptom-detail-context";
 
@@ -109,12 +109,6 @@ export function PersonalAllergyProfile({
   const parseInputDate = (dateString: string) => {
     if (!dateString) return null;
     return Math.floor(new Date(dateString).getTime() / 1000);
-  };
-
-  const getSeverityColor = (severity: number) => {
-    if (severity === 1) return "bg-green-500";
-    if (severity === 2) return "bg-yellow-500";
-    return "bg-red-500";
   };
 
   const handleProfileUpdate = () => {
