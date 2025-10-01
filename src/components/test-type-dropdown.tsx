@@ -29,7 +29,8 @@ export function TestTypeDropdown({
         <SelectContent>
           <SelectItem value="skin">{t("skinTest")}</SelectItem>
           <SelectItem value="blood">{t("bloodTest")}</SelectItem>
-          <SelectItem value="provocation">{t("provocationTest")}</SelectItem>
+          <SelectItem value="challenge">{t("challengeTest")}</SelectItem>
+          <SelectItem value="intradermal">{t("intradermalTest")}</SelectItem>
         </SelectContent>
       </Select>
     </>

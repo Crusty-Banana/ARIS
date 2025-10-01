@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -29,7 +28,6 @@ interface AllergenListProps {
   onDelete?: (id: string) => void;
 }
 
-type AllergenSortOption = "name" | "severity";
 type SortDirection = "asc" | "desc";
 
 export function AllergenList({
@@ -42,7 +40,6 @@ export function AllergenList({
   const t = useTranslations("common");
   const localLanguage = useLocale() as Language;
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState<AllergenSortOption>("name");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [selectedAllergen, setSelectedAllergen] = useState<Allergen | null>(
@@ -63,13 +60,7 @@ export function AllergenList({
     })
     .sort((a, b) => {
       let comparison = 0;
-      switch (sortBy) {
-        case "name":
-          comparison = a.name[localLanguage].localeCompare(
-            b.name[localLanguage]
-          );
-          break;
-      }
+      comparison = a.name[localLanguage].localeCompare(b.name[localLanguage]);
       return sortDirection === "asc" ? comparison : -comparison;
     });
 
@@ -85,7 +76,6 @@ export function AllergenList({
         <CardHeader>
           <CardTitle className="text-cyan-800 flex items-center justify-between">
             {t("allergens")}
-            <Badge variant="secondary">{allergens.length}</Badge>
           </CardTitle>
           <div className="flex gap-2">
             <div className="relative flex-1">
@@ -106,17 +96,6 @@ export function AllergenList({
                 <SelectItem value="food">{t("food")}</SelectItem>
                 <SelectItem value="drug">{t("drug")}</SelectItem>
                 <SelectItem value="respiratory">{t("respiratory")}</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select
-              value={sortBy}
-              onValueChange={(value) => setSortBy(value as AllergenSortOption)}
-            >
-              <SelectTrigger className="w-40 border-cyan-300 focus:border-cyan-500">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="name">{t("sortByName")}</SelectItem>
               </SelectContent>
             </Select>
             <Button

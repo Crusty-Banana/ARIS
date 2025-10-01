@@ -41,7 +41,13 @@ export type AllergenType = z.infer<typeof AllergenType>;
 export const Language = z.enum(["en", "vi"]);
 export type Language = z.infer<typeof Language>;
 
-export const TestType = z.enum(["skin", "blood", "provocation", ""]);
+export const TestType = z.enum([
+  "skin",
+  "blood",
+  "challenge",
+  "intradermal",
+  "",
+]);
 export type TestType = z.infer<typeof TestType>;
 
 export const FetcherResult = z.object({
