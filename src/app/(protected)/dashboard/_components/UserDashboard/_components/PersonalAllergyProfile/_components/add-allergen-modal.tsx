@@ -16,6 +16,7 @@ import {
   Language,
   Symptom,
   TestType,
+  TimeFromContactToSymptom,
 } from "@/modules/business-types";
 import { useLocale, useTranslations } from "next-intl";
 import { PAPAllergen } from "@/modules/commands/UpdatePAPWithUserId/typing";
@@ -26,6 +27,7 @@ import { toast } from "sonner";
 import { httpPost$AddFileToS3 } from "@/modules/commands/AddFileToS3/fetcher";
 import { DatePicker } from "@/components/ui/custom-date-picker";
 import { GroupedSymptomSelect } from "@/components/grouped-symptoms-select";
+import { TimeFromContactToSymptomDropdown } from "@/components/time-to-symptom-dropdown";
 
 interface AddAllergenModalProps {
   open: boolean;
@@ -53,6 +55,7 @@ export function AddAllergenModal({
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [doneTest, setDoneTest] = useState(false);
   const [testDone, setTestDone] = useState<TestType>("");
+  const [timeFromContactToSymptom, setTimeFromContactToSymptom] = useState<TimeFromContactToSymptom>("");
 
   const [selectedResultFile, setSelectedResultFile] = useState<File | null>(
     null
@@ -107,6 +110,7 @@ export function AddAllergenModal({
       testDone,
       symptomsId: selectedSymptoms,
       testResult: testResultUrl,
+      timeFromContactToSymptom: timeFromContactToSymptom
     });
 
     // Reset form
@@ -120,6 +124,7 @@ export function AddAllergenModal({
     setTestResultUrl(undefined);
     setIsUploading(false);
     onClose();
+    setTimeFromContactToSymptom("");
   };
 
   const handleAllergenSelect = (allergen: Allergen) => {
@@ -322,6 +327,16 @@ export function AddAllergenModal({
                   getItemLabel={(symptom) => symptom.name[localLanguage]}
                   label={t("associatedSymptoms")}
                 />
+                
+                  {selectedSymptoms.length > 0 && (
+                    <TimeFromContactToSymptomDropdown
+                      value={timeFromContactToSymptom}
+                      onValueChange={(value) =>
+                        setTimeFromContactToSymptom(value as TimeFromContactToSymptom)
+                      }
+                    />
+                  )}
+
               </>
             )}
           </div>

@@ -171,6 +171,7 @@ export function PersonalAllergyProfile({
       doneTest: false,
       testDone: "",
       symptomsId: [],
+      timeFromContactToSymptom: ""
     });
   };
 

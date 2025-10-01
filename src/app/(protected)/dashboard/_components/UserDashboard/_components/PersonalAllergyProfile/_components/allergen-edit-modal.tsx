@@ -1,6 +1,7 @@
 import { DoneTestTickbox } from "@/components/done-test-tickbox";
 import { GroupedSymptomSelect } from "@/components/grouped-symptoms-select";
 import { TestTypeDropdown } from "@/components/test-type-dropdown";
+import { TimeFromContactToSymptomDropdown } from "@/components/time-to-symptom-dropdown";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/custom-date-picker";
 import {
@@ -9,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Language, Symptom, TestType } from "@/modules/business-types";
+import { Language, Symptom, TestType, TimeFromContactToSymptom } from "@/modules/business-types";
 import { httpPost$AddFileToS3 } from "@/modules/commands/AddFileToS3/fetcher";
 import { DisplayPAPAllergen } from "@/modules/commands/GetPAPWithUserId/typing";
 import { UpdatePAPAllergen$Params } from "@/modules/commands/UpdatePAPWithUserId/typing";
@@ -51,6 +52,7 @@ export function AllergenEditModal({
   const [testResultUrl, setTestResultUrl] = useState<string | undefined>(
     allergen.testResult
   );
+  const [timeFromContactToSymptom, setTimeFromContactToSymptom] = useState<TimeFromContactToSymptom>(allergen.timeFromContactToSymptom ? allergen.timeFromContactToSymptom : "");
 
   const parseInputDate = (date: Date | undefined) => {
     if (!date) return null;
@@ -64,6 +66,7 @@ export function AllergenEditModal({
       testDone: testDone,
       symptomsId: selectedSymptoms,
       testResult: testResultUrl,
+      timeFromContactToSymptom: timeFromContactToSymptom
     });
   };
 
@@ -215,6 +218,14 @@ export function AllergenEditModal({
             getItemLabel={(symptom) => symptom.name[localLanguage]}
             label={t("associatedSymptoms")}
           />
+          {(selectedSymptoms.length > 0 || timeFromContactToSymptom !== "") &&  (
+            <TimeFromContactToSymptomDropdown
+              value={timeFromContactToSymptom}
+              onValueChange={(value) =>
+                setTimeFromContactToSymptom(value as TimeFromContactToSymptom)
+              }
+            />
+          )}
         </div>
         <div className="flex gap-2 pt-4">
           <Button
