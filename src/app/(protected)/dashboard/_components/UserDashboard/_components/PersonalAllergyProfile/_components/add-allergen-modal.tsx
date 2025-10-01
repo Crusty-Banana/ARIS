@@ -142,9 +142,9 @@ export function AddAllergenModal({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-h-[70vh]">
           {/* Left Column - Allergen Selection */}
-          <div className="space-y-4">
+         <div className="space-y-4 flex flex-col h-full overflow-y-auto">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 {t("searchAllergen")}
@@ -160,7 +160,8 @@ export function AddAllergenModal({
               </div>
             </div>
 
-            <div className="border border-cyan-200 rounded-md max-h-64 overflow-y-auto">
+            {/* Allergen list grows + has its own scroll */}
+            <div className="border border-cyan-200 rounded-md flex-1 overflow-y-auto">
               {filteredAllergens.map((allergen) => (
                 <div
                   key={allergen.id}
@@ -174,9 +175,7 @@ export function AddAllergenModal({
                   </div>
                   <div className="flex items-center gap-2 mt-1">
                     <Badge
-                      className={`${getTypeColor(
-                        allergen.type
-                      )} text-white text-xs capitalize`}
+                      className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}
                     >
                       {t(allergen.type)}
                     </Badge>
@@ -184,15 +183,14 @@ export function AddAllergenModal({
                 </div>
               ))}
               {filteredAllergens.length === 0 && (
-                <div className="p-4 text-center text-gray-500">
-                  No allergens found
-                </div>
+                <div className="p-4 text-center text-gray-500">No allergens found</div>
               )}
             </div>
           </div>
 
+
           {/* Right Column - Details */}
-          <div className="space-y-4">
+          <div className="space-y-4 overflow-y-auto">
             {selectedAllergen && (
               <>
                 <div>

@@ -27,11 +27,11 @@ export function TimeFromContactToSymptomDropdown({
             <SelectValue placeholder={t("selectTimeFromContactToSymptom")} />
         </SelectTrigger>
         <SelectContent>
-            <SelectItem value="<2">{t("lessThan2Hours")}</SelectItem>
-            <SelectItem value="2-6">{t("twoToSixHours")}</SelectItem>
-            <SelectItem value="6-12">{t("sixToTwelveHours")}</SelectItem>
-            <SelectItem value="12-24">{t("twelveToTwentyFourHours")}</SelectItem>
-            <SelectItem value=">24">{t("moreThan24Hours")}</SelectItem>
+            <SelectItem value="<2">{t("timeToSymptom.lessThan2")}</SelectItem>
+            <SelectItem value="2-6">{t("timeToSymptom.twoToSix")}</SelectItem>
+            <SelectItem value="6-12">{t("timeToSymptom.sixToTwelve")}</SelectItem>
+            <SelectItem value="12-24">{t("timeToSymptom.twelveToTwentyFour")}</SelectItem>
+            <SelectItem value=">24">{t("timeToSymptom.moreThan24")}</SelectItem>
         </SelectContent>
         </Select>
     </>

@@ -8,8 +8,8 @@ import { AlertTriangle, User, Shield, Heart } from "lucide-react";
 import { PublicPAP } from "@/modules/commands/GetPublicPAP/typing";
 import { httpGet$GetPublicPAP } from "@/modules/commands/GetPublicPAP/fetcher";
 import { useLocale, useTranslations } from "next-intl";
-import { Language, TimeFromContactToSymptom } from "@/modules/business-types";
-import { getSeverityColor, getTypeColor } from "@/lib/client-side-utils";
+import { Language, } from "@/modules/business-types";
+import { formatTimeFromContactToSymptom, getSeverityColor, getTypeColor } from "@/lib/client-side-utils";
 import LocaleDropdown from "@/app/(protected)/dashboard/_components/Header/_components/locale-change";
 
 interface PublicPAPViewProps {
@@ -52,23 +52,6 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
     if (severity === 1) return t("mild");
     if (severity === 2) return t("moderate");
     return t("severe");
-  };
-
-  const formatTimeFromContactToSymptom = (value: TimeFromContactToSymptom) => {
-    switch (value) {
-      case "<2":
-        return t("timeToSymptom.lessThan2");
-      case "2-6":
-        return t("timeToSymptom.twoToSix");
-      case "6-12":
-        return t("timeToSymptom.sixToTwelve");
-      case "12-24":
-        return t("timeToSymptom.twelveToTwentyFour");
-      case ">24":
-        return t("timeToSymptom.moreThan24");
-      default:
-        return "";
-    }
   };
 
   if (loading) {
@@ -213,18 +196,6 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
                         </Badge>
                       </div>
                     </div>
-
-                    {(allergen.timeFromContactToSymptom) && (
-                        <div className="mb-3">
-                          <span className="text-sm font-medium text-gray-700 block mb-1">
-                            {t("timeFromContactToSymptom")}
-                          </span>
-                          <Badge variant="outline" className="text-xs border-cyan-300">
-                            {formatTimeFromContactToSymptom(allergen.timeFromContactToSymptom)}
-                          </Badge>
-                        </div>
-                      )}
-
                     <div>
                       <span className="text-sm font-medium text-gray-700 block mb-2">
                         {t("associatedSymptoms")} ({allergen.symptoms.length}):
@@ -243,6 +214,16 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
                           ))}
                       </div>
                     </div>
+                    {(allergen.timeFromContactToSymptom) && (
+                        <div className="mb-3 mt-3">
+                          <span className="text-sm font-medium text-gray-700 block mb-1">
+                            {t("timeFromContactToSymptom")}
+                          </span>
+                          <Badge variant="outline" className="text-xs border-cyan-300">
+                            {formatTimeFromContactToSymptom(allergen.timeFromContactToSymptom, t)}
+                          </Badge>
+                        </div>
+                      )}
                   </div>
                 ))}
 
@@ -291,8 +272,8 @@ export default function PublicPAPView({ publicId }: PublicPAPViewProps) {
                         {t("description")}:
                       </span>
                       <div className="bg-gradient-to-r from-orange-50 to-yellow-50 p-3 rounded-md border border-orange-100">
-                        <p className="text-gray-700 text-sm leading-relaxed">
-                          {symptom.description[localLanguage]}
+                        <p className="text-gray-700 text-sm leading-relaxed" dangerouslySetInnerHTML={{
+                              __html: symptom.description[localLanguage],}}>
                         </p>
                       </div>
                     </div>

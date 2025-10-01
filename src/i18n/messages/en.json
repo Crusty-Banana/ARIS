@@ -198,7 +198,15 @@
     "actionPlans": "Action Plans",
     "selectDate": "Select Date",
     "testResult": "Test Result",
-    "uploadTestResultFile": "Upload Test Result File"
+    "uploadTestResultFile": "Upload Test Result File",
+    "timeToSymptom": {
+      "lessThan2": "Within 2 hours",
+      "twoToSix": "2–6 hours",
+      "sixToTwelve": "6–12 hours",
+      "twelveToTwentyFour": "12–24 hours",
+      "moreThan24": "More than 24 hours"
+    },
+    "timeFromContactToSymptom": "Time from contact to first symptom:"
   },
   "potentialCrossAllergens": {
     "title": "Potential Cross-Allergens",
@@ -274,7 +282,16 @@
     "treatment": "Treatment",
     "footerNote1": "This is a public allergy profile. Information is provided for awareness and emergency purposes.",
     "footerNote2": "Always consult healthcare professionals for medical advice.",
-    "associatedSymptoms": "Associated Symptoms"
+    "associatedSymptoms": "Associated Symptoms",
+    "description": "Description",
+    "timeToSymptom": {
+      "lessThan2": "Within 2 hours",
+      "twoToSix": "2–6 hours",
+      "sixToTwelve": "6–12 hours",
+      "twelveToTwentyFour": "12–24 hours",
+      "moreThan24": "More than 24 hours"
+    },
+    "timeFromContactToSymptom": "Time from contact to first symptom:"
   },
   "header": {
     "dashboard": "Dashboard",
@@ -323,7 +340,16 @@
     "selectDate": "Select Date",
     "selectTestType": "Select test type",
     "testResult": "Test Result",
-    "uploadTestResultFile": "Upload Test Result File"
+    "uploadTestResultFile": "Upload Test Result File",
+    "timeToSymptom": {
+      "lessThan2": "Within 2 hours",
+      "twoToSix": "2–6 hours",
+      "sixToTwelve": "6–12 hours",
+      "twelveToTwentyFour": "12–24 hours",
+      "moreThan24": "More than 24 hours"
+    },
+    "timeFromContactToSymptom": "Time from contact to first symptom:",
+    "selectTimeFromContactToSymptom": "Time from contact to first symptom:"
   },
   "recommendationModal": {
     "title": "Send Feedback",
