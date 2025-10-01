@@ -376,7 +376,7 @@
     "description": "Mô tả",
     "systemic": "Toàn thân",
     "digestive": "Tiêu hóa",
-    "skin": "Ngoài da",
+    "localized": "Ngoài da",
     "organ": "Bộ phận",
     "selectOrgan": "Chọn bộ phận"
   },

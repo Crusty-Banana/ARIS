@@ -365,7 +365,7 @@
       "areYouSureAllergyDelete": "Are you sure you want to delete this allergy?",
       "areYouSureSymptomDelete": "Are you sure you want to delete this symptom?",
       "treatmentPlaceholder": "Enter treatment information",
-      "severityLabel": "Severity (1-3)",
+      "severityLabel": "Severity (1-2)",
       "prevalenceLabel": "Prevalence (1-5)",
       "descriptionPlaceholder": "Description Missing..."
     },
@@ -374,7 +374,8 @@
     "digestive": "Digestive",
     "skin": "Skin",
     "organ": "Organ",
-    "selectOrgan": "Select Organ"
+    "selectOrgan": "Select Organ",
+    "localized": "Localized"
   },
   "profile": {
     "title": "User Profile",
