@@ -374,8 +374,7 @@
     "digestive": "Digestive",
     "skin": "Skin",
     "organ": "Organ",
-    "selectOrgan": "Select Organ",
-    "localized": "Localized"
+    "selectOrgan": "Select Organ"
   },
   "profile": {
     "title": "User Profile",

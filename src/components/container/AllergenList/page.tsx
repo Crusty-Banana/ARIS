@@ -42,7 +42,6 @@ export function AllergenList({
   const t = useTranslations("common");
   const localLanguage = useLocale() as Language;
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState<AllergenSortOption>("name");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [selectedAllergen, setSelectedAllergen] = useState<Allergen | null>(
@@ -63,13 +62,7 @@ export function AllergenList({
     })
     .sort((a, b) => {
       let comparison = 0;
-      switch (sortBy) {
-        case "name":
-          comparison = a.name[localLanguage].localeCompare(
-            b.name[localLanguage]
-          );
-          break;
-      }
+      comparison = a.name[localLanguage].localeCompare(b.name[localLanguage]);
       return sortDirection === "asc" ? comparison : -comparison;
     });
 
@@ -105,17 +98,6 @@ export function AllergenList({
                 <SelectItem value="food">{t("food")}</SelectItem>
                 <SelectItem value="drug">{t("drug")}</SelectItem>
                 <SelectItem value="respiratory">{t("respiratory")}</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select
-              value={sortBy}
-              onValueChange={(value) => setSortBy(value as AllergenSortOption)}
-            >
-              <SelectTrigger className="w-40 border-cyan-300 focus:border-cyan-500">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="name">{t("sortByName")}</SelectItem>
               </SelectContent>
             </Select>
             <Button
