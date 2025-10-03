@@ -18,12 +18,12 @@ export function TimeFromContactToSymptomDropdown({
 }: TimeFromContactToSymptomProps) {
   const t = useTranslations("addAllergenModal");
   return (
-    <>
+    <div className="flex items-center gap-3 lg:justify-between">
       <label className="block text-sm font-medium text-gray-700 mb-1">
         {t("timeFromContactToSymptom")}
       </label>
         <Select value={value} onValueChange={onValueChange}>
-        <SelectTrigger className="border-cyan-300 focus:border-cyan-500">
+        <SelectTrigger className="border-cyan-300 focus:border-cyan-500 w-48">
             <SelectValue placeholder={t("selectTimeFromContactToSymptom")} />
         </SelectTrigger>
         <SelectContent>
@@ -34,6 +34,6 @@ export function TimeFromContactToSymptomDropdown({
             <SelectItem value=">24">{t("timeToSymptom.moreThan24")}</SelectItem>
         </SelectContent>
         </Select>
-    </>
+    </div>
   );
 }

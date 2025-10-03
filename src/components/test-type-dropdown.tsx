@@ -17,14 +17,15 @@ export function TestTypeDropdown({
   onValueChange,
 }: TestTypeDropdownProps) {
   const t = useTranslations("addAllergenModal");
+
   return (
-    <>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        {t("testDone")}
+    <div className="flex items-center gap-3">
+      <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
+        {t("testDone")}:
       </label>
       <Select value={value} onValueChange={onValueChange}>
-        <SelectTrigger className="border-cyan-300 focus:border-cyan-500">
-          <SelectValue placeholder={t("selectTestType")} />
+        <SelectTrigger className="border-cyan-300 focus:border-cyan-500 w-48">
+          <SelectValue placeholder={t("selectTestType")} className="text-ellipsis whitespace-nowrap" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="skin">{t("skinTest")}</SelectItem>
@@ -33,6 +34,6 @@ export function TestTypeDropdown({
           <SelectItem value="intradermal">{t("intradermalTest")}</SelectItem>
         </SelectContent>
       </Select>
-    </>
+    </div>
   );
 }
