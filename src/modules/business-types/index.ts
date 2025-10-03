@@ -34,7 +34,7 @@ export const DisplayString = z.object({
 export type DisplayString = z.infer<typeof DisplayString>;
 
 export const AllergenType = z
-  .enum(["food", "drug", "respiratory", ""])
+  .enum(["food", "drug", "respiratory", "venom", "miscellaneous", ""])
   .default("");
 export type AllergenType = z.infer<typeof AllergenType>;
 

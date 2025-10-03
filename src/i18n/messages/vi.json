@@ -102,6 +102,8 @@
     "food": "Thực phẩm",
     "drug": "Thuốc",
     "respiratory": "Hô hấp",
+    "venom": "Nọc độc",
+    "miscellaneous": "Khác",
     "crossSensitivity": "Mẫn cảm chéo",
     "level_1Treatment": "Điều trị mức 1",
     "level_2Treatment": "Điều trị mức 2",
@@ -143,6 +145,9 @@
     "food": "Thực phẩm",
     "drug": "Thuốc",
     "respiratory": "Hô hấp",
+    "venom": "Nọc độc",
+    "miscellaneous": "Khác",
+
     "quickAddSuccess": "{allergenName} đã được thêm vào danh sách dị nguyên của bạn!",
     "crossSensitivity": "Mẫn cảm chéo",
     "isWholeAllergen": "Phân loại",
@@ -199,6 +204,9 @@
     "food": "Thực phẩm",
     "drug": "Thuốc",
     "respiratory": "Hô hấp",
+    "venom": "Nọc độc",
+    "miscellaneous": "Khác",
+
     "actionPlans": "Kế hoạch xử trí",
     "selectDate": "Chọn ngày",
     "testResult": "Kết quả xét nghiệm",
@@ -214,7 +222,9 @@
     "alreadyInAllergens": "Đã có trong dị nguyên của bạn",
     "food": "Thực phẩm",
     "drug": "Thuốc",
-    "respiratory": "Hô hấp"
+    "respiratory": "Hô hấp",
+    "venom": "Nọc độc",
+    "miscellaneous": "Khác"
   },
   "wikiLists": {
     "potentialCrossAllergens": {
@@ -242,6 +252,9 @@
     "food": "Thực phẩm",
     "drug": "Thuốc",
     "respiratory": "Hô hấp",
+    "venom": "Nọc độc",
+    "miscellaneous": "Khác",
+
     "associatedSymptoms": "Triệu chứng liên quan",
     "description": "Mô tả",
     "more": "thêm",
@@ -275,6 +288,8 @@
     "food": "Thực phẩm",
     "drug": "Thuốc",
     "respiratory": "Hô hấp",
+    "venom": "Nọc độc",
+    "miscellaneous": "Khác",
     "treatment": "Điều trị",
     "footerNote1": "Đây là hồ sơ dị ứng công khai. Thông tin được cung cấp cho mục đích nhận thức và trường hợp khẩn cấp.",
     "footerNote2": "Luôn tham khảo ý kiến chuyên gia y tế để được tư vấn.",
@@ -306,6 +321,8 @@
     "food": "Thực phẩm",
     "drug": "Thuốc",
     "respiratory": "Hô hấp",
+    "venom": "Nọc độc",
+    "miscellaneous": "Khác",
     "symptoms": "Triệu chứng",
     "severity": "Độ nghiêm trọng",
     "prevalence": "Độ phổ biến",
@@ -346,6 +363,8 @@
     "food": "Thực phẩm",
     "drug": "Thuốc",
     "respiratory": "Hô hấp",
+    "venom": "Nọc độc",
+    "miscellaneous": "Khác",
     "type": "Loại",
     "selectType": "Chọn loại",
     "language": "Ngôn ngữ",
