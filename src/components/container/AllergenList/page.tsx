@@ -96,6 +96,10 @@ export function AllergenList({
                 <SelectItem value="food">{t("food")}</SelectItem>
                 <SelectItem value="drug">{t("drug")}</SelectItem>
                 <SelectItem value="respiratory">{t("respiratory")}</SelectItem>
+                <SelectItem value="venom">{t("respiratory")}</SelectItem>
+                <SelectItem value="miscellaneous">
+                  {t("miscellaneous")}
+                </SelectItem>
               </SelectContent>
             </Select>
             <Button

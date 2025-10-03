@@ -9,9 +9,13 @@ export const getTypeColor = (type: string) => {
     case "food":
       return "bg-blue-500";
     case "drug":
-      return "bg-purple-500";
+      return "bg-red-500";
     case "respiratory":
       return "bg-green-500";
+    case "venom":
+      return "bg-purple-500";
+    case "miscellaneous":
+      return "bg-yellow-500";
     default:
       return "bg-gray-500";
   }
