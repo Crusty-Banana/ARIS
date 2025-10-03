@@ -57,7 +57,7 @@ export function SymptomForm({
           value={[severity]}
           onValueChange={(value) => setSeverity(value[0])}
           min={1}
-          max={3}
+          max={2}
           label={t("detailModals.severityLabel")}
         />
       </div>
@@ -73,7 +73,7 @@ export function SymptomForm({
             <SelectValue placeholder={t("selectOrgan")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="localized">{t("localized")}</SelectItem>
+            <SelectItem value="skin">{t("skin")}</SelectItem>
             <SelectItem value="respiratory">{t("respiratory")}</SelectItem>
             <SelectItem value="digestive">{t("digestive")}</SelectItem>
             <SelectItem value="systemic">{t("systemic")}</SelectItem>

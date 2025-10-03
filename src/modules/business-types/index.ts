@@ -18,8 +18,8 @@ export const Gender = z.enum(["male", "female", "other", ""]).default("");
 export type Gender = z.infer<typeof Gender>;
 
 const Organ = z
-  .enum(["localized", "respiratory", "digestive", "systemic"])
-  .default("localized");
+  .enum(["skin", "respiratory", "digestive", "systemic"])
+  .default("skin");
 export type Organ = z.infer<typeof Organ>;
 
 export const RecommendationType = z
@@ -39,14 +39,20 @@ export const DisplayString = z.object({
 export type DisplayString = z.infer<typeof DisplayString>;
 
 export const AllergenType = z
-  .enum(["food", "drug", "respiratory", ""])
+  .enum(["food", "drug", "respiratory", "venom", "miscellaneous", ""])
   .default("");
 export type AllergenType = z.infer<typeof AllergenType>;
 
 export const Language = z.enum(["en", "vi"]);
 export type Language = z.infer<typeof Language>;
 
-export const TestType = z.enum(["skin", "blood", "provocation", ""]);
+export const TestType = z.enum([
+  "skin",
+  "blood",
+  "challenge",
+  "intradermal",
+  "",
+]);
 export type TestType = z.infer<typeof TestType>;
 
 export const FetcherResult = z.object({
@@ -57,11 +63,11 @@ export type FetcherResult = z.infer<typeof FetcherResult>;
 
 export const BusisnessTypeCollection = {
   users: "users",
-  allergens: "allergens_en",
+  allergens: "allergens",
   paps: "paps",
-  symptoms: "symptoms_en",
+  symptoms: "symptoms",
   recommendations: "recommendations",
-  actionPlans: "action_plans_en",
+  actionPlans: "action_plans",
 };
 
 export const User = z.object({

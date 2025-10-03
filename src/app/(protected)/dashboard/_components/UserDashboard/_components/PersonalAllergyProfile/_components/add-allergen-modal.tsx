@@ -69,11 +69,6 @@ export function AddAllergenModal({
       .includes(searchTerm.toLowerCase())
   );
 
-  // const parseInputDate = (dateString: string) => {
-  //   if (!dateString) return null
-  //   return Math.floor(new Date(dateString).getTime() / 1000)
-  // };
-
   const parseInputDate = (date: Date | undefined) => {
     if (!date) return null;
     return Math.floor(date.getTime() / 1000);
