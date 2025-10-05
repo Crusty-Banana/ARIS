@@ -29,6 +29,17 @@ export async function PUT(
         { status: 400 }
       );
     }
+    if (
+      parsedBody.data.crossSensitivityId !== undefined &&
+      parsedBody.data.crossSensitivityId.includes(id)
+    ) {
+      return NextResponse.json(
+        {
+          message: `Allergen cannot add itself as cross sensitivity. Wrong id ${id}`,
+        },
+        { status: 400 }
+      );
+    }
 
     // Handle action
     const db = await getDb();
