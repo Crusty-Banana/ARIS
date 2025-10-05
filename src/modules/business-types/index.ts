@@ -27,6 +27,11 @@ export const RecommendationType = z
   .default("");
 export type RecommendationType = z.infer<typeof RecommendationType>;
 
+export const TimeFromContactToSymptom = z
+  .enum(["<2", "2-6", "6-12", "12-24", ">24", ""])
+  .default("");
+export type TimeFromContactToSymptom = z.infer<typeof TimeFromContactToSymptom>;
+
 export const DisplayString = z.object({
   en: z.string().default(""),
   vi: z.string().default(""),
@@ -102,6 +107,7 @@ export const PAP = z.object({
         testDone: TestType.optional(),
         symptomsId: z.array(ObjectIdAsHexString).default([]),
         testResult: z.string().optional(),
+        timeFromContactToSymptom: TimeFromContactToSymptom
       })
     )
     .default([]),

@@ -1,8 +1,9 @@
-import { Allergen, Language, Symptom } from "@/modules/business-types";
+import { Allergen, Language, Symptom, TimeFromContactToSymptom } from "@/modules/business-types";
 import {
   LocalizedAllergen,
   LocalizedSymptom,
 } from "@/modules/commands/GetBusinessType/typing";
+import { useTranslations } from "next-intl";
 
 export const getTypeColor = (type: string) => {
   switch (type) {
@@ -63,4 +64,21 @@ export const localizeSymptom = (symptom: Symptom, language: Language) => {
     name: symptom.name[language],
     description: symptom.description[language],
   });
+};
+
+export const formatTimeFromContactToSymptom = (value: TimeFromContactToSymptom, t: ReturnType<typeof useTranslations>) => {
+  switch (value) {
+    case "<2":
+      return t("timeToSymptom.lessThan2");
+    case "2-6":
+      return t("timeToSymptom.twoToSix");
+    case "6-12":
+      return t("timeToSymptom.sixToTwelve");
+    case "12-24":
+      return t("timeToSymptom.twelveToTwentyFour");
+    case ">24":
+      return t("timeToSymptom.moreThan24");
+    default:
+      return "";
+  }
 };

@@ -42,7 +42,7 @@ import {
   UpdatePAPWithUserIdFetcher$Params,
 } from "@/modules/commands/UpdatePAPWithUserId/typing";
 // import { SymptomDetailModal } from "@/components/container/SymptomList/_components/symptom-detail-modal"
-import { getSeverityColor, getTypeColor } from "@/lib/client-side-utils";
+import { formatTimeFromContactToSymptom, getSeverityColor, getTypeColor } from "@/lib/client-side-utils";
 import { AllergenDetailModal } from "@/components/container/AllergenList/_components/allergen-detail-modal";
 import { useSymptomDetail } from "@/app/context/symptom-detail-context";
 
@@ -165,6 +165,7 @@ export function PersonalAllergyProfile({
       doneTest: false,
       testDone: "",
       symptomsId: [],
+      timeFromContactToSymptom: ""
     });
   };
 
@@ -305,6 +306,17 @@ export function PersonalAllergyProfile({
                         ))}
                       </div>
                     </div>
+
+                    {allergen.timeFromContactToSymptom && (
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-3 mb-3">
+                        <span className="text-sm font-medium text-gray-700">
+                          {t("timeFromContactToSymptom")}
+                        </span>
+                        <Badge variant="outline" className="text-xs border-cyan-300 inline-flex items-center">
+                          {formatTimeFromContactToSymptom(allergen.timeFromContactToSymptom, t)}
+                        </Badge>
+                      </div>
+                    )}
                   </div>
                 ))}
 

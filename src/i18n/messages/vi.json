@@ -48,9 +48,9 @@
     "createAPassword": "Tạo mật khẩu",
     "confirmYourPassword": "Xác nhận mật khẩu của bạn",
     "passwordsDoNotMatch": "Mật khẩu không khớp",
-    "accountCreated": "Tài khoản đã được tạo thành công! Vui lòng đăng nhập.",
+    "accountCreated": "Tài khoản đã được tạo thành công!",
     "registrationFailed": "Đăng ký thất bại. Vui lòng thử lại.",
-    "termsAgreement": "Tôi đồng ý với<termsOfService>Điều Khoản</termsOfService>and<privacyPolicy>Quyền Riêng Tư</privacyPolicy>",
+    "termsAgreement": "Tôi đồng ý với<termsOfService>Điều Khoản</termsOfService>và<privacyPolicy>Quyền Riêng Tư</privacyPolicy>",
     "termsOfService": "Điều khoản dịch vụ",
     "privacyPolicy": "Chính sách bảo mật",
     "createAccountButton": "Tạo tài khoản",
@@ -210,7 +210,16 @@
     "actionPlans": "Kế hoạch xử trí",
     "selectDate": "Chọn ngày",
     "testResult": "Kết quả xét nghiệm",
-    "uploadTestResultFile": "Tải Thư mục Kết quả xét nghiệm lên"
+    "uploadTestResultFile": "Tải Thư mục Kết quả xét nghiệm lên",
+    "description": "Mô tả",
+    "timeToSymptom": {
+      "lessThan2": "Trong vòng 2 giờ",
+      "twoToSix": "2–6 giờ",
+      "sixToTwelve": "6–12 giờ",
+      "twelveToTwentyFour": "12–24 giờ",
+      "moreThan24": "Hơn 24 giờ"
+    },
+    "timeFromContactToSymptom": "Thời gian từ khi tiếp xúc đến triệu chứng đầu tiên:"
   },
   "potentialCrossAllergens": {
     "title": "Dị nguyên chéo tiềm ẩn",
@@ -293,7 +302,16 @@
     "treatment": "Điều trị",
     "footerNote1": "Đây là hồ sơ dị ứng công khai. Thông tin được cung cấp cho mục đích nhận thức và trường hợp khẩn cấp.",
     "footerNote2": "Luôn tham khảo ý kiến chuyên gia y tế để được tư vấn.",
-    "associatedSymptoms": "Các triệu chứng liên quan"
+    "associatedSymptoms": "Các triệu chứng liên quan",
+    "description": "Mô tả",
+    "timeToSymptom": {
+      "lessThan2": "Trong vòng 2 giờ",
+      "twoToSix": "2–6 giờ",
+      "sixToTwelve": "6–12 giờ",
+      "twelveToTwentyFour": "12–24 giờ",
+      "moreThan24": "Hơn 24 giờ"
+    },
+    "timeFromContactToSymptom": "Thời gian từ khi tiếp xúc đến triệu chứng đầu tiên:"
   },
   "header": {
     "dashboard": "Bảng điều khiển",
@@ -345,7 +363,17 @@
     "selectDate": "Chọn ngày",
     "selectTestType": "Chọn xét nghiệm",
     "testResult": "Kết quả xét nghiệm",
-    "uploadTestResultFile": "Tải Thư mục Kết quả Xét nghiệm lên"
+    "uploadTestResultFile": "Tải Thư mục Kết quả Xét nghiệm lên",
+    "description": "Mô tả",
+    "timeToSymptom": {
+      "lessThan2": "Trong vòng 2 giờ",
+      "twoToSix": "2–6 giờ",
+      "sixToTwelve": "6–12 giờ",
+      "twelveToTwentyFour": "12–24 giờ",
+      "moreThan24": "Hơn 24 giờ"
+    },
+    "timeFromContactToSymptom": "Thời gian từ khi tiếp xúc đến triệu chứng đầu tiên:",
+    "selectTimeFromContactToSymptom": "Thời gian từ khi tiếp xúc:"
   },
   "recommendationModal": {
     "title": "Đóng Góp Ý Kiến",
@@ -354,7 +382,10 @@
     "content": "Nội Dung",
     "defaultContentText": "Góp ý của bạn...",
     "allergenSuggestion": "Gợi ý dị nguyên mới",
-    "generalFeedback": "Góp ý chung"
+    "generalFeedback": "Góp ý chung",
+    "anErrorOccured": "Có lỗi xảy ra: ",
+    "thankYouForFeedback": "Cảm ơn đóng góp của bạn!",
+    "weTrulyAppreciateYourHelp": "Đóng góp của bạn sẽ giúp chúng tôi cải thiện chất lượng và nội dung."
   },
   "common": {
     "searchItems": "Tìm kiếm tên...",

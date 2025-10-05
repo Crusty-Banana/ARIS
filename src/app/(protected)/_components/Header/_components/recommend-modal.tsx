@@ -22,6 +22,7 @@ import { useTranslations } from "next-intl";
 import { AddRecommendation$Params } from "@/modules/commands/AddBusinessType/typing";
 import { httpPost$AddRecommendation } from "@/modules/commands/AddBusinessType/fetcher";
 
+
 interface AddRecommendationModalProps {
   open: boolean;
   onClose: () => void;
@@ -39,11 +40,14 @@ export function AddRecommendationModal({
   const handleAddRecommendation = async (rec: AddRecommendation$Params) => {
     const data = await httpPost$AddRecommendation("/api/recommendations", rec);
     if (!data.success) {
-      toast.error("An error occured when sending feedback.", {
+      toast.error(t("anErrorOccured"), {
         description: data.message,
       });
     } else {
-      toast.success("Thank you for your feedback!");
+      toast.success(t("thankYouForFeedback"), {
+        description: t("weTrulyAppreciateYourHelp"),
+        duration: 6000,
+      });
       setType("");
       setContent("");
       onClose();

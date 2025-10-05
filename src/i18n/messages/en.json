@@ -39,7 +39,7 @@
     "signIn": "Sign In",
     "signingIn": "Signing In...",
     "loginFailed": "Login failed. Please check your credentials.",
-    "pleaseVerifyEmail": "Your email address is not verified. Please check for the verification link.",
+    "pleaseVerifyEmail": "Your email address is not yet verified. Please check for the verification link.",
     "firstName": "First Name",
     "lastName": "Last Name",
     "firstNamePlaceholder": "First name",
@@ -48,7 +48,7 @@
     "createAPassword": "Create a password",
     "confirmYourPassword": "Confirm your password",
     "passwordsDoNotMatch": "Passwords do not match",
-    "accountCreated": "Account created successfully! Please sign in.",
+    "accountCreated": "Account created successfully!",
     "registrationFailed": "Registration failed. Please try again.",
     "termsAgreement": "I agree to the <termsOfService>Terms of Service</termsOfService> and <privacyPolicy>Privacy Policy</privacyPolicy>.",
     "termsOfService": "Terms of Service",
@@ -204,7 +204,15 @@
     "actionPlans": "Action Plans",
     "selectDate": "Select Date",
     "testResult": "Test Result",
-    "uploadTestResultFile": "Upload Test Result File"
+    "uploadTestResultFile": "Upload Test Result File",
+    "timeToSymptom": {
+      "lessThan2": "Within 2 hours",
+      "twoToSix": "2–6 hours",
+      "sixToTwelve": "6–12 hours",
+      "twelveToTwentyFour": "12–24 hours",
+      "moreThan24": "More than 24 hours"
+    },
+    "timeFromContactToSymptom": "Time from contact to first symptom:"
   },
   "potentialCrossAllergens": {
     "title": "Potential Cross-Allergens",
@@ -286,7 +294,16 @@
     "treatment": "Treatment",
     "footerNote1": "This is a public allergy profile. Information is provided for awareness and emergency purposes.",
     "footerNote2": "Always consult healthcare professionals for medical advice.",
-    "associatedSymptoms": "Associated Symptoms"
+    "associatedSymptoms": "Associated Symptoms",
+    "description": "Description",
+    "timeToSymptom": {
+      "lessThan2": "Within 2 hours",
+      "twoToSix": "2–6 hours",
+      "sixToTwelve": "6–12 hours",
+      "twelveToTwentyFour": "12–24 hours",
+      "moreThan24": "More than 24 hours"
+    },
+    "timeFromContactToSymptom": "Time from contact to first symptom:"
   },
   "header": {
     "dashboard": "Dashboard",
@@ -338,7 +355,16 @@
     "selectDate": "Select Date",
     "selectTestType": "Select test type",
     "testResult": "Test Result",
-    "uploadTestResultFile": "Upload Test Result File"
+    "uploadTestResultFile": "Upload Test Result File",
+    "timeToSymptom": {
+      "lessThan2": "Within 2 hours",
+      "twoToSix": "2–6 hours",
+      "sixToTwelve": "6–12 hours",
+      "twelveToTwentyFour": "12–24 hours",
+      "moreThan24": "More than 24 hours"
+    },
+    "timeFromContactToSymptom": "Time from contact to first symptom:",
+    "selectTimeFromContactToSymptom": "Time from contact to first symptom:"
   },
   "recommendationModal": {
     "title": "Send Feedback",
@@ -347,7 +373,10 @@
     "content": "Content",
     "defaultContentText": "Your feedback...",
     "allergenSuggestion": "Allergen Suggestion",
-    "generalFeedback": "General Feedback"
+    "generalFeedback": "General Feedback",
+    "anErrorOccured": "An error occured: ",
+    "thankYouForFeedback": "Thank you for your feedback!",
+    "weTrulyAppreciateYourHelp": "You recommendation helps us improve our quality and content."
   },
   "common": {
     "searchItems": "Search items...",
