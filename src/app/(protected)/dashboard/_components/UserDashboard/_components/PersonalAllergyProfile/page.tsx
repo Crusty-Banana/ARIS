@@ -42,7 +42,11 @@ import {
   UpdatePAPWithUserIdFetcher$Params,
 } from "@/modules/commands/UpdatePAPWithUserId/typing";
 // import { SymptomDetailModal } from "@/components/container/SymptomList/_components/symptom-detail-modal"
-import { formatTimeFromContactToSymptom, getSeverityColor, getTypeColor } from "@/lib/client-side-utils";
+import {
+  formatTimeFromContactToSymptom,
+  getSeverityColor,
+  getTypeColor,
+} from "@/lib/client-side-utils";
 import { AllergenDetailModal } from "@/components/container/AllergenList/_components/allergen-detail-modal";
 import { useSymptomDetail } from "@/app/context/symptom-detail-context";
 
@@ -165,7 +169,7 @@ export function PersonalAllergyProfile({
       doneTest: false,
       testDone: "",
       symptomsId: [],
-      timeFromContactToSymptom: ""
+      timeFromContactToSymptom: "",
     });
   };
 
@@ -272,9 +276,10 @@ export function PersonalAllergyProfile({
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() =>
-                            handleDeleteAllergen(allergen.allergenId)
-                          }
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteAllergen(allergen.allergenId);
+                          }}
                           className="bg-transparent text-red-600 hover:text-red-700 hover:bg-red-50"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -312,8 +317,14 @@ export function PersonalAllergyProfile({
                         <span className="text-sm font-medium text-gray-700">
                           {t("timeFromContactToSymptom")}
                         </span>
-                        <Badge variant="outline" className="text-xs border-cyan-300 inline-flex items-center">
-                          {formatTimeFromContactToSymptom(allergen.timeFromContactToSymptom, t)}
+                        <Badge
+                          variant="outline"
+                          className="text-xs border-cyan-300 inline-flex items-center"
+                        >
+                          {formatTimeFromContactToSymptom(
+                            allergen.timeFromContactToSymptom,
+                            t
+                          )}
                         </Badge>
                       </div>
                     )}
