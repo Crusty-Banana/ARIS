@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, AlertTriangle } from "lucide-react";
 import { Allergen, Language } from "@/modules/business-types";
 import { useLocale, useTranslations } from "next-intl";
-
+import { getTypeColor } from "@/lib/client-side-utils";
 interface PotentialCrossAllergensProps {
   potentialAllergens: Allergen[];
   userAllergenIds: string[];
@@ -20,19 +20,6 @@ export function PotentialCrossAllergens({
 }: PotentialCrossAllergensProps) {
   const t = useTranslations("potentialCrossAllergens");
   const localLanguage = useLocale() as Language;
-
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case "food":
-        return "bg-blue-500";
-      case "drug":
-        return "bg-purple-500";
-      case "respiratory":
-        return "bg-green-500";
-      default:
-        return "bg-gray-500";
-    }
-  };
 
   // Filter out allergens the user already has
   const availableAllergens = potentialAllergens.filter(

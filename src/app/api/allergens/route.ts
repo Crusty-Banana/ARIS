@@ -1,14 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { checkAdmin, checkAuth, processError } from '@/lib/utils';
-import { getDb } from '@/modules/mongodb';
-import { handler$AddAllergen } from '@/modules/commands/AddBusinessType/handler';
-import { handler$GetAllergens } from '@/modules/commands/GetBusinessType/handler';
-import { AddAllergen$Params } from '@/modules/commands/AddBusinessType/typing';
-import { GetAllergens$Params } from '@/modules/commands/GetBusinessType/typing';
+import { NextRequest, NextResponse } from "next/server";
+import { checkAdmin, checkAuth, processError } from "@/lib/utils";
+import { getDb } from "@/modules/mongodb";
+import { handler$AddAllergen } from "@/modules/commands/AddBusinessType/handler";
+import { handler$GetAllergens } from "@/modules/commands/GetBusinessType/handler";
+import { AddAllergen$Params } from "@/modules/commands/AddBusinessType/typing";
+import { GetAllergens$Params } from "@/modules/commands/GetBusinessType/typing";
 
-export async function POST(
-  req: NextRequest
-) {
+export async function POST(req: NextRequest) {
   try {
     // Check Authentication
     const authCheck = await checkAdmin(req);
@@ -18,22 +16,26 @@ export async function POST(
     const body = await req.json();
     const parsedBody = AddAllergen$Params.safeParse(body);
     if (!parsedBody.success) {
-      return NextResponse.json({ message: parsedBody.error.message || "Invalid params" }, { status: 400 });
+      return NextResponse.json(
+        { message: parsedBody.error.message || "Invalid params" },
+        { status: 400 }
+      );
     }
 
     // Handle action
     const db = await getDb();
     const { result } = await handler$AddAllergen(db, parsedBody.data);
 
-    return NextResponse.json({ result, message: "Allergen created successfully" }, { status: 200 });
+    return NextResponse.json(
+      { result, message: "Allergen created successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     return processError(error);
   }
 }
 
-export async function GET(
-  req: NextRequest
-) {
+export async function GET(req: NextRequest) {
   try {
     // Check Authentication
     const authCheck = await checkAuth(req);
@@ -42,7 +44,12 @@ export async function GET(
     // Validate Input
     const searchParams = Object.fromEntries(req.nextUrl.searchParams);
 
-    const parsedBody = GetAllergens$Params.safeParse({ ...searchParams, filters: searchParams.filters ? JSON.parse(searchParams.filters) : undefined });
+    const parsedBody = GetAllergens$Params.safeParse({
+      ...searchParams,
+      filters: searchParams.filters
+        ? JSON.parse(searchParams.filters)
+        : undefined,
+    });
 
     if (!parsedBody.success) {
       return NextResponse.json(
@@ -55,7 +62,10 @@ export async function GET(
     const db = await getDb();
     const { result } = await handler$GetAllergens(db, parsedBody.data);
 
-    return NextResponse.json({ result, message: "Allergens retrieved successfully" }, { status: 200 });
+    return NextResponse.json(
+      { result, message: "Allergens retrieved successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     return processError(error);
   }

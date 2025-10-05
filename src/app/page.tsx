@@ -1,20 +1,20 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { useTranslations } from "next-intl"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 export default function HomePage() {
-  const t = useTranslations('homePage');
+  const t = useTranslations("homePage");
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyan-400 via-cyan-500 to-blue-600 flex items-center justify-center p-4">
       <div className="text-center text-white">
-        <h1 className="text-4xl font-bold mb-4">{t('welcome')}</h1>
-        <p className="text-xl mb-8 opacity-90">{t('subtitle')}</p>
+        <h1 className="text-4xl font-bold mb-4">{t("welcome")}</h1>
+        <p className="text-xl mb-8 opacity-90">{t("subtitle")}</p>
         <Link href="/dashboard">
           <Button className="bg-white text-cyan-600 hover:bg-gray-100 font-medium px-8 py-3 text-lg">
-            {t('getStarted')}
+            {t("getStarted")}
           </Button>
         </Link>
       </div>
     </div>
-  )
+  );
 }

@@ -156,10 +156,10 @@ export function SymptomDetailModal({
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   {t("severity")}
                 </label>
-                <Badge className={`${getSeverityColor(symptom.severity)} text-white text-xs`}>
-                  {symptom.severity === 1
-                    ? t('mild')
-                    : t('severe')}
+                <Badge
+                  className={`${getSeverityColor(symptom.severity)} text-white text-xs`}
+                >
+                  {symptom.severity === 1 ? t("mild") : t("severe")}
                 </Badge>
               </div>
             </div>

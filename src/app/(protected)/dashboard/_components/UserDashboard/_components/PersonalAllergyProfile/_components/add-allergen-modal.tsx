@@ -16,6 +16,7 @@ import {
   Language,
   Symptom,
   TestType,
+  TimeFromContactToSymptom,
 } from "@/modules/business-types";
 import { useLocale, useTranslations } from "next-intl";
 import { PAPAllergen } from "@/modules/commands/UpdatePAPWithUserId/typing";
@@ -26,6 +27,7 @@ import { toast } from "sonner";
 import { httpPost$AddFileToS3 } from "@/modules/commands/AddFileToS3/fetcher";
 import { DatePicker } from "@/components/ui/custom-date-picker";
 import { GroupedSymptomSelect } from "@/components/grouped-symptoms-select";
+import { TimeFromContactToSymptomDropdown } from "@/components/time-to-symptom-dropdown";
 
 interface AddAllergenModalProps {
   open: boolean;
@@ -53,6 +55,7 @@ export function AddAllergenModal({
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [doneTest, setDoneTest] = useState(false);
   const [testDone, setTestDone] = useState<TestType>("");
+  const [timeFromContactToSymptom, setTimeFromContactToSymptom] = useState<TimeFromContactToSymptom>("");
 
   const [selectedResultFile, setSelectedResultFile] = useState<File | null>(
     null
@@ -65,11 +68,6 @@ export function AddAllergenModal({
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
-
-  // const parseInputDate = (dateString: string) => {
-  //   if (!dateString) return null
-  //   return Math.floor(new Date(dateString).getTime() / 1000)
-  // };
 
   const parseInputDate = (date: Date | undefined) => {
     if (!date) return null;
@@ -107,6 +105,7 @@ export function AddAllergenModal({
       testDone,
       symptomsId: selectedSymptoms,
       testResult: testResultUrl,
+      timeFromContactToSymptom: timeFromContactToSymptom
     });
 
     // Reset form
@@ -120,6 +119,7 @@ export function AddAllergenModal({
     setTestResultUrl(undefined);
     setIsUploading(false);
     onClose();
+    setTimeFromContactToSymptom("");
   };
 
   const handleAllergenSelect = (allergen: Allergen) => {
@@ -137,9 +137,9 @@ export function AddAllergenModal({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto lg:overflow-y-hidden">
           {/* Left Column - Allergen Selection */}
-          <div className="space-y-4">
+         <div className="space-y-4 flex flex-col h-full lg:overflow-y-auto">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 {t("searchAllergen")}
@@ -155,7 +155,8 @@ export function AddAllergenModal({
               </div>
             </div>
 
-            <div className="border border-cyan-200 rounded-md max-h-64 overflow-y-auto">
+            {/* Allergen list grows + has its own scroll */}
+            <div className="border border-cyan-200 rounded-md max-h-64 lg:max-h-[64vh] lg:min-h-64 overflow-y-auto">
               {filteredAllergens.map((allergen) => (
                 <div
                   key={allergen.id}
@@ -169,9 +170,7 @@ export function AddAllergenModal({
                   </div>
                   <div className="flex items-center gap-2 mt-1">
                     <Badge
-                      className={`${getTypeColor(
-                        allergen.type
-                      )} text-white text-xs capitalize`}
+                      className={`${getTypeColor(allergen.type)} text-white text-xs capitalize`}
                     >
                       {t(allergen.type)}
                     </Badge>
@@ -179,138 +178,147 @@ export function AddAllergenModal({
                 </div>
               ))}
               {filteredAllergens.length === 0 && (
-                <div className="p-4 text-center text-gray-500">
-                  No allergens found
-                </div>
+                <div className="p-4 text-center text-gray-500">No allergens found</div>
               )}
             </div>
-          </div>
-
-          {/* Right Column - Details */}
-          <div className="space-y-4">
             {selectedAllergen && (
               <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t("selectedAllergen")}
-                  </label>
-                  <div className="p-2 bg-cyan-50 rounded border">
-                    <div className="font-medium">
-                      {selectedAllergen.name[localLanguage]}
-                    </div>
-                    <div className="text-sm text-gray-600 mt-1">
-                      {selectedAllergen.description[localLanguage]}
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t("discoveryDate")}
-                  </label>
-                  <DatePicker
-                    value={discoveryDate}
-                    onChange={setDiscoveryDate}
-                    placeholder={t("selectDate")}
-                  />
-                </div>
-
-                <div className="flex gap-6">
-                  {doneTest && (
-                    <div className="flex-1">
-                      <TestTypeDropdown
-                        value={testDone}
-                        onValueChange={(value) =>
-                          setTestDone(value as TestType)
-                        }
-                      />
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <DoneTestTickbox
-                    checked={doneTest}
-                    onCheckedChange={(checked) => {
-                      setDoneTest(checked as boolean);
-                      if (!checked) setTestDone("");
-                      setSelectedResultFile(null);
-                      setTestResultUrl(undefined);
-                    }}
-                  />
-                </div>
-
-                {doneTest && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      {t("testResult")}
+                      {t("selectedAllergen")}
                     </label>
-                    {!testResultUrl && (
-                      <div className="relative border-2 border-dashed border-cyan-300 rounded-lg p-6 flex flex-col items-center justify-center text-center">
-                        <UploadCloud className="h-10 w-10 text-cyan-500 mb-2" />
-                        <label
-                          htmlFor="file-upload"
-                          className="relative cursor-pointer bg-white rounded-md font-medium text-cyan-600 hover:text-cyan-500 focus-within:outline-none"
-                        >
-                          <span>{t("uploadTestResultFile")}</span>
-                          <input
-                            id="file-upload"
-                            name="file-upload"
-                            type="file"
-                            className="sr-only"
-                            onChange={(e) =>
-                              setSelectedResultFile(e.target.files?.[0] || null)
-                            }
-                          />
-                        </label>
-                        <p className="text-xs text-gray-500 mt-1">{""}</p>
+                    <div className="p-2 bg-cyan-50 rounded border">
+                      <div className="font-medium">
+                        {selectedAllergen.name[localLanguage]}
                       </div>
-                    )}
-
-                    {selectedResultFile && !testResultUrl && (
-                      <div className="mt-2 flex items-center justify-between p-2 bg-gray-100 rounded-md">
-                        <div className="flex items-center gap-2 text-sm">
-                          <Paperclip className="h-4 w-4" />
-                          <span>{selectedResultFile.name}</span>
-                        </div>
-                        <Button
-                          onClick={handleResultFileUpload}
-                          disabled={isUploading}
-                          size="sm"
-                        >
-                          {isUploading ? "Uploading" : "Upload"}
-                        </Button>
+                      <div className="text-sm text-gray-600 mt-1">
+                        {selectedAllergen.description[localLanguage]}
                       </div>
-                    )}
+                    </div>
+                  </div>
+              </>
+            )}
+          </div>
 
-                    {testResultUrl && (
-                      <div className="mt-2 flex items-center justify-between p-2 bg-green-100 border border-green-300 text-green-800 rounded-md">
-                        <a
-                          href={testResultUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-sm hover:underline"
-                        >
-                          <Paperclip className="h-4 w-4" />
-                          <span>{"View uploaded result"}</span>
-                        </a>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="h-4 w-4 p-0 hover:bg-red-100"
-                          onClick={() => {
-                            setTestResultUrl(undefined);
-                            setSelectedResultFile(null);
-                          }}
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
+
+          {/* Right Column - Details */}
+          <div className="space-y-4 lg:overflow-y-auto">
+            {selectedAllergen && (
+              <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {t("discoveryDate")}
+                    </label>
+                    <DatePicker
+                      value={discoveryDate}
+                      onChange={setDiscoveryDate}
+                      placeholder={t("selectDate")}
+                      localLanguage={localLanguage}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between gap-6">
+                    <div className="h-10 flex items-center">
+                      <DoneTestTickbox
+                        checked={doneTest}
+                        onCheckedChange={(checked) => {
+                          setDoneTest(checked as boolean);
+                          if (!checked) setTestDone("");
+                          setSelectedResultFile(null);
+                          setTestResultUrl(undefined);
+                        }}
+                      />
+                    </div>
+
+                    {doneTest && (
+                      <div className="">
+                        <TestTypeDropdown
+                          value={testDone}
+                          onValueChange={(value) => setTestDone(value as TestType)}
+                        />
                       </div>
                     )}
                   </div>
-                )}
 
+
+                  {doneTest && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        {t("testResult")}
+                      </label>
+                      {!testResultUrl && (
+                        <div className="relative border-2 border-dashed border-cyan-300 rounded-lg p-6 flex flex-col items-center justify-center text-center">
+                          <UploadCloud className="h-10 w-10 text-cyan-500 mb-2" />
+                          <label
+                            htmlFor="file-upload"
+                            className="relative cursor-pointer bg-white rounded-md font-medium text-cyan-600 hover:text-cyan-500 focus-within:outline-none"
+                          >
+                            <span>{t("uploadTestResultFile")}</span>
+                            <input
+                              id="file-upload"
+                              name="file-upload"
+                              type="file"
+                              className="sr-only"
+                              onChange={(e) =>
+                                setSelectedResultFile(e.target.files?.[0] || null)
+                              }
+                            />
+                          </label>
+                          <p className="text-xs text-gray-500 mt-1">{""}</p>
+                        </div>
+                      )}
+
+                      {selectedResultFile && !testResultUrl && (
+                        <div className="mt-2 flex items-center justify-between p-2 bg-gray-100 rounded-md">
+                          <div className="flex items-center gap-2 text-sm">
+                            <Paperclip className="h-4 w-4" />
+                            <span>{selectedResultFile.name}</span>
+                          </div>
+                          <Button
+                            onClick={handleResultFileUpload}
+                            disabled={isUploading}
+                            size="sm"
+                          >
+                            {isUploading ? "Uploading" : "Upload"}
+                          </Button>
+                        </div>
+                      )}
+
+                      {testResultUrl && (
+                        <div className="mt-2 flex items-center justify-between p-2 bg-green-100 border border-green-300 text-green-800 rounded-md">
+                          <a
+                            href={testResultUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 text-sm hover:underline"
+                          >
+                            <Paperclip className="h-4 w-4" />
+                            <span>{"View uploaded result"}</span>
+                          </a>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-4 w-4 p-0 hover:bg-red-100"
+                            onClick={() => {
+                              setTestResultUrl(undefined);
+                              setSelectedResultFile(null);
+                            }}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                <div className="flex-1">
+                    <TimeFromContactToSymptomDropdown
+                      value={timeFromContactToSymptom}
+                      onValueChange={(value) =>
+                        setTimeFromContactToSymptom(value as TimeFromContactToSymptom)
+                      }
+                    />
+                  </div>
                 <GroupedSymptomSelect
                   items={availableSymptoms.sort((a, b) =>
                     a.name[localLanguage].localeCompare(b.name[localLanguage])
@@ -321,6 +329,7 @@ export function AddAllergenModal({
                   getItemLabel={(symptom) => symptom.name[localLanguage]}
                   label={t("associatedSymptoms")}
                 />
+          
               </>
             )}
           </div>

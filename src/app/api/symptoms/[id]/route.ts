@@ -6,13 +6,13 @@ import { handler$DeleteSymptom } from "@/modules/commands/DeleteBusinessType/han
 import { UpdateSymptom$Params } from "@/modules/commands/UpdateBusinessType/typing";
 import { DeleteBusinessType$Params } from "@/modules/commands/DeleteBusinessType/typing";
 
-
 export async function PUT(
   req: NextRequest,
-  { params }:
-    {
-      params: Promise<{ id: string }>
-    }
+  {
+    params,
+  }: {
+    params: Promise<{ id: string }>;
+  }
 ) {
   try {
     // Check Authentication
@@ -24,7 +24,10 @@ export async function PUT(
     const body = await req.json();
     const parsedBody = UpdateSymptom$Params.safeParse({ ...body, id });
     if (!parsedBody.success) {
-      return NextResponse.json({ message: parsedBody.error.message || "Invalid params" }, { status: 400 });
+      return NextResponse.json(
+        { message: parsedBody.error.message || "Invalid params" },
+        { status: 400 }
+      );
     }
 
     // Handle action
@@ -32,21 +35,27 @@ export async function PUT(
     const { result } = await handler$UpdateSymptom(db, parsedBody.data);
 
     if (result != 1) {
-      return NextResponse.json({ message: "Symptom not found or no changes were made." }, { status: 404 });
+      return NextResponse.json(
+        { message: "Symptom not found or no changes were made." },
+        { status: 404 }
+      );
     }
-    return NextResponse.json({ message: "Symptom updated successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Symptom updated successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     return processError(error);
   }
 }
 
-
 export async function DELETE(
   req: NextRequest,
-  { params }:
-    {
-      params: Promise<{ id: string }>
-    }
+  {
+    params,
+  }: {
+    params: Promise<{ id: string }>;
+  }
 ) {
   try {
     // Check Authentication
@@ -57,7 +66,10 @@ export async function DELETE(
     const { id } = await params;
     const parsedBody = DeleteBusinessType$Params.safeParse({ id });
     if (!parsedBody.success) {
-      return NextResponse.json({ message: parsedBody.error.message || "Invalid params" }, { status: 400 });
+      return NextResponse.json(
+        { message: parsedBody.error.message || "Invalid params" },
+        { status: 400 }
+      );
     }
 
     // Handle action
@@ -65,9 +77,15 @@ export async function DELETE(
     const { result } = await handler$DeleteSymptom(db, parsedBody.data);
 
     if (result != 1) {
-      return NextResponse.json({ message: "Symptom not found." }, { status: 404 });
+      return NextResponse.json(
+        { message: "Symptom not found." },
+        { status: 404 }
+      );
     }
-    return NextResponse.json({ message: "Symptom deleted successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Symptom deleted successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     return processError(error);
   }

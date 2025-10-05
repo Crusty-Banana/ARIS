@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { createContext, useContext, useState, ReactNode } from "react";
 import { Symptom } from "@/modules/business-types";
@@ -10,7 +10,9 @@ interface SymptomDetailContextType {
 }
 
 // Create the context with a default value
-const SymptomDetailContext = createContext<SymptomDetailContextType | undefined>(undefined);
+const SymptomDetailContext = createContext<
+  SymptomDetailContextType | undefined
+>(undefined);
 
 // Create the Provider component
 export function SymptomDetailProvider({ children }: { children: ReactNode }) {
@@ -40,7 +42,9 @@ export function SymptomDetailProvider({ children }: { children: ReactNode }) {
 export function useSymptomDetail() {
   const context = useContext(SymptomDetailContext);
   if (context === undefined) {
-    throw new Error("useSymptomDetail must be used within a SymptomDetailProvider");
+    throw new Error(
+      "useSymptomDetail must be used within a SymptomDetailProvider"
+    );
   }
   return context;
 }

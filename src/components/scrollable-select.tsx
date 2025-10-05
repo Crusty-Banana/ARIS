@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { X, Search } from "lucide-react"
-import { useTranslations } from "next-intl"
+import { useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { X, Search } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface ScrollableSelectProps<T> {
-  items: T[]
-  selectedItems: string[]
-  onSelectionChange: (selected: string[]) => void
-  getItemId: (item: T) => string
-  getItemLabel: (item: T) => string
-  label: string
-  maxHeight?: string
+  items: T[];
+  selectedItems: string[];
+  onSelectionChange: (selected: string[]) => void;
+  getItemId: (item: T) => string;
+  getItemLabel: (item: T) => string;
+  label: string;
+  maxHeight?: string;
 }
 
 export function ScrollableSelect<T>({
@@ -27,22 +27,24 @@ export function ScrollableSelect<T>({
   label,
   maxHeight = "max-h-48",
 }: ScrollableSelectProps<T>) {
-  const t = useTranslations('common');
-  const [searchTerm, setSearchTerm] = useState("")
+  const t = useTranslations("common");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredItems = items.filter((item) => getItemLabel(item).toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredItems = items.filter((item) =>
+    getItemLabel(item).toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const toggleItem = (itemId: string) => {
     if (selectedItems.includes(itemId)) {
-      onSelectionChange(selectedItems.filter((id) => id !== itemId))
+      onSelectionChange(selectedItems.filter((id) => id !== itemId));
     } else {
-      onSelectionChange([...selectedItems, itemId])
+      onSelectionChange([...selectedItems, itemId]);
     }
-  }
+  };
 
   const removeItem = (itemId: string) => {
-    onSelectionChange(selectedItems.filter((id) => id !== itemId))
-  }
+    onSelectionChange(selectedItems.filter((id) => id !== itemId));
+  };
 
   return (
     <div className="space-y-2">
@@ -52,9 +54,13 @@ export function ScrollableSelect<T>({
       {selectedItems.length > 0 && (
         <div className="flex flex-wrap gap-2 p-2 border border-cyan-200 rounded-md bg-cyan-50">
           {selectedItems.map((itemId) => {
-            const item = items.find((i) => getItemId(i) === itemId)
+            const item = items.find((i) => getItemId(i) === itemId);
             return item ? (
-              <Badge key={itemId} variant="secondary" className="flex items-center gap-1">
+              <Badge
+                key={itemId}
+                variant="secondary"
+                className="flex items-center gap-1"
+              >
                 {getItemLabel(item)}
                 <Button
                   type="button"
@@ -66,7 +72,7 @@ export function ScrollableSelect<T>({
                   <X className="h-3 w-3" />
                 </Button>
               </Badge>
-            ) : null
+            ) : null;
           })}
         </div>
       )}
@@ -83,23 +89,35 @@ export function ScrollableSelect<T>({
       </div>
 
       {/* Scrollable list */}
-      <div className={`border border-cyan-200 rounded-md ${maxHeight} overflow-y-auto bg-white`}>
+      <div
+        className={`border border-cyan-200 rounded-md ${maxHeight} overflow-y-auto bg-white`}
+      >
         {filteredItems.length > 0 ? (
           <div className="p-2 space-y-2">
             {filteredItems.map((item) => {
-              const itemId = getItemId(item)
-              const isSelected = selectedItems.includes(itemId)
+              const itemId = getItemId(item);
+              const isSelected = selectedItems.includes(itemId);
               return (
-                <div key={itemId} className="flex items-center space-x-2 p-2 hover:bg-cyan-50 rounded">
-                  <Checkbox id={itemId} checked={isSelected} onCheckedChange={(checked) => {
-                    console.log(checked);
-                    toggleItem(itemId);
-                  }} />
-                  <label htmlFor={itemId} className="text-sm cursor-pointer flex-1">
+                <div
+                  key={itemId}
+                  className="flex items-center space-x-2 p-2 hover:bg-cyan-50 rounded"
+                >
+                  <Checkbox
+                    id={itemId}
+                    checked={isSelected}
+                    onCheckedChange={(checked) => {
+                      console.log(checked);
+                      toggleItem(itemId);
+                    }}
+                  />
+                  <label
+                    htmlFor={itemId}
+                    className="text-sm cursor-pointer flex-1"
+                  >
                     {getItemLabel(item)}
                   </label>
                 </div>
-              )
+              );
             })}
           </div>
         ) : (
@@ -107,5 +125,5 @@ export function ScrollableSelect<T>({
         )}
       </div>
     </div>
-  )
+  );
 }

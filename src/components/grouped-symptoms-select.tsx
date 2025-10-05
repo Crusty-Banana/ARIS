@@ -3,13 +3,14 @@
 import { useTranslations } from "next-intl";
 
 // MUI component imports
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import { ChevronDown, Info, X } from "lucide-react";
+import { Info, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { useSymptomDetail } from "@/app/context/symptom-detail-context";
@@ -36,14 +37,17 @@ export function GroupedSymptomSelect<T extends { organ: string }>({
 }: GroupedSymptomSelectProps<T>) {
   const t = useTranslations("common");
 
-  const symptomGroups = items.reduce((groups, item) => {
-    const organ = item.organ;
-    if (!groups[organ]) {
-      groups[organ] = [];
-    }
-    groups[organ].push(item);
-    return groups;
-  }, {} as Record<string, T[]>);
+  const symptomGroups = items.reduce(
+    (groups, item) => {
+      const organ = item.organ;
+      if (!groups[organ]) {
+        groups[organ] = [];
+      }
+      groups[organ].push(item);
+      return groups;
+    },
+    {} as Record<string, T[]>
+  );
 
   const toggleItem = (itemId: string) => {
     onSelectionChange(
@@ -60,7 +64,7 @@ export function GroupedSymptomSelect<T extends { organ: string }>({
   const { showSymptomDetail } = useSymptomDetail();
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+    <div className="flex flex-col gap-2">
       <label className="block text-sm font-medium text-gray-700">{label}</label>
       {/* Selected items */}
       {selectedItems.length > 0 && (
@@ -93,61 +97,58 @@ export function GroupedSymptomSelect<T extends { organ: string }>({
       {Object.entries(symptomGroups)
         .sort(([a], [b]) => groupOrder.indexOf(a) - groupOrder.indexOf(b))
         .map(([groupName, groupItems]) => (
-          <Accordion defaultExpanded={false} key={groupName} variant="outlined">
-            <AccordionSummary
-              expandIcon={<ChevronDown />}
-              aria-controls={`${groupName}-content`}
-              id={`${groupName}-header`}
-            >
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+          <Accordion
+            type="single"
+            collapsible
+            key={groupName}
+            className="w-full"
+          >
+            <AccordionItem value={groupName} className="border rounded-md">
+              <AccordionTrigger className="px-4 py-2 text-sm font-medium text-gray-700">
                 {t(groupName)}
-              </label>
-            </AccordionSummary>
-            <AccordionDetails sx={{ p: 1 }}>
-              <Box sx={{ maxHeight: "200px", overflowY: "auto" }}>
-                {groupItems.length > 0 ? (
-                  groupItems.map((item) => {
-                    const itemId = getItemId(item);
-                    const isSelected = selectedItems.includes(itemId);
-                    return (
-                      <div
-                        key={itemId}
-                        className="flex items-center space-x-2 p-2 hover:bg-cyan-50 rounded"
-                      >
-                        <Checkbox
-                          id={itemId}
-                          checked={isSelected}
-                          onCheckedChange={() => toggleItem(itemId)}
-                        />
-                        <label
-                          htmlFor={itemId}
-                          className="text-sm cursor-pointer flex-1"
+              </AccordionTrigger>
+              <AccordionContent className="p-1">
+                <div className="max-h-[200px] overflow-y-auto">
+                  {groupItems.length > 0 ? (
+                    groupItems.map((item) => {
+                      const itemId = getItemId(item);
+                      const isSelected = selectedItems.includes(itemId);
+                      return (
+                        <div
+                          key={itemId}
+                          className="flex items-center space-x-2 p-2 hover:bg-cyan-50 rounded"
                         >
-                          {getItemLabel(item)}
-                        </label>
-                        <Info
-                          id={itemId}
-                          opacity={0.5}
-                          className="cursor-pointer hover:opacity-70"
-                          onClick={() => showSymptomDetail(item as unknown as Symptom)}
-                        />
-                      </div>
-                    );
-                  })
-                ) : (
-                  <Typography
-                    variant="body2"
-                    align="center"
-                    color="text.secondary"
-                    sx={{ p: 2 }}
-                  >
-                    {t("noSymptomsFound")}
-                  </Typography>
-                )}
-              </Box>
-            </AccordionDetails>
+                          <Checkbox
+                            id={itemId}
+                            checked={isSelected}
+                            onCheckedChange={() => toggleItem(itemId)}
+                          />
+                          <label
+                            htmlFor={itemId}
+                            className="text-sm cursor-pointer flex-1"
+                          >
+                            {getItemLabel(item)}
+                          </label>
+                          <Info
+                            id={itemId}
+                            className="h-4 w-4 cursor-pointer text-muted-foreground hover:text-foreground"
+                            onClick={() =>
+                              showSymptomDetail(item as unknown as Symptom)
+                            }
+                          />
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <p className="p-2 text-center text-sm text-muted-foreground">
+                      {t("noSymptomsFound")}
+                    </p>
+                  )}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
           </Accordion>
-      ))}
-    </Box>
+        ))}
+    </div>
   );
 }

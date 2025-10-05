@@ -1,13 +1,27 @@
-import { GetActionPlans$Result, GetActionPlansLocalized$Result, GetAllergens$Result, GetAllergensLocalized$Result, GetBusinessType$Params, GetPAPs$Result, GetRecommendations$Result, GetSymptoms$Result, GetSymptomsLocalized$Result, GetUsers$Result } from "./typing";
+import {
+  GetActionPlans$Result,
+  GetActionPlansLocalized$Result,
+  GetAllergens$Result,
+  GetAllergensLocalized$Result,
+  GetBusinessType$Params,
+  GetPAPs$Result,
+  GetRecommendations$Result,
+  GetSymptoms$Result,
+  GetSymptomsLocalized$Result,
+  GetUsers$Result,
+} from "./typing";
 
-async function httpGet$GetBusinessType(url: string, params: GetBusinessType$Params) {
+async function httpGet$GetBusinessType(
+  url: string,
+  params: GetBusinessType$Params
+) {
   const searchParams = new URLSearchParams();
   Object.entries(params).forEach(([key, value]) => {
     if (value) {
-      if (typeof value === 'object' && !Array.isArray(value)) {
+      if (typeof value === "object" && !Array.isArray(value)) {
         searchParams.append(key, JSON.stringify(value));
       } else if (Array.isArray(value)) {
-        searchParams.append(key, value.join(','));
+        searchParams.append(key, value.join(","));
       } else {
         searchParams.append(key, value.toString());
       }
@@ -19,75 +33,102 @@ async function httpGet$GetBusinessType(url: string, params: GetBusinessType$Para
   return { response, data };
 }
 
-export async function httpGet$GetUsers(url: string, params: GetBusinessType$Params) {
+export async function httpGet$GetUsers(
+  url: string,
+  params: GetBusinessType$Params
+) {
   const { response, data } = await httpGet$GetBusinessType(url, params);
   const result = GetUsers$Result.parse({
     success: response.ok,
-    ...data
+    ...data,
   });
 
   return result;
 }
 
-export async function httpGet$GetAllergens(url: string, params: GetBusinessType$Params) {
+export async function httpGet$GetAllergens(
+  url: string,
+  params: GetBusinessType$Params
+) {
   const { response, data } = await httpGet$GetBusinessType(url, params);
   const { lang } = params;
-  const result = (lang !== "vi" && lang !== "en") ? GetAllergens$Result.parse({
-    success: response.ok,
-    ...data
-  }) : GetAllergensLocalized$Result.parse({
-    success: response.ok,
-    ...data
-  });
-  
+  const result =
+    lang !== "vi" && lang !== "en"
+      ? GetAllergens$Result.parse({
+          success: response.ok,
+          ...data,
+        })
+      : GetAllergensLocalized$Result.parse({
+          success: response.ok,
+          ...data,
+        });
+
   return result;
 }
 
-export async function httpGet$GetPAPs(url: string, params: GetBusinessType$Params) {
+export async function httpGet$GetPAPs(
+  url: string,
+  params: GetBusinessType$Params
+) {
   const { response, data } = await httpGet$GetBusinessType(url, params);
   const result = GetPAPs$Result.parse({
     success: response.ok,
-    ...data
+    ...data,
   });
 
   return result;
 }
 
-export async function httpGet$GetSymptoms(url: string, params: GetBusinessType$Params) {
+export async function httpGet$GetSymptoms(
+  url: string,
+  params: GetBusinessType$Params
+) {
   const { response, data } = await httpGet$GetBusinessType(url, params);
   const { lang } = params;
 
-  const result = (lang !== "vi" && lang !== "en") ? GetSymptoms$Result.parse({
-    success: response.ok,
-    ...data
-  }) : GetSymptomsLocalized$Result.parse({
-    success: response.ok,
-    ...data
-  });
+  const result =
+    lang !== "vi" && lang !== "en"
+      ? GetSymptoms$Result.parse({
+          success: response.ok,
+          ...data,
+        })
+      : GetSymptomsLocalized$Result.parse({
+          success: response.ok,
+          ...data,
+        });
 
   return result;
 }
 
-export async function httpGet$GetActionPlans(url: string, params: GetBusinessType$Params) {
+export async function httpGet$GetActionPlans(
+  url: string,
+  params: GetBusinessType$Params
+) {
   const { response, data } = await httpGet$GetBusinessType(url, params);
   const { lang } = params;
 
-  const result = (lang !== "vi" && lang !== "en") ? GetActionPlans$Result.parse({
-    success: response.ok,
-    ...data
-  }) : GetActionPlansLocalized$Result.parse({
-    success: response.ok,
-    ...data
-  });
+  const result =
+    lang !== "vi" && lang !== "en"
+      ? GetActionPlans$Result.parse({
+          success: response.ok,
+          ...data,
+        })
+      : GetActionPlansLocalized$Result.parse({
+          success: response.ok,
+          ...data,
+        });
 
   return result;
 }
 
-export async function httpGet$GetRecommendations(url: string, params: GetBusinessType$Params) {
+export async function httpGet$GetRecommendations(
+  url: string,
+  params: GetBusinessType$Params
+) {
   const { response, data } = await httpGet$GetBusinessType(url, params);
   const result = GetRecommendations$Result.parse({
     success: response.ok,
-    ...data
+    ...data,
   });
 
   return result;

@@ -1,4 +1,4 @@
-import { handler$Authenticate } from '@/modules/commands/Authenticate/handler';
+import { handler$Authenticate } from "@/modules/commands/Authenticate/handler";
 
 const handler = handler$Authenticate();
 

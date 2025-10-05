@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -83,7 +82,6 @@ export function SymptomList({
         <CardHeader>
           <CardTitle className="text-cyan-800 flex items-center justify-between">
             {t("symptoms")}
-            <Badge variant="secondary">{symptoms.length}</Badge>
           </CardTitle>
           <div className="flex gap-2">
             <div className="relative flex-1">

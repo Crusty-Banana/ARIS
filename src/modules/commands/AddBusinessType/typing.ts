@@ -1,4 +1,12 @@
-import { Allergen, FetcherResult, ObjectIdAsHexString, PAP, Recommendation, Symptom, User } from "@/modules/business-types";
+import {
+  Allergen,
+  FetcherResult,
+  ObjectIdAsHexString,
+  PAP,
+  Recommendation,
+  Symptom,
+  User,
+} from "@/modules/business-types";
 import { z } from "zod";
 
 export const AddUser$Params = User.omit({ id: true });
