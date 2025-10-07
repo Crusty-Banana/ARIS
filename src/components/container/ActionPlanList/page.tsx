@@ -34,7 +34,14 @@ export function ActionPlanList({ actionPlans, onUpdate }: ActionPlanListProps) {
   };
 
   const handleEdit = (id: string) => setEditingId(id);
-  const handleCancel = () => setEditingId(null);
+const handleCancel = (id: string) => {
+    // Revert to original prop data for that plan
+    setEditingPlans((prev) => ({
+        ...prev,
+        [id]: actionPlans.find((p) => p.id === id)!,
+    }));
+    setEditingId(null);
+    };
 
   const handleSave = async (id: string) => {
     if (!onUpdate) return;
@@ -83,7 +90,7 @@ export function ActionPlanList({ actionPlans, onUpdate }: ActionPlanListProps) {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={handleCancel}
+                          onClick={() => handleCancel(plan.id)}
                         >
                           <X className="h-4 w-4" />
                         </Button>
