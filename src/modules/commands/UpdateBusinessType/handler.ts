@@ -54,6 +54,14 @@ export async function handler$UpdateSymptom(db: Db, params: UpdateUser$Params) {
   );
 }
 
+export async function handler$UpdateActionPlan(db: Db, params: UpdateUser$Params) {
+  return await handler$UpdateBusinessType(
+    db,
+    params,
+    BusisnessTypeCollection.actionPlans
+  );
+}
+
 export async function handler$UpdateRecommendation(
   db: Db,
   params: UpdateUser$Params

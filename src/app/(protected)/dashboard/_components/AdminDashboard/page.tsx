@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslations } from "next-intl";
 import {
+  httpGet$GetActionPlans,
   httpGet$GetAllergens,
   httpGet$GetSymptoms,
 } from "@/modules/commands/GetBusinessType/fetcher";
@@ -20,6 +21,7 @@ import {
   UpdateSymptom$Params,
 } from "@/modules/commands/UpdateBusinessType/typing";
 import {
+  httpPut$UpdateActionPlan,
   httpPut$UpdateAllergen,
   httpPut$UpdateSymptom,
 } from "@/modules/commands/UpdateBusinessType/fetcher";
@@ -29,16 +31,36 @@ import {
 } from "@/modules/commands/DeleteBusinessType/fetcher";
 import { AddSymptomButton } from "@/components/container/SymptomList/_components/symptom-add-button";
 import { SymptomList } from "@/components/container/SymptomList/page";
-import { Allergen, Symptom } from "@/modules/business-types";
+import { ActionPlan, Allergen, Symptom } from "@/modules/business-types";
 import { AddAllergenButton } from "@/components/container/AllergenList/_components/allergen-add-button";
 import { AllergenList } from "@/components/container/AllergenList/page";
 import { toast } from "sonner";
+import { ActionPlanList } from "@/components/container/ActionPlanList/page";
 
 export default function AdminDashboard() {
   const t = useTranslations("adminDashboard");
   const [symptoms, setSymptoms] = useState<Symptom[]>([]);
 
   const [allergens, setAllergens] = useState<Allergen[]>([]);
+  const [actionPlans, setActionPlans] = useState<ActionPlan[]>([]);
+
+  const fetchActionPlans = async () => {
+    const data = await httpGet$GetActionPlans("/api/action-plans", {});
+    if (data.success) {
+      setActionPlans(data.result as ActionPlan[]);
+    } else {
+      toast.error(data.message);
+    }
+  };
+
+  const updateActionPlan = async (plan: ActionPlan) => {
+    const data = await httpPut$UpdateActionPlan(`/api/action-plans/${plan.id}`, plan);
+    if (data.success) {
+      await fetchActionPlans();
+    } else {
+      toast.error(data.message);
+    }
+  };
 
   const fetchSymptoms = async () => {
     const data = await httpGet$GetSymptoms("/api/symptoms", {});
@@ -117,6 +139,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchSymptoms();
     fetchAllergens();
+    fetchActionPlans();
   }, []);
 
   return (
@@ -142,6 +165,12 @@ export default function AdminDashboard() {
               className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-600 data-[state=active]:text-white"
             >
               {t("allergens")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="action-plans"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-600 data-[state=active]:text-white"
+            >
+              {t("action-plans")}
             </TabsTrigger>
           </TabsList>
 
@@ -173,6 +202,17 @@ export default function AdminDashboard() {
               allergens={allergens}
               onEdit={updateAllergen}
               onDelete={deleteAllergen}
+            />
+          </TabsContent>
+          <TabsContent value="action-plans" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold text-cyan-800">
+                {t("action-plan management")}
+              </h2>
+            </div>
+            <ActionPlanList
+              actionPlans={actionPlans}
+              onUpdate={updateActionPlan}
             />
           </TabsContent>
         </Tabs>
