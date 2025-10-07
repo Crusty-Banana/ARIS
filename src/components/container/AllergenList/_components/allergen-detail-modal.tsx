@@ -181,8 +181,7 @@ export function AllergenDetailModal({
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t("description")} (
-                {selectedLanguage === "en" ? "English" : "Tiếng Việt"})
+                {t("description")} 
               </label>
               <div
                 className="p-2 bg-gray-50 rounded min-h-[100px] prose prose-sm max-w-none"
@@ -195,8 +194,7 @@ export function AllergenDetailModal({
             {actionPlan && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t("actionPlans")} (
-                  {selectedLanguage === "en" ? "English" : "Tiếng Việt"})
+                  {t("actionPlans")}
                 </label>
                 <div
                   className="p-2 bg-gray-50 rounded min-h-[100px] prose prose-sm max-w-none"

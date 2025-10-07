@@ -137,8 +137,7 @@ export function SymptomDetailModal({
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t("name")} (
-                  {selectedLanguage === "en" ? "English" : "Tiếng Việt"})
+                  {t("name")} 
                 </label>
                 <div className="p-2 bg-gray-50 rounded">
                   {symptom.name[selectedLanguage]}
@@ -165,8 +164,7 @@ export function SymptomDetailModal({
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t("description")} (
-                {selectedLanguage === "en" ? "English" : "Tiếng Việt"})
+                {t("description")} 
               </label>
               <div
                 className="p-2 bg-gray-50 rounded min-h-[100px] prose prose-sm max-w-none"
