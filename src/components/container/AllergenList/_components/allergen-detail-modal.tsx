@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { getTypeColor } from "@/lib/client-side-utils";
 import { Allergen, Language } from "@/modules/business-types";
-import { Edit, Save, Trash2, X } from "lucide-react";
+import { AlertTriangle, Edit, Save, Trash2, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { AllergenForm } from "./allergen-form";
@@ -22,6 +22,7 @@ interface AllergenDetailModalProps {
   onDelete?: (id: string) => void;
   allergens: Allergen[];
   actionPlan?: string;
+  hideCrossAllergen?: boolean
 }
 
 export function AllergenDetailModal({
@@ -31,6 +32,7 @@ export function AllergenDetailModal({
   onDelete,
   allergens,
   actionPlan,
+  hideCrossAllergen
 }: AllergenDetailModalProps) {
   const t = useTranslations("detailModals");
   const localLanguage = useLocale() as Language;
@@ -181,8 +183,7 @@ export function AllergenDetailModal({
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t("description")} (
-                {selectedLanguage === "en" ? "English" : "Tiếng Việt"})
+                {t("description")} 
               </label>
               <div
                 className="p-2 bg-gray-50 rounded min-h-[100px] prose prose-sm max-w-none"
@@ -194,16 +195,17 @@ export function AllergenDetailModal({
 
             {actionPlan && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t("actionPlans")} (
-                  {selectedLanguage === "en" ? "English" : "Tiếng Việt"})
-                </label>
+                  <label className="text-orange-700 flex items-center gap-2 text-sm font-medium mb-1">
+                    <AlertTriangle className="h-4 w-4" />
+                    {t("actionPlans")}
+                  </label>
                 <div
-                  className="p-2 bg-gray-50 rounded min-h-[100px] prose prose-sm max-w-none"
+                  className="p-2 bg-orange-50 rounded min-h-[100px] prose prose-sm max-w-none border-orange-600 border"
                   dangerouslySetInnerHTML={{ __html: actionPlan }}
                 />
               </div>
             )}
+            {!hideCrossAllergen && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 {t("crossSensitivity")}
@@ -223,6 +225,7 @@ export function AllergenDetailModal({
                 })}
               </div>
             </div>
+            )}
           </>
         )}
       </DialogContent>

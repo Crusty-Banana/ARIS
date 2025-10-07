@@ -212,7 +212,7 @@
       "twelveToTwentyFour": "12–24 hours",
       "moreThan24": "More than 24 hours"
     },
-    "timeFromContactToSymptom": "Time from contact to first symptom:"
+    "timeFromContactToSymptom": "Time to symptom onset (after allergen exposure)"
   },
   "potentialCrossAllergens": {
     "title": "Potential Cross-Allergens",
@@ -303,7 +303,7 @@
       "twelveToTwentyFour": "12–24 hours",
       "moreThan24": "More than 24 hours"
     },
-    "timeFromContactToSymptom": "Time from contact to first symptom:"
+    "timeFromContactToSymptom": "Time to symptom onset (after allergen exposure)"
   },
   "header": {
     "dashboard": "Dashboard",
@@ -363,7 +363,7 @@
       "twelveToTwentyFour": "12–24 hours",
       "moreThan24": "More than 24 hours"
     },
-    "timeFromContactToSymptom": "Time from contact to first symptom:",
+    "timeFromContactToSymptom": "Time to symptom onset (after allergen exposure)",
     "selectTimeFromContactToSymptom": "Time from contact to first symptom:"
   },
   "recommendationModal": {
@@ -416,7 +416,8 @@
       "descriptionPlaceholder": "Description Missing..."
     },
     "description": "Description",
-    "systemic": "Systemic",
+    "cardiovascular": "Cardiovascular",
+    "neurologic": "Neurologic",
     "digestive": "Digestive",
     "skin": "Skin",
     "organ": "Organ",

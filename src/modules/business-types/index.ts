@@ -18,7 +18,7 @@ export const Gender = z.enum(["male", "female", "other", ""]).default("");
 export type Gender = z.infer<typeof Gender>;
 
 const Organ = z
-  .enum(["skin", "respiratory", "digestive", "systemic"])
+  .enum(["skin", "respiratory", "digestive", "cardiovascular", "neurologic"])
   .default("skin");
 export type Organ = z.infer<typeof Organ>;
 
