@@ -22,6 +22,7 @@ interface AllergenDetailModalProps {
   onDelete?: (id: string) => void;
   allergens: Allergen[];
   actionPlan?: string;
+  hideCrossAllergen?: boolean
 }
 
 export function AllergenDetailModal({
@@ -31,6 +32,7 @@ export function AllergenDetailModal({
   onDelete,
   allergens,
   actionPlan,
+  hideCrossAllergen
 }: AllergenDetailModalProps) {
   const t = useTranslations("detailModals");
   const localLanguage = useLocale() as Language;
@@ -203,6 +205,7 @@ export function AllergenDetailModal({
                 />
               </div>
             )}
+            {!hideCrossAllergen && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 {t("crossSensitivity")}
@@ -222,6 +225,7 @@ export function AllergenDetailModal({
                 })}
               </div>
             </div>
+            )}
           </>
         )}
       </DialogContent>
