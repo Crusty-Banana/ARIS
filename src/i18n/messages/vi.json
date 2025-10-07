@@ -219,7 +219,7 @@
       "twelveToTwentyFour": "12–24 giờ",
       "moreThan24": "Hơn 24 giờ"
     },
-    "timeFromContactToSymptom": "Thời gian từ khi tiếp xúc đến triệu chứng đầu tiên:"
+    "timeFromContactToSymptom": "Thời gian xuất hiện triệu chứng (sau khi tiếp xúc dị nguyên):"
   },
   "potentialCrossAllergens": {
     "title": "Dị nguyên chéo tiềm ẩn",
@@ -311,7 +311,7 @@
       "twelveToTwentyFour": "12–24 giờ",
       "moreThan24": "Hơn 24 giờ"
     },
-    "timeFromContactToSymptom": "Thời gian từ khi tiếp xúc đến triệu chứng đầu tiên:"
+    "timeFromContactToSymptom": "Thời gian xuất hiện triệu chứng (sau khi tiếp xúc dị nguyên):"
   },
   "header": {
     "dashboard": "Bảng điều khiển",
@@ -372,7 +372,7 @@
       "twelveToTwentyFour": "12–24 giờ",
       "moreThan24": "Hơn 24 giờ"
     },
-    "timeFromContactToSymptom": "Thời gian từ khi tiếp xúc đến triệu chứng đầu tiên:",
+    "timeFromContactToSymptom": "Thời gian xuất hiện triệu chứng (sau khi tiếp xúc dị nguyên):",
     "selectTimeFromContactToSymptom": "Thời gian từ khi tiếp xúc:"
   },
   "recommendationModal": {
