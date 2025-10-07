@@ -425,7 +425,8 @@
       "descriptionPlaceholder": "Không tìm thấy mô tả..."
     },
     "description": "Mô tả",
-    "systemic": "Toàn thân",
+        "cardiovascular": "Tuần hoàn",
+    "neurologic": "Thần kinh",
     "digestive": "Tiêu hóa",
     "skin": "Ngoài da",
     "organ": "Bộ phận",

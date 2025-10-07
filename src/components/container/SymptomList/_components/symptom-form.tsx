@@ -76,7 +76,8 @@ export function SymptomForm({
             <SelectItem value="skin">{t("skin")}</SelectItem>
             <SelectItem value="respiratory">{t("respiratory")}</SelectItem>
             <SelectItem value="digestive">{t("digestive")}</SelectItem>
-            <SelectItem value="systemic">{t("systemic")}</SelectItem>
+            <SelectItem value="cardiovascular">{t("cardiovascular")}</SelectItem>
+            <SelectItem value="neurologic">{t("neurologic")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
