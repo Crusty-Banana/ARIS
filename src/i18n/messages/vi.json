@@ -219,7 +219,7 @@
       "twelveToTwentyFour": "12–24 giờ",
       "moreThan24": "Hơn 24 giờ"
     },
-    "timeFromContactToSymptom": "Thời gian từ khi tiếp xúc đến triệu chứng đầu tiên:"
+    "timeFromContactToSymptom": "Thời gian xuất hiện triệu chứng (sau khi tiếp xúc dị nguyên):"
   },
   "potentialCrossAllergens": {
     "title": "Dị nguyên chéo tiềm ẩn",
@@ -311,7 +311,7 @@
       "twelveToTwentyFour": "12–24 giờ",
       "moreThan24": "Hơn 24 giờ"
     },
-    "timeFromContactToSymptom": "Thời gian từ khi tiếp xúc đến triệu chứng đầu tiên:"
+    "timeFromContactToSymptom": "Thời gian xuất hiện triệu chứng (sau khi tiếp xúc dị nguyên):"
   },
   "header": {
     "dashboard": "Bảng điều khiển",
@@ -357,7 +357,7 @@
     "doneTest": "Đã xét nghiệm",
     "testDone": "Loại xét nghiệm",
     "skinTest": "Test Lẩy Da",
-    "bloodTest": "Test Máu IgE Đặc Hiệu",
+    "bloodTest": "Xét Nghiệm Máu IgE Đặc Hiệu",
     "challengeTest": "Test Kích Thích",
     "intradermalTest": "Test Nội Bì",
     "selectDate": "Chọn ngày",
@@ -372,7 +372,7 @@
       "twelveToTwentyFour": "12–24 giờ",
       "moreThan24": "Hơn 24 giờ"
     },
-    "timeFromContactToSymptom": "Thời gian từ khi tiếp xúc đến triệu chứng đầu tiên:",
+    "timeFromContactToSymptom": "Thời gian xuất hiện triệu chứng (sau khi tiếp xúc dị nguyên):",
     "selectTimeFromContactToSymptom": "Thời gian từ khi tiếp xúc:"
   },
   "recommendationModal": {
@@ -425,7 +425,8 @@
       "descriptionPlaceholder": "Không tìm thấy mô tả..."
     },
     "description": "Mô tả",
-    "systemic": "Toàn thân",
+        "cardiovascular": "Tuần hoàn",
+    "neurologic": "Thần kinh",
     "digestive": "Tiêu hóa",
     "skin": "Ngoài da",
     "organ": "Bộ phận",

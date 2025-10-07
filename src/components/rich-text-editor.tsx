@@ -1,6 +1,7 @@
 "use client";
 
 import { useEditor, EditorContent } from "@tiptap/react";
+import { Node, mergeAttributes } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import { Button } from "@/components/ui/button";
@@ -13,10 +14,75 @@ import {
   ImageIcon,
   Loader2,
   Underline,
+  VideoIcon,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { httpPost$AddFileToS3 } from "@/modules/commands/AddFileToS3/fetcher";
 import { toast } from "sonner";
+
+
+
+export const Video = Node.create({
+  name: 'video',
+  group: 'block',
+  atom: true,
+
+  addAttributes() {
+    return {
+      src: {
+        default: null,
+      },
+    };
+  },
+
+  parseHTML() {
+    return [
+      {
+        tag: 'video',
+        getAttrs: (dom) => {
+            const src = (dom as HTMLElement).querySelector('source')?.getAttribute('src');
+            return { src };
+        }
+      },
+    ];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    // This structure renders a responsive video player.
+    return [
+      'video',
+      mergeAttributes(HTMLAttributes, {
+        class: 'max-w-full h-auto rounded-lg',
+        controls: 'true',
+        preload: 'metadata',
+      }),
+      ['source', { src: HTMLAttributes.src }],
+    ];
+  },
+
+  addCommands() {
+    return {
+      setVideo: (options) => ({ commands }) => {
+        // This command inserts the video node into the editor content.
+        return commands.insertContent({
+          type: this.name,
+          attrs: options,
+        });
+      },
+    };
+  },
+});
+// --- End of Custom Extension ---
+
+// A declaration to make TypeScript aware of our new `setVideo` command.
+declare module '@tiptap/core' {
+  interface Commands<ReturnType> {
+    video: {
+      setVideo: (options: { src: string }) => ReturnType;
+    };
+  }
+}
+
 
 interface RichTextEditorProps {
   content?: string;
@@ -29,7 +95,8 @@ export function RichTextEditor({
   onChange,
   placeholder = "Start writing...",
 }: RichTextEditorProps) {
-  const [isUploading, setIsUploading] = useState(false);
+  const [isImageUploading, setIsImageUploading] = useState(false);
+  const [isVideoUploading, setIsVideoUploading] = useState(false);
 
   const editor = useEditor({
     extensions: [
@@ -39,6 +106,7 @@ export function RichTextEditor({
           class: "max-w-full h-auto rounded-lg",
         },
       }),
+      Video, // Added our custom Video extension
     ],
     content,
     onUpdate: ({ editor }) => {
@@ -48,7 +116,7 @@ export function RichTextEditor({
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[200px] max-h-[400px] overflow-y-auto p-4",
+          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none h-[250px] overflow-y-auto p-4",
       },
     },
   });
@@ -59,33 +127,37 @@ export function RichTextEditor({
     }
   }, [content, editor]);
 
-  const handleImageUpload = useCallback(async () => {
+  const handleFileUpload = useCallback(async (fileType: 'image' | 'video') => {
     const input = document.createElement("input");
     input.type = "file";
-    input.accept = "image/*";
+    input.accept = `${fileType}/*`; // Accept only images or videos based on type
 
     input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (!file) return;
 
-      setIsUploading(true);
+      const setLoading = fileType === 'image' ? setIsImageUploading : setIsVideoUploading;
+      setLoading(true);
+
       try {
+        // The same S3 upload endpoint can be used for any file type.
         const result = await httpPost$AddFileToS3("/api/s3-upload", file);
 
         if (result.success && result.result) {
-          editor
-            ?.chain()
-            .focus()
-            .setImage({ src: result.result })
-            .createParagraphNear()
-            .run();
+          const chain = editor?.chain().focus();
+          if (fileType === 'image') {
+            chain?.setImage({ src: result.result }).createParagraphNear().run();
+          } else {
+            // Use our custom setVideo command
+            chain?.setVideo({ src: result.result }).createParagraphNear().run();
+          }
         } else {
-          toast.error("Upload failed:" + result.message);
+          toast.error("Upload failed: " + result.message);
         }
       } catch (error) {
-        toast.error("Upload error:" + error);
+        toast.error("Upload error: " + (error instanceof Error ? error.message : String(error)));
       } finally {
-        setIsUploading(false);
+        setLoading(false);
       }
     };
 
@@ -134,17 +206,31 @@ export function RichTextEditor({
         <Button
           variant="ghost"
           size="sm"
-          onClick={handleImageUpload}
-          disabled={isUploading}
+          onClick={() => handleFileUpload("image")}
+          disabled={isImageUploading}
           type="button"
         >
-          {isUploading ? (
+          {isImageUploading ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
             <ImageIcon className="h-4 w-4" />
           )}
         </Button>
+        <div className="w-px h-6 bg-border mx-1" />
 
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => handleFileUpload("video")}
+          disabled={isVideoUploading}
+          type="button"
+        >
+          {isVideoUploading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <VideoIcon className="h-4 w-4" />
+          )}
+        </Button>
         <div className="w-px h-6 bg-border mx-1" />
 
         <Button

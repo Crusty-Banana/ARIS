@@ -25,7 +25,7 @@ interface GroupedSymptomSelectProps<T> {
   label: string;
 }
 
-const groupOrder = ["localized", "respiratory", "digestive", "systemic"];
+const groupOrder = ["skin", "respiratory", "digestive", "cardiovascular", "neurologic"];
 
 export function GroupedSymptomSelect<T extends { organ: string }>({
   items,

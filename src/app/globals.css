@@ -188,6 +188,11 @@ input:checked + .slider:before {
   }
 }
 
+ul, ol{
+  list-style: revert;
+  list-style-position: inside;
+}
+
 .ProseMirror-selectednode {
   outline: 3px solid #3b82f6;
   outline-offset: 2px;

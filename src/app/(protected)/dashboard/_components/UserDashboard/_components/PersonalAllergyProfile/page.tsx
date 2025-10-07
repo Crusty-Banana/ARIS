@@ -354,6 +354,7 @@ export function PersonalAllergyProfile({
             }}
             allergens={availableAllergens}
             actionPlan={selectedActionPlan}
+            hideCrossAllergen={true}
           />
         )}
 
