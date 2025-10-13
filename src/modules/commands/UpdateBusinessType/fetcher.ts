@@ -1,5 +1,6 @@
 import { FetcherResult } from "@/modules/business-types";
 import {
+  UpdateActionPlanFetcher$Params,
   UpdateAllergenFetcher$Params,
   UpdatePAPFetcher$Params,
   UpdateRecommendationFetcher$Params,
@@ -47,6 +48,13 @@ export async function httpPut$UpdatePAP(
 export async function httpPut$UpdateSymptom(
   url: string,
   params: UpdateSymptomFetcher$Params
+) {
+  return await httpPut$UpdateBusinessType(url, params);
+}
+
+export async function httpPut$UpdateActionPlan(
+  url: string,
+  params: UpdateActionPlanFetcher$Params
 ) {
   return await httpPut$UpdateBusinessType(url, params);
 }

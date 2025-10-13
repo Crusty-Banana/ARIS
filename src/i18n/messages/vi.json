@@ -7,7 +7,9 @@
     "allergies": "Dị ứng",
     "symptom management": "Quản lý triệu chứng",
     "allergy management": "Quản lý dị ứng",
-    "allergen management": "Quản lý dị nguyên"
+    "allergen management": "Quản lý dị nguyên",
+    "action-plans":"Cách xử trí",
+    "action-plan management": "Quản lý cách xử trí"
   },
   "userDashboard": {
     "title": "Bảng điều khiển người dùng",
@@ -399,6 +401,9 @@
     "type": "Loại",
     "selectType": "Chọn loại",
     "language": "Ngôn ngữ",
+    "edit": "Chỉnh sửa",
+    "mildActionPlan": "Xử trí triệu chứng nhẹ",
+    "severeActionPlan": "Xử trí triệu chứng nghiêm trọng",
     "name": "Tên",
     "enterName": "Nhập tên...",
     "allTypes": "Tất cả các loại",
