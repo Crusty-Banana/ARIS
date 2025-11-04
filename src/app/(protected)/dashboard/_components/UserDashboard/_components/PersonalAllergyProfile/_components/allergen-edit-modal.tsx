@@ -10,7 +10,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Language, Symptom, TestType, TimeFromContactToSymptom } from "@/modules/business-types";
+import {
+  Language,
+  Symptom,
+  TestType,
+  TimeFromContactToSymptom,
+} from "@/modules/business-types";
 import { httpPost$AddFileToS3 } from "@/modules/commands/AddFileToS3/fetcher";
 import { DisplayPAPAllergen } from "@/modules/commands/GetPAPWithUserId/typing";
 import { UpdatePAPAllergen$Params } from "@/modules/commands/UpdatePAPWithUserId/typing";
@@ -18,6 +23,7 @@ import { Paperclip, UploadCloud, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
+import { DragAndDrop } from "./drag-and-drop-result";
 
 interface AllergenEditModalProps {
   allergen: DisplayPAPAllergen;
@@ -52,7 +58,10 @@ export function AllergenEditModal({
   const [testResultUrl, setTestResultUrl] = useState<string | undefined>(
     allergen.testResult
   );
-  const [timeFromContactToSymptom, setTimeFromContactToSymptom] = useState<TimeFromContactToSymptom>(allergen.timeFromContactToSymptom ? allergen.timeFromContactToSymptom : "");
+  const [timeFromContactToSymptom, setTimeFromContactToSymptom] =
+    useState<TimeFromContactToSymptom>(
+      allergen.timeFromContactToSymptom ? allergen.timeFromContactToSymptom : ""
+    );
 
   const parseInputDate = (date: Date | undefined) => {
     if (!date) return null;
@@ -66,7 +75,7 @@ export function AllergenEditModal({
       testDone: testDone,
       symptomsId: selectedSymptoms,
       testResult: testResultUrl,
-      timeFromContactToSymptom: timeFromContactToSymptom
+      timeFromContactToSymptom: timeFromContactToSymptom,
     });
   };
 
@@ -142,7 +151,7 @@ export function AllergenEditModal({
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 {t("testResult")}
               </label>
-              {!testResultUrl && (
+              {/* {!testResultUrl && (
                 <div className="relative border-2 border-dashed border-cyan-300 rounded-lg p-6 flex flex-col items-center justify-center text-center">
                   <UploadCloud className="h-10 w-10 text-cyan-500 mb-2" />
                   <label
@@ -162,6 +171,14 @@ export function AllergenEditModal({
                   </label>
                   <p className="text-xs text-gray-500 mt-1">{""}</p>
                 </div>
+              )} */}
+
+              {!selectedResultFile && !testResultUrl && (
+                <DragAndDrop
+                  onFilesDropped={(file: File) => {
+                    setSelectedResultFile(file);
+                  }}
+                />
               )}
 
               {selectedResultFile && !testResultUrl && (
@@ -218,7 +235,7 @@ export function AllergenEditModal({
             getItemLabel={(symptom) => symptom.name[localLanguage]}
             label={t("associatedSymptoms")}
           />
-          {(selectedSymptoms.length > 0 || timeFromContactToSymptom !== "") &&  (
+          {(selectedSymptoms.length > 0 || timeFromContactToSymptom !== "") && (
             <TimeFromContactToSymptomDropdown
               value={timeFromContactToSymptom}
               onValueChange={(value) =>
