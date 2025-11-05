@@ -212,6 +212,7 @@
     "testResult": "Kết quả xét nghiệm",
     "uploadTestResultFile": "Kéo & Thả, hoặc Click để chọn file",
     "previewTestResultFile": "Xem trước kết quả xét nghiệm",
+    "saving":"Đang lưu...",
     "description": "Mô tả",
     "timeToSymptom": {
       "lessThan2": "Trong vòng 2 giờ",
@@ -365,6 +366,8 @@
     "selectTestType": "Chọn xét nghiệm",
     "testResult": "Kết quả xét nghiệm",
     "uploadTestResultFile": "Tải Thư mục Kết quả Xét nghiệm lên",
+    "previewTestResultFile": "Xem trước kết quả xét nghiệm",
+    "saving":"Đang lưu...",
     "description": "Mô tả",
     "timeToSymptom": {
       "lessThan2": "Trong vòng 2 giờ",

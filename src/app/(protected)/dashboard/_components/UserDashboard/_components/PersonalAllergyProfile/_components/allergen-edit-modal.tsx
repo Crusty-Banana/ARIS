@@ -96,7 +96,7 @@ export function AllergenEditModal({
       doneTest: doneTest,
       testDone: testDone,
       symptomsId: selectedSymptoms,
-      testResult: testResultUrl,
+      testResult: finalTestResultUrl,
       timeFromContactToSymptom: timeFromContactToSymptom,
     });
 
@@ -225,16 +225,18 @@ export function AllergenEditModal({
         <div className="flex gap-2 pt-4">
           <Button
             onClick={handleSave}
+            disabled={isSaving}
             className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
           >
-            {t("saveChanges")}
+            {isSaving ? t("saving") : t("saveChanges")}
           </Button>
           <Button
             variant="outline"
             onClick={onClose}
+            disabled={isSaving}
             className="flex-1 bg-transparent"
           >
-            {t("cancel")}
+            {isSaving ? t("saving") : t("cancel")}
           </Button>
         </div>
       </DialogContent>

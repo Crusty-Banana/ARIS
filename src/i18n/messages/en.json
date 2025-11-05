@@ -206,6 +206,7 @@
     "testResult": "Test Result",
     "uploadTestResultFile": "Drag & Drop, or Click to select file",
     "previewTestResultFile": "Preview test result",
+    "saving" : "Saving...",
     "timeToSymptom": {
       "lessThan2": "Within 2 hours",
       "twoToSix": "2–6 hours",
@@ -357,6 +358,8 @@
     "selectTestType": "Select test type",
     "testResult": "Test Result",
     "uploadTestResultFile": "Upload Test Result File",
+    "previewTestResultFile": "Preview test result",
+    "saving" : "Saving...",
     "timeToSymptom": {
       "lessThan2": "Within 2 hours",
       "twoToSix": "2–6 hours",
