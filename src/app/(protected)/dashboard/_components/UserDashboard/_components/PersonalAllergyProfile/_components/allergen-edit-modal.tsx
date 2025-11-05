@@ -19,7 +19,7 @@ import {
 import { httpPost$AddFileToS3 } from "@/modules/commands/AddFileToS3/fetcher";
 import { DisplayPAPAllergen } from "@/modules/commands/GetPAPWithUserId/typing";
 import { UpdatePAPAllergen$Params } from "@/modules/commands/UpdatePAPWithUserId/typing";
-import { Paperclip, UploadCloud, X } from "lucide-react";
+import { Paperclip, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -54,10 +54,11 @@ export function AllergenEditModal({
   const [selectedResultFile, setSelectedResultFile] = useState<File | null>(
     null
   );
-  const [isUploading, setIsUploading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [testResultUrl, setTestResultUrl] = useState<string | undefined>(
     allergen.testResult
   );
+  const [filePreviewUrl, setFilePreviewUrl] = useState<string>("");
   const [timeFromContactToSymptom, setTimeFromContactToSymptom] =
     useState<TimeFromContactToSymptom>(
       allergen.timeFromContactToSymptom ? allergen.timeFromContactToSymptom : ""
@@ -68,7 +69,28 @@ export function AllergenEditModal({
     return Math.floor(date.getTime() / 1000);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    setIsSaving(true);
+    let finalTestResultUrl = testResultUrl;
+
+    // Upload test result first
+    if (selectedResultFile) {
+      const uploadToast = toast.loading("Uploading file...");
+      const response = await httpPost$AddFileToS3(
+        "/api/user-s3-upload",
+        selectedResultFile
+      );
+
+      if (response.success && response.result) {
+        toast.success("Upload Success", { id: uploadToast });
+        finalTestResultUrl = response.result; // Get new S3 URL
+      } else {
+        toast.error(response.message, { id: uploadToast });
+        setIsSaving(false);
+        return; // Stop if upload fails
+      }
+    }
+
     onUpdate({
       discoveryDate: parseInputDate(discoveryDate),
       doneTest: doneTest,
@@ -77,27 +99,25 @@ export function AllergenEditModal({
       testResult: testResultUrl,
       timeFromContactToSymptom: timeFromContactToSymptom,
     });
+
+    setIsSaving(false);
   };
 
-  const handleResultFileUpload = async () => {
-    if (!selectedResultFile) return;
-
-    setIsUploading(true);
-    const uploadToast = toast.loading("Uploading File");
-
-    const response = await httpPost$AddFileToS3(
-      "/api/user-s3-upload",
-      selectedResultFile
-    );
-
-    if (response.success && response.result) {
-      setTestResultUrl(response.result);
-      toast.success("Upload Success", { id: uploadToast });
-    } else {
-      toast.error(response.message, { id: uploadToast });
+  const handleFileSelect = (file: File) => {
+    setSelectedResultFile(file);
+    if (filePreviewUrl) {
+      URL.revokeObjectURL(filePreviewUrl);
     }
+    setFilePreviewUrl(URL.createObjectURL(file));
+  };
 
-    setIsUploading(false);
+  const handleFileDeselect = () => {
+    if (filePreviewUrl) {
+      URL.revokeObjectURL(filePreviewUrl);
+    }
+    setFilePreviewUrl("");
+    setTestResultUrl(undefined);
+    setSelectedResultFile(null);
   };
 
   return (
@@ -151,72 +171,30 @@ export function AllergenEditModal({
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 {t("testResult")}
               </label>
-              {/* {!testResultUrl && (
-                <div className="relative border-2 border-dashed border-cyan-300 rounded-lg p-6 flex flex-col items-center justify-center text-center">
-                  <UploadCloud className="h-10 w-10 text-cyan-500 mb-2" />
-                  <label
-                    htmlFor="file-upload"
-                    className="relative cursor-pointer bg-white rounded-md font-medium text-cyan-600 hover:text-cyan-500 focus-within:outline-none"
-                  >
-                    <span>{t("uploadTestResultFile")}</span>
-                    <input
-                      id="file-upload"
-                      name="file-upload"
-                      type="file"
-                      className="sr-only"
-                      onChange={(e) =>
-                        setSelectedResultFile(e.target.files?.[0] || null)
-                      }
-                    />
-                  </label>
-                  <p className="text-xs text-gray-500 mt-1">{""}</p>
-                </div>
-              )} */}
-
               {!selectedResultFile && !testResultUrl && (
                 <DragAndDrop
-                  onFilesDropped={(file: File) => {
-                    setSelectedResultFile(file);
-                  }}
+                  onFilesDropped={handleFileSelect}
+                  labelText={t("uploadTestResultFile")}
                 />
               )}
 
-              {selectedResultFile && !testResultUrl && (
-                <div className="mt-2 flex items-center justify-between p-2 bg-gray-100 rounded-md">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Paperclip className="h-4 w-4" />
-                    <span>{selectedResultFile.name}</span>
-                  </div>
-                  <Button
-                    onClick={handleResultFileUpload}
-                    disabled={isUploading}
-                    size="sm"
-                  >
-                    {isUploading ? "Uploading" : "Upload"}
-                  </Button>
-                </div>
-              )}
-
-              {testResultUrl && (
+              {filePreviewUrl && (
                 <div className="mt-2 flex items-center justify-between p-2 bg-green-100 border border-green-300 text-green-800 rounded-md">
                   <a
-                    href={testResultUrl}
+                    href={filePreviewUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 text-sm hover:underline"
                   >
                     <Paperclip className="h-4 w-4" />
-                    <span>{"View Result"}</span>
+                    <span>{t("previewTestResultFile")}</span>
                   </a>
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
                     className="h-4 w-4 p-0 hover:bg-red-100"
-                    onClick={() => {
-                      setTestResultUrl(undefined);
-                      setSelectedResultFile(null);
-                    }}
+                    onClick={handleFileDeselect}
                   >
                     <X className="h-3 w-3" />
                   </Button>

@@ -204,7 +204,8 @@
     "actionPlans": "Action Plans",
     "selectDate": "Select Date",
     "testResult": "Test Result",
-    "uploadTestResultFile": "Upload Test Result File",
+    "uploadTestResultFile": "Drag & Drop, or Click to select file",
+    "previewTestResultFile": "Preview test result",
     "timeToSymptom": {
       "lessThan2": "Within 2 hours",
       "twoToSix": "2–6 hours",

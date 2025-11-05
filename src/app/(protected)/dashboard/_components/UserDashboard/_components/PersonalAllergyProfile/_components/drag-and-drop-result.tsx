@@ -5,9 +5,10 @@ import { twMerge } from "tailwind-merge";
 
 interface DragAndDropProps {
   onFilesDropped: (files: File) => void;
+  labelText: string;
 }
 
-export function DragAndDrop({ onFilesDropped }: DragAndDropProps) {
+export function DragAndDrop({ onFilesDropped, labelText }: DragAndDropProps) {
   const [isOver, setIsOver] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -55,11 +56,12 @@ export function DragAndDrop({ onFilesDropped }: DragAndDropProps) {
       onClick={handleClick}
       className={twMerge(
         clsx(
-          "relative cursor-pointer rounded-md aspect-video",
+          "group relative cursor-pointer rounded-md aspect-video",
           "flex flex-col items-center justify-center text-center",
-          "font-medium text-cyan-600 hover:text-cyan-500",
+          "font-medium text-cyan-600",
           "border-dashed border-cyan-600 border-2",
-          isOver ? "bg-cyan-50" : "bg-white"
+          "hover:text-cyan-400 hover:border-cyan-400",
+          isOver ? "bg-cyan-50 text-cyan-400 border-cyan-400" : "bg-white"
         )
       )}
     >
@@ -72,9 +74,9 @@ export function DragAndDrop({ onFilesDropped }: DragAndDropProps) {
         multiple={false}
         ref={fileInputRef}
       />
-      <UploadCloud className="h-10 w-10 text-cyan-500 mb-2" />
+      <UploadCloud className="h-10 w-10 mb-2" />
       {/* <span>{t("uploadTestResultFile")}</span> */}
-      <span>{"uploadTestResultFile"}</span>
+      <span>{labelText}</span>
       <p className="text-xs text-gray-500 mt-1">{""}</p>
     </div>
   );
