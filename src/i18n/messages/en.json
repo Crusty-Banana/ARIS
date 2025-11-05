@@ -206,6 +206,7 @@
     "testResult": "Test Result",
     "uploadTestResultFile": "Drag & Drop, or Click to select file",
     "previewTestResultFile": "Preview test result",
+    "viewUploadedTestResult": "View uploaded test result",
     "saving" : "Saving...",
     "timeToSymptom": {
       "lessThan2": "Within 2 hours",

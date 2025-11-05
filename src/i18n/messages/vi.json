@@ -212,6 +212,7 @@
     "testResult": "Kết quả xét nghiệm",
     "uploadTestResultFile": "Kéo & Thả, hoặc Click để chọn file",
     "previewTestResultFile": "Xem trước kết quả xét nghiệm",
+    "viewUploadedTestResult": "Xem kết quả xét nghiệm đã tải lên",
     "saving":"Đang lưu...",
     "description": "Mô tả",
     "timeToSymptom": {

@@ -58,7 +58,9 @@ export function AllergenEditModal({
   const [testResultUrl, setTestResultUrl] = useState<string | undefined>(
     allergen.testResult
   );
-  const [filePreviewUrl, setFilePreviewUrl] = useState<string>("");
+  const [filePreviewUrl, setFilePreviewUrl] = useState<string | undefined>(
+    allergen.testResult
+  );
   const [timeFromContactToSymptom, setTimeFromContactToSymptom] =
     useState<TimeFromContactToSymptom>(
       allergen.timeFromContactToSymptom ? allergen.timeFromContactToSymptom : ""
@@ -187,7 +189,11 @@ export function AllergenEditModal({
                     className="flex items-center gap-2 text-sm hover:underline"
                   >
                     <Paperclip className="h-4 w-4" />
-                    <span>{t("previewTestResultFile")}</span>
+                    <span>
+                      {testResultUrl
+                        ? t("viewUploadedTestResult")
+                        : t("previewTestResultFile")}
+                    </span>
                   </a>
                   <Button
                     type="button"
