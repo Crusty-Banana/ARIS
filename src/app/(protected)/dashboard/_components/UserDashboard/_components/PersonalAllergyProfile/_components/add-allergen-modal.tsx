@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Paperclip, Search, UploadCloud, X } from "lucide-react";
+import { Paperclip, Search, X } from "lucide-react";
 import {
   Allergen,
   Language,
@@ -59,7 +59,6 @@ export function AddAllergenModal({
   const [timeFromContactToSymptom, setTimeFromContactToSymptom] =
     useState<TimeFromContactToSymptom>("");
 
-  const [isUploading, setIsUploading] = useState(false);
   const [testResultUrl, setTestResultUrl] = useState<string | undefined>();
 
   const [selectedResultFile, setSelectedResultFile] = useState<File | null>(
@@ -122,7 +121,6 @@ export function AddAllergenModal({
     setTestDone("");
     setSelectedResultFile(null);
     setTestResultUrl(undefined);
-    setIsUploading(false);
     onClose();
     setTimeFromContactToSymptom("");
     handleFileDeselect();
