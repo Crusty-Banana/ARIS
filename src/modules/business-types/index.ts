@@ -85,17 +85,9 @@ export const Allergen = z.object({
   type: AllergenType,
   name: DisplayString,
   description: DisplayString,
-  isWholeAllergen: z.boolean().default(true),
   crossSensitivityId: z.array(ObjectIdAsHexString).default([]),
 });
 export type Allergen = z.infer<typeof Allergen>;
-
-export const BriefAllergen = z.object({
-  id: ObjectIdAsHexString,
-  type: AllergenType,
-  name: DisplayString,
-});
-export type BriefAllergen = z.infer<typeof BriefAllergen>;
 
 export const PAP = z.object({
   id: ObjectIdAsHexString,

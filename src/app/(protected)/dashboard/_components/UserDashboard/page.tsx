@@ -28,6 +28,8 @@ import { httpPut$UpdatePAPWithUserId } from "@/modules/commands/UpdatePAPWithUse
 import { SymptomList } from "@/components/container/SymptomList/page";
 import { AllergenList } from "@/components/container/AllergenList/page";
 import { SymptomDetailProvider } from "@/app/context/symptom-detail-context";
+import { httpGet$GetRemainAllergens } from "@/modules/commands/GetRemainAllergens/fetcher";
+import { httpGet$GetBriefAllergens } from "@/modules/commands/GetBriefAllergens/fetcher";
 
 export default function UserDashboard() {
   const t = useTranslations("userDashboard");
@@ -53,13 +55,7 @@ export default function UserDashboard() {
   const [availableAllergens, setAvailableAllegerns] = useState<Allergen[]>([]);
 
   const fetchAvailableAllergens = useCallback(async (papResult: DisplayPAP) => {
-    const excludedIds = papResult.allergens.map(
-      (pAPAllergen) => pAPAllergen.allergenId
-    );
-
-    const data = await httpGet$GetAllergens("/api/allergens", {
-      filters: { _id: { $nin: excludedIds } },
-    });
+    const data = await httpGet$GetAllergens("/api/allergens", {});
 
     if (data.success) {
       setAvailableAllegerns(data.result as Allergen[]);
@@ -219,13 +215,7 @@ export default function UserDashboard() {
               </TabsContent>
 
               <TabsContent value="wiki-allergens">
-                <AllergenList
-                  allergens={allergens}
-                  onQuickAdd={handleQuickAddFromWiki}
-                  userAllergenIds={pAP.allergens.map(
-                    (allergen) => allergen.allergenId
-                  )}
-                />
+                <AllergenList />
               </TabsContent>
             </Tabs>
           </TabsContent>

@@ -1,10 +1,8 @@
 import {
   GetActionPlans$Result,
   GetActionPlansLocalized$Result,
-  GetAllergens$Params,
   GetAllergens$Result,
   GetAllergensLocalized$Result,
-  GetBriefAllergens$Result,
   GetBusinessType$Params,
   GetPAPs$Result,
   GetRecommendations$Result,
@@ -50,13 +48,20 @@ export async function httpGet$GetUsers(
 
 export async function httpGet$GetAllergens(
   url: string,
-  params: GetAllergens$Params
+  params: GetBusinessType$Params
 ) {
   const { response, data } = await httpGet$GetBusinessType(url, params);
-  const result = GetBriefAllergens$Result.parse({
-    success: response.ok,
-    ...data,
-  });
+  const { lang } = params;
+  const result =
+    lang !== "vi" && lang !== "en"
+      ? GetAllergens$Result.parse({
+          success: response.ok,
+          ...data,
+        })
+      : GetAllergensLocalized$Result.parse({
+          success: response.ok,
+          ...data,
+        });
 
   return result;
 }

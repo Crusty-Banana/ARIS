@@ -10,49 +10,129 @@ import {
 } from "@/components/ui/select";
 import {
   Allergen,
+  AllergenType,
   Language,
   ObjectIdAsHexString,
 } from "@/modules/business-types";
 import { ArrowDown, ArrowUp, Search } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AllergenItem } from "./_components/item";
 import { AllergenDetailModal } from "./_components/allergen-detail-modal";
 import { localizeAllergen } from "@/lib/client-side-utils";
+import { AddAllergen$Params } from "@/modules/commands/AddBusinessType/typing";
+import { httpPost$AddAllergen } from "@/modules/commands/AddBusinessType/fetcher";
+import { toast } from "sonner";
+import { UpdateAllergen$Params } from "@/modules/commands/UpdateBusinessType/typing";
+import { httpPut$UpdateAllergen } from "@/modules/commands/UpdateBusinessType/fetcher";
+import { httpDelete$DeleteAllergen } from "@/modules/commands/DeleteBusinessType/fetcher";
+import { httpGet$GetBriefAllergens } from "@/modules/commands/GetBriefAllergens/fetcher";
+import { BriefAllergen } from "@/modules/commands/GetBriefAllergens/typing";
+
+const useDebounce = (value: string, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+  return debouncedValue;
+};
 
 interface AllergenListProps {
-  allergens: Allergen[];
-  onQuickAdd?: (allergen: Allergen) => void;
-  userAllergenIds?: ObjectIdAsHexString[];
-  onEdit?: (allergen: Allergen) => void;
-  onDelete?: (id: string) => void;
+  // onQuickAdd?: (allergen: BriefAllergen) => void;
+  // userAllergenIds?: ObjectIdAsHexString[];
 }
 
 type SortDirection = "asc" | "desc";
 
-export function AllergenList({
-  allergens,
-  onQuickAdd,
-  userAllergenIds,
-  onEdit,
-  onDelete,
-}: AllergenListProps) {
+export function AllergenList(
+  {
+    // onQuickAdd,
+    // userAllergenIds,
+  }: AllergenListProps
+) {
   const t = useTranslations("common");
-  const localLanguage = useLocale() as Language;
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
-  const [typeFilter, setTypeFilter] = useState<string>("all");
-  const [selectedAllergen, setSelectedAllergen] = useState<Allergen | null>(
-    null
-  );
 
-  const toggleSortDirection = () => {
-    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+  const [allergens, setAllergens] = useState<BriefAllergen[]>([]);
+
+  const localLanguage = useLocale() as Language;
+
+  const [page, setPage] = useState(1);
+  const [name, setName] = useState("");
+  const [type, setType] = useState<AllergenType>("");
+  const [sort, setSort] = useState<"asc" | "desc">("asc");
+
+  const debouncedName = useDebounce(name, 300); // 300ms
+
+  const fetchAllergens = useCallback(async () => {
+    const params = {
+      page,
+      sort,
+      lang: localLanguage,
+      ...(debouncedName && { name: debouncedName }),
+      ...(type !== "" && { type }),
+    };
+
+    try {
+      const data = await httpGet$GetBriefAllergens(
+        "/api/allergens/brief",
+        params
+      );
+      if (data.success) {
+        setAllergens(data.result as BriefAllergen[]);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error("Failed to fetch allergens.");
+    }
+  }, [page, debouncedName, type, sort]);
+
+  useEffect(() => {
+    fetchAllergens();
+  }, [fetchAllergens]);
+
+  const addAllergen = async (allergen: AddAllergen$Params) => {
+    const data = await httpPost$AddAllergen("/api/allergens", allergen);
+    if (data.success) {
+      await fetchAllergens();
+      // TODO: add toast.success
+    } else {
+      toast.message(data.message);
+    }
   };
+
+  const updateAllergen = async (allergenData: UpdateAllergen$Params) => {
+    const { id, ...rest } = allergenData;
+    const data = await httpPut$UpdateAllergen(`/api/allergens/${id}`, rest);
+    if (data.success) {
+      await fetchAllergens();
+      // TODO: add toast.success
+    } else {
+      toast.message(data.message);
+    }
+  };
+
+  const deleteAllergen = async (id: string) => {
+    const data = await httpDelete$DeleteAllergen(`/api/allergens/${id}`);
+    if (data.success) {
+      await fetchAllergens();
+    } else {
+      toast.error(data.message);
+    }
+  };
+
+  const [selectedAllergen, setSelectedAllergen] =
+    useState<BriefAllergen | null>(null);
 
   const handleDelete = (id: string) => {
     if (confirm(t("areYouSureDeleteAllergen"))) {
-      if (onDelete) onDelete(id);
+      if (deleteAllergen) deleteAllergen(id);
     }
   };
 
@@ -67,15 +147,20 @@ export function AllergenList({
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 placeholder={t("searchAllergens")}
                 className="pl-10 border-cyan-300 focus:border-cyan-500"
               />
             </div>
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <Select
+              value={type}
+              onValueChange={(v) =>
+                setType((v === "all" ? "" : v) as AllergenType)
+              }
+            >
               <SelectTrigger className="w-32 border-cyan-300 focus:border-cyan-500">
-                <SelectValue />
+                <SelectValue placeholder={t("allTypes")} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t("allTypes")}</SelectItem>
@@ -91,10 +176,10 @@ export function AllergenList({
             <Button
               variant="outline"
               size="sm"
-              onClick={toggleSortDirection}
+              onClick={() => setSort(sort === "asc" ? "desc" : "asc")}
               className="px-3 bg-transparent"
             >
-              {sortDirection === "asc" ? (
+              {sort === "asc" ? (
                 <ArrowUp className="h-4 w-4" />
               ) : (
                 <ArrowDown className="h-4 w-4" />
@@ -106,11 +191,19 @@ export function AllergenList({
           <div className="space-y-2 max-h-96 overflow-y-auto">
             {allergens.map((allergen) => (
               <AllergenItem
-                allergen={localizeAllergen(allergen, localLanguage, true)}
-                handleQuickAdd={
-                  onQuickAdd ? () => onQuickAdd(allergen) : undefined
-                }
-                userAllergenIds={userAllergenIds}
+                allergen={localizeAllergen(
+                  {
+                    // TODO: Minh: I'm just parsing dummy fields, not sure if we should have a BriefLocalizedAllergen?
+                    ...allergen,
+                    description: { en: "", vi: "" },
+                    crossSensitivityId: [],
+                  },
+                  localLanguage
+                )}
+                // handleQuickAdd={
+                //   onQuickAdd ? () => onQuickAdd(allergen) : undefined
+                // }
+                // userAllergenIds={userAllergenIds}
                 onClick={() => setSelectedAllergen(allergen)}
                 key={allergen.id}
               />
@@ -123,7 +216,7 @@ export function AllergenList({
           </div>
         </CardContent>
       </Card>
-      {selectedAllergen !== null && (
+      {/* {selectedAllergen !== null && (
         <AllergenDetailModal
           allergen={selectedAllergen}
           onClose={() => setSelectedAllergen(null)}
@@ -131,7 +224,7 @@ export function AllergenList({
           onDelete={onDelete ? handleDelete : undefined}
           allergens={allergens}
         />
-      )}
+      )} */}
     </>
   );
 }

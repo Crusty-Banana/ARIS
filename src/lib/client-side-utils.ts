@@ -1,5 +1,6 @@
 import {
   Allergen,
+  BriefAllergen,
   Language,
   Symptom,
   TimeFromContactToSymptom,
@@ -55,15 +56,11 @@ export const getSeverityColor = (severity: number) => {
   }
 };
 
-export const localizeAllergen = (
-  allergen: Allergen,
-  language: Language,
-  forDisplay: true
-) => {
+export const localizeAllergen = (allergen: Allergen, language: Language) => {
   return LocalizedAllergen.parse({
     ...allergen,
     name: allergen.name[language],
-    description: forDisplay ? "" : allergen.description[language],
+    description: allergen.description[language],
   });
 };
 

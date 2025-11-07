@@ -3,10 +3,7 @@
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslations } from "next-intl";
-import {
-  httpGet$GetAllergens,
-  httpGet$GetSymptoms,
-} from "@/modules/commands/GetBusinessType/fetcher";
+import { httpGet$GetSymptoms } from "@/modules/commands/GetBusinessType/fetcher";
 import {
   AddAllergen$Params,
   AddSymptom$Params,
@@ -38,21 +35,10 @@ export default function AdminDashboard() {
   const t = useTranslations("adminDashboard");
   const [symptoms, setSymptoms] = useState<Symptom[]>([]);
 
-  const [allergens, setAllergens] = useState<Allergen[]>([]);
-
   const fetchSymptoms = async () => {
     const data = await httpGet$GetSymptoms("/api/symptoms", {});
     if (data.success) {
       setSymptoms(data.result as Symptom[]);
-    } else {
-      toast.error(data.message);
-    }
-  };
-
-  const fetchAllergens = async () => {
-    const data = await httpGet$GetAllergens("/api/allergens", {});
-    if (data.success) {
-      setAllergens(data.result as Allergen[]);
     } else {
       toast.error(data.message);
     }
@@ -86,37 +72,8 @@ export default function AdminDashboard() {
     }
   };
 
-  const addAllergen = async (allergen: AddAllergen$Params) => {
-    const data = await httpPost$AddAllergen("/api/allergens", allergen);
-    if (data.success) {
-      await fetchAllergens();
-    } else {
-      toast.error(data.message);
-    }
-  };
-
-  const updateAllergen = async (allergenData: UpdateAllergen$Params) => {
-    const { id, ...rest } = allergenData;
-    const data = await httpPut$UpdateAllergen(`/api/allergens/${id}`, rest);
-    if (data.success) {
-      await fetchAllergens();
-    } else {
-      toast.error(data.message);
-    }
-  };
-
-  const deleteAllergen = async (id: string) => {
-    const data = await httpDelete$DeleteAllergen(`/api/allergens/${id}`);
-    if (data.success) {
-      await fetchAllergens();
-    } else {
-      toast.error(data.message);
-    }
-  };
-
   useEffect(() => {
     fetchSymptoms();
-    fetchAllergens();
   }, []);
 
   return (
@@ -164,16 +121,12 @@ export default function AdminDashboard() {
               <h2 className="text-2xl font-semibold text-cyan-800">
                 {t("allergen management")}
               </h2>
-              <AddAllergenButton
+              {/* <AddAllergenButton
                 onAddAllergen={addAllergen}
                 allergens={allergens}
-              />
+              /> */}
             </div>
-            <AllergenList
-              allergens={allergens}
-              onEdit={updateAllergen}
-              onDelete={deleteAllergen}
-            />
+            <AllergenList />
           </TabsContent>
         </Tabs>
       </div>

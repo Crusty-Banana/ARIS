@@ -1,7 +1,6 @@
 import {
   ActionPlan,
   Allergen,
-  BriefAllergen,
   FetcherResult,
   ObjectIdAsHexString,
   PAP,
@@ -51,7 +50,6 @@ export type GetFilter = z.infer<typeof GetFilter>;
 export const GetBusinessType$Params = z.object({
   ids: z.array(ObjectIdAsHexString).optional(),
   limit: z.coerce.number().optional(),
-  page: z.coerce.number().optional(),
   offset: z.coerce.number().optional(),
   lang: z.string().optional(),
   filters: GetFilter.optional(),
@@ -65,9 +63,6 @@ export const GetAllergens$Params = GetBusinessType$Params.omit({
   filters: true,
 }).extend({
   filters: GetFilter.pick({ isWholeAllergen: true, _id: true }).optional(),
-  name: z.string().optional(),
-  type: z.string().optional(),
-  sort: z.enum(["asc", "desc"]).optional(),
 });
 export type GetAllergens$Params = z.infer<typeof GetAllergens$Params>;
 
@@ -102,12 +97,6 @@ export const GetAllergens$Result = FetcherResult.extend({
   result: z.array(Allergen).optional(),
 });
 export type GetAllergens$Result = z.infer<typeof GetAllergens$Result>;
-
-export const GetBriefAllergens$Result = FetcherResult.extend({
-  result: z.array(BriefAllergen).optional(),
-  total: z.coerce.number().optional(),
-});
-export type GetBriefAllergens$Result = z.infer<typeof GetBriefAllergens$Result>;
 
 export const GetPAPs$Result = FetcherResult.extend({
   result: z.array(PAP).optional(),
