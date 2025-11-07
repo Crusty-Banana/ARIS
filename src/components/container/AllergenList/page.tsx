@@ -50,20 +50,6 @@ export function AllergenList({
     setSortDirection(sortDirection === "asc" ? "desc" : "asc");
   };
 
-  const filteredAndSortedAllergens = allergens
-    .filter((allergen) => {
-      const matchesSearch = allergen.name[localLanguage]
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-      const matchesType = typeFilter === "all" || allergen.type === typeFilter;
-      return matchesSearch && matchesType;
-    })
-    .sort((a, b) => {
-      let comparison = 0;
-      comparison = a.name[localLanguage].localeCompare(b.name[localLanguage]);
-      return sortDirection === "asc" ? comparison : -comparison;
-    });
-
   const handleDelete = (id: string) => {
     if (confirm(t("areYouSureDeleteAllergen"))) {
       if (onDelete) onDelete(id);
@@ -118,9 +104,9 @@ export function AllergenList({
         </CardHeader>
         <CardContent>
           <div className="space-y-2 max-h-96 overflow-y-auto">
-            {filteredAndSortedAllergens.map((allergen) => (
+            {allergens.map((allergen) => (
               <AllergenItem
-                allergen={localizeAllergen(allergen, localLanguage)}
+                allergen={localizeAllergen(allergen, localLanguage, true)}
                 handleQuickAdd={
                   onQuickAdd ? () => onQuickAdd(allergen) : undefined
                 }
@@ -129,7 +115,7 @@ export function AllergenList({
                 key={allergen.id}
               />
             ))}
-            {filteredAndSortedAllergens.length === 0 && (
+            {allergens.length === 0 && (
               <div className="text-center text-gray-500 py-4">
                 {t("noAllergensFound")}
               </div>

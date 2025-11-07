@@ -90,6 +90,13 @@ export const Allergen = z.object({
 });
 export type Allergen = z.infer<typeof Allergen>;
 
+export const BriefAllergen = z.object({
+  id: ObjectIdAsHexString,
+  type: AllergenType,
+  name: DisplayString,
+});
+export type BriefAllergen = z.infer<typeof BriefAllergen>;
+
 export const PAP = z.object({
   id: ObjectIdAsHexString,
   userId: ObjectIdAsHexString,
@@ -107,7 +114,7 @@ export const PAP = z.object({
         testDone: TestType.optional(),
         symptomsId: z.array(ObjectIdAsHexString).default([]),
         testResult: z.string().optional(),
-        timeFromContactToSymptom: TimeFromContactToSymptom
+        timeFromContactToSymptom: TimeFromContactToSymptom,
       })
     )
     .default([]),

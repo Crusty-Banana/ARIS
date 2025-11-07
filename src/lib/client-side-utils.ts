@@ -1,4 +1,9 @@
-import { Allergen, Language, Symptom, TimeFromContactToSymptom } from "@/modules/business-types";
+import {
+  Allergen,
+  Language,
+  Symptom,
+  TimeFromContactToSymptom,
+} from "@/modules/business-types";
 import {
   LocalizedAllergen,
   LocalizedSymptom,
@@ -50,11 +55,15 @@ export const getSeverityColor = (severity: number) => {
   }
 };
 
-export const localizeAllergen = (allergen: Allergen, language: Language) => {
+export const localizeAllergen = (
+  allergen: Allergen,
+  language: Language,
+  forDisplay: true
+) => {
   return LocalizedAllergen.parse({
     ...allergen,
     name: allergen.name[language],
-    description: allergen.description[language],
+    description: forDisplay ? "" : allergen.description[language],
   });
 };
 
@@ -66,7 +75,10 @@ export const localizeSymptom = (symptom: Symptom, language: Language) => {
   });
 };
 
-export const formatTimeFromContactToSymptom = (value: TimeFromContactToSymptom, t: ReturnType<typeof useTranslations>) => {
+export const formatTimeFromContactToSymptom = (
+  value: TimeFromContactToSymptom,
+  t: ReturnType<typeof useTranslations>
+) => {
   switch (value) {
     case "<2":
       return t("timeToSymptom.lessThan2");

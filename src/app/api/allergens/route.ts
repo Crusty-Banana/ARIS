@@ -60,10 +60,14 @@ export async function GET(req: NextRequest) {
 
     // Handle action
     const db = await getDb();
-    const { result } = await handler$GetAllergens(db, parsedBody.data);
+    const { result, total } = await handler$GetAllergens(db, parsedBody.data);
 
     return NextResponse.json(
-      { result, message: "Allergens retrieved successfully" },
+      {
+        result,
+        total,
+        message: `Allergens retrieved successfully, total ${total}`,
+      },
       { status: 200 }
     );
   } catch (error) {
