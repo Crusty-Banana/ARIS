@@ -17,6 +17,10 @@ import {
 } from "@/modules/business-types";
 import { useLocale, useTranslations } from "next-intl";
 import { RichTextEditor } from "@/components/rich-text-editor";
+import { BriefAllergen } from "@/modules/commands/GetBriefAllergens/typing";
+import { useCallback, useEffect, useState } from "react";
+import { httpGet$GetBriefAllergens } from "@/modules/commands/GetBriefAllergens/fetcher";
+import { toast } from "sonner";
 
 interface AllergenFormProps {
   type: AllergenType;
@@ -27,11 +31,9 @@ interface AllergenFormProps {
   handleNameChange: (value: string) => void;
   description: DisplayString;
   handleDescriptionChange: (value: string) => void;
-  allergens: Allergen[];
+  allergens: BriefAllergen[];
   selectedCrossSensitivity: string[];
   setSelectedCrossSensitivity: (value: string[]) => void;
-  isWholeAllergen: boolean;
-  setIsWholeAllergen: (value: boolean) => void;
 }
 
 export function AllergenForm({
@@ -43,14 +45,37 @@ export function AllergenForm({
   handleNameChange,
   description,
   handleDescriptionChange,
-  allergens,
   selectedCrossSensitivity,
   setSelectedCrossSensitivity,
-  isWholeAllergen,
-  setIsWholeAllergen,
 }: AllergenFormProps) {
   const t = useTranslations("allergenModal");
   const localLanguage = useLocale() as Language;
+
+  const [allergens, setAllergens] = useState<BriefAllergen[]>([]);
+
+  const fetchAllergens = useCallback(async () => {
+    const params = {
+      lang: localLanguage,
+    };
+
+    try {
+      const data = await httpGet$GetBriefAllergens(
+        "/api/allergens/brief",
+        params
+      );
+      if (data.success) {
+        setAllergens(data.result as BriefAllergen[]);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error("Failed to fetch allergens.");
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAllergens();
+  }, []);
 
   return (
     <>
@@ -96,33 +121,20 @@ export function AllergenForm({
           />
         )}
       </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          {t("allergenType")}
-        </label>
-        <Select
-          value={isWholeAllergen ? "whole" : "component"}
-          onValueChange={(value) => setIsWholeAllergen(value === "whole")}
-        >
-          <SelectTrigger className="w-full border-cyan-300 focus:border-cyan-500">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="whole">{t("wholeAllergen")}</SelectItem>
-            <SelectItem value="component">{t("componentAllergen")}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+
       <div>
         <div>
           <ScrollableSelect
+            // TODO: sorting in front end?
             items={allergens.sort((a, b) =>
               a.name[localLanguage].localeCompare(b.name[localLanguage])
             )}
             selectedItems={selectedCrossSensitivity}
             onSelectionChange={setSelectedCrossSensitivity}
-            getItemId={(allergen: Allergen) => allergen.id}
-            getItemLabel={(allergen: Allergen) => allergen.name[localLanguage]}
+            getItemId={(allergen: BriefAllergen) => allergen.id}
+            getItemLabel={(allergen: BriefAllergen) =>
+              allergen.name[localLanguage]
+            }
             label={t("crossSensitivity")}
             maxHeight="max-h-32"
           />

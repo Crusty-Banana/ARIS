@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AllergenType, Language } from "@/modules/business-types";
+import { Allergen, AllergenType, Language } from "@/modules/business-types";
 import {
   ArrowDown,
   ArrowUp,
@@ -30,6 +30,9 @@ import { httpPut$UpdateAllergen } from "@/modules/commands/UpdateBusinessType/fe
 import { httpDelete$DeleteAllergen } from "@/modules/commands/DeleteBusinessType/fetcher";
 import { httpGet$GetBriefAllergens } from "@/modules/commands/GetBriefAllergens/fetcher";
 import { BriefAllergen } from "@/modules/commands/GetBriefAllergens/typing";
+import { AllergenDetailModal } from "./_components/allergen-detail-modal";
+import { DetailAllergen } from "@/modules/commands/GetDetailAllergen/typing";
+import { httpGet$GetDetailAllergen } from "@/modules/commands/GetDetailAllergen/fetcher";
 
 const useDebounce = (value: string, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -62,6 +65,9 @@ export function AllergenList(
 
   const [allergens, setAllergens] = useState<BriefAllergen[]>([]);
   const [total, setTotal] = useState(0);
+
+  const [selectedAllergen, setSelectedAllergen] =
+    useState<DetailAllergen | null>(null);
 
   const localLanguage = useLocale() as Language;
 
@@ -132,12 +138,22 @@ export function AllergenList(
     }
   };
 
-  const [selectedAllergen, setSelectedAllergen] =
-    useState<BriefAllergen | null>(null);
-
   const handleDelete = (id: string) => {
     if (confirm(t("areYouSureDeleteAllergen"))) {
       if (deleteAllergen) deleteAllergen(id);
+    }
+  };
+
+  const handleSelect = async (id: string) => {
+    const params = { id };
+    const data = await httpGet$GetDetailAllergen(
+      `/api/allergens/detail/${id}`,
+      params
+    );
+    if (data.success) {
+      setSelectedAllergen(data.result!);
+    } else {
+      toast.error(data.message);
     }
   };
 
@@ -210,7 +226,7 @@ export function AllergenList(
                 //   onQuickAdd ? () => onQuickAdd(allergen) : undefined
                 // }
                 // userAllergenIds={userAllergenIds}
-                onClick={() => setSelectedAllergen(allergen)}
+                onClick={() => handleSelect(allergen.id)}
                 key={allergen.id}
               />
             ))}
@@ -272,15 +288,15 @@ export function AllergenList(
           <div className="flex-1"></div>
         </div>
       </Card>
-      {/* TODO: {selectedAllergen !== null && (
+      {selectedAllergen !== null && (
         <AllergenDetailModal
           allergen={selectedAllergen}
           onClose={() => setSelectedAllergen(null)}
-          onUpdate={onEdit}
-          onDelete={onDelete ? handleDelete : undefined}
+          onUpdate={updateAllergen}
+          onDelete={handleDelete}
           allergens={allergens}
         />
-      )} */}
+      )}
     </>
   );
 }

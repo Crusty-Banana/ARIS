@@ -14,15 +14,17 @@ import { AlertTriangle, Edit, Save, Trash2, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { AllergenForm } from "./allergen-form";
+import { DetailAllergen } from "@/modules/commands/GetDetailAllergen/typing";
+import { BriefAllergen } from "@/modules/commands/GetBriefAllergens/typing";
 
 interface AllergenDetailModalProps {
-  allergen: Allergen;
+  allergen: DetailAllergen;
   onClose: () => void;
   onUpdate?: (allergen: Allergen) => void;
   onDelete?: (id: string) => void;
-  allergens: Allergen[];
+  allergens: BriefAllergen[];
   actionPlan?: string;
-  hideCrossAllergen?: boolean
+  hideCrossAllergen?: boolean;
 }
 
 export function AllergenDetailModal({
@@ -32,12 +34,17 @@ export function AllergenDetailModal({
   onDelete,
   allergens,
   actionPlan,
-  hideCrossAllergen
+  hideCrossAllergen,
 }: AllergenDetailModalProps) {
   const t = useTranslations("detailModals");
   const localLanguage = useLocale() as Language;
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState<Allergen>(allergen);
+  const [editData, setEditData] = useState<Allergen>(
+    Allergen.parse({
+      ...allergen,
+      crossSensitivityId: allergen.crossSensitivities.map((data) => data.id),
+    })
+  );
   const [selectedLanguage, setSelectedLanguage] =
     useState<Language>(localLanguage);
 
@@ -61,6 +68,8 @@ export function AllergenDetailModal({
       onClose();
     }
   };
+
+  console.log(allergens);
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
@@ -134,10 +143,6 @@ export function AllergenDetailModal({
             setSelectedCrossSensitivity={(value) =>
               setEditData({ ...editData!, crossSensitivityId: value })
             }
-            isWholeAllergen={editData.isWholeAllergen}
-            setIsWholeAllergen={(value) =>
-              setEditData({ ...editData!, isWholeAllergen: value })
-            }
           />
         ) : (
           <>
@@ -170,20 +175,10 @@ export function AllergenDetailModal({
                   {allergen.name[selectedLanguage]}
                 </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t("isWholeAllergen")}
-                </label>
-                <div className="p-2 bg-gray-50 rounded">
-                  {allergen.isWholeAllergen
-                    ? t("wholeAllergen")
-                    : t("componentAllergen")}
-                </div>
-              </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t("description")} 
+                {t("description")}
               </label>
               <div
                 className="p-2 bg-gray-50 rounded min-h-[100px] prose prose-sm max-w-none"
@@ -195,10 +190,10 @@ export function AllergenDetailModal({
 
             {actionPlan && (
               <div>
-                  <label className="text-orange-700 flex items-center gap-2 text-sm font-medium mb-1">
-                    <AlertTriangle className="h-4 w-4" />
-                    {t("actionPlans")}
-                  </label>
+                <label className="text-orange-700 flex items-center gap-2 text-sm font-medium mb-1">
+                  <AlertTriangle className="h-4 w-4" />
+                  {t("actionPlans")}
+                </label>
                 <div
                   className="p-2 bg-orange-50 rounded min-h-[100px] prose prose-sm max-w-none border-orange-600 border"
                   dangerouslySetInnerHTML={{ __html: actionPlan }}
@@ -206,25 +201,24 @@ export function AllergenDetailModal({
               </div>
             )}
             {!hideCrossAllergen && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t("crossSensitivity")}
-              </label>
-              <div className="flex flex-wrap gap-1">
-                {allergen.crossSensitivityId.map((allergenId) => {
-                  const allergen = allergens.find((s) => s.id === allergenId);
-                  return allergen ? (
-                    <Badge
-                      key={allergenId}
-                      variant="outline"
-                      className="text-xs"
-                    >
-                      {allergen.name[localLanguage]}
-                    </Badge>
-                  ) : null;
-                })}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t("crossSensitivity")}
+                </label>
+                <div className="flex flex-wrap gap-1">
+                  {allergen.crossSensitivities.map((sensitivity) => {
+                    return (
+                      <Badge
+                        key={sensitivity.id}
+                        variant="outline"
+                        className="text-xs"
+                      >
+                        {sensitivity.name[localLanguage]}
+                      </Badge>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
             )}
           </>
         )}

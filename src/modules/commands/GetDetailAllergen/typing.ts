@@ -22,6 +22,6 @@ export const GetDetailAllergen$Params = z.object({
 export type GetDetailAllergen$Params = z.infer<typeof GetDetailAllergen$Params>;
 
 export const GetDetailAllergen$Result = FetcherResult.extend({
-  result: z.array(DetailAllergen).optional(),
+  result: DetailAllergen.optional(),
 });
 export type GetDetailAllergen$Result = z.infer<typeof GetDetailAllergen$Result>;

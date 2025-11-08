@@ -17,7 +17,7 @@ export const GetBriefAllergens$Params = z.object({
   ids: z.array(z.string()).optional(),
   name: z.string().optional(),
   type: AllergenType.optional(),
-  sort: z.enum(["asc", "desc"]),
+  sort: z.enum(["asc", "desc"]).default("asc").optional(),
   page: z.coerce.number().optional(),
   lang: Language.default("en"),
 });
