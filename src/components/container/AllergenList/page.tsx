@@ -8,12 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Allergen,
-  AllergenType,
-  Language,
-  ObjectIdAsHexString,
-} from "@/modules/business-types";
+import { AllergenType, Language } from "@/modules/business-types";
 import {
   ArrowDown,
   ArrowUp,
@@ -21,14 +16,11 @@ import {
   ChevronLast,
   ChevronLeft,
   ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
   Search,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { AllergenItem } from "./_components/item";
-import { AllergenDetailModal } from "./_components/allergen-detail-modal";
 import { localizeAllergen } from "@/lib/client-side-utils";
 import { AddAllergen$Params } from "@/modules/commands/AddBusinessType/typing";
 import { httpPost$AddAllergen } from "@/modules/commands/AddBusinessType/fetcher";
@@ -229,12 +221,14 @@ export function AllergenList(
             )}
           </div>
         </CardContent>
-        <div className="flex">
-          <div>
-            Showing {(page - 1) * 100 + 1}-{Math.min(total, page * 100)} from{" "}
-            {total}
+        <div className="flex justify-center items-center pt-4 px-8">
+          <div className="flex-1">
+            <span>
+              Showing {(page - 1) * 100 + 1}-{Math.min(total, page * 100)} from{" "}
+              {total}
+            </span>
           </div>
-          <div className="flex">
+          <div className="flex flex-1 items-center space-x-2">
             <Button
               variant="outline"
               className="h-8 w-8 p-0"
@@ -252,6 +246,10 @@ export function AllergenList(
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
+
+            <div>
+              Page {page} of {Math.ceil(total / 100)}
+            </div>
 
             <Button
               variant="outline"
@@ -271,6 +269,7 @@ export function AllergenList(
               <ChevronLast className="h-4 w-4" />
             </Button>
           </div>
+          <div className="flex-1"></div>
         </div>
       </Card>
       {/* TODO: {selectedAllergen !== null && (
