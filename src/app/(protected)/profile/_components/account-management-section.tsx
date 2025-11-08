@@ -13,7 +13,7 @@ import { AlertTriangle, Trash2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTranslations } from "next-intl";
 import { signOut } from "next-auth/react";
-import { httpDelete$DeleteUser } from "@/modules/commands/DeleteBusinessType/fetcher";
+import { httpDelete$DeleteUser } from "@/modules/commands/DeleteUser/fetcher";
 export function AccountManagementSection() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const t = useTranslations("accountManagement");

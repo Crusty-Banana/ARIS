@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkAdmin, processError } from "@/lib/utils";
-import { getDb } from "@/modules/mongodb";
+import { getClient, getDb } from "@/modules/mongodb";
 import { handler$UpdateUser } from "@/modules/commands/UpdateBusinessType/handler";
-import { handler$DeleteUser } from "@/modules/commands/DeleteBusinessType/handler";
+import { handler$DeleteUser } from "@/modules/commands/DeleteUser/handler";
 import { UpdateUser$Params } from "@/modules/commands/UpdateBusinessType/typing";
 import { DeleteBusinessType$Params } from "@/modules/commands/DeleteBusinessType/typing";
 
@@ -71,9 +71,10 @@ export async function DELETE(
 
     // Handle action
     const db = await getDb();
-    const { result } = await handler$DeleteUser(db, parsedBody.data);
+    const client = await getClient()
+    const result = await handler$DeleteUser(db, client, parsedBody.data);
 
-    if (result != 1) {
+    if (result.deletedCount != 1) {
       return NextResponse.json({ message: "User not found." }, { status: 404 });
     }
     return NextResponse.json(
