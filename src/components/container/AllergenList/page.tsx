@@ -14,7 +14,17 @@ import {
   Language,
   ObjectIdAsHexString,
 } from "@/modules/business-types";
-import { ArrowDown, ArrowUp, Search } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  ChevronFirst,
+  ChevronLast,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  Search,
+} from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { AllergenItem } from "./_components/item";
@@ -59,10 +69,12 @@ export function AllergenList(
   const t = useTranslations("common");
 
   const [allergens, setAllergens] = useState<BriefAllergen[]>([]);
+  const [total, setTotal] = useState(0);
 
   const localLanguage = useLocale() as Language;
 
   const [page, setPage] = useState(1);
+  const [inputPage, setInputPage] = useState("1");
   const [name, setName] = useState("");
   const [type, setType] = useState<AllergenType>("");
   const [sort, setSort] = useState<"asc" | "desc">("asc");
@@ -85,6 +97,7 @@ export function AllergenList(
       );
       if (data.success) {
         setAllergens(data.result as BriefAllergen[]);
+        setTotal(data.total as number);
       } else {
         toast.error(data.message);
       }
@@ -200,6 +213,7 @@ export function AllergenList(
                   },
                   localLanguage
                 )}
+                // TODO:
                 // handleQuickAdd={
                 //   onQuickAdd ? () => onQuickAdd(allergen) : undefined
                 // }
@@ -215,8 +229,51 @@ export function AllergenList(
             )}
           </div>
         </CardContent>
+        <div className="flex">
+          <div>
+            Showing {(page - 1) * 100 + 1}-{Math.min(total, page * 100)} from{" "}
+            {total}
+          </div>
+          <div className="flex">
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => setPage(1)}
+              disabled={page <= 1}
+            >
+              <ChevronFirst className="h-4 w-4" />
+            </Button>
+
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => setPage(page - 1)}
+              disabled={page <= 1}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => setPage(page + 1)}
+              disabled={page >= Math.ceil(total / 100)}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => setPage(Math.ceil(total / 100))}
+              disabled={page >= Math.ceil(total / 100)}
+            >
+              <ChevronLast className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
       </Card>
-      {/* {selectedAllergen !== null && (
+      {/* TODO: {selectedAllergen !== null && (
         <AllergenDetailModal
           allergen={selectedAllergen}
           onClose={() => setSelectedAllergen(null)}
