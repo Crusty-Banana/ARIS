@@ -15,33 +15,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Edit3, Save, X, Loader2, Trash2, Plus } from "lucide-react";
-import { z } from "zod";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { httpGet$GetProfileWithUserId } from "@/modules/commands/GetProfileWithUserId/fetcher";
 import { httpPut$UpdateProfileWithUserId } from "@/modules/commands/UpdateProfileWithUserId/fetcher";
 import { DatePicker } from "@/components/ui/custom-date-picker";
 import { Language } from "@/modules/business-types";
-const personalInfoSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.string().email("Invalid email address"),
-  doB: z
-    .number()
-    .refine(
-      (dob) => {
-        const date = new Date(dob);
-        return !isNaN(date.getTime());
-      },
-      { message: "Invalid date" }
-    )
-    .nullable(),
-  gender: z.enum(["male", "female", "other", ""]),
-  underlyingMedCon: z.array(z.string()),
-  allowPublic: z.boolean().default(false),
-});
+import { PersonalInfoData, personalInfoSchema } from "@/modules/commands/UpdateProfileWithUserId/typing";
 
-type PersonalInfoData = z.infer<typeof personalInfoSchema>;
 const optionalPersonalInfoSchema = personalInfoSchema.partial();
 
 export function PersonalInfoSection() {
