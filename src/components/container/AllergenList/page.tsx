@@ -19,7 +19,7 @@ import {
   Search,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AllergenItem } from "./_components/item";
 import { localizeAllergen } from "@/lib/client-side-utils";
 import { AddAllergen$Params } from "@/modules/commands/AddBusinessType/typing";
@@ -33,6 +33,7 @@ import { BriefAllergen } from "@/modules/commands/GetBriefAllergens/typing";
 import { AllergenDetailModal } from "./_components/allergen-detail-modal";
 import { DetailAllergen } from "@/modules/commands/GetDetailAllergen/typing";
 import { httpGet$GetDetailAllergen } from "@/modules/commands/GetDetailAllergen/fetcher";
+import useSWR from "swr";
 
 const useDebounce = (value: string, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -63,8 +64,8 @@ export function AllergenList(
 ) {
   const t = useTranslations("common");
 
-  const [allergens, setAllergens] = useState<BriefAllergen[]>([]);
-  const [total, setTotal] = useState(0);
+  // const [allergens, setAllergens] = useState<BriefAllergen[]>([]);
+  // const [total, setTotal] = useState(0);
 
   const [selectedAllergen, setSelectedAllergen] =
     useState<DetailAllergen | null>(null);
@@ -72,41 +73,52 @@ export function AllergenList(
   const localLanguage = useLocale() as Language;
 
   const [page, setPage] = useState(1);
-  const [inputPage, setInputPage] = useState("1");
   const [name, setName] = useState("");
   const [type, setType] = useState<AllergenType>("");
   const [sort, setSort] = useState<"asc" | "desc">("asc");
 
   const debouncedName = useDebounce(name, 300); // 300ms
 
-  const fetchAllergens = useCallback(async () => {
-    const params = {
+  const params = useMemo(() => {
+    // use useMemo to prevent re-creating params on re-renders
+    return {
       page,
       sort,
       lang: localLanguage,
       ...(debouncedName && { name: debouncedName }),
       ...(type !== "" && { type }),
     };
+  }, [page, sort, debouncedName, type]);
 
-    try {
-      const data = await httpGet$GetBriefAllergens(
-        "/api/allergens/brief",
-        params
-      );
-      if (data.success) {
-        setAllergens(data.result as BriefAllergen[]);
-        setTotal(data.total as number);
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error("Failed to fetch allergens.");
+  const key = [`/api/allergens/brief?page=${page}`, params];
+
+  const fetchAllergens = async () => {
+    const data = await httpGet$GetBriefAllergens(
+      "/api/allergens/brief",
+      params
+    );
+    if (data.success) {
+      return data;
+    } else {
+      throw new Error(data?.message);
     }
-  }, [page, debouncedName, type, sort]);
+  };
 
-  useEffect(() => {
-    fetchAllergens();
-  }, [fetchAllergens]);
+  const {
+    data,
+    // Returned stateful vals below are commented to reduce re-renders, turn on if necessary
+    // error,
+    // isLoading,
+    // isValidating,
+    // mutate
+  } = useSWR(
+    key,
+    fetchAllergens
+    // options
+  );
+
+  const allergens = data?.result || [];
+  const total = data?.total || 0;
 
   const addAllergen = async (allergen: AddAllergen$Params) => {
     const data = await httpPost$AddAllergen("/api/allergens", allergen);
@@ -169,7 +181,10 @@ export function AllergenList(
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  setPage(1);
+                }}
                 placeholder={t("searchAllergens")}
                 className="pl-10 border-cyan-300 focus:border-cyan-500"
               />
@@ -240,8 +255,8 @@ export function AllergenList(
         <div className="flex justify-center items-center pt-4 px-8">
           <div className="flex-1">
             <span>
-              Showing {(page - 1) * 100 + 1}-{Math.min(total, page * 100)} from{" "}
-              {total}
+              Showing {Math.min((page - 1) * 100 + 1, total)}-
+              {Math.min(total, page * 100)} from {total}
             </span>
           </div>
           <div className="flex flex-1 items-center space-x-2">
