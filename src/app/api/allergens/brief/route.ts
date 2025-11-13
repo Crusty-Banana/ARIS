@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { checkAuth, processError } from "@/lib/utils";
+import { checkAdmin, checkAuth, processError } from "@/lib/utils";
 import { getDb } from "@/modules/mongodb";
 import { GetBriefAllergens$Params } from "@/modules/commands/GetBriefAllergens/typing";
 import { handler$GetBriefAllergens } from "@/modules/commands/GetBriefAllergens/handler";
+import { AddAllergen$Params } from "@/modules/commands/AddBusinessType/typing";
+import { handler$AddAllergen } from "@/modules/commands/AddBusinessType/handler";
 
 export async function GET(req: NextRequest) {
   try {
@@ -37,6 +39,35 @@ export async function GET(req: NextRequest) {
         total,
         message: `Allergens retrieved successfully, total ${total}`,
       },
+      { status: 200 }
+    );
+  } catch (error) {
+    return processError(error);
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    // Check Authentication
+    const authCheck = await checkAdmin(req);
+    if (!authCheck.success) return authCheck.result;
+
+    // Validate Input
+    const body = await req.json();
+    const parsedBody = AddAllergen$Params.safeParse(body);
+    if (!parsedBody.success) {
+      return NextResponse.json(
+        { message: parsedBody.error.message || "Invalid params" },
+        { status: 400 }
+      );
+    }
+
+    // Handle action
+    const db = await getDb();
+    const { result } = await handler$AddAllergen(db, parsedBody.data);
+
+    return NextResponse.json(
+      { result, message: "Allergen created successfully" },
       { status: 200 }
     );
   } catch (error) {

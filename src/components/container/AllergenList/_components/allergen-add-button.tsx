@@ -25,13 +25,9 @@ import { AllergenForm } from "./allergen-form";
 
 interface AddAllergenButtonProps {
   onAddAllergen: (allergen: AddAllergen$Params) => void;
-  allergens: Allergen[];
 }
 
-export function AddAllergenButton({
-  onAddAllergen,
-  allergens,
-}: AddAllergenButtonProps) {
+export function AddAllergenButton({ onAddAllergen }: AddAllergenButtonProps) {
   const t = useTranslations("allergenModal");
   const localLanguage = useLocale() as Language;
 
@@ -41,7 +37,6 @@ export function AddAllergenButton({
   const [selectedCrossSentitivity, setSelectedCrossSentitivity] = useState<
     string[]
   >([]);
-  const [isWholeAllergen, setIsWholeAllergen] = useState(true);
   const [description, setDescription] = useState<DisplayString>({
     en: "",
     vi: "",
@@ -56,7 +51,6 @@ export function AddAllergenButton({
         type: type as AllergenType,
         name,
         crossSensitivityId: selectedCrossSentitivity,
-        isWholeAllergen: isWholeAllergen,
         description,
       });
       setType("");
@@ -64,7 +58,6 @@ export function AddAllergenButton({
       setDescription({ en: "", vi: "" });
       setOpen(false);
       setSelectedCrossSentitivity([]);
-      setIsWholeAllergen(true);
     }
   };
   const handleNameChange = (value: string) => {
@@ -107,11 +100,8 @@ export function AddAllergenButton({
               handleNameChange={handleNameChange}
               description={description}
               handleDescriptionChange={handleDescriptionChange}
-              allergens={allergens}
               selectedCrossSensitivity={selectedCrossSentitivity}
               setSelectedCrossSensitivity={setSelectedCrossSentitivity}
-              isWholeAllergen={isWholeAllergen}
-              setIsWholeAllergen={setIsWholeAllergen}
             />
             <Button
               type="submit"

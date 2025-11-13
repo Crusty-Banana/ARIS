@@ -31,7 +31,6 @@ interface AllergenFormProps {
   handleNameChange: (value: string) => void;
   description: DisplayString;
   handleDescriptionChange: (value: string) => void;
-  allergens: BriefAllergen[];
   selectedCrossSensitivity: string[];
   setSelectedCrossSensitivity: (value: string[]) => void;
 }

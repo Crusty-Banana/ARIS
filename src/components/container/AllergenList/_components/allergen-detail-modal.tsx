@@ -138,7 +138,6 @@ export function AllergenDetailModal({
                 },
               });
             }}
-            allergens={allergens}
             selectedCrossSensitivity={editData.crossSensitivityId}
             setSelectedCrossSensitivity={(value) =>
               setEditData({ ...editData!, crossSensitivityId: value })

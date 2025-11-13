@@ -30,6 +30,7 @@ import { Allergen, Symptom } from "@/modules/business-types";
 import { AddAllergenButton } from "@/components/container/AllergenList/_components/allergen-add-button";
 import { AllergenList } from "@/components/container/AllergenList/page";
 import { toast } from "sonner";
+import { useSWRConfig } from "swr";
 
 export default function AdminDashboard() {
   const t = useTranslations("adminDashboard");
@@ -121,12 +122,8 @@ export default function AdminDashboard() {
               <h2 className="text-2xl font-semibold text-cyan-800">
                 {t("allergen management")}
               </h2>
-              {/* <AddAllergenButton
-                onAddAllergen={addAllergen}
-                allergens={allergens}
-              /> */}
             </div>
-            <AllergenList />
+            <AllergenList allowAdd={true} />
           </TabsContent>
         </Tabs>
       </div>

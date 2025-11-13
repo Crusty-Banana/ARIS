@@ -34,6 +34,7 @@ import { AllergenDetailModal } from "./_components/allergen-detail-modal";
 import { DetailAllergen } from "@/modules/commands/GetDetailAllergen/typing";
 import { httpGet$GetDetailAllergen } from "@/modules/commands/GetDetailAllergen/fetcher";
 import useSWR from "swr";
+import { AddAllergenButton } from "./_components/allergen-add-button";
 
 const useDebounce = (value: string, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -52,16 +53,14 @@ const useDebounce = (value: string, delay: number) => {
 interface AllergenListProps {
   // onQuickAdd?: (allergen: BriefAllergen) => void;
   // userAllergenIds?: ObjectIdAsHexString[];
+  allowAdd?: boolean;
 }
 
-type SortDirection = "asc" | "desc";
-
-export function AllergenList(
-  {
-    // onQuickAdd,
-    // userAllergenIds,
-  }: AllergenListProps
-) {
+export function AllergenList({
+  // onQuickAdd,
+  // userAllergenIds,
+  allowAdd = false,
+}: AllergenListProps) {
   const t = useTranslations("common");
 
   // const [allergens, setAllergens] = useState<BriefAllergen[]>([]);
@@ -90,7 +89,7 @@ export function AllergenList(
     };
   }, [page, sort, debouncedName, type]);
 
-  const key = [`/api/allergens/brief?page=${page}`, params];
+  const key = [`/api/allergens/brief`, params];
 
   const fetchAllergens = async () => {
     const data = await httpGet$GetBriefAllergens(
@@ -110,7 +109,7 @@ export function AllergenList(
     // error,
     // isLoading,
     // isValidating,
-    // mutate
+    mutate,
   } = useSWR(
     key,
     fetchAllergens
@@ -123,7 +122,8 @@ export function AllergenList(
   const addAllergen = async (allergen: AddAllergen$Params) => {
     const data = await httpPost$AddAllergen("/api/allergens", allergen);
     if (data.success) {
-      await fetchAllergens();
+      // await fetchAllergens();
+      mutate();
       // TODO: add toast.success
     } else {
       toast.message(data.message);
@@ -145,6 +145,7 @@ export function AllergenList(
     const data = await httpDelete$DeleteAllergen(`/api/allergens/${id}`);
     if (data.success) {
       await fetchAllergens();
+      toast.success(data.message);
     } else {
       toast.error(data.message);
     }
@@ -173,9 +174,14 @@ export function AllergenList(
     <>
       <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
         <CardHeader>
-          <CardTitle className="text-cyan-800 flex items-center justify-between">
-            {t("allergens")}
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-cyan-800 flex items-center justify-between">
+              {t("allergens")}
+            </CardTitle>
+            {allowAdd == true && (
+              <AddAllergenButton onAddAllergen={addAllergen} />
+            )}
+          </div>
           <div className="flex gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
