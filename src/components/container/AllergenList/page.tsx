@@ -122,9 +122,8 @@ export function AllergenList({
   const addAllergen = async (allergen: AddAllergen$Params) => {
     const data = await httpPost$AddAllergen("/api/allergens", allergen);
     if (data.success) {
-      // await fetchAllergens();
       mutate();
-      // TODO: add toast.success
+      toast.success(data.message);
     } else {
       toast.message(data.message);
     }
@@ -144,7 +143,7 @@ export function AllergenList({
   const deleteAllergen = async (id: string) => {
     const data = await httpDelete$DeleteAllergen(`/api/allergens/${id}`);
     if (data.success) {
-      await fetchAllergens();
+      mutate();
       toast.success(data.message);
     } else {
       toast.error(data.message);
