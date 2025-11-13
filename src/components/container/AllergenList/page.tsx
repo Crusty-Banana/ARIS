@@ -191,9 +191,10 @@ export function AllergenList(
             </div>
             <Select
               value={type}
-              onValueChange={(v) =>
-                setType((v === "all" ? "" : v) as AllergenType)
-              }
+              onValueChange={(v) => {
+                setType((v === "all" ? "" : v) as AllergenType);
+                setPage(1);
+              }}
             >
               <SelectTrigger className="w-32 border-cyan-300 focus:border-cyan-500">
                 <SelectValue placeholder={t("allTypes")} />
