@@ -58,13 +58,11 @@ const useDebounce = (value: string, delay: number) => {
 interface AllergenListProps {
   onQuickAdd?: (allergen: BriefAllergen) => void;
   userAllergenIds?: ObjectIdAsHexString[];
-  allowAdd?: boolean;
 }
 
 export function AllergenList({
   onQuickAdd,
   userAllergenIds,
-  allowAdd = false,
 }: AllergenListProps) {
   const t = useTranslations("common");
 
@@ -125,8 +123,8 @@ export function AllergenList({
     const { id, ...rest } = allergenData;
     const data = await httpPut$UpdateAllergen(`/api/allergens/${id}`, rest);
     if (data.success) {
-      await fetchAllergens();
-      // TODO: add toast.success
+      mutate();
+      toast.success(data.message);
     } else {
       toast.message(data.message);
     }
@@ -143,9 +141,7 @@ export function AllergenList({
   };
 
   const handleDelete = (id: string) => {
-    if (confirm(t("areYouSureDeleteAllergen"))) {
-      if (deleteAllergen) deleteAllergen(id);
-    }
+    deleteAllergen(id);
   };
 
   const handleSelect = async (id: string) => {
@@ -169,9 +165,6 @@ export function AllergenList({
             <CardTitle className="text-cyan-800 flex items-center justify-between">
               {t("allergens")}
             </CardTitle>
-            {/* {allowAdd == true && (
-              
-            )} */}
           </div>
           <div className="flex gap-2">
             <div className="relative flex-1">
@@ -234,7 +227,6 @@ export function AllergenList({
                   },
                   localLanguage
                 )}
-                // TODO:
                 handleQuickAdd={
                   onQuickAdd ? () => onQuickAdd(allergen) : undefined
                 }

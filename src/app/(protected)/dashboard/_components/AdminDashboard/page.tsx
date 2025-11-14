@@ -138,7 +138,7 @@ export default function AdminDashboard() {
               </h2>
               <AddAllergenButton onAddAllergen={addAllergen} />
             </div>
-            <AllergenList allowAdd={true} />
+            <AllergenList />
           </TabsContent>
         </Tabs>
       </div>
