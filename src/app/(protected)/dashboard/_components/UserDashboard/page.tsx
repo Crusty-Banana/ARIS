@@ -150,7 +150,6 @@ export default function UserDashboard() {
   useEffect(() => {
     fetchPAP();
     fetchSymptoms();
-    fetchAllergens();
     fetchActionPlans();
   }, [fetchPAP]);
 

@@ -8,7 +8,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Allergen, AllergenType, Language } from "@/modules/business-types";
+import {
+  Allergen,
+  AllergenType,
+  Language,
+  ObjectIdAsHexString,
+} from "@/modules/business-types";
 import {
   ArrowDown,
   ArrowUp,
@@ -51,20 +56,17 @@ const useDebounce = (value: string, delay: number) => {
 };
 
 interface AllergenListProps {
-  // onQuickAdd?: (allergen: BriefAllergen) => void;
-  // userAllergenIds?: ObjectIdAsHexString[];
+  onQuickAdd?: (allergen: BriefAllergen) => void;
+  userAllergenIds?: ObjectIdAsHexString[];
   allowAdd?: boolean;
 }
 
 export function AllergenList({
-  // onQuickAdd,
-  // userAllergenIds,
+  onQuickAdd,
+  userAllergenIds,
   allowAdd = false,
 }: AllergenListProps) {
   const t = useTranslations("common");
-
-  // const [allergens, setAllergens] = useState<BriefAllergen[]>([]);
-  // const [total, setTotal] = useState(0);
 
   const [selectedAllergen, setSelectedAllergen] =
     useState<DetailAllergen | null>(null);
@@ -119,16 +121,6 @@ export function AllergenList({
   const allergens = data?.result || [];
   const total = data?.total || 0;
 
-  const addAllergen = async (allergen: AddAllergen$Params) => {
-    const data = await httpPost$AddAllergen("/api/allergens", allergen);
-    if (data.success) {
-      mutate();
-      toast.success(data.message);
-    } else {
-      toast.message(data.message);
-    }
-  };
-
   const updateAllergen = async (allergenData: UpdateAllergen$Params) => {
     const { id, ...rest } = allergenData;
     const data = await httpPut$UpdateAllergen(`/api/allergens/${id}`, rest);
@@ -177,9 +169,9 @@ export function AllergenList({
             <CardTitle className="text-cyan-800 flex items-center justify-between">
               {t("allergens")}
             </CardTitle>
-            {allowAdd == true && (
-              <AddAllergenButton onAddAllergen={addAllergen} />
-            )}
+            {/* {allowAdd == true && (
+              
+            )} */}
           </div>
           <div className="flex gap-2">
             <div className="relative flex-1">
@@ -243,10 +235,10 @@ export function AllergenList({
                   localLanguage
                 )}
                 // TODO:
-                // handleQuickAdd={
-                //   onQuickAdd ? () => onQuickAdd(allergen) : undefined
-                // }
-                // userAllergenIds={userAllergenIds}
+                handleQuickAdd={
+                  onQuickAdd ? () => onQuickAdd(allergen) : undefined
+                }
+                userAllergenIds={userAllergenIds}
                 onClick={() => handleSelect(allergen.id)}
                 key={allergen.id}
               />

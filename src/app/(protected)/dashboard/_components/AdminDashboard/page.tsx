@@ -77,6 +77,20 @@ export default function AdminDashboard() {
     fetchSymptoms();
   }, []);
 
+  const { mutate } = useSWRConfig();
+
+  const addAllergen = async (allergen: AddAllergen$Params) => {
+    const data = await httpPost$AddAllergen("/api/allergens", allergen);
+    if (data.success) {
+      mutate(
+        (key) => Array.isArray(key) && key.includes("/api/allergens/brief")
+      );
+      toast.success(data.message);
+    } else {
+      toast.message(data.message);
+    }
+  };
+
   return (
     <div className="flex-grow bg-gradient-to-br from-cyan-100 via-blue-50 to-blue-100">
       <div className="container mx-auto p-6">
@@ -122,6 +136,7 @@ export default function AdminDashboard() {
               <h2 className="text-2xl font-semibold text-cyan-800">
                 {t("allergen management")}
               </h2>
+              <AddAllergenButton onAddAllergen={addAllergen} />
             </div>
             <AllergenList allowAdd={true} />
           </TabsContent>
