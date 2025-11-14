@@ -277,7 +277,8 @@ export function AllergenList({
             </Button>
 
             <div>
-              Page {page} of {Math.ceil(total / 100)}
+              Page {Math.min(page, Math.ceil(total / 100))} of{" "}
+              {Math.ceil(total / 100)}
             </div>
 
             <Button
