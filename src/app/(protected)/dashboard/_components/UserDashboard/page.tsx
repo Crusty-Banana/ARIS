@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DisplayPAP } from "@/modules/commands/GetPAPWithUserId/typing";
 import {
@@ -15,7 +15,6 @@ import { httpGet$GetCrossAllergenFromUserID } from "@/modules/commands/GetCrossA
 import { useLocale, useTranslations } from "next-intl";
 import {
   httpGet$GetActionPlans,
-  httpGet$GetAllergens,
   httpGet$GetSymptoms,
 } from "@/modules/commands/GetBusinessType/fetcher";
 import { toast } from "sonner";
@@ -29,8 +28,6 @@ import { SymptomList } from "@/components/container/SymptomList/page";
 import { AllergenList } from "@/components/container/AllergenList/page";
 import { SymptomDetailProvider } from "@/app/context/symptom-detail-context";
 import { BriefAllergen } from "@/modules/commands/GetBriefAllergens/typing";
-import { httpGet$GetRemainAllergens } from "@/modules/commands/GetRemainAllergens/fetcher";
-import { RemainAllergen } from "@/modules/commands/GetRemainAllergens/typing";
 
 export default function UserDashboard() {
   const t = useTranslations("userDashboard");

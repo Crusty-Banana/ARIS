@@ -27,8 +27,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AllergenItem } from "./_components/item";
 import { localizeAllergen } from "@/lib/client-side-utils";
-import { AddAllergen$Params } from "@/modules/commands/AddBusinessType/typing";
-import { httpPost$AddAllergen } from "@/modules/commands/AddBusinessType/fetcher";
 import { toast } from "sonner";
 import { UpdateAllergen$Params } from "@/modules/commands/UpdateBusinessType/typing";
 import { httpPut$UpdateAllergen } from "@/modules/commands/UpdateBusinessType/fetcher";
@@ -39,7 +37,6 @@ import { AllergenDetailModal } from "./_components/allergen-detail-modal";
 import { DetailAllergen } from "@/modules/commands/GetDetailAllergen/typing";
 import { httpGet$GetDetailAllergen } from "@/modules/commands/GetDetailAllergen/fetcher";
 import useSWR from "swr";
-import { AddAllergenButton } from "./_components/allergen-add-button";
 
 const useDebounce = (value: string, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);

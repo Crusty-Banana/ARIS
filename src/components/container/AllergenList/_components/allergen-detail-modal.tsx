@@ -15,7 +15,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { AllergenForm } from "./allergen-form";
 import { DetailAllergen } from "@/modules/commands/GetDetailAllergen/typing";
-import { BriefAllergen } from "@/modules/commands/GetBriefAllergens/typing";
 
 interface AllergenDetailModalProps {
   allergen: DetailAllergen;
@@ -24,6 +23,7 @@ interface AllergenDetailModalProps {
   onDelete?: (id: string) => void;
   actionPlan?: string;
   hideCrossAllergen?: boolean;
+  forAdmin?: boolean;
 }
 
 export function AllergenDetailModal({
@@ -33,6 +33,7 @@ export function AllergenDetailModal({
   onDelete,
   actionPlan,
   hideCrossAllergen,
+  forAdmin = false,
 }: AllergenDetailModalProps) {
   const t = useTranslations("detailModals");
   const localLanguage = useLocale() as Language;
@@ -74,8 +75,7 @@ export function AllergenDetailModal({
           <DialogTitle className="text-cyan-800 flex items-center justify-between pr-8">
             {t("allergenDetails")}
             <div className="flex gap-3">
-              {onUpdate &&
-                onDelete &&
+              {forAdmin &&
                 (!isEditing ? (
                   <>
                     <Button variant="outline" size="sm" onClick={startEdit}>
