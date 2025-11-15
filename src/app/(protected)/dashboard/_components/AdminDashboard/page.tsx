@@ -12,21 +12,12 @@ import {
   httpPost$AddAllergen,
   httpPost$AddSymptom,
 } from "@/modules/commands/AddBusinessType/fetcher";
-import {
-  UpdateAllergen$Params,
-  UpdateSymptom$Params,
-} from "@/modules/commands/UpdateBusinessType/typing";
-import {
-  httpPut$UpdateAllergen,
-  httpPut$UpdateSymptom,
-} from "@/modules/commands/UpdateBusinessType/fetcher";
-import {
-  httpDelete$DeleteAllergen,
-  httpDelete$DeleteSymptom,
-} from "@/modules/commands/DeleteBusinessType/fetcher";
+import { UpdateSymptom$Params } from "@/modules/commands/UpdateBusinessType/typing";
+import { httpPut$UpdateSymptom } from "@/modules/commands/UpdateBusinessType/fetcher";
+import { httpDelete$DeleteSymptom } from "@/modules/commands/DeleteBusinessType/fetcher";
 import { AddSymptomButton } from "@/components/container/SymptomList/_components/symptom-add-button";
 import { SymptomList } from "@/components/container/SymptomList/page";
-import { Allergen, Symptom } from "@/modules/business-types";
+import { Symptom } from "@/modules/business-types";
 import { AddAllergenButton } from "@/components/container/AllergenList/_components/allergen-add-button";
 import { AllergenList } from "@/components/container/AllergenList/page";
 import { toast } from "sonner";

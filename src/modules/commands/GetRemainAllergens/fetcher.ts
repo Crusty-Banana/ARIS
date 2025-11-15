@@ -19,6 +19,7 @@ export async function httpGet$GetRemainAllergens(
       }
     }
   });
+  console.log(`DEBUG ${searchParams}`);
   const response = await fetch(url + "?" + searchParams.toString());
   const text = await response.text();
   const data = JSON.parse(text);

@@ -3,6 +3,7 @@ import { checkAuth, processError } from "@/lib/utils";
 import { getDb } from "@/modules/mongodb";
 import { Db } from "mongodb";
 import { GetRemainAllergens$Params } from "@/modules/commands/GetRemainAllergens/typing";
+import { handler$GetRemainAllergens } from "@/modules/commands/GetRemainAllergens/handler";
 
 export async function GET(req: NextRequest) {
   try {
@@ -29,26 +30,16 @@ export async function GET(req: NextRequest) {
 
     // Handle action
     const db = await getDb();
-    const { result, total } = await handler$GetRemainAllergens(
-      db,
-      parsedBody.data
-    );
+    const { result } = await handler$GetRemainAllergens(db, parsedBody.data);
 
     return NextResponse.json(
       {
         result,
-        total,
-        message: `Allergens retrieved successfully, total ${total}`,
+        message: `Available allergens retrieved successfully.`,
       },
       { status: 200 }
     );
   } catch (error) {
     return processError(error);
   }
-}
-function handler$GetRemainAllergens(
-  db: Db,
-  data: any
-): { result: any; total: any } | PromiseLike<{ result: any; total: any }> {
-  throw new Error("Function not implemented.");
 }

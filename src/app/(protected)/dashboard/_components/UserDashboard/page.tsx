@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DisplayPAP } from "@/modules/commands/GetPAPWithUserId/typing";
 import {
@@ -28,8 +28,9 @@ import { httpPut$UpdatePAPWithUserId } from "@/modules/commands/UpdatePAPWithUse
 import { SymptomList } from "@/components/container/SymptomList/page";
 import { AllergenList } from "@/components/container/AllergenList/page";
 import { SymptomDetailProvider } from "@/app/context/symptom-detail-context";
+import { BriefAllergen } from "@/modules/commands/GetBriefAllergens/typing";
 import { httpGet$GetRemainAllergens } from "@/modules/commands/GetRemainAllergens/fetcher";
-import { httpGet$GetBriefAllergens } from "@/modules/commands/GetBriefAllergens/fetcher";
+import { RemainAllergen } from "@/modules/commands/GetRemainAllergens/typing";
 
 export default function UserDashboard() {
   const t = useTranslations("userDashboard");
@@ -51,18 +52,6 @@ export default function UserDashboard() {
   const [potentialCrossAllergens, setPotentialCrossAllergens] = useState<
     Allergen[]
   >([]);
-
-  const [availableAllergens, setAvailableAllegerns] = useState<Allergen[]>([]);
-
-  const fetchAvailableAllergens = useCallback(async (papResult: DisplayPAP) => {
-    const data = await httpGet$GetAllergens("/api/allergens", {});
-
-    if (data.success) {
-      setAvailableAllegerns(data.result as Allergen[]);
-    } else {
-      toast.error(data.message);
-    }
-  }, []);
 
   const fetchPotentialCrossAllergens = async () => {
     const data = await httpGet$GetCrossAllergenFromUserID("/api/cross");
@@ -91,25 +80,15 @@ export default function UserDashboard() {
     }
   };
 
-  const fetchAllergens = async () => {
-    const data = await httpGet$GetAllergens("/api/allergens", {});
-    if (data.success) {
-      setAllergens(data.result as Allergen[]);
-    } else {
-      toast.error(data.message);
-    }
-  };
-
   const fetchPAP = useCallback(async () => {
     const data = await httpGet$GetPAPWithUserId("api/user-pap");
     if (data.success) {
       setPAP(data.result!);
       await fetchPotentialCrossAllergens();
-      await fetchAvailableAllergens(data.result!);
     } else {
       toast.error(data.message);
     }
-  }, [fetchAvailableAllergens]);
+  }, []);
 
   const handlePAPUpdate = async (
     updateData: UpdatePAPWithUserIdFetcher$Params
@@ -122,7 +101,7 @@ export default function UserDashboard() {
     }
   };
 
-  const handleQuickAddFromWiki = async (inputAllergen: Allergen) => {
+  const handleQuickAddFromWiki = async (inputAllergen: BriefAllergen) => {
     const allergens = [
       ...pAP.allergens.map((allergen) =>
         PAPAllergen.parse({
@@ -186,7 +165,6 @@ export default function UserDashboard() {
                 availableSymptoms={symptoms}
                 actionPlans={actionPlans}
                 potentialCrossAllergens={potentialCrossAllergens}
-                availableAllergens={availableAllergens}
                 allergens={allergens}
                 onUpdate={handlePAPUpdate}
               />
@@ -214,7 +192,7 @@ export default function UserDashboard() {
               </TabsContent>
 
               <TabsContent value="wiki-allergens">
-                <AllergenList />
+                <AllergenList onQuickAdd={handleQuickAddFromWiki} />
               </TabsContent>
             </Tabs>
           </TabsContent>

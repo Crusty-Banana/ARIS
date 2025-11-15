@@ -300,7 +300,6 @@ export function AllergenList({
           onClose={() => setSelectedAllergen(null)}
           onUpdate={updateAllergen}
           onDelete={handleDelete}
-          allergens={allergens}
         />
       )}
     </>

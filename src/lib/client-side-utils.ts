@@ -1,6 +1,5 @@
 import {
   Allergen,
-  BriefAllergen,
   Language,
   Symptom,
   TimeFromContactToSymptom,

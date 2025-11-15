@@ -22,7 +22,6 @@ interface AllergenDetailModalProps {
   onClose: () => void;
   onUpdate?: (allergen: Allergen) => void;
   onDelete?: (id: string) => void;
-  allergens: BriefAllergen[];
   actionPlan?: string;
   hideCrossAllergen?: boolean;
 }
@@ -32,7 +31,6 @@ export function AllergenDetailModal({
   onClose,
   onUpdate,
   onDelete,
-  allergens,
   actionPlan,
   hideCrossAllergen,
 }: AllergenDetailModalProps) {
@@ -68,8 +66,6 @@ export function AllergenDetailModal({
       onClose();
     }
   };
-
-  console.log(allergens);
 
   return (
     <Dialog open={true} onOpenChange={onClose}>

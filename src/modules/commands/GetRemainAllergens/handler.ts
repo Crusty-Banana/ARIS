@@ -12,8 +12,15 @@ export async function handler$GetRemainAllergens(
     .collection("paps")
     .findOne({ userId: ObjectId.createFromHexString(userId) });
 
+  if (!resultPAP) {
+    return { result: resultPAP };
+  }
+
   const pap = PAP.parse({
     ...resultPAP,
+    id: resultPAP._id.toHexString(),
+    userId: resultPAP.userId.toHexString(),
+    publicId: resultPAP.publicId.toHexString(),
   });
 
   const excludedIds = pap.allergens.map((allergen) => allergen.allergenId);
@@ -39,6 +46,7 @@ export async function handler$GetRemainAllergens(
       ...doc,
       name: doc.name[lang],
       id: doc._id.toHexString(),
+      description: doc.description[lang],
     })
   );
 
