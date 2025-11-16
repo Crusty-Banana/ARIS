@@ -9,7 +9,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Allergen,
   AllergenType,
   Language,
   ObjectIdAsHexString,
@@ -24,7 +23,7 @@ import {
   Search,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AllergenItem } from "./_components/item";
 import { localizeAllergen } from "@/lib/client-side-utils";
 import { toast } from "sonner";
@@ -37,20 +36,7 @@ import { AllergenDetailModal } from "./_components/allergen-detail-modal";
 import { DetailAllergen } from "@/modules/commands/GetDetailAllergen/typing";
 import { httpGet$GetDetailAllergen } from "@/modules/commands/GetDetailAllergen/fetcher";
 import useSWR from "swr";
-
-const useDebounce = (value: string, delay: number) => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
-  return debouncedValue;
-};
+import { SearchBar } from "./_components/search-bar";
 
 interface AllergenListProps {
   onQuickAdd?: (allergen: BriefAllergen) => void;
@@ -73,18 +59,16 @@ export function AllergenList({
   const [type, setType] = useState<AllergenType>("");
   const [sort, setSort] = useState<"asc" | "desc">("asc");
 
-  const debouncedName = useDebounce(name, 300); // 300ms
-
   const params = useMemo(() => {
     // use useMemo to prevent re-creating params on re-renders
     return {
       page,
       sort,
       lang: localLanguage,
-      ...(debouncedName && { name: debouncedName }),
+      ...(name && { name: name }),
       ...(type !== "" && { type }),
     };
-  }, [page, sort, debouncedName, type]);
+  }, [page, sort, name, type, localLanguage]);
 
   const key = [`/api/allergens/brief`, params];
 
@@ -154,6 +138,11 @@ export function AllergenList({
     }
   };
 
+  const handleSearchChange = (newValue: string) => {
+    setName(newValue);
+    setPage(1);
+  };
+
   return (
     <>
       <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
@@ -164,7 +153,7 @@ export function AllergenList({
             </CardTitle>
           </div>
           <div className="flex gap-2">
-            <div className="relative flex-1">
+            {/* <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 value={name}
@@ -175,7 +164,13 @@ export function AllergenList({
                 placeholder={t("searchAllergens")}
                 className="pl-10 border-cyan-300 focus:border-cyan-500"
               />
-            </div>
+            </div> */}
+            <SearchBar
+              value={name}
+              setValue={handleSearchChange}
+              searchPlaceholder={t("searchAllergens")}
+              className={"relative flex-1"}
+            ></SearchBar>
             <Select
               value={type}
               onValueChange={(v) => {
@@ -212,7 +207,7 @@ export function AllergenList({
           </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2 max-h-96 overflow-y-auto">
+          <div className="space-y-2 h-96 overflow-y-auto">
             {allergens.map((allergen) => (
               <AllergenItem
                 allergen={localizeAllergen(

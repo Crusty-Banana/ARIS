@@ -3,24 +3,14 @@ import { LanguageDropdown } from "@/components/language-dropdown";
 import { NameInput } from "@/components/name-input";
 import { ScrollableSelect } from "@/components/scrollable-select";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   AllergenType,
   DisplayString,
   Language,
-  Allergen,
 } from "@/modules/business-types";
 import { useLocale, useTranslations } from "next-intl";
 import { RichTextEditor } from "@/components/rich-text-editor";
 import { BriefAllergen } from "@/modules/commands/GetBriefAllergens/typing";
-import { useCallback, useEffect, useState } from "react";
-import { httpGet$GetBriefAllergens } from "@/modules/commands/GetBriefAllergens/fetcher";
-import { toast } from "sonner";
+import { useState } from "react";
 
 interface AllergenFormProps {
   type: AllergenType;
@@ -49,32 +39,6 @@ export function AllergenForm({
 }: AllergenFormProps) {
   const t = useTranslations("allergenModal");
   const localLanguage = useLocale() as Language;
-
-  const [allergens, setAllergens] = useState<BriefAllergen[]>([]);
-
-  const fetchAllergens = useCallback(async () => {
-    const params = {
-      lang: localLanguage,
-    };
-
-    try {
-      const data = await httpGet$GetBriefAllergens(
-        "/api/allergens/brief",
-        params
-      );
-      if (data.success) {
-        setAllergens(data.result as BriefAllergen[]);
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error("Failed to fetch allergens.");
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchAllergens();
-  }, []);
 
   return (
     <>
@@ -125,9 +89,9 @@ export function AllergenForm({
         <div>
           <ScrollableSelect
             // TODO: sorting in front end?
-            items={allergens.sort((a, b) =>
-              a.name[localLanguage].localeCompare(b.name[localLanguage])
-            )}
+            // items={allergens.sort((a, b) =>
+            //   a.name[localLanguage].localeCompare(b.name[localLanguage])
+            // )}
             selectedItems={selectedCrossSensitivity}
             onSelectionChange={setSelectedCrossSensitivity}
             getItemId={(allergen: BriefAllergen) => allergen.id}

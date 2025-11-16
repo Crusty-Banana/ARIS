@@ -1,7 +1,6 @@
 import { Db, ObjectId } from "mongodb";
 import { BusisnessTypeCollection } from "@/modules/business-types";
 import { DetailAllergen, GetDetailAllergen$Params } from "./typing";
-import { describe } from "node:test";
 
 export async function handler$GetDetailAllergen(
   db: Db,

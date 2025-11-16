@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Paperclip, Search, UploadCloud, X } from "lucide-react";
 import {
-  Allergen,
   Language,
   Symptom,
   TestType,
@@ -31,7 +30,7 @@ import { TimeFromContactToSymptomDropdown } from "@/components/time-to-symptom-d
 import { RemainAllergen } from "@/modules/commands/GetRemainAllergens/typing";
 import { httpGet$GetRemainAllergens } from "@/modules/commands/GetRemainAllergens/fetcher";
 import useSWR from "swr";
-import { error } from "console";
+import { SearchBar } from "@/components/container/AllergenList/_components/search-bar";
 
 interface AddAllergenModalProps {
   open: boolean;
@@ -65,29 +64,12 @@ export function AddAllergenModal({
   const [isUploading, setIsUploading] = useState(false);
   const [testResultUrl, setTestResultUrl] = useState<string | undefined>();
 
-  // TODO: Duplicated func src\components\container\AllergenList\page.tsx
-  const useDebounce = (value: string, delay: number) => {
-    const [debouncedValue, setDebouncedValue] = useState(value);
-
-    useEffect(() => {
-      const handler = setTimeout(() => {
-        setDebouncedValue(value);
-      }, delay);
-      return () => {
-        clearTimeout(handler);
-      };
-    }, [value, delay]);
-    return debouncedValue;
-  };
-
-  const debouncedSearchTerm = useDebounce(searchTerm, 300);
-
   const params = useMemo(() => {
     return {
       lang: localLanguage,
-      name: debouncedSearchTerm,
+      name: searchTerm,
     };
-  }, [debouncedSearchTerm]);
+  }, [searchTerm, localLanguage]);
 
   const fetchAvailableAllergens = async () => {
     const data = await httpGet$GetRemainAllergens(
@@ -196,7 +178,13 @@ export function AddAllergenModal({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 {t("searchAllergen")}
               </label>
-              <div className="relative">
+              <SearchBar
+                value={searchTerm}
+                setValue={setSearchTerm}
+                className="relative"
+                searchPlaceholder={t("searchAllergen")}
+              ></SearchBar>
+              {/* <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   value={searchTerm}
@@ -204,7 +192,7 @@ export function AddAllergenModal({
                   placeholder={t("searchAllergen")}
                   className="pl-10 border-cyan-300 focus:border-cyan-500"
                 />
-              </div>
+              </div> */}
             </div>
 
             {/* Allergen list grows + has its own scroll */}

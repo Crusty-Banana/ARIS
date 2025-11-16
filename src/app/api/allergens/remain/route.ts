@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkAuth, processError } from "@/lib/utils";
 import { getDb } from "@/modules/mongodb";
-import { Db } from "mongodb";
 import { GetRemainAllergens$Params } from "@/modules/commands/GetRemainAllergens/typing";
 import { handler$GetRemainAllergens } from "@/modules/commands/GetRemainAllergens/handler";
 

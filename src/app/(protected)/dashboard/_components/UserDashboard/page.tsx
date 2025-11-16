@@ -44,7 +44,6 @@ export default function UserDashboard() {
     allergens: [],
   });
   const [symptoms, setSymptoms] = useState<Symptom[]>([]);
-  const [allergens, setAllergens] = useState<Allergen[]>([]);
   const [actionPlans, setActionPlans] = useState<ActionPlan[]>([]);
   const [potentialCrossAllergens, setPotentialCrossAllergens] = useState<
     Allergen[]
@@ -162,7 +161,6 @@ export default function UserDashboard() {
                 availableSymptoms={symptoms}
                 actionPlans={actionPlans}
                 potentialCrossAllergens={potentialCrossAllergens}
-                allergens={allergens}
                 onUpdate={handlePAPUpdate}
               />
             </SymptomDetailProvider>

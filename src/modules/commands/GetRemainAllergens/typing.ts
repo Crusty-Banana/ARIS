@@ -1,5 +1,5 @@
 import { Allergen, FetcherResult, Language } from "@/modules/business-types";
-import z, { string } from "zod";
+import z from "zod";
 
 export const RemainAllergen = Allergen.pick({
   id: true,

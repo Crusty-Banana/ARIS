@@ -1,4 +1,4 @@
-import { Allergen, FetcherResult, Language } from "@/modules/business-types";
+import { Allergen, FetcherResult } from "@/modules/business-types";
 import z from "zod";
 
 export const DetailAllergen = Allergen.pick({

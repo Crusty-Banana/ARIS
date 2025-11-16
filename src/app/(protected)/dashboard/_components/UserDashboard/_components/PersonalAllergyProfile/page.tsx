@@ -41,7 +41,6 @@ import {
   UpdatePAPAllergen$Params,
   UpdatePAPWithUserIdFetcher$Params,
 } from "@/modules/commands/UpdatePAPWithUserId/typing";
-// import { SymptomDetailModal } from "@/components/container/SymptomList/_components/symptom-detail-modal"
 import {
   formatTimeFromContactToSymptom,
   getSeverityColor,
@@ -56,7 +55,6 @@ import { toast } from "sonner";
 interface PersonalAllergyProfileProps {
   pAP: DisplayPAP;
   availableSymptoms: Symptom[];
-  allergens: Allergen[];
   potentialCrossAllergens: Allergen[];
   actionPlans: ActionPlan[];
   onUpdate: (params: UpdatePAPWithUserIdFetcher$Params) => void;
@@ -67,7 +65,6 @@ export function PersonalAllergyProfile({
   availableSymptoms,
   potentialCrossAllergens,
   actionPlans,
-  allergens,
   onUpdate,
 }: PersonalAllergyProfileProps) {
   const t = useTranslations("personalAllergyProfile");
