@@ -10,7 +10,9 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { RichTextEditor } from "@/components/rich-text-editor";
 import { BriefAllergen } from "@/modules/commands/GetBriefAllergens/typing";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { httpGet$GetBriefAllergens } from "@/modules/commands/GetBriefAllergens/fetcher";
+import { toast } from "sonner";
 
 interface AllergenFormProps {
   type: AllergenType;
@@ -39,6 +41,34 @@ export function AllergenForm({
 }: AllergenFormProps) {
   const t = useTranslations("allergenModal");
   const localLanguage = useLocale() as Language;
+
+  const [allergens, setAllergens] = useState<BriefAllergen[]>([]);
+
+  // TODO: replace with swr version
+  const fetchAllergens = useCallback(async () => {
+    const params = {
+      lang: localLanguage,
+    };
+
+    try {
+      const data = await httpGet$GetBriefAllergens(
+        "/api/allergens/brief",
+        params
+      );
+      if (data.success) {
+        setAllergens(data.result as BriefAllergen[]);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error("Failed to fetch allergens.");
+      console.error(error);
+    }
+  }, [localLanguage]);
+
+  useEffect(() => {
+    fetchAllergens();
+  }, [fetchAllergens]);
 
   return (
     <>
@@ -89,9 +119,9 @@ export function AllergenForm({
         <div>
           <ScrollableSelect
             // TODO: sorting in front end?
-            // items={allergens.sort((a, b) =>
-            //   a.name[localLanguage].localeCompare(b.name[localLanguage])
-            // )}
+            items={allergens.sort((a, b) =>
+              a.name[localLanguage].localeCompare(b.name[localLanguage])
+            )}
             selectedItems={selectedCrossSensitivity}
             onSelectionChange={setSelectedCrossSensitivity}
             getItemId={(allergen: BriefAllergen) => allergen.id}

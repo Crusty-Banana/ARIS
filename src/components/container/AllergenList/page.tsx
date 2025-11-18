@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -20,10 +19,9 @@ import {
   ChevronLast,
   ChevronLeft,
   ChevronRight,
-  Search,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { AllergenItem } from "./_components/item";
 import { localizeAllergen } from "@/lib/client-side-utils";
 import { toast } from "sonner";

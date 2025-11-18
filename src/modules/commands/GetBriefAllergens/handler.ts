@@ -52,11 +52,5 @@ export async function handler$GetBriefAllergens(
 
   const count = countDoc.length ? countDoc[0].count : 0;
 
-  page
-    ? console.log(
-        `Allergens fetched: from ${(page - 1) * 100 + 1}-${page * 100} in ${count}`
-      )
-    : console.log("Not specified page!");
-
   return { result: parsedDocs, total: count };
 }
