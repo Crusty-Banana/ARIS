@@ -19,6 +19,7 @@ export const GetBriefAllergens$Params = z.object({
   type: AllergenType.optional(),
   sort: z.enum(["asc", "desc"]).default("asc").optional(),
   page: z.coerce.number().optional(),
+  limit: z.coerce.number().optional(),
   lang: Language.default("en"),
 });
 export type GetBriefAllergens$Params = z.infer<typeof GetBriefAllergens$Params>;

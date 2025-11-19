@@ -9,10 +9,14 @@ import {
 } from "@/modules/business-types";
 import { useLocale, useTranslations } from "next-intl";
 import { RichTextEditor } from "@/components/rich-text-editor";
-import { BriefAllergen } from "@/modules/commands/GetBriefAllergens/typing";
-import { useCallback, useEffect, useState } from "react";
+import {
+  BriefAllergen,
+  GetBriefAllergens$Params,
+} from "@/modules/commands/GetBriefAllergens/typing";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { httpGet$GetBriefAllergens } from "@/modules/commands/GetBriefAllergens/fetcher";
 import { toast } from "sonner";
+import useSWR from "swr";
 
 interface AllergenFormProps {
   type: AllergenType;
@@ -42,33 +46,20 @@ export function AllergenForm({
   const t = useTranslations("allergenModal");
   const localLanguage = useLocale() as Language;
 
-  const [allergens, setAllergens] = useState<BriefAllergen[]>([]);
-
-  // TODO: replace with swr version
-  const fetchAllergens = useCallback(async () => {
-    const params = {
-      lang: localLanguage,
-    };
-
-    try {
-      const data = await httpGet$GetBriefAllergens(
-        "/api/allergens/brief",
-        params
-      );
-      if (data.success) {
-        setAllergens(data.result as BriefAllergen[]);
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error("Failed to fetch allergens.");
-      console.error(error);
+  const fetchAllergens = async (
+    url: string,
+    params: GetBriefAllergens$Params
+  ) => {
+    const data = await httpGet$GetBriefAllergens(
+      "/api/allergens/brief",
+      params
+    );
+    if (data.success) {
+      return data;
+    } else {
+      throw new Error(data?.message);
     }
-  }, [localLanguage]);
-
-  useEffect(() => {
-    fetchAllergens();
-  }, [fetchAllergens]);
+  };
 
   return (
     <>
@@ -118,11 +109,7 @@ export function AllergenForm({
       <div>
         <div>
           <ScrollableSelect
-            // TODO: sorting in front end?
-            items={allergens.sort((a, b) =>
-              a.name[localLanguage].localeCompare(b.name[localLanguage])
-            )}
-            selectedItems={selectedCrossSensitivity}
+            selectedItemIDs={selectedCrossSensitivity}
             onSelectionChange={setSelectedCrossSensitivity}
             getItemId={(allergen: BriefAllergen) => allergen.id}
             getItemLabel={(allergen: BriefAllergen) =>
@@ -130,6 +117,8 @@ export function AllergenForm({
             }
             label={t("crossSensitivity")}
             maxHeight="max-h-32"
+            swrURLKey="/api/allergens/brief"
+            itemFetcher={fetchAllergens}
           />
         </div>
       </div>

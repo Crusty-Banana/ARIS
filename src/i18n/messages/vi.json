@@ -425,12 +425,13 @@
       "descriptionPlaceholder": "Không tìm thấy mô tả..."
     },
     "description": "Mô tả",
-        "cardiovascular": "Tuần hoàn",
+    "cardiovascular": "Tuần hoàn",
     "neurologic": "Thần kinh",
     "digestive": "Tiêu hóa",
     "skin": "Ngoài da",
     "organ": "Bộ phận",
-    "selectOrgan": "Chọn bộ phận"
+    "selectOrgan": "Chọn bộ phận",
+    "loadMore": "Tải thêm"
   },
   "profile": {
     "title": "Hồ sơ người dùng",

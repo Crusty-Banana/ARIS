@@ -151,18 +151,6 @@ export function AllergenList({
             </CardTitle>
           </div>
           <div className="flex gap-2">
-            {/* <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                value={name}
-                onChange={(e) => {
-                  setName(e.target.value);
-                  setPage(1);
-                }}
-                placeholder={t("searchAllergens")}
-                className="pl-10 border-cyan-300 focus:border-cyan-500"
-              />
-            </div> */}
             <SearchBar
               value={name}
               setValue={handleSearchChange}
@@ -290,6 +278,7 @@ export function AllergenList({
           onClose={() => setSelectedAllergen(null)}
           onUpdate={updateAllergen}
           onDelete={handleDelete}
+          forAdmin={true}
         />
       )}
     </>

@@ -6,7 +6,7 @@ export async function handler$GetBriefAllergens(
   db: Db,
   params: GetBriefAllergens$Params
 ) {
-  const { ids, lang, name, type, sort, page } = params;
+  const { ids, lang, name, type, sort, page, limit } = params;
 
   const filterTerm = [
     {
@@ -24,11 +24,13 @@ export async function handler$GetBriefAllergens(
     },
   ];
 
-  const pagingTerm = page ? [{ $skip: (page - 1) * 100 }, { $limit: 100 }] : [];
+  const pagingTerm = page
+    ? [{ $skip: (page - 1) * 100 }, { $limit: limit ? limit : 100 }]
+    : [];
 
   const sortTerm = [
     {
-      $sort: { [`name.${lang}`]: sort === "asc" ? 1 : -1 },
+      $sort: { [`name.${lang}`]: sort === "desc" ? -1 : 1 }, // default to 'asc'
     },
   ];
 
