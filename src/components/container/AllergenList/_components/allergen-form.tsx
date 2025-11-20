@@ -13,10 +13,7 @@ import {
   BriefAllergen,
   GetBriefAllergens$Params,
 } from "@/modules/commands/GetBriefAllergens/typing";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { httpGet$GetBriefAllergens } from "@/modules/commands/GetBriefAllergens/fetcher";
-import { toast } from "sonner";
-import useSWR from "swr";
 
 interface AllergenFormProps {
   type: AllergenType;
@@ -50,10 +47,7 @@ export function AllergenForm({
     url: string,
     params: GetBriefAllergens$Params
   ) => {
-    const data = await httpGet$GetBriefAllergens(
-      "/api/allergens/brief",
-      params
-    );
+    const data = await httpGet$GetBriefAllergens(url, params);
     if (data.success) {
       return data;
     } else {

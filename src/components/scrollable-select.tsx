@@ -4,8 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { X, Search, Loader2 } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { SearchBar } from "./container/AllergenList/_components/search-bar";
 import { Language } from "@/modules/business-types";
@@ -21,6 +20,7 @@ interface ScrollableSelectProps<T> {
   swrURLKey: string;
   itemFetcher: (
     url: string,
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     params: any
   ) => Promise<{ result?: T[]; total?: number }>;
 }
