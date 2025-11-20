@@ -80,7 +80,7 @@ export function ScrollableSelect<T>({
   );
 
   const { data: initialData } = useSWR(
-    initialIDsToFetch.length > 0 ? [swrURLKey, initialIDsToFetch] : null,
+    initialIDsToFetch.length > 0 ? [swrURLKey, initialFetchParams] : null,
     ([url, params]) => itemFetcher(url, params),
     {
       revalidateIfStale: false,
