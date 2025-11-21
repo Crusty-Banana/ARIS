@@ -8,11 +8,9 @@ import z from "zod";
 
 const BaseBriefSymptom = Symptom.pick({
   id: true,
-  severity: true, // assuming you have this
-  // Do NOT pick 'name' here, or pick it and overwrite it below
+  severity: true,
 });
 
-// 2. Extend it to enforce that 'name' is a string
 export const BriefSymptom = BaseBriefSymptom.extend({
   name: z.string(),
 });

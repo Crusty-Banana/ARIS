@@ -115,11 +115,7 @@ export default function AdminDashboard() {
               </h2>
               <AddSymptomButton onAddSymptom={addSymptom} />
             </div>
-            <SymptomList
-              symptoms={symptoms}
-              onUpdate={updateSymptom}
-              onDelete={deleteSymptom}
-            />
+            <SymptomList onUpdate={updateSymptom} onDelete={deleteSymptom} />
           </TabsContent>
 
           <TabsContent value="allergens" className="space-y-6">
