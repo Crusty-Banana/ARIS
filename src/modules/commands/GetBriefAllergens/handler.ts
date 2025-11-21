@@ -47,7 +47,7 @@ export async function handler$GetBriefAllergens(
     .collection(BusisnessTypeCollection.allergens)
     .aggregate([
       ...filterTerm,
-      // ...pagingTerm, TODO: Need confirm, should paging be here? (Max returned value is page size!)
+      ...pagingTerm,
       { $group: { _id: "", count: { $sum: 1 } } },
     ])
     .toArray();
