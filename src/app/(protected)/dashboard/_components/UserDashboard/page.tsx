@@ -183,7 +183,7 @@ export default function UserDashboard() {
               </TabsList>
 
               <TabsContent value="wiki-symptoms">
-                <SymptomList symptoms={symptoms} />
+                <SymptomList />
               </TabsContent>
 
               <TabsContent value="wiki-allergens">

@@ -12,12 +12,8 @@ import {
   httpPost$AddAllergen,
   httpPost$AddSymptom,
 } from "@/modules/commands/AddBusinessType/fetcher";
-import { UpdateSymptom$Params } from "@/modules/commands/UpdateBusinessType/typing";
-import { httpPut$UpdateSymptom } from "@/modules/commands/UpdateBusinessType/fetcher";
-import { httpDelete$DeleteSymptom } from "@/modules/commands/DeleteBusinessType/fetcher";
 import { AddSymptomButton } from "@/components/container/SymptomList/_components/symptom-add-button";
 import { SymptomList } from "@/components/container/SymptomList/page";
-import { Symptom } from "@/modules/business-types";
 import { AddAllergenButton } from "@/components/container/AllergenList/_components/allergen-add-button";
 import { AllergenList } from "@/components/container/AllergenList/page";
 import { toast } from "sonner";
@@ -25,48 +21,6 @@ import { useSWRConfig } from "swr";
 
 export default function AdminDashboard() {
   const t = useTranslations("adminDashboard");
-  const [symptoms, setSymptoms] = useState<Symptom[]>([]);
-
-  const fetchSymptoms = async () => {
-    const data = await httpGet$GetSymptoms("/api/symptoms", {});
-    if (data.success) {
-      setSymptoms(data.result as Symptom[]);
-    } else {
-      toast.error(data.message);
-    }
-  };
-
-  const addSymptom = async (symptom: AddSymptom$Params) => {
-    const data = await httpPost$AddSymptom("/api/symptoms", symptom);
-    if (data.success) {
-      await fetchSymptoms();
-    } else {
-      toast.error(data.message);
-    }
-  };
-
-  const updateSymptom = async (symptomData: UpdateSymptom$Params) => {
-    const { id, ...rest } = symptomData;
-    const data = await httpPut$UpdateSymptom(`/api/symptoms/${id}`, rest);
-    if (data.success) {
-      await fetchSymptoms();
-    } else {
-      toast.error(data.message);
-    }
-  };
-
-  const deleteSymptom = async (id: string) => {
-    const data = await httpDelete$DeleteSymptom(`/api/symptoms/${id}`);
-    if (data.success) {
-      await fetchSymptoms();
-    } else {
-      toast.error(data.message);
-    }
-  };
-
-  useEffect(() => {
-    fetchSymptoms();
-  }, []);
 
   const { mutate } = useSWRConfig();
 
@@ -78,7 +32,19 @@ export default function AdminDashboard() {
       );
       toast.success(data.message);
     } else {
-      toast.message(data.message);
+      toast.error(data.message);
+    }
+  };
+
+  const addSymptom = async (symptom: AddSymptom$Params) => {
+    const data = await httpPost$AddSymptom("/api/symptoms", symptom);
+    if (data.success) {
+      mutate(
+        (key) => Array.isArray(key) && key.includes("/api/symptoms/brief")
+      );
+      toast.success(data.message);
+    } else {
+      toast.error(data.message);
     }
   };
 
@@ -115,7 +81,7 @@ export default function AdminDashboard() {
               </h2>
               <AddSymptomButton onAddSymptom={addSymptom} />
             </div>
-            <SymptomList onUpdate={updateSymptom} onDelete={deleteSymptom} />
+            <SymptomList />
           </TabsContent>
 
           <TabsContent value="allergens" className="space-y-6">

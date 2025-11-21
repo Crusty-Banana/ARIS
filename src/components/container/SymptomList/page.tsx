@@ -27,16 +27,15 @@ import { httpGet$GetBriefSymptoms } from "@/modules/commands/GetBriefSymptoms/fe
 import useSWR from "swr";
 import { toast } from "sonner";
 import { httpGet$GetDetailSymptom } from "@/modules/commands/GetDetailSymptom/fetcher";
-
-interface SymptomListProps {
-  onUpdate?: (symptom: Symptom) => void;
-  onDelete?: (id: string) => void;
-}
+import { UpdateSymptom$Params } from "@/modules/commands/UpdateBusinessType/typing";
+import { httpPut$UpdateSymptom } from "@/modules/commands/UpdateBusinessType/fetcher";
+import { httpDelete$DeleteSymptom } from "@/modules/commands/DeleteBusinessType/fetcher";
+import { SearchBar } from "../AllergenList/_components/search-bar";
 
 type SymptomSortOption = "name" | "severity";
 type SortDirection = "asc" | "desc";
 
-export function SymptomList({ onUpdate, onDelete }: SymptomListProps) {
+export function SymptomList() {
   const t = useTranslations("common");
   const localLanguage = useLocale() as Language;
   const [searchTerm, setSearchTerm] = useState("");
@@ -87,7 +86,7 @@ export function SymptomList({ onUpdate, onDelete }: SymptomListProps) {
   const handleSelect = async (id: string) => {
     const params = { id };
     const data = await httpGet$GetDetailSymptom(
-      `/api/symptom/detail/${id}`,
+      `/api/symptoms/detail/${id}`,
       params
     );
     if (data.success) {
@@ -97,19 +96,31 @@ export function SymptomList({ onUpdate, onDelete }: SymptomListProps) {
     }
   };
 
-  const handleDelete = onDelete
-    ? (id: string) => {
-        if (confirm(t("detailModals.areYouSureSymptomDelete"))) {
-          onDelete(id);
-        }
-      }
-    : undefined;
+  const updateSymptom = async (allergenData: UpdateSymptom$Params) => {
+    const { id, ...rest } = allergenData;
+    const data = await httpPut$UpdateSymptom(`/api/symptoms/${id}`, rest);
+    if (data.success) {
+      mutate();
+      toast.success(data.message);
+    } else {
+      toast.error(data.message);
+    }
+  };
 
-  const handleEdit = onUpdate
-    ? (symptom: Symptom) => {
-        onUpdate(symptom);
-      }
-    : undefined;
+  const deleteSymptom = async (id: string) => {
+    const data = await httpDelete$DeleteSymptom(`/api/symptoms/${id}`);
+    if (data.success) {
+      mutate();
+      toast.success(data.message);
+    } else {
+      toast.error(data.message);
+    }
+  };
+
+  const handleSearchChange = (newValue: string) => {
+    setSearchTerm(newValue);
+    setPage(1);
+  };
 
   return (
     <>
@@ -119,15 +130,12 @@ export function SymptomList({ onUpdate, onDelete }: SymptomListProps) {
             {t("symptoms")}
           </CardTitle>
           <div className="flex gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder={t("searchSymptoms")}
-                className="pl-10 border-cyan-300 focus:border-cyan-500"
-              />
-            </div>
+            <SearchBar
+              value={searchTerm}
+              setValue={handleSearchChange}
+              searchPlaceholder={t("searchAllergens")}
+              className={"relative flex-1"}
+            ></SearchBar>
             <Select
               value={sortBy}
               onValueChange={(value) => setSortBy(value as SymptomSortOption)}
@@ -228,8 +236,8 @@ export function SymptomList({ onUpdate, onDelete }: SymptomListProps) {
         <SymptomDetailModal
           symptom={selectedSymptom}
           onClose={() => setSelectedSymptom(null)}
-          onUpdate={handleEdit}
-          onDelete={handleDelete}
+          onUpdate={updateSymptom}
+          onDelete={deleteSymptom}
         />
       )}
     </>
