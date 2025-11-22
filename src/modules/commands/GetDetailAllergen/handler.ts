@@ -8,38 +8,62 @@ export async function handler$GetDetailAllergen(
 ) {
   const { id } = params;
 
-  const resultAllergen = await db
+  const pipeline = [
+    {
+      $match: { _id: ObjectId.createFromHexString(id) },
+    },
+    {
+      $lookup: {
+        from: BusisnessTypeCollection.allergens,
+        let: { crossSenIds: "$crossSensitivityId" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $in: [
+                  "$_id",
+                  {
+                    $map: {
+                      input: { $ifNull: ["$$crossSenIds", []] },
+                      as: "csid",
+                      in: { $toObjectId: "$$csid" },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          {
+            $project: { name: 1, _id: 1 },
+          },
+        ],
+        as: "crossSensitivities",
+      },
+    },
+  ];
+
+  const results = await db
     .collection(BusisnessTypeCollection.allergens)
-    .findOne({ _id: ObjectId.createFromHexString(id) });
+    .aggregate(pipeline)
+    .toArray();
+
+  const resultAllergen = results[0];
 
   if (!resultAllergen) {
-    return { result: resultAllergen };
+    return { result: null };
   }
-
-  const resultCrossSensitivities = await db
-    .collection(BusisnessTypeCollection.allergens)
-    .aggregate([
-      {
-        $match: {
-          _id: {
-            $in: resultAllergen.crossSensitivityId.map((id: string) =>
-              ObjectId.createFromHexString(id)
-            ),
-          },
-        },
-      },
-    ])
-    .toArray();
 
   const parsedDocs = DetailAllergen.parse({
     id: resultAllergen._id.toHexString(),
     ...resultAllergen,
-    crossSensitivities: resultCrossSensitivities.map((sensitivity) => {
-      return {
-        id: sensitivity._id.toHexString(),
-        name: sensitivity.name,
-      };
-    }),
+    crossSensitivities: resultAllergen.crossSensitivities.map(
+      (sensitivity: any) => {
+        return {
+          id: sensitivity._id.toHexString(),
+          name: sensitivity.name,
+        };
+      }
+    ),
   });
 
   return { result: parsedDocs };
