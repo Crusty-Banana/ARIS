@@ -45,11 +45,7 @@ export async function handler$GetBriefAllergens(
 
   const countDoc = await db
     .collection(BusisnessTypeCollection.allergens)
-    .aggregate([
-      ...filterTerm,
-      ...pagingTerm,
-      { $group: { _id: "", count: { $sum: 1 } } },
-    ])
+    .aggregate([...filterTerm, { $group: { _id: "", count: { $sum: 1 } } }])
     .toArray();
 
   const count = countDoc.length ? countDoc[0].count : 0;

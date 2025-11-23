@@ -45,32 +45,3 @@ export async function GET(req: NextRequest) {
     return processError(error);
   }
 }
-
-export async function POST(req: NextRequest) {
-  try {
-    // Check Authentication
-    const authCheck = await checkAdmin(req);
-    if (!authCheck.success) return authCheck.result;
-
-    // Validate Input
-    const body = await req.json();
-    const parsedBody = AddAllergen$Params.safeParse(body);
-    if (!parsedBody.success) {
-      return NextResponse.json(
-        { message: parsedBody.error.message || "Invalid params" },
-        { status: 400 }
-      );
-    }
-
-    // Handle action
-    const db = await getDb();
-    const { result } = await handler$AddAllergen(db, parsedBody.data);
-
-    return NextResponse.json(
-      { result, message: "Allergen created successfully" },
-      { status: 200 }
-    );
-  } catch (error) {
-    return processError(error);
-  }
-}
