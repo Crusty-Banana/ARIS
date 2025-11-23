@@ -405,6 +405,7 @@
     "mildActionPlan": "Xử trí triệu chứng nhẹ",
     "severeActionPlan": "Xử trí triệu chứng nghiêm trọng",
     "name": "Tên",
+    "save": "Lưu",
     "enterName": "Nhập tên...",
     "allTypes": "Tất cả các loại",
     "treatment": "Điều trị",

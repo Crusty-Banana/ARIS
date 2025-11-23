@@ -18,10 +18,23 @@ interface ActionPlanListProps {
 export function ActionPlanList({ actionPlans, onUpdate }: ActionPlanListProps) {
   const t = useTranslations("common");
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [selectedLanguage, setSelectedLanguage] = useState<Language>("en");
+
+  const [selectedLanguages, setSelectedLanguages] = useState<
+    Record<string, Language>
+  >({});
+
   const [editingPlans, setEditingPlans] = useState<Record<string, ActionPlan>>(
     Object.fromEntries(actionPlans.map((p) => [p.id, p]))
   );
+
+  const getLanguage = (id: string): Language => selectedLanguages[id] || "en";
+
+  const handleLanguageSelect = (id: string, lang: Language) => {
+    setSelectedLanguages((prev) => ({
+      ...prev,
+      [id]: lang,
+    }));
+  };
 
   const handleChange = (id: string, lang: Language, value: string) => {
     setEditingPlans((prev) => ({
@@ -34,14 +47,14 @@ export function ActionPlanList({ actionPlans, onUpdate }: ActionPlanListProps) {
   };
 
   const handleEdit = (id: string) => setEditingId(id);
-const handleCancel = (id: string) => {
-    // Revert to original prop data for that plan
+
+  const handleCancel = (id: string) => {
     setEditingPlans((prev) => ({
-        ...prev,
-        [id]: actionPlans.find((p) => p.id === id)!,
+      ...prev,
+      [id]: actionPlans.find((p) => p.id === id)!,
     }));
     setEditingId(null);
-    };
+  };
 
   const handleSave = async (id: string) => {
     if (!onUpdate) return;
@@ -60,6 +73,7 @@ const handleCancel = (id: string) => {
         .sort((a, b) => a.severity - b.severity)
         .map((plan) => {
           const isEditing = editingId === plan.id;
+          const currentLang = getLanguage(plan.id);
 
           return (
             <Card
@@ -75,8 +89,10 @@ const handleCancel = (id: string) => {
                   </span>
                   <div className="flex items-center gap-2">
                     <LanguageDropdown
-                      selectedLanguage={selectedLanguage}
-                      setSelectedLanguage={setSelectedLanguage}
+                      selectedLanguage={currentLang}
+                      setSelectedLanguage={(lang) =>
+                        handleLanguageSelect(plan.id, lang)
+                      }
                     />
                     {isEditing ? (
                       <>
@@ -112,13 +128,13 @@ const handleCancel = (id: string) => {
                 {isEditing ? (
                   <div className="space-y-4">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      {selectedLanguage === "en" ? "English" : "Tiếng Việt"}
+                      {currentLang === "en" ? "English" : "Tiếng Việt"}
                     </label>
                     <div className="border border-cyan-300 rounded-md p-2 bg-white">
                       <RichTextEditor
-                        content={plan.text[selectedLanguage]}
+                        content={plan.text[currentLang]}
                         onChange={(value) =>
-                          handleChange(plan.id, selectedLanguage, value)
+                          handleChange(plan.id, currentLang, value)
                         }
                       />
                     </div>
@@ -127,7 +143,7 @@ const handleCancel = (id: string) => {
                   <div
                     className="p-2 bg-white border border-cyan-200 rounded-md prose prose-sm max-w-none min-h-[80px]"
                     dangerouslySetInnerHTML={{
-                      __html: plan.text[selectedLanguage],
+                      __html: plan.text[currentLang],
                     }}
                   />
                 )}
