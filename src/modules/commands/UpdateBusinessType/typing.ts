@@ -1,4 +1,5 @@
 import {
+  ActionPlan,
   Allergen,
   PAP,
   Recommendation,
@@ -18,6 +19,9 @@ export type UpdatePAP$Params = z.infer<typeof UpdatePAP$Params>;
 
 export const UpdateSymptom$Params = Symptom.partial().required({ id: true });
 export type UpdateSymptom$Params = z.infer<typeof UpdateSymptom$Params>;
+
+export const UpdateActionPlan$Params = ActionPlan.partial().required({ id: true });
+export type UpdateActionPlan$Params = z.infer<typeof UpdateActionPlan$Params>;
 
 export const UpdateRecommendation$Params = Recommendation.partial().required({
   id: true,
@@ -44,6 +48,13 @@ export const UpdateSymptomFetcher$Params = UpdateSymptom$Params.omit({
 });
 export type UpdateSymptomFetcher$Params = z.infer<
   typeof UpdateSymptomFetcher$Params
+>;
+
+export const UpdateActionPlanFetcher$Params = UpdateActionPlan$Params.omit({
+  id: true,
+});
+export type UpdateActionPlanFetcher$Params = z.infer<
+  typeof UpdateActionPlanFetcher$Params
 >;
 
 export const UpdateRecommendationFetcher$Params =

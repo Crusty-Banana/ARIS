@@ -7,7 +7,9 @@
     "allergies": "Allergies",
     "symptom management": "Symptom management",
     "allergy management": "Allergy management",
-    "allergen management": "Allergen management"
+    "allergen management": "Allergen management",
+    "action-plans":"Action plans",
+    "action-plan management": "Action plan management"
   },
   "userDashboard": {
     "title": "User Dashboard",
@@ -384,6 +386,7 @@
     "cancel": "Cancel",
     "food": "Food",
     "drug": "Drug",
+    "edit": "Edit",
     "respiratory": "Respiratory",
     "venom": "Venom",
     "miscellaneous": "Misc",
@@ -393,6 +396,8 @@
     "name": "Name",
     "enterName": "Enter name...",
     "allTypes": "All Types",
+    "mildActionPlan": "Action plan for mild symptoms",
+    "severeActionPlan": "Action plan for severe symptoms",
     "treatment": "Treatment",
     "sortByPrevalence": "Sort by Prevalence",
     "sortByName": "Sort by Name",
