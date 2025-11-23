@@ -24,18 +24,6 @@ export default function AdminDashboard() {
 
   const { mutate } = useSWRConfig();
 
-  const addAllergen = async (allergen: AddAllergen$Params) => {
-    const data = await httpPost$AddAllergen("/api/allergens", allergen);
-    if (data.success) {
-      mutate(
-        (key) => Array.isArray(key) && key.includes("/api/allergens/brief")
-      );
-      toast.success(data.message);
-    } else {
-      toast.error(data.message);
-    }
-  };
-
   const addSymptom = async (symptom: AddSymptom$Params) => {
     const data = await httpPost$AddSymptom("/api/symptoms", symptom);
     if (data.success) {
@@ -89,7 +77,7 @@ export default function AdminDashboard() {
               <h2 className="text-2xl font-semibold text-cyan-800">
                 {t("allergen management")}
               </h2>
-              <AddAllergenButton onAddAllergen={addAllergen} />
+              <AddAllergenButton />
             </div>
             <AllergenList />
           </TabsContent>
