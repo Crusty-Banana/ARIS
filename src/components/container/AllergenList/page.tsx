@@ -208,14 +208,8 @@ export function AllergenList({
             )}
           </div>
         </CardContent>
-        <div className="flex justify-center items-center pt-4 px-8">
-          <div className="flex-1">
-            <span>
-              Showing {Math.min((page - 1) * 100 + 1, total)}-
-              {Math.min(total, page * 100)} from {total}
-            </span>
-          </div>
-          <div className="flex flex-1 items-center space-x-2">
+        <div className="flex justify-center pt-4">
+          <div className="flex grow-0 space-x-2">
             <Button
               variant="outline"
               className="h-8 w-8 p-0"
@@ -257,7 +251,6 @@ export function AllergenList({
               <ChevronLast className="h-4 w-4" />
             </Button>
           </div>
-          <div className="flex-1"></div>
         </div>
       </Card>
       {selectedAllergen !== null && (
