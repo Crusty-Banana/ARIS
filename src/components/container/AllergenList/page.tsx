@@ -63,7 +63,7 @@ export function AllergenList({
       page,
       sort,
       lang: localLanguage,
-      ...(name && { name: name }),
+      name,
       ...(type !== "" && { type }),
     };
   }, [page, sort, name, type, localLanguage]);
@@ -117,10 +117,6 @@ export function AllergenList({
     } else {
       toast.error(data.message);
     }
-  };
-
-  const handleDelete = (id: string) => {
-    deleteAllergen(id);
   };
 
   const handleSelect = async (id: string) => {
@@ -277,7 +273,7 @@ export function AllergenList({
           allergen={selectedAllergen}
           onClose={() => setSelectedAllergen(null)}
           onUpdate={updateAllergen}
-          onDelete={handleDelete}
+          onDelete={deleteAllergen}
           forAdmin={true}
         />
       )}
