@@ -192,15 +192,7 @@ export function AllergenList({
           <div className="space-y-2 h-96 overflow-y-auto">
             {allergens.map((allergen) => (
               <AllergenItem
-                allergen={localizeAllergen(
-                  {
-                    // TODO: Minh: I'm just parsing dummy fields, not sure if we should have a BriefLocalizedAllergen?
-                    ...allergen,
-                    description: { en: "", vi: "" },
-                    crossSensitivityId: [],
-                  },
-                  localLanguage
-                )}
+                allergen={allergen}
                 handleQuickAdd={
                   onQuickAdd ? () => onQuickAdd(allergen) : undefined
                 }

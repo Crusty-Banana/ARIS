@@ -1,12 +1,12 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getTypeColor } from "@/lib/client-side-utils";
-import { LocalizedAllergen } from "@/modules/commands/GetBusinessType/typing";
+import { BriefAllergen } from "@/modules/commands/GetBriefAllergens/typing";
 import { Check, Info, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface AllergenItemProps {
-  allergen: LocalizedAllergen;
+  allergen: BriefAllergen;
   onClick: () => void;
   handleQuickAdd?: () => void;
   userAllergenIds?: string[];

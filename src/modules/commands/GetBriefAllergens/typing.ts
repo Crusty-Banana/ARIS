@@ -6,10 +6,13 @@ import {
 } from "@/modules/business-types";
 import z from "zod";
 
-export const BriefAllergen = Allergen.pick({
+export const BaseBriefAllergen = Allergen.pick({
   id: true,
   type: true,
-  name: true,
+});
+
+export const BriefAllergen = BaseBriefAllergen.extend({
+  name: z.string(),
 });
 export type BriefAllergen = z.infer<typeof BriefAllergen>;
 

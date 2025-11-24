@@ -40,7 +40,11 @@ export async function handler$GetBriefAllergens(
     .toArray();
 
   const parsedDocs = docs.map((doc) =>
-    BriefAllergen.parse({ ...doc, id: doc._id.toHexString() })
+    BriefAllergen.parse({
+      ...doc,
+      id: doc._id.toHexString(),
+      name: lang ? doc.name[lang] : doc.name["en"],
+    })
   );
 
   const countDoc = await db
