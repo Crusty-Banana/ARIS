@@ -77,7 +77,6 @@ export function AddAllergenModal({
     );
 
     if (data.success) {
-      toast.success(data.message);
       return data;
     } else {
       toast.error(data?.message);
@@ -87,18 +86,9 @@ export function AddAllergenModal({
 
   const fetchAvailableAllergensKey = [`/api/allergens/remain`, params];
 
-  const {
-    data,
-    // Returned stateful vals below are commented to reduce re-renders, turn on if necessary
-    // error,
-    // isLoading,
-    // isValidating,
-    // mutate,
-  } = useSWR(
-    fetchAvailableAllergensKey,
-    fetchAvailableAllergens
-    // options
-  );
+  const { data } = useSWR(fetchAvailableAllergensKey, fetchAvailableAllergens, {
+    keepPreviousData: true,
+  });
 
   const availableAllergens = data?.result || [];
 
