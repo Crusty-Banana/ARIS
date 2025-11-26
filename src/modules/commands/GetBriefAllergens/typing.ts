@@ -17,7 +17,12 @@ export const BriefAllergen = BaseBriefAllergen.extend({
 export type BriefAllergen = z.infer<typeof BriefAllergen>;
 
 export const GetBriefAllergens$Params = z.object({
-  ids: z.array(z.string()).optional(),
+  ids: z
+    .preprocess((val) => {
+      if (typeof val === "string") return val.split(",");
+      return val;
+    }, z.array(z.string()))
+    .optional(),
   name: z.string().optional(),
   type: AllergenType.optional(),
   sort: z.enum(["asc", "desc"]).default("asc").optional(),

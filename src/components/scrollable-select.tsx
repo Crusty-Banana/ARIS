@@ -9,40 +9,46 @@ import { X, Search, Loader2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { SearchBar } from "./container/AllergenList/_components/search-bar";
 import { Language } from "@/modules/business-types";
-import useSWR from "swr";
+import useSWR, { KeyedMutator } from "swr";
 
 interface ScrollableSelectProps<T> {
+  items: T[];
+  initialItems?: T[];
+  total: number;
+  isLoading: boolean;
+  mutateList: KeyedMutator<any>;
+
+  searchTerm: string;
+  onSearchChange: (term: string) => void;
+  onPageChange: () => void;
+
   selectedItemIDs: string[];
   onSelectionChange: (selected: string[]) => void;
   getItemId: (item: T) => string;
   getItemLabel: (item: T) => string;
   label: string;
   maxHeight?: string;
-  swrURLKey: string;
-  itemFetcher: (
-    url: string,
-    params: any
-  ) => Promise<{ result?: T[]; total?: number }>;
 }
 
 export function ScrollableSelect<T>({
+  items,
+  initialItems,
+  total,
+  isLoading,
+  mutateList,
+  searchTerm,
+  onSearchChange,
+  onPageChange,
   selectedItemIDs,
   onSelectionChange,
   getItemId,
   getItemLabel,
   label,
   maxHeight = "max-h-48",
-  swrURLKey,
-  itemFetcher,
 }: ScrollableSelectProps<T>) {
   const t = useTranslations("common");
-  const localLanguage = useLocale() as Language; // TODO: Should useLocale() here or pass as prop from parent?
 
-  const [page, setPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const [displayedItems, setDisplayedItems] = useState<T[]>([]);
-  const [hasMore, setHasMore] = useState(true);
+  const hasMore = items.length < total;
 
   const [itemRegistry, setItemRegistry] = useState<Record<string, T>>({}); // Ensure items persist even when not in search result
   const updateRegistry = (newItems: T[]) => {
@@ -64,74 +70,14 @@ export function ScrollableSelect<T>({
     });
   };
 
-  // Fetch selected IDs (once on mount)
-  const [initialIDsToFetch] = useState<string[]>(() => {
-    return selectedItemIDs.length > 0 ? selectedItemIDs : [];
-  });
-
-  const initialFetchParams = useMemo(
-    () => ({
-      ids: initialIDsToFetch,
-      page: 1,
-      limit: 100,
-      lang: localLanguage,
-    }),
-    [localLanguage, initialIDsToFetch]
-  );
-
-  const { data: initialData } = useSWR(
-    initialIDsToFetch.length > 0 ? [swrURLKey, initialIDsToFetch] : null,
-    ([url, params]) => itemFetcher(url, params),
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-    }
-  );
-
-  // Fetch searched data (as user types)
-  useEffect(() => {
-    setPage(1);
-    setDisplayedItems([]);
-    setHasMore(true);
-  }, [searchTerm]);
-
-  const searchParams = useMemo(() => {
-    // use useMemo to prevent re-creating params on re-renders
-    return {
-      page,
-      lang: localLanguage,
-      ...(searchTerm && { name: searchTerm }),
-    };
-  }, [page, searchTerm, localLanguage]);
-
-  const { data: searchData, isLoading: isSearchLoading } = useSWR(
-    [swrURLKey, searchParams], // TODO: check if it overwrites Allergen List's cache!
-    ([url, searchParams]) => itemFetcher(url, searchParams),
-    { keepPreviousData: true }
-  );
-
   // Sync registry
   useEffect(() => {
-    if (initialData?.result) updateRegistry(initialData.result);
-  }, [initialData]);
+    updateRegistry(items);
+  }, [items]);
 
   useEffect(() => {
-    if (searchData?.result) {
-      updateRegistry(searchData.result);
-
-      if (page === 1) {
-        setDisplayedItems(searchData.result);
-      } else {
-        setDisplayedItems([...displayedItems, ...searchData.result]);
-      }
-
-      if (page * 100 >= searchData.total!) {
-        setHasMore(false);
-      } else {
-        setHasMore(true);
-      }
-    }
-  }, [searchData, page]);
+    if (initialItems) updateRegistry(initialItems);
+  }, [initialItems]);
 
   const toggleItem = (itemId: string) => {
     if (selectedItemIDs.includes(itemId)) {
@@ -179,7 +125,7 @@ export function ScrollableSelect<T>({
       {/* Search bar */}
       <SearchBar
         value={searchTerm}
-        setValue={setSearchTerm}
+        setValue={onSearchChange}
         searchPlaceholder={t("searchItems")}
         className="relative"
       ></SearchBar>
@@ -188,9 +134,9 @@ export function ScrollableSelect<T>({
       <div
         className={`border border-cyan-200 rounded-md ${maxHeight} overflow-y-auto bg-white`}
       >
-        {searchData?.result && searchData.result.length > 0 ? (
+        {items && items.length > 0 ? (
           <div className="p-2 space-y-2">
-            {searchData.result.map((item: T) => {
+            {items.map((item: T) => {
               const itemId = getItemId(item);
               const isSelected = selectedItemIDs.includes(itemId);
               return (
@@ -222,10 +168,10 @@ export function ScrollableSelect<T>({
                   variant="ghost"
                   size="sm"
                   className="w-full text-xs text-muted-foreground hover:bg-cyan-100"
-                  onClick={() => setPage((prev) => prev + 1)}
-                  disabled={isSearchLoading}
+                  onClick={() => onPageChange()}
+                  disabled={isLoading}
                 >
-                  {isSearchLoading ? (
+                  {isLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     t("loadMore") || "Load More"

@@ -17,6 +17,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { httpGet$GetBriefAllergens } from "@/modules/commands/GetBriefAllergens/fetcher";
 import { toast } from "sonner";
 import useSWR from "swr";
+import useSWRInfinite from "swr/infinite";
 
 interface AllergenFormProps {
   type: AllergenType;
@@ -50,16 +51,84 @@ export function AllergenForm({
     url: string,
     params: GetBriefAllergens$Params
   ) => {
-    const data = await httpGet$GetBriefAllergens(
-      "/api/allergens/brief",
-      params
-    );
+    const data = await httpGet$GetBriefAllergens(url, params);
     if (data.success) {
       return data;
     } else {
       throw new Error(data?.message);
     }
   };
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // const searchParams = useMemo(() => {
+  //   // use useMemo to prevent re-creating params on re-renders
+  //   return {
+  //     page,
+  //     lang: localLanguage,
+  //     ...(searchTerm && { name: searchTerm }),
+  //   };
+  // }, [page, searchTerm, localLanguage]);
+
+  const getKey = (pageIndex: number, previousPageData: any) => {
+    if (previousPageData && !previousPageData.result.length) return null;
+
+    const params = {
+      page: pageIndex + 1,
+      limit: 100,
+      lang: localLanguage,
+      ...(searchTerm && { name: searchTerm }),
+    };
+
+    return ["/api/allergens/brief", params] as const;
+  };
+
+  const { data, size, setSize, isLoading, mutate } = useSWRInfinite(
+    getKey,
+    ([url, params]) => fetchAllergens(url, params),
+    {
+      revalidateFirstPage: false,
+      parallel: true,
+    }
+  );
+
+  const allItems = data ? data.flatMap((page) => page?.result ?? []) : [];
+
+  const totalItems = (data && data[0]?.total) ?? 0;
+  const isLoadingMore =
+    isLoading ||
+    (size > 0 && data && typeof data[size - 1] === "undefined") ||
+    false;
+
+  // Fetch selected IDs (once, on mount)
+  const [initialIDsToFetch] = useState<string[]>(() => {
+    return selectedCrossSensitivity.length > 0 ? selectedCrossSensitivity : [];
+  });
+
+  const initialFetchParams = useMemo(
+    () => ({
+      ids: initialIDsToFetch,
+      page: 1,
+      limit: 100,
+      lang: localLanguage,
+    }),
+    [localLanguage, initialIDsToFetch]
+  );
+
+  const { data: initialData } = useSWR(
+    initialIDsToFetch.length > 0
+      ? ["/api/allergens/brief", initialFetchParams]
+      : null,
+    ([url, params]) => fetchAllergens(url, params),
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+    }
+  );
+
+  useEffect(() => {
+    setSize(1);
+  }, [searchTerm, setSize]);
 
   return (
     <>
@@ -109,16 +178,20 @@ export function AllergenForm({
       <div>
         <div>
           <ScrollableSelect
+            items={allItems}
+            total={totalItems}
+            initialItems={initialData?.result || []}
             selectedItemIDs={selectedCrossSensitivity}
+            isLoading={isLoadingMore}
+            mutateList={mutate}
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            onPageChange={() => setSize(size + 1)}
             onSelectionChange={setSelectedCrossSensitivity}
             getItemId={(allergen: BriefAllergen) => allergen.id}
-            getItemLabel={(allergen: BriefAllergen) =>
-              allergen.name[localLanguage]
-            }
+            getItemLabel={(allergen: BriefAllergen) => allergen.name}
             label={t("crossSensitivity")}
             maxHeight="max-h-32"
-            swrURLKey="/api/allergens/brief"
-            itemFetcher={fetchAllergens}
           />
         </div>
       </div>

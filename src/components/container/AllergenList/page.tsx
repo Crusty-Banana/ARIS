@@ -58,7 +58,6 @@ export function AllergenList({
   const [sort, setSort] = useState<"asc" | "desc">("asc");
 
   const params = useMemo(() => {
-    // use useMemo to prevent re-creating params on re-renders
     return {
       page,
       sort,
@@ -82,18 +81,7 @@ export function AllergenList({
     }
   };
 
-  const {
-    data,
-    // Returned stateful vals below are commented to reduce re-renders, turn on if necessary
-    // error,
-    // isLoading,
-    // isValidating,
-    mutate,
-  } = useSWR(
-    key,
-    fetchAllergens
-    // options
-  );
+  const { data, mutate } = useSWR(key, fetchAllergens);
 
   const allergens = data?.result || [];
   const total = data?.total || 0;
