@@ -1,17 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslations } from "next-intl";
-import { httpGet$GetSymptoms } from "@/modules/commands/GetBusinessType/fetcher";
-import {
-  AddAllergen$Params,
-  AddSymptom$Params,
-} from "@/modules/commands/AddBusinessType/typing";
-import {
-  httpPost$AddAllergen,
-  httpPost$AddSymptom,
-} from "@/modules/commands/AddBusinessType/fetcher";
+import { AddSymptom$Params } from "@/modules/commands/AddBusinessType/typing";
+import { httpPost$AddSymptom } from "@/modules/commands/AddBusinessType/fetcher";
 import { AddSymptomButton } from "@/components/container/SymptomList/_components/symptom-add-button";
 import { SymptomList } from "@/components/container/SymptomList/page";
 import { AddAllergenButton } from "@/components/container/AllergenList/_components/allergen-add-button";
@@ -21,20 +13,6 @@ import { useSWRConfig } from "swr";
 
 export default function AdminDashboard() {
   const t = useTranslations("adminDashboard");
-
-  const { mutate } = useSWRConfig();
-
-  const addSymptom = async (symptom: AddSymptom$Params) => {
-    const data = await httpPost$AddSymptom("/api/symptoms", symptom);
-    if (data.success) {
-      mutate(
-        (key) => Array.isArray(key) && key.includes("/api/symptoms/brief")
-      );
-      toast.success(data.message);
-    } else {
-      toast.error(data.message);
-    }
-  };
 
   return (
     <div className="flex-grow bg-gradient-to-br from-cyan-100 via-blue-50 to-blue-100">
@@ -67,7 +45,7 @@ export default function AdminDashboard() {
               <h2 className="text-2xl font-semibold text-cyan-800">
                 {t("symptom management")}
               </h2>
-              <AddSymptomButton onAddSymptom={addSymptom} />
+              <AddSymptomButton />
             </div>
             <SymptomList />
           </TabsContent>

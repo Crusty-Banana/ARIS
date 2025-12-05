@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { checkAdmin, checkAuth, processError } from "@/lib/utils";
+import { checkAuth, processError } from "@/lib/utils";
 import { getDb } from "@/modules/mongodb";
 import { GetBriefAllergens$Params } from "@/modules/commands/GetBriefAllergens/typing";
 import { handler$GetBriefAllergens } from "@/modules/commands/GetBriefAllergens/handler";
-import { AddAllergen$Params } from "@/modules/commands/AddBusinessType/typing";
-import { handler$AddAllergen } from "@/modules/commands/AddBusinessType/handler";
 
 export async function GET(req: NextRequest) {
   try {
