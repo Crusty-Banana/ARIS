@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -65,7 +71,9 @@ export function SymptomList() {
     }
   };
 
-  const { data, mutate } = useSWR(key, fetchSymptoms);
+  const { data, mutate } = useSWR(key, fetchSymptoms, {
+    keepPreviousData: true,
+  });
 
   const symptoms = data?.result || [];
   const total = data?.total || 0;
@@ -167,14 +175,8 @@ export function SymptomList() {
             )}
           </div>
         </CardContent>
-        <div className="flex justify-center items-center pt-4 px-8">
-          <div className="flex-1">
-            <span>
-              Showing {Math.min((page - 1) * 100 + 1, total)}-
-              {Math.min(total, page * 100)} from {total}
-            </span>
-          </div>
-          <div className="flex flex-1 items-center space-x-2">
+        <CardFooter className="flex justify-center pt-4">
+          <div className="flex grow-0 space-x-2">
             <Button
               variant="outline"
               className="h-8 w-8 p-0"
@@ -216,8 +218,7 @@ export function SymptomList() {
               <ChevronLast className="h-4 w-4" />
             </Button>
           </div>
-          <div className="flex-1"></div>
-        </div>
+        </CardFooter>
       </Card>
       {selectedSymptom !== null && (
         <SymptomDetailModal

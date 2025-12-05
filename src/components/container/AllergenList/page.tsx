@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -81,7 +87,9 @@ export function AllergenList({
     }
   };
 
-  const { data, mutate } = useSWR(key, fetchAllergens);
+  const { data, mutate } = useSWR(key, fetchAllergens, {
+    keepPreviousData: true,
+  });
 
   const allergens = data?.result || [];
   const total = data?.total || 0;
@@ -196,7 +204,7 @@ export function AllergenList({
             )}
           </div>
         </CardContent>
-        <div className="flex justify-center pt-4">
+        <CardFooter className="flex justify-center pt-4">
           <div className="flex grow-0 space-x-2">
             <Button
               variant="outline"
@@ -239,7 +247,7 @@ export function AllergenList({
               <ChevronLast className="h-4 w-4" />
             </Button>
           </div>
-        </div>
+        </CardFooter>
       </Card>
       {selectedAllergen !== null && (
         <AllergenDetailModal
