@@ -21,7 +21,6 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { SymptomItem } from "./_components/item";
-import { localizeSymptom } from "@/lib/client-side-utils";
 import { SymptomDetailModal } from "./_components/symptom-detail-modal";
 import { httpGet$GetBriefSymptoms } from "@/modules/commands/GetBriefSymptoms/fetcher";
 import useSWR from "swr";
@@ -46,13 +45,12 @@ export function SymptomList() {
   const [selectedSymptom, setSelectedSymptom] = useState<Symptom | null>(null);
 
   const params = useMemo(() => {
-    // use useMemo to prevent re-creating params on re-renders
     return {
       page: page,
       sort: sortDirection,
       lang: localLanguage,
       sortBy: sortBy,
-      ...(searchTerm && { name: searchTerm }),
+      name: searchTerm,
     };
   }, [page, sortDirection, sortBy, searchTerm, localLanguage]);
 
@@ -67,18 +65,7 @@ export function SymptomList() {
     }
   };
 
-  const {
-    data,
-    // Returned stateful vals below are commented to reduce re-renders, turn on if necessary
-    // error,
-    // isLoading,
-    // isValidating,
-    mutate,
-  } = useSWR(
-    key,
-    fetchSymptoms
-    // options
-  );
+  const { data, mutate } = useSWR(key, fetchSymptoms);
 
   const symptoms = data?.result || [];
   const total = data?.total || 0;
