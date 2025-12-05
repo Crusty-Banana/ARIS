@@ -13,9 +13,8 @@ import {
   BriefAllergen,
   GetBriefAllergens$Params,
 } from "@/modules/commands/GetBriefAllergens/typing";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { httpGet$GetBriefAllergens } from "@/modules/commands/GetBriefAllergens/fetcher";
-import { toast } from "sonner";
 import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
 
@@ -61,16 +60,10 @@ export function AllergenForm({
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  // const searchParams = useMemo(() => {
-  //   // use useMemo to prevent re-creating params on re-renders
-  //   return {
-  //     page,
-  //     lang: localLanguage,
-  //     ...(searchTerm && { name: searchTerm }),
-  //   };
-  // }, [page, searchTerm, localLanguage]);
-
-  const getKey = (pageIndex: number, previousPageData: any) => {
+  const getKey = (
+    pageIndex: number,
+    previousPageData: { result: BriefAllergen[] } | null
+  ) => {
     if (previousPageData && !previousPageData.result.length) return null;
 
     const params = {
@@ -83,7 +76,7 @@ export function AllergenForm({
     return ["/api/allergens/brief", params] as const;
   };
 
-  const { data, size, setSize, isLoading, mutate } = useSWRInfinite(
+  const { data, size, setSize, isLoading } = useSWRInfinite(
     getKey,
     ([url, params]) => fetchAllergens(url, params),
     {
@@ -183,7 +176,6 @@ export function AllergenForm({
             initialItems={initialData?.result || []}
             selectedItemIDs={selectedCrossSensitivity}
             isLoading={isLoadingMore}
-            mutateList={mutate}
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}
             onPageChange={() => setSize(size + 1)}

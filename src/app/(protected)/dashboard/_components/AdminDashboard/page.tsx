@@ -2,14 +2,10 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslations } from "next-intl";
-import { AddSymptom$Params } from "@/modules/commands/AddBusinessType/typing";
-import { httpPost$AddSymptom } from "@/modules/commands/AddBusinessType/fetcher";
 import { AddSymptomButton } from "@/components/container/SymptomList/_components/symptom-add-button";
 import { SymptomList } from "@/components/container/SymptomList/page";
 import { AddAllergenButton } from "@/components/container/AllergenList/_components/allergen-add-button";
 import { AllergenList } from "@/components/container/AllergenList/page";
-import { toast } from "sonner";
-import { useSWRConfig } from "swr";
 
 export default function AdminDashboard() {
   const t = useTranslations("adminDashboard");

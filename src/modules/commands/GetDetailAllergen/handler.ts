@@ -1,5 +1,8 @@
 import { Db, ObjectId } from "mongodb";
-import { BusisnessTypeCollection } from "@/modules/business-types";
+import {
+  BusisnessTypeCollection,
+  DisplayString,
+} from "@/modules/business-types";
 import { DetailAllergen, GetDetailAllergen$Params } from "./typing";
 
 export async function handler$GetDetailAllergen(
@@ -57,7 +60,7 @@ export async function handler$GetDetailAllergen(
     id: resultAllergen._id.toHexString(),
     ...resultAllergen,
     crossSensitivities: resultAllergen.crossSensitivities.map(
-      (sensitivity: any) => {
+      (sensitivity: { _id: ObjectId; name: DisplayString }) => {
         return {
           id: sensitivity._id.toHexString(),
           name: sensitivity.name,

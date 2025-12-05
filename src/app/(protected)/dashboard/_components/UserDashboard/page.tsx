@@ -7,12 +7,11 @@ import {
   ActionPlan,
   Allergen,
   DiscoveryMethod,
-  Language,
   Symptom,
 } from "@/modules/business-types";
 import { PersonalAllergyProfile } from "./_components/PersonalAllergyProfile/page";
 import { httpGet$GetCrossAllergenFromUserID } from "@/modules/commands/GetCrossAllergenFromUserID/fetcher";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import {
   httpGet$GetActionPlans,
   httpGet$GetSymptoms,
@@ -31,7 +30,6 @@ import { BriefAllergen } from "@/modules/commands/GetBriefAllergens/typing";
 
 export default function UserDashboard() {
   const t = useTranslations("userDashboard");
-  const localLanguage = useLocale() as Language;
 
   const [pAP, setPAP] = useState<DisplayPAP>({
     id: "000000000000000000000000",
@@ -117,9 +115,7 @@ export default function UserDashboard() {
 
     await handlePAPUpdate({ allergens });
 
-    toast.success(
-      t("allergenAdded", { allergenName: inputAllergen.name[localLanguage] })
-    );
+    toast.success(t("allergenAdded", { allergenName: inputAllergen.name }));
   };
 
   useEffect(() => {

@@ -29,7 +29,6 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { AllergenItem } from "./_components/item";
-import { localizeAllergen } from "@/lib/client-side-utils";
 import { toast } from "sonner";
 import { UpdateAllergen$Params } from "@/modules/commands/UpdateBusinessType/typing";
 import { httpPut$UpdateAllergen } from "@/modules/commands/UpdateBusinessType/fetcher";

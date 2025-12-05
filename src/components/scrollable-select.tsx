@@ -1,22 +1,18 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { X, Search, Loader2 } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { X, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { SearchBar } from "./container/AllergenList/_components/search-bar";
-import { Language } from "@/modules/business-types";
-import useSWR, { KeyedMutator } from "swr";
 
 interface ScrollableSelectProps<T> {
   items: T[];
   initialItems?: T[];
   total: number;
   isLoading: boolean;
-  mutateList: KeyedMutator<any>;
 
   searchTerm: string;
   onSearchChange: (term: string) => void;
@@ -35,7 +31,6 @@ export function ScrollableSelect<T>({
   initialItems,
   total,
   isLoading,
-  mutateList,
   searchTerm,
   onSearchChange,
   onPageChange,
@@ -51,33 +46,36 @@ export function ScrollableSelect<T>({
   const hasMore = items.length < total;
 
   const [itemRegistry, setItemRegistry] = useState<Record<string, T>>({}); // Ensure items persist even when not in search result
-  const updateRegistry = (newItems: T[]) => {
-    if (!newItems || newItems.length === 0) return;
+  const updateRegistry = useCallback(
+    (newItems: T[]) => {
+      if (!newItems || newItems.length === 0) return;
 
-    setItemRegistry((prev) => {
-      const next = { ...prev };
-      let hasChanged = false;
+      setItemRegistry((prev) => {
+        const next = { ...prev };
+        let hasChanged = false;
 
-      newItems.forEach((item) => {
-        const id = getItemId(item);
-        if (!next[id]) {
-          next[id] = item;
-          hasChanged = true;
-        }
+        newItems.forEach((item) => {
+          const id = getItemId(item);
+          if (!next[id]) {
+            next[id] = item;
+            hasChanged = true;
+          }
+        });
+
+        return hasChanged ? next : prev;
       });
-
-      return hasChanged ? next : prev;
-    });
-  };
+    },
+    [getItemId] // getItemId is a dependency because it's used inside
+  );
 
   // Sync registry
   useEffect(() => {
     updateRegistry(items);
-  }, [items]);
+  }, [items, updateRegistry]);
 
   useEffect(() => {
     if (initialItems) updateRegistry(initialItems);
-  }, [initialItems]);
+  }, [initialItems, updateRegistry]);
 
   const toggleItem = (itemId: string) => {
     if (selectedItemIDs.includes(itemId)) {

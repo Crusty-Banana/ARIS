@@ -1,7 +1,6 @@
 import { Db, ObjectId } from "mongodb";
 import { BriefSymptom, GetBriefSymptoms$Params } from "./typing";
 import { BusisnessTypeCollection } from "@/modules/business-types";
-import { count } from "console";
 
 export async function handler$GetBriefSymptoms(
   db: Db,
