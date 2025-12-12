@@ -1,6 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -9,72 +14,106 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Language, Symptom } from "@/modules/business-types";
-import { ArrowDown, ArrowUp, Search } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  ChevronFirst,
+  ChevronLast,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { SymptomItem } from "./_components/item";
-import { localizeSymptom } from "@/lib/client-side-utils";
 import { SymptomDetailModal } from "./_components/symptom-detail-modal";
-
-interface SymptomListProps {
-  symptoms: Symptom[];
-  onUpdate?: (symptom: Symptom) => void;
-  onDelete?: (id: string) => void;
-}
+import { httpGet$GetBriefSymptoms } from "@/modules/commands/GetBriefSymptoms/fetcher";
+import useSWR from "swr";
+import { toast } from "sonner";
+import { httpGet$GetDetailSymptom } from "@/modules/commands/GetDetailSymptom/fetcher";
+import { UpdateSymptom$Params } from "@/modules/commands/UpdateBusinessType/typing";
+import { httpPut$UpdateSymptom } from "@/modules/commands/UpdateBusinessType/fetcher";
+import { httpDelete$DeleteSymptom } from "@/modules/commands/DeleteBusinessType/fetcher";
+import { SearchBar } from "../AllergenList/_components/search-bar";
 
 type SymptomSortOption = "name" | "severity";
 type SortDirection = "asc" | "desc";
 
-export function SymptomList({
-  symptoms,
-  onUpdate,
-  onDelete,
-}: SymptomListProps) {
+export function SymptomList() {
   const t = useTranslations("common");
   const localLanguage = useLocale() as Language;
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<SymptomSortOption>("name");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [page, setPage] = useState(1);
+
   const [selectedSymptom, setSelectedSymptom] = useState<Symptom | null>(null);
 
-  const toggleSortDirection = () => {
-    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+  const params = useMemo(() => {
+    return {
+      page: page,
+      sort: sortDirection,
+      lang: localLanguage,
+      sortBy: sortBy,
+      name: searchTerm,
+    };
+  }, [page, sortDirection, sortBy, searchTerm, localLanguage]);
+
+  const key = [`/api/symptoms/brief`, params];
+
+  const fetchSymptoms = async () => {
+    const data = await httpGet$GetBriefSymptoms("/api/symptoms/brief", params);
+    if (data.success) {
+      return data;
+    } else {
+      throw new Error(data?.message);
+    }
   };
 
-  const filteredAndSortedSymptoms = symptoms
-    .filter((symptom) =>
-      symptom.name[localLanguage]
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase())
-    )
-    .sort((a, b) => {
-      let comparison = 0;
-      switch (sortBy) {
-        case "name":
-          comparison = a.name[localLanguage].localeCompare(
-            b.name[localLanguage]
-          );
-          break;
-        case "severity":
-          comparison = a.severity - b.severity;
-          break;
-      }
-      return sortDirection === "asc" ? comparison : -comparison;
-    });
+  const { data, mutate } = useSWR(key, fetchSymptoms, {
+    keepPreviousData: true,
+  });
 
-  const handleDelete = onDelete
-    ? (id: string) => {
-        if (confirm(t("detailModals.areYouSureSymptomDelete"))) {
-          onDelete(id);
-        }
-      }
-    : undefined;
+  const symptoms = data?.result || [];
+  const total = data?.total || 0;
 
-  const handleEdit = onUpdate
-    ? (symptom: Symptom) => {
-        onUpdate(symptom);
-      }
-    : undefined;
+  const handleSelect = async (id: string) => {
+    const params = { id };
+    const data = await httpGet$GetDetailSymptom(
+      `/api/symptoms/detail/${id}`,
+      params
+    );
+    if (data.success) {
+      setSelectedSymptom(data.result!);
+    } else {
+      toast.error(data.message);
+    }
+  };
+
+  const updateSymptom = async (allergenData: UpdateSymptom$Params) => {
+    const { id, ...rest } = allergenData;
+    const data = await httpPut$UpdateSymptom(`/api/symptoms/${id}`, rest);
+    if (data.success) {
+      mutate();
+      toast.success(data.message);
+    } else {
+      toast.error(data.message);
+    }
+  };
+
+  const deleteSymptom = async (id: string) => {
+    const data = await httpDelete$DeleteSymptom(`/api/symptoms/${id}`);
+    if (data.success) {
+      mutate();
+      toast.success(data.message);
+    } else {
+      toast.error(data.message);
+    }
+  };
+
+  const handleSearchChange = (newValue: string) => {
+    setSearchTerm(newValue);
+    setPage(1);
+  };
 
   return (
     <>
@@ -84,15 +123,12 @@ export function SymptomList({
             {t("symptoms")}
           </CardTitle>
           <div className="flex gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder={t("searchSymptoms")}
-                className="pl-10 border-cyan-300 focus:border-cyan-500"
-              />
-            </div>
+            <SearchBar
+              value={searchTerm}
+              setValue={handleSearchChange}
+              searchPlaceholder={t("searchAllergens")}
+              className={"relative flex-1"}
+            ></SearchBar>
             <Select
               value={sortBy}
               onValueChange={(value) => setSortBy(value as SymptomSortOption)}
@@ -108,7 +144,9 @@ export function SymptomList({
             <Button
               variant="outline"
               size="sm"
-              onClick={toggleSortDirection}
+              onClick={() =>
+                setSortDirection(sortDirection === "asc" ? "desc" : "asc")
+              }
               className="px-3 bg-transparent"
             >
               {sortDirection === "asc" ? (
@@ -121,27 +159,71 @@ export function SymptomList({
         </CardHeader>
         <CardContent>
           <div className="space-y-2 max-h-96 overflow-y-auto">
-            {filteredAndSortedSymptoms.map((symptom) => (
+            {symptoms.map((symptom) => (
               <SymptomItem
                 key={symptom.id}
-                symptom={localizeSymptom(symptom, localLanguage)}
-                onClick={() => setSelectedSymptom(symptom)}
+                symptom={symptom}
+                onClick={() => handleSelect(symptom.id)}
               />
             ))}
-            {filteredAndSortedSymptoms.length === 0 && (
+            {symptoms.length === 0 && (
               <div className="text-center text-gray-500 py-4">
                 {t("noSymptomsFound")}
               </div>
             )}
           </div>
         </CardContent>
+        <CardFooter className="flex justify-center pt-4">
+          <div className="flex grow-0 space-x-2">
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => setPage(1)}
+              disabled={page <= 1}
+            >
+              <ChevronFirst className="h-4 w-4" />
+            </Button>
+
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => setPage(page - 1)}
+              disabled={page <= 1}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+
+            <div>
+              Page {Math.min(page, Math.ceil(total / 100))} of{" "}
+              {Math.ceil(total / 100)}
+            </div>
+
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => setPage(page + 1)}
+              disabled={page >= Math.ceil(total / 100)}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => setPage(Math.ceil(total / 100))}
+              disabled={page >= Math.ceil(total / 100)}
+            >
+              <ChevronLast className="h-4 w-4" />
+            </Button>
+          </div>
+        </CardFooter>
       </Card>
       {selectedSymptom !== null && (
         <SymptomDetailModal
           symptom={selectedSymptom}
           onClose={() => setSelectedSymptom(null)}
-          onUpdate={handleEdit}
-          onDelete={handleDelete}
+          onUpdate={updateSymptom}
+          onDelete={deleteSymptom}
         />
       )}
     </>

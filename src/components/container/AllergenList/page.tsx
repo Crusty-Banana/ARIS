@@ -1,6 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -9,87 +14,149 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Allergen,
+  AllergenType,
   Language,
   ObjectIdAsHexString,
 } from "@/modules/business-types";
-import { ArrowDown, ArrowUp, Search } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  ChevronFirst,
+  ChevronLast,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { AllergenItem } from "./_components/item";
+import { toast } from "sonner";
+import { UpdateAllergen$Params } from "@/modules/commands/UpdateBusinessType/typing";
+import { httpPut$UpdateAllergen } from "@/modules/commands/UpdateBusinessType/fetcher";
+import { httpDelete$DeleteAllergen } from "@/modules/commands/DeleteBusinessType/fetcher";
+import { httpGet$GetBriefAllergens } from "@/modules/commands/GetBriefAllergens/fetcher";
+import { BriefAllergen } from "@/modules/commands/GetBriefAllergens/typing";
 import { AllergenDetailModal } from "./_components/allergen-detail-modal";
-import { localizeAllergen } from "@/lib/client-side-utils";
+import { DetailAllergen } from "@/modules/commands/GetDetailAllergen/typing";
+import { httpGet$GetDetailAllergen } from "@/modules/commands/GetDetailAllergen/fetcher";
+import useSWR from "swr";
+import { SearchBar } from "./_components/search-bar";
 
 interface AllergenListProps {
-  allergens: Allergen[];
-  onQuickAdd?: (allergen: Allergen) => void;
+  onQuickAdd?: (allergen: BriefAllergen) => void;
   userAllergenIds?: ObjectIdAsHexString[];
-  onEdit?: (allergen: Allergen) => void;
-  onDelete?: (id: string) => void;
 }
 
-type SortDirection = "asc" | "desc";
-
 export function AllergenList({
-  allergens,
   onQuickAdd,
   userAllergenIds,
-  onEdit,
-  onDelete,
 }: AllergenListProps) {
   const t = useTranslations("common");
-  const localLanguage = useLocale() as Language;
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
-  const [typeFilter, setTypeFilter] = useState<string>("all");
-  const [selectedAllergen, setSelectedAllergen] = useState<Allergen | null>(
-    null
-  );
 
-  const toggleSortDirection = () => {
-    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+  const [selectedAllergen, setSelectedAllergen] =
+    useState<DetailAllergen | null>(null);
+
+  const localLanguage = useLocale() as Language;
+
+  const [page, setPage] = useState(1);
+  const [name, setName] = useState("");
+  const [type, setType] = useState<AllergenType>("");
+  const [sort, setSort] = useState<"asc" | "desc">("asc");
+
+  const params = useMemo(() => {
+    return {
+      page,
+      sort,
+      lang: localLanguage,
+      name,
+      ...(type !== "" && { type }),
+    };
+  }, [page, sort, name, type, localLanguage]);
+
+  const key = [`/api/allergens/brief`, params];
+
+  const fetchAllergens = async () => {
+    const data = await httpGet$GetBriefAllergens(
+      "/api/allergens/brief",
+      params
+    );
+    if (data.success) {
+      return data;
+    } else {
+      throw new Error(data?.message);
+    }
   };
 
-  const filteredAndSortedAllergens = allergens
-    .filter((allergen) => {
-      const matchesSearch = allergen.name[localLanguage]
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-      const matchesType = typeFilter === "all" || allergen.type === typeFilter;
-      return matchesSearch && matchesType;
-    })
-    .sort((a, b) => {
-      let comparison = 0;
-      comparison = a.name[localLanguage].localeCompare(b.name[localLanguage]);
-      return sortDirection === "asc" ? comparison : -comparison;
-    });
+  const { data, mutate } = useSWR(key, fetchAllergens, {
+    keepPreviousData: true,
+  });
 
-  const handleDelete = (id: string) => {
-    if (confirm(t("areYouSureDeleteAllergen"))) {
-      if (onDelete) onDelete(id);
+  const allergens = data?.result || [];
+  const total = data?.total || 0;
+
+  const updateAllergen = async (allergenData: UpdateAllergen$Params) => {
+    const { id, ...rest } = allergenData;
+    const data = await httpPut$UpdateAllergen(`/api/allergens/${id}`, rest);
+    if (data.success) {
+      mutate();
+      toast.success(data.message);
+    } else {
+      toast.message(data.message);
     }
+  };
+
+  const deleteAllergen = async (id: string) => {
+    const data = await httpDelete$DeleteAllergen(`/api/allergens/${id}`);
+    if (data.success) {
+      mutate();
+      toast.success(data.message);
+    } else {
+      toast.error(data.message);
+    }
+  };
+
+  const handleSelect = async (id: string) => {
+    const params = { id };
+    const data = await httpGet$GetDetailAllergen(
+      `/api/allergens/detail/${id}`,
+      params
+    );
+    if (data.success) {
+      setSelectedAllergen(data.result!);
+    } else {
+      toast.error(data.message);
+    }
+  };
+
+  const handleSearchChange = (newValue: string) => {
+    setName(newValue);
+    setPage(1);
   };
 
   return (
     <>
       <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
         <CardHeader>
-          <CardTitle className="text-cyan-800 flex items-center justify-between">
-            {t("allergens")}
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-cyan-800 flex items-center justify-between">
+              {t("allergens")}
+            </CardTitle>
+          </div>
           <div className="flex gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder={t("searchAllergens")}
-                className="pl-10 border-cyan-300 focus:border-cyan-500"
-              />
-            </div>
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <SearchBar
+              value={name}
+              setValue={handleSearchChange}
+              searchPlaceholder={t("searchAllergens")}
+              className={"relative flex-1"}
+            ></SearchBar>
+            <Select
+              value={type}
+              onValueChange={(v) => {
+                setType((v === "all" ? "" : v) as AllergenType);
+                setPage(1);
+              }}
+            >
               <SelectTrigger className="w-32 border-cyan-300 focus:border-cyan-500">
-                <SelectValue />
+                <SelectValue placeholder={t("allTypes")} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t("allTypes")}</SelectItem>
@@ -105,10 +172,10 @@ export function AllergenList({
             <Button
               variant="outline"
               size="sm"
-              onClick={toggleSortDirection}
+              onClick={() => setSort(sort === "asc" ? "desc" : "asc")}
               className="px-3 bg-transparent"
             >
-              {sortDirection === "asc" ? (
+              {sort === "asc" ? (
                 <ArrowUp className="h-4 w-4" />
               ) : (
                 <ArrowDown className="h-4 w-4" />
@@ -117,33 +184,77 @@ export function AllergenList({
           </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2 max-h-96 overflow-y-auto">
-            {filteredAndSortedAllergens.map((allergen) => (
+          <div className="space-y-2 h-96 overflow-y-auto">
+            {allergens.map((allergen) => (
               <AllergenItem
-                allergen={localizeAllergen(allergen, localLanguage)}
+                allergen={allergen}
                 handleQuickAdd={
                   onQuickAdd ? () => onQuickAdd(allergen) : undefined
                 }
                 userAllergenIds={userAllergenIds}
-                onClick={() => setSelectedAllergen(allergen)}
+                onClick={() => handleSelect(allergen.id)}
                 key={allergen.id}
               />
             ))}
-            {filteredAndSortedAllergens.length === 0 && (
+            {allergens.length === 0 && (
               <div className="text-center text-gray-500 py-4">
                 {t("noAllergensFound")}
               </div>
             )}
           </div>
         </CardContent>
+        <CardFooter className="flex justify-center pt-4">
+          <div className="flex grow-0 space-x-2">
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => setPage(1)}
+              disabled={page <= 1}
+            >
+              <ChevronFirst className="h-4 w-4" />
+            </Button>
+
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => setPage(page - 1)}
+              disabled={page <= 1}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+
+            <div>
+              Page {Math.min(page, Math.ceil(total / 100))} of{" "}
+              {Math.ceil(total / 100)}
+            </div>
+
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => setPage(page + 1)}
+              disabled={page >= Math.ceil(total / 100)}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => setPage(Math.ceil(total / 100))}
+              disabled={page >= Math.ceil(total / 100)}
+            >
+              <ChevronLast className="h-4 w-4" />
+            </Button>
+          </div>
+        </CardFooter>
       </Card>
       {selectedAllergen !== null && (
         <AllergenDetailModal
           allergen={selectedAllergen}
           onClose={() => setSelectedAllergen(null)}
-          onUpdate={onEdit}
-          onDelete={onDelete ? handleDelete : undefined}
-          allergens={allergens}
+          onUpdate={updateAllergen}
+          onDelete={deleteAllergen}
+          forAdmin={true}
         />
       )}
     </>

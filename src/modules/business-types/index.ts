@@ -17,7 +17,7 @@ export type DiscoveryMethod = z.infer<typeof DiscoveryMethod>;
 export const Gender = z.enum(["male", "female", "other", ""]).default("");
 export type Gender = z.infer<typeof Gender>;
 
-const Organ = z
+export const Organ = z
   .enum(["skin", "respiratory", "digestive", "cardiovascular", "neurologic"])
   .default("skin");
 export type Organ = z.infer<typeof Organ>;
@@ -85,7 +85,6 @@ export const Allergen = z.object({
   type: AllergenType,
   name: DisplayString,
   description: DisplayString,
-  isWholeAllergen: z.boolean().default(true),
   crossSensitivityId: z.array(ObjectIdAsHexString).default([]),
 });
 export type Allergen = z.infer<typeof Allergen>;
@@ -107,7 +106,7 @@ export const PAP = z.object({
         testDone: TestType.optional(),
         symptomsId: z.array(ObjectIdAsHexString).default([]),
         testResult: z.string().optional(),
-        timeFromContactToSymptom: TimeFromContactToSymptom
+        timeFromContactToSymptom: TimeFromContactToSymptom,
       })
     )
     .default([]),

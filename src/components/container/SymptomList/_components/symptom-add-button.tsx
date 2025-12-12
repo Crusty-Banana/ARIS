@@ -17,12 +17,11 @@ import { useTranslations } from "next-intl";
 import { AddSymptom$Params } from "@/modules/commands/AddBusinessType/typing";
 import { SymptomForm } from "./symptom-form";
 import { Language, Organ } from "@/modules/business-types";
+import { httpPost$AddSymptom } from "@/modules/commands/AddBusinessType/fetcher";
+import { toast } from "sonner";
+import { useSWRConfig } from "swr";
 
-interface AddSymptomButtonProps {
-  onAddSymptom: (symptom: AddSymptom$Params) => void;
-}
-
-export function AddSymptomButton({ onAddSymptom }: AddSymptomButtonProps) {
+export function AddSymptomButton() {
   const t = useTranslations("symptomModal");
   const [open, setOpen] = useState(false);
   const [name, setName] = useState({ en: "", vi: "" });
@@ -31,10 +30,24 @@ export function AddSymptomButton({ onAddSymptom }: AddSymptomButtonProps) {
   const [organ, setOrgan] = useState<Organ>("respiratory");
   const [selectedLanguage, setSelectedLanguage] = useState<Language>("en");
 
+  const { mutate } = useSWRConfig();
+
+  const addSymptom = async (symptom: AddSymptom$Params) => {
+    const data = await httpPost$AddSymptom("/api/symptoms", symptom);
+    if (data.success) {
+      mutate(
+        (key) => Array.isArray(key) && key.includes("/api/symptoms/brief")
+      );
+      toast.success(data.message);
+    } else {
+      toast.error(data.message);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (name && description && organ) {
-      onAddSymptom({
+      addSymptom({
         name,
         severity: severity,
         description,

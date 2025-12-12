@@ -1,7 +1,6 @@
 import { Db, ObjectId } from "mongodb";
 import {
   GetBusinessType$Params,
-  GetAllergens$Params,
   LocalizedAllergen,
   LocalizedSymptom,
   GetUsers$Params,
@@ -10,6 +9,7 @@ import {
   GetRecommendations$Params,
   GetActionPlans$Params,
   LocalizedActionPlan,
+  GetAllergens$Params,
 } from "./typing";
 import {
   ActionPlan,
