@@ -135,6 +135,7 @@
     "areYouSureSymptom": "Bạn có chắc chắn muốn xóa triệu chứng này không?",
     "areYouSureAllergen": "Bạn có chắc chắn muốn xóa dị nguyên này không?",
     "areYou sureAllergy": "Bạn có chắc chắn muốn xóa dị ứng này không?",
+    "areYouSureAllergenDelete": "Bạn có chắc chắn muốn xóa dị nguyên này không?",
     "edit": "Chỉnh sửa",
     "delete": "Xóa",
     "save": "Lưu",
@@ -210,10 +211,6 @@
     "actionPlans": "Kế hoạch xử trí",
     "selectDate": "Chọn ngày",
     "testResult": "Kết quả xét nghiệm",
-    "uploadTestResultFile": "Kéo & Thả, hoặc Click để chọn file",
-    "previewTestResultFile": "Xem trước kết quả xét nghiệm",
-    "viewUploadedTestResult": "Xem kết quả xét nghiệm đã tải lên",
-    "saving":"Đang lưu...",
     "description": "Mô tả",
     "timeToSymptom": {
       "lessThan2": "Trong vòng 2 giờ",
@@ -366,9 +363,9 @@
     "selectDate": "Chọn ngày",
     "selectTestType": "Chọn xét nghiệm",
     "testResult": "Kết quả xét nghiệm",
-    "uploadTestResultFile": "Tải Thư mục Kết quả Xét nghiệm lên",
+    "uploadTestResultFile": "Kéo & Thả, hoặc Click để chọn file",
     "previewTestResultFile": "Xem trước kết quả xét nghiệm",
-    "saving":"Đang lưu...",
+    "saving": "Đang lưu...",
     "description": "Mô tả",
     "timeToSymptom": {
       "lessThan2": "Trong vòng 2 giờ",
@@ -430,12 +427,13 @@
       "descriptionPlaceholder": "Không tìm thấy mô tả..."
     },
     "description": "Mô tả",
-        "cardiovascular": "Tuần hoàn",
+    "cardiovascular": "Tuần hoàn",
     "neurologic": "Thần kinh",
     "digestive": "Tiêu hóa",
     "skin": "Ngoài da",
     "organ": "Bộ phận",
-    "selectOrgan": "Chọn bộ phận"
+    "selectOrgan": "Chọn bộ phận",
+    "loadMore": "Tải thêm"
   },
   "profile": {
     "title": "Hồ sơ người dùng",

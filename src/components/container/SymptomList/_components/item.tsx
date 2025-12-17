@@ -1,12 +1,12 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getSeverityColor } from "@/lib/client-side-utils";
-import { LocalizedSymptom } from "@/modules/commands/GetBusinessType/typing";
+import { BriefSymptom } from "@/modules/commands/GetBriefSymptoms/typing";
 import { Info } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface SymptomItemProps {
-  symptom: LocalizedSymptom;
+  symptom: BriefSymptom;
   onClick: () => void;
 }
 

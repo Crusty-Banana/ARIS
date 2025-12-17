@@ -3,20 +3,20 @@ import { LanguageDropdown } from "@/components/language-dropdown";
 import { NameInput } from "@/components/name-input";
 import { ScrollableSelect } from "@/components/scrollable-select";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   AllergenType,
   DisplayString,
   Language,
-  Allergen,
 } from "@/modules/business-types";
 import { useLocale, useTranslations } from "next-intl";
 import { RichTextEditor } from "@/components/rich-text-editor";
+import {
+  BriefAllergen,
+  GetBriefAllergens$Params,
+} from "@/modules/commands/GetBriefAllergens/typing";
+import { useEffect, useMemo, useState } from "react";
+import { httpGet$GetBriefAllergens } from "@/modules/commands/GetBriefAllergens/fetcher";
+import useSWR from "swr";
+import useSWRInfinite from "swr/infinite";
 
 interface AllergenFormProps {
   type: AllergenType;
@@ -27,11 +27,8 @@ interface AllergenFormProps {
   handleNameChange: (value: string) => void;
   description: DisplayString;
   handleDescriptionChange: (value: string) => void;
-  allergens: Allergen[];
   selectedCrossSensitivity: string[];
   setSelectedCrossSensitivity: (value: string[]) => void;
-  isWholeAllergen: boolean;
-  setIsWholeAllergen: (value: boolean) => void;
 }
 
 export function AllergenForm({
@@ -43,14 +40,88 @@ export function AllergenForm({
   handleNameChange,
   description,
   handleDescriptionChange,
-  allergens,
   selectedCrossSensitivity,
   setSelectedCrossSensitivity,
-  isWholeAllergen,
-  setIsWholeAllergen,
 }: AllergenFormProps) {
   const t = useTranslations("allergenModal");
   const localLanguage = useLocale() as Language;
+
+  const fetchAllergens = async (
+    url: string,
+    params: GetBriefAllergens$Params
+  ) => {
+    const data = await httpGet$GetBriefAllergens(url, params);
+    if (data.success) {
+      return data;
+    } else {
+      throw new Error(data?.message);
+    }
+  };
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const getKey = (
+    pageIndex: number,
+    previousPageData: { result: BriefAllergen[] } | null
+  ) => {
+    if (previousPageData && !previousPageData.result.length) return null;
+
+    const params = {
+      page: pageIndex + 1,
+      limit: 100,
+      lang: localLanguage,
+      ...(searchTerm && { name: searchTerm }),
+    };
+
+    return ["/api/allergens/brief", params] as const;
+  };
+
+  const { data, size, setSize, isLoading } = useSWRInfinite(
+    getKey,
+    ([url, params]) => fetchAllergens(url, params),
+    {
+      revalidateFirstPage: false,
+      parallel: true,
+    }
+  );
+
+  const allItems = data ? data.flatMap((page) => page?.result ?? []) : [];
+
+  const totalItems = (data && data[0]?.total) ?? 0;
+  const isLoadingMore =
+    isLoading ||
+    (size > 0 && data && typeof data[size - 1] === "undefined") ||
+    false;
+
+  // Fetch selected IDs (once, on mount)
+  const [initialIDsToFetch] = useState<string[]>(() => {
+    return selectedCrossSensitivity.length > 0 ? selectedCrossSensitivity : [];
+  });
+
+  const initialFetchParams = useMemo(
+    () => ({
+      ids: initialIDsToFetch,
+      page: 1,
+      limit: 100,
+      lang: localLanguage,
+    }),
+    [localLanguage, initialIDsToFetch]
+  );
+
+  const { data: initialData } = useSWR(
+    initialIDsToFetch.length > 0
+      ? ["/api/allergens/brief", initialFetchParams]
+      : null,
+    ([url, params]) => fetchAllergens(url, params),
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+    }
+  );
+
+  useEffect(() => {
+    setSize(1);
+  }, [searchTerm, setSize]);
 
   return (
     <>
@@ -96,33 +167,21 @@ export function AllergenForm({
           />
         )}
       </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          {t("allergenType")}
-        </label>
-        <Select
-          value={isWholeAllergen ? "whole" : "component"}
-          onValueChange={(value) => setIsWholeAllergen(value === "whole")}
-        >
-          <SelectTrigger className="w-full border-cyan-300 focus:border-cyan-500">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="whole">{t("wholeAllergen")}</SelectItem>
-            <SelectItem value="component">{t("componentAllergen")}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+
       <div>
         <div>
           <ScrollableSelect
-            items={allergens.sort((a, b) =>
-              a.name[localLanguage].localeCompare(b.name[localLanguage])
-            )}
-            selectedItems={selectedCrossSensitivity}
+            items={allItems}
+            total={totalItems}
+            initialItems={initialData?.result || []}
+            selectedItemIDs={selectedCrossSensitivity}
+            isLoading={isLoadingMore}
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            onPageChange={() => setSize(size + 1)}
             onSelectionChange={setSelectedCrossSensitivity}
-            getItemId={(allergen: Allergen) => allergen.id}
-            getItemLabel={(allergen: Allergen) => allergen.name[localLanguage]}
+            getItemId={(allergen: BriefAllergen) => allergen.id}
+            getItemLabel={(allergen: BriefAllergen) => allergen.name}
             label={t("crossSensitivity")}
             maxHeight="max-h-32"
           />

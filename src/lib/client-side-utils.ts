@@ -1,4 +1,9 @@
-import { Allergen, Language, Symptom, TimeFromContactToSymptom } from "@/modules/business-types";
+import {
+  Allergen,
+  Language,
+  Symptom,
+  TimeFromContactToSymptom,
+} from "@/modules/business-types";
 import {
   LocalizedAllergen,
   LocalizedSymptom,
@@ -66,7 +71,10 @@ export const localizeSymptom = (symptom: Symptom, language: Language) => {
   });
 };
 
-export const formatTimeFromContactToSymptom = (value: TimeFromContactToSymptom, t: ReturnType<typeof useTranslations>) => {
+export const formatTimeFromContactToSymptom = (
+  value: TimeFromContactToSymptom,
+  t: ReturnType<typeof useTranslations>
+) => {
   switch (value) {
     case "<2":
       return t("timeToSymptom.lessThan2");

@@ -131,6 +131,7 @@
     "areYouSureSymptom": "Are you sure you want to delete this symptom?",
     "areYouSureAllergen": "Are you sure you want to delete this allergen?",
     "areYouSureAllergy": "Are you sure you want to delete this allergy?",
+    "areYouSureAllergenDelete": "Are you sure you want to delete this allergen?",
     "edit": "Edit",
     "delete": "Delete",
     "save": "Save",
@@ -204,10 +205,6 @@
     "actionPlans": "Action Plans",
     "selectDate": "Select Date",
     "testResult": "Test Result",
-    "uploadTestResultFile": "Drag & Drop, or Click to select file",
-    "previewTestResultFile": "Preview test result",
-    "viewUploadedTestResult": "View uploaded test result",
-    "saving" : "Saving...",
     "timeToSymptom": {
       "lessThan2": "Within 2 hours",
       "twoToSix": "2–6 hours",
@@ -358,9 +355,9 @@
     "selectDate": "Select Date",
     "selectTestType": "Select test type",
     "testResult": "Test Result",
-    "uploadTestResultFile": "Upload Test Result File",
+    "uploadTestResultFile": "Drag & Drop, or Click to select file",
     "previewTestResultFile": "Preview test result",
-    "saving" : "Saving...",
+    "saving": "Saving...",
     "timeToSymptom": {
       "lessThan2": "Within 2 hours",
       "twoToSix": "2–6 hours",
@@ -426,7 +423,8 @@
     "digestive": "Digestive",
     "skin": "Skin",
     "organ": "Organ",
-    "selectOrgan": "Select Organ"
+    "selectOrgan": "Select Organ",
+    "loadMore": "Load More"
   },
   "profile": {
     "title": "User Profile",
