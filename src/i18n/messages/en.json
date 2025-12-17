@@ -212,7 +212,11 @@
       "twelveToTwentyFour": "12–24 hours",
       "moreThan24": "More than 24 hours"
     },
-    "timeFromContactToSymptom": "Time to symptom onset (after allergen exposure)"
+    "timeFromContactToSymptom": "Time to symptom onset (after allergen exposure)",
+    "uploadTestResultFile": "Drag & Drop, or Click to select file",
+    "previewTestResultFile": "Preview test result",
+    "viewUploadedTestResult": "View uploaded test result",
+    "saving": "Saving..."
   },
   "potentialCrossAllergens": {
     "title": "Potential Cross-Allergens",

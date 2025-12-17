@@ -219,7 +219,11 @@
       "twelveToTwentyFour": "12–24 giờ",
       "moreThan24": "Hơn 24 giờ"
     },
-    "timeFromContactToSymptom": "Thời gian xuất hiện triệu chứng (sau khi tiếp xúc dị nguyên):"
+    "timeFromContactToSymptom": "Thời gian xuất hiện triệu chứng (sau khi tiếp xúc dị nguyên):",
+    "uploadTestResultFile": "Kéo & Thả, hoặc Click để chọn file",
+    "previewTestResultFile": "Xem trước kết quả xét nghiệm",
+    "viewUploadedTestResult": "Xem kết quả xét nghiệm đã lưu",
+    "saving": "Đang lưu..."
   },
   "potentialCrossAllergens": {
     "title": "Dị nguyên chéo tiềm ẩn",
