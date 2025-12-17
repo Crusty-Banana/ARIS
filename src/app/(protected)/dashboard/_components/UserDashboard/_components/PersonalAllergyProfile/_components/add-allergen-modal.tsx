@@ -130,7 +130,7 @@ export function AddAllergenModal({
       doneTest,
       testDone,
       symptomsId: selectedSymptoms,
-      testResult: testResultUrl,
+      testResult: finalTestResultUrl,
       timeFromContactToSymptom: timeFromContactToSymptom,
     });
 
