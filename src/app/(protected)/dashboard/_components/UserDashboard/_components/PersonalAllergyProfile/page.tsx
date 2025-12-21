@@ -41,7 +41,6 @@ import {
   UpdatePAPAllergen$Params,
   UpdatePAPWithUserIdFetcher$Params,
 } from "@/modules/commands/UpdatePAPWithUserId/typing";
-// import { SymptomDetailModal } from "@/components/container/SymptomList/_components/symptom-detail-modal"
 import {
   formatTimeFromContactToSymptom,
   getSeverityColor,
@@ -49,12 +48,13 @@ import {
 } from "@/lib/client-side-utils";
 import { AllergenDetailModal } from "@/components/container/AllergenList/_components/allergen-detail-modal";
 import { useSymptomDetail } from "@/app/context/symptom-detail-context";
+import { DetailAllergen } from "@/modules/commands/GetDetailAllergen/typing";
+import { httpGet$GetDetailAllergen } from "@/modules/commands/GetDetailAllergen/fetcher";
+import { toast } from "sonner";
 
 interface PersonalAllergyProfileProps {
   pAP: DisplayPAP;
   availableSymptoms: Symptom[];
-  availableAllergens: Allergen[];
-  allergens: Allergen[];
   potentialCrossAllergens: Allergen[];
   actionPlans: ActionPlan[];
   onUpdate: (params: UpdatePAPWithUserIdFetcher$Params) => void;
@@ -64,9 +64,7 @@ export function PersonalAllergyProfile({
   pAP,
   availableSymptoms,
   potentialCrossAllergens,
-  availableAllergens,
   actionPlans,
-  allergens,
   onUpdate,
 }: PersonalAllergyProfileProps) {
   const t = useTranslations("personalAllergyProfile");
@@ -77,7 +75,7 @@ export function PersonalAllergyProfile({
   const [showAddAllergen, setShowAddAllergen] = useState(false);
   const { showSymptomDetail } = useSymptomDetail();
   const [selectedAllergen, setSelectedAllergen] = useState<
-    Allergen | undefined
+    DetailAllergen | undefined
   >(undefined);
   const [selectedActionPlan, setSelectedActionPlan] = useState<
     string | undefined
@@ -188,6 +186,19 @@ export function PersonalAllergyProfile({
     }
   };
 
+  const handleSelect = async (id: string) => {
+    const params = { id };
+    const data = await httpGet$GetDetailAllergen(
+      `/api/allergens/detail/${id}`,
+      params
+    );
+    if (data.success) {
+      setSelectedAllergen(data.result!);
+    } else {
+      toast.error(data.message);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -215,12 +226,7 @@ export function PersonalAllergyProfile({
                     key={allergen.allergenId}
                     className="bg-white/70 backdrop-blur-sm p-4 rounded-lg border border-cyan-200 cursor-pointer hover:bg-cyan-50"
                     onClick={() => {
-                      setSelectedAllergen(
-                        allergens.find(
-                          (avaiAllergen) =>
-                            avaiAllergen.id === allergen.allergenId
-                        )
-                      );
+                      handleSelect(allergen.allergenId);
                       setSelectedActionPlan(
                         actionPlans.find(
                           (ap) => ap.severity === allergen.severity
@@ -352,7 +358,6 @@ export function PersonalAllergyProfile({
               setSelectedAllergen(undefined);
               setSelectedActionPlan(undefined);
             }}
-            allergens={availableAllergens}
             actionPlan={selectedActionPlan}
             hideCrossAllergen={true}
           />
@@ -380,7 +385,6 @@ export function PersonalAllergyProfile({
       <AddAllergenModal
         open={showAddAllergen}
         onClose={() => setShowAddAllergen(false)}
-        availableAllergens={availableAllergens}
         availableSymptoms={availableSymptoms}
         onAddAllergen={handleAddAllergen}
       />

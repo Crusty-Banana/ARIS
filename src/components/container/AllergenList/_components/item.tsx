@@ -1,12 +1,12 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getTypeColor } from "@/lib/client-side-utils";
-import { LocalizedAllergen } from "@/modules/commands/GetBusinessType/typing";
+import { BriefAllergen } from "@/modules/commands/GetBriefAllergens/typing";
 import { Check, Info, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface AllergenItemProps {
-  allergen: LocalizedAllergen;
+  allergen: BriefAllergen;
   onClick: () => void;
   handleQuickAdd?: () => void;
   userAllergenIds?: string[];
@@ -37,22 +37,20 @@ export function AllergenItem({
           </div>
         </div>
         <div className="flex gap-1 ml-2 flex-shrink-0">
-          {handleQuickAdd &&
-            !userAllergenIds?.includes(allergen.id) &&
-            allergen.isWholeAllergen && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleQuickAdd();
-                }}
-                className="h-8 w-8 p-0 hover:bg-green-100 text-green-600 border border-green-200 hover:border-green-300"
-                title={t("allergenAddButtonTitle")}
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
-            )}
+          {handleQuickAdd && !userAllergenIds?.includes(allergen.id) && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleQuickAdd();
+              }}
+              className="h-8 w-8 p-0 hover:bg-green-100 text-green-600 border border-green-200 hover:border-green-300"
+              title={t("allergenAddButtonTitle")}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          )}
           {handleQuickAdd && userAllergenIds?.includes(allergen.id) && (
             <Button
               variant="ghost"

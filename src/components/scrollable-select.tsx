@@ -1,16 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { X, Search } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { SearchBar } from "./container/AllergenList/_components/search-bar";
 
 interface ScrollableSelectProps<T> {
   items: T[];
-  selectedItems: string[];
+  initialItems?: T[];
+  total: number;
+  isLoading: boolean;
+
+  searchTerm: string;
+  onSearchChange: (term: string) => void;
+  onPageChange: () => void;
+
+  selectedItemIDs: string[];
   onSelectionChange: (selected: string[]) => void;
   getItemId: (item: T) => string;
   getItemLabel: (item: T) => string;
@@ -20,7 +28,13 @@ interface ScrollableSelectProps<T> {
 
 export function ScrollableSelect<T>({
   items,
-  selectedItems,
+  initialItems,
+  total,
+  isLoading,
+  searchTerm,
+  onSearchChange,
+  onPageChange,
+  selectedItemIDs,
   onSelectionChange,
   getItemId,
   getItemLabel,
@@ -28,22 +42,51 @@ export function ScrollableSelect<T>({
   maxHeight = "max-h-48",
 }: ScrollableSelectProps<T>) {
   const t = useTranslations("common");
-  const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredItems = items.filter((item) =>
-    getItemLabel(item).toLowerCase().includes(searchTerm.toLowerCase())
+  const hasMore = items.length < total;
+
+  const [itemRegistry, setItemRegistry] = useState<Record<string, T>>({}); // Ensure items persist even when not in search result
+  const updateRegistry = useCallback(
+    (newItems: T[]) => {
+      if (!newItems || newItems.length === 0) return;
+
+      setItemRegistry((prev) => {
+        const next = { ...prev };
+        let hasChanged = false;
+
+        newItems.forEach((item) => {
+          const id = getItemId(item);
+          if (!next[id]) {
+            next[id] = item;
+            hasChanged = true;
+          }
+        });
+
+        return hasChanged ? next : prev;
+      });
+    },
+    [getItemId] // getItemId is a dependency because it's used inside
   );
 
+  // Sync registry
+  useEffect(() => {
+    updateRegistry(items);
+  }, [items, updateRegistry]);
+
+  useEffect(() => {
+    if (initialItems) updateRegistry(initialItems);
+  }, [initialItems, updateRegistry]);
+
   const toggleItem = (itemId: string) => {
-    if (selectedItems.includes(itemId)) {
-      onSelectionChange(selectedItems.filter((id) => id !== itemId));
+    if (selectedItemIDs.includes(itemId)) {
+      onSelectionChange(selectedItemIDs.filter((id) => id !== itemId));
     } else {
-      onSelectionChange([...selectedItems, itemId]);
+      onSelectionChange([...selectedItemIDs, itemId]);
     }
   };
 
   const removeItem = (itemId: string) => {
-    onSelectionChange(selectedItems.filter((id) => id !== itemId));
+    onSelectionChange(selectedItemIDs.filter((id) => id !== itemId));
   };
 
   return (
@@ -51,10 +94,10 @@ export function ScrollableSelect<T>({
       <label className="block text-sm font-medium text-gray-700">{label}</label>
 
       {/* Selected items */}
-      {selectedItems.length > 0 && (
+      {selectedItemIDs.length > 0 && (
         <div className="flex flex-wrap gap-2 p-2 border border-cyan-200 rounded-md bg-cyan-50">
-          {selectedItems.map((itemId) => {
-            const item = items.find((i) => getItemId(i) === itemId);
+          {selectedItemIDs.map((itemId: string) => {
+            const item = itemRegistry[itemId];
             return item ? (
               <Badge
                 key={itemId}
@@ -78,25 +121,22 @@ export function ScrollableSelect<T>({
       )}
 
       {/* Search bar */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-        <Input
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder={t("searchItems")}
-          className="pl-10 border-cyan-300 focus:border-cyan-500"
-        />
-      </div>
+      <SearchBar
+        value={searchTerm}
+        setValue={onSearchChange}
+        searchPlaceholder={t("searchItems")}
+        className="relative"
+      ></SearchBar>
 
       {/* Scrollable list */}
       <div
         className={`border border-cyan-200 rounded-md ${maxHeight} overflow-y-auto bg-white`}
       >
-        {filteredItems.length > 0 ? (
+        {items && items.length > 0 ? (
           <div className="p-2 space-y-2">
-            {filteredItems.map((item) => {
+            {items.map((item: T) => {
               const itemId = getItemId(item);
-              const isSelected = selectedItems.includes(itemId);
+              const isSelected = selectedItemIDs.includes(itemId);
               return (
                 <div
                   key={itemId}
@@ -119,6 +159,24 @@ export function ScrollableSelect<T>({
                 </div>
               );
             })}
+
+            {hasMore && (
+              <div className="pt-2 flex justify-center">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full text-xs text-muted-foreground hover:bg-cyan-100"
+                  onClick={() => onPageChange()}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    t("loadMore") || "Load More"
+                  )}
+                </Button>
+              </div>
+            )}
           </div>
         ) : (
           <div className="p-4 text-center text-gray-500">No items found</div>
