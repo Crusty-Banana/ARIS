@@ -205,7 +205,6 @@
     "actionPlans": "Action Plans",
     "selectDate": "Select Date",
     "testResult": "Test Result",
-    "uploadTestResultFile": "Upload Test Result File",
     "timeToSymptom": {
       "lessThan2": "Within 2 hours",
       "twoToSix": "2–6 hours",
@@ -213,7 +212,11 @@
       "twelveToTwentyFour": "12–24 hours",
       "moreThan24": "More than 24 hours"
     },
-    "timeFromContactToSymptom": "Time to symptom onset (after allergen exposure)"
+    "timeFromContactToSymptom": "Time to symptom onset (after allergen exposure)",
+    "uploadTestResultFile": "Drag & Drop, or Click to select file",
+    "previewTestResultFile": "Preview test result",
+    "viewUploadedTestResult": "View uploaded test result",
+    "saving": "Saving..."
   },
   "potentialCrossAllergens": {
     "title": "Potential Cross-Allergens",
@@ -356,7 +359,9 @@
     "selectDate": "Select Date",
     "selectTestType": "Select test type",
     "testResult": "Test Result",
-    "uploadTestResultFile": "Upload Test Result File",
+    "uploadTestResultFile": "Drag & Drop, or Click to select file",
+    "previewTestResultFile": "Preview test result",
+    "saving": "Saving...",
     "timeToSymptom": {
       "lessThan2": "Within 2 hours",
       "twoToSix": "2–6 hours",

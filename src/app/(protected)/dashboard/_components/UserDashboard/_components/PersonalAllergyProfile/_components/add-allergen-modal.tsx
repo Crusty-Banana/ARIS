@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Paperclip, UploadCloud, X } from "lucide-react";
+import { Paperclip, X } from "lucide-react";
 import {
   Language,
   Symptom,
@@ -26,6 +26,7 @@ import { httpPost$AddFileToS3 } from "@/modules/commands/AddFileToS3/fetcher";
 import { DatePicker } from "@/components/ui/custom-date-picker";
 import { GroupedSymptomSelect } from "@/components/grouped-symptoms-select";
 import { TimeFromContactToSymptomDropdown } from "@/components/time-to-symptom-dropdown";
+import { DragAndDrop } from "./drag-and-drop-result";
 import { RemainAllergen } from "@/modules/commands/GetRemainAllergens/typing";
 import { httpGet$GetRemainAllergens } from "@/modules/commands/GetRemainAllergens/fetcher";
 import useSWR from "swr";
@@ -57,11 +58,13 @@ export function AddAllergenModal({
   const [timeFromContactToSymptom, setTimeFromContactToSymptom] =
     useState<TimeFromContactToSymptom>("");
 
+  const [testResultUrl, setTestResultUrl] = useState<string | undefined>();
+
   const [selectedResultFile, setSelectedResultFile] = useState<File | null>(
     null
   );
-  const [isUploading, setIsUploading] = useState(false);
-  const [testResultUrl, setTestResultUrl] = useState<string | undefined>();
+  const [isSaving, setIsSaving] = useState(false);
+  const [filePreviewUrl, setFilePreviewUrl] = useState<string>("");
 
   const params = useMemo(() => {
     return {
@@ -97,29 +100,29 @@ export function AddAllergenModal({
     return Math.floor(date.getTime() / 1000);
   };
 
-  const handleResultFileUpload = async () => {
-    if (!selectedResultFile) return;
-
-    setIsUploading(true);
-    const uploadToast = toast.loading("Uploading File");
-
-    const response = await httpPost$AddFileToS3(
-      "/api/user-s3-upload",
-      selectedResultFile
-    );
-
-    if (response.success && response.result) {
-      setTestResultUrl(response.result);
-      toast.success("Upload Success", { id: uploadToast });
-    } else {
-      toast.error(response.message, { id: uploadToast });
-    }
-
-    setIsUploading(false);
-  };
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedAllergen) return;
+
+    setIsSaving(true);
+    let finalTestResultUrl = "";
+
+    // Upload test result first
+    if (selectedResultFile) {
+      const uploadToast = toast.loading("Uploading file...");
+      const response = await httpPost$AddFileToS3(
+        "/api/user-s3-upload",
+        selectedResultFile
+      );
+
+      if (response.success && response.result) {
+        toast.success("Upload Success", { id: uploadToast });
+        finalTestResultUrl = response.result; // Get new S3 URL
+      } else {
+        toast.error(response.message, { id: uploadToast });
+        setIsSaving(false);
+        return; // Stop if upload fails
+      }
+    }
 
     onAddAllergen({
       allergenId: selectedAllergen.id,
@@ -127,7 +130,7 @@ export function AddAllergenModal({
       doneTest,
       testDone,
       symptomsId: selectedSymptoms,
-      testResult: testResultUrl,
+      testResult: finalTestResultUrl,
       timeFromContactToSymptom: timeFromContactToSymptom,
     });
 
@@ -140,15 +143,34 @@ export function AddAllergenModal({
     setTestDone("");
     setSelectedResultFile(null);
     setTestResultUrl(undefined);
-    setIsUploading(false);
     onClose();
     setTimeFromContactToSymptom("");
+    handleFileDeselect();
+
+    setIsSaving(false);
   };
 
   const handleAllergenSelect = (allergen: RemainAllergen) => {
     setSelectedAllergen(allergen);
     // Pre-select symptoms that are associated with this allergen
     setSelectedSymptoms([]);
+  };
+
+  const handleFileSelect = (file: File) => {
+    setSelectedResultFile(file);
+    if (filePreviewUrl) {
+      URL.revokeObjectURL(filePreviewUrl);
+    }
+    setFilePreviewUrl(URL.createObjectURL(file));
+  };
+
+  const handleFileDeselect = () => {
+    if (filePreviewUrl) {
+      URL.revokeObjectURL(filePreviewUrl);
+    }
+    setFilePreviewUrl("");
+    setTestResultUrl(undefined);
+    setSelectedResultFile(null);
   };
 
   return (
@@ -173,15 +195,6 @@ export function AddAllergenModal({
                 className="relative"
                 searchPlaceholder={t("searchAllergen")}
               ></SearchBar>
-              {/* <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder={t("searchAllergen")}
-                  className="pl-10 border-cyan-300 focus:border-cyan-500"
-                />
-              </div> */}
             </div>
 
             {/* Allergen list grows + has its own scroll */}
@@ -253,6 +266,7 @@ export function AddAllergenModal({
                         if (!checked) setTestDone("");
                         setSelectedResultFile(null);
                         setTestResultUrl(undefined);
+                        setFilePreviewUrl("");
                       }}
                     />
                   </div>
@@ -261,9 +275,12 @@ export function AddAllergenModal({
                     <div className="">
                       <TestTypeDropdown
                         value={testDone}
-                        onValueChange={(value) =>
-                          setTestDone(value as TestType)
-                        }
+                        onValueChange={(value) => {
+                          setTestDone(value as TestType);
+                          setTestResultUrl(undefined);
+                          setSelectedResultFile(null);
+                          setFilePreviewUrl("");
+                        }}
                       />
                     </div>
                   )}
@@ -274,54 +291,23 @@ export function AddAllergenModal({
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       {t("testResult")}
                     </label>
-                    {!testResultUrl && (
-                      <div className="relative border-2 border-dashed border-cyan-300 rounded-lg p-6 flex flex-col items-center justify-center text-center">
-                        <UploadCloud className="h-10 w-10 text-cyan-500 mb-2" />
-                        <label
-                          htmlFor="file-upload"
-                          className="relative cursor-pointer bg-white rounded-md font-medium text-cyan-600 hover:text-cyan-500 focus-within:outline-none"
-                        >
-                          <span>{t("uploadTestResultFile")}</span>
-                          <input
-                            id="file-upload"
-                            name="file-upload"
-                            type="file"
-                            className="sr-only"
-                            onChange={(e) =>
-                              setSelectedResultFile(e.target.files?.[0] || null)
-                            }
-                          />
-                        </label>
-                        <p className="text-xs text-gray-500 mt-1">{""}</p>
-                      </div>
+                    {!selectedResultFile && !testResultUrl && (
+                      <DragAndDrop
+                        onFilesDropped={handleFileSelect}
+                        labelText={t("uploadTestResultFile")}
+                      />
                     )}
 
-                    {selectedResultFile && !testResultUrl && (
-                      <div className="mt-2 flex items-center justify-between p-2 bg-gray-100 rounded-md">
-                        <div className="flex items-center gap-2 text-sm">
-                          <Paperclip className="h-4 w-4" />
-                          <span>{selectedResultFile.name}</span>
-                        </div>
-                        <Button
-                          onClick={handleResultFileUpload}
-                          disabled={isUploading}
-                          size="sm"
-                        >
-                          {isUploading ? "Uploading" : "Upload"}
-                        </Button>
-                      </div>
-                    )}
-
-                    {testResultUrl && (
+                    {filePreviewUrl && (
                       <div className="mt-2 flex items-center justify-between p-2 bg-green-100 border border-green-300 text-green-800 rounded-md">
                         <a
-                          href={testResultUrl}
+                          href={filePreviewUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center gap-2 text-sm hover:underline"
                         >
                           <Paperclip className="h-4 w-4" />
-                          <span>{"View uploaded result"}</span>
+                          <span>{t("previewTestResultFile")}</span>
                         </a>
                         <Button
                           type="button"
@@ -331,6 +317,7 @@ export function AddAllergenModal({
                           onClick={() => {
                             setTestResultUrl(undefined);
                             setSelectedResultFile(null);
+                            setFilePreviewUrl("");
                           }}
                         >
                           <X className="h-3 w-3" />
@@ -368,17 +355,18 @@ export function AddAllergenModal({
         <div className="flex gap-2 pt-4 border-t">
           <Button
             onClick={handleSubmit}
-            disabled={!selectedAllergen}
+            disabled={!selectedAllergen || isSaving}
             className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
           >
-            {t("addAllergen")}
+            {isSaving ? t("saving") : t("addAllergen")}
           </Button>
           <Button
             variant="outline"
             onClick={onClose}
+            disabled={isSaving}
             className="flex-1 bg-transparent"
           >
-            {t("cancel")}
+            {isSaving ? t("saving") : t("cancel")}
           </Button>
         </div>
       </DialogContent>

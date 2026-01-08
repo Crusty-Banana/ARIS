@@ -211,7 +211,6 @@
     "actionPlans": "Kế hoạch xử trí",
     "selectDate": "Chọn ngày",
     "testResult": "Kết quả xét nghiệm",
-    "uploadTestResultFile": "Tải Thư mục Kết quả xét nghiệm lên",
     "description": "Mô tả",
     "timeToSymptom": {
       "lessThan2": "Trong vòng 2 giờ",
@@ -220,7 +219,11 @@
       "twelveToTwentyFour": "12–24 giờ",
       "moreThan24": "Hơn 24 giờ"
     },
-    "timeFromContactToSymptom": "Thời gian xuất hiện triệu chứng (sau khi tiếp xúc dị nguyên):"
+    "timeFromContactToSymptom": "Thời gian xuất hiện triệu chứng (sau khi tiếp xúc dị nguyên):",
+    "uploadTestResultFile": "Kéo & Thả, hoặc Click để chọn file",
+    "previewTestResultFile": "Xem trước kết quả xét nghiệm",
+    "viewUploadedTestResult": "Xem kết quả xét nghiệm đã lưu",
+    "saving": "Đang lưu..."
   },
   "potentialCrossAllergens": {
     "title": "Dị nguyên chéo tiềm ẩn",
@@ -364,7 +367,9 @@
     "selectDate": "Chọn ngày",
     "selectTestType": "Chọn xét nghiệm",
     "testResult": "Kết quả xét nghiệm",
-    "uploadTestResultFile": "Tải Thư mục Kết quả Xét nghiệm lên",
+    "uploadTestResultFile": "Kéo & Thả, hoặc Click để chọn file",
+    "previewTestResultFile": "Xem trước kết quả xét nghiệm",
+    "saving": "Đang lưu...",
     "description": "Mô tả",
     "timeToSymptom": {
       "lessThan2": "Trong vòng 2 giờ",
