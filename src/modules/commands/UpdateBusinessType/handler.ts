@@ -1,5 +1,5 @@
 import { Db, ObjectId } from "mongodb";
-import { UpdateUser$Params } from "./typing";
+import { UpdateActionPlan$Params, UpdateAllergen$Params, UpdatePAP$Params, UpdateRecommendation$Params, UpdateSymptom$Params, UpdateUser$Params } from "./typing";
 import { BusisnessTypeCollection } from "@/modules/business-types";
 
 async function handler$UpdateBusinessType(
@@ -29,7 +29,7 @@ export async function handler$UpdateUser(db: Db, params: UpdateUser$Params) {
 
 export async function handler$UpdateAllergen(
   db: Db,
-  params: UpdateUser$Params
+  params: UpdateAllergen$Params
 ) {
   return await handler$UpdateBusinessType(
     db,
@@ -38,7 +38,7 @@ export async function handler$UpdateAllergen(
   );
 }
 
-export async function handler$UpdatePAP(db: Db, params: UpdateUser$Params) {
+export async function handler$UpdatePAP(db: Db, params: UpdatePAP$Params) {
   return await handler$UpdateBusinessType(
     db,
     params,
@@ -46,7 +46,7 @@ export async function handler$UpdatePAP(db: Db, params: UpdateUser$Params) {
   );
 }
 
-export async function handler$UpdateSymptom(db: Db, params: UpdateUser$Params) {
+export async function handler$UpdateSymptom(db: Db, params: UpdateSymptom$Params) {
   return await handler$UpdateBusinessType(
     db,
     params,
@@ -54,9 +54,17 @@ export async function handler$UpdateSymptom(db: Db, params: UpdateUser$Params) {
   );
 }
 
+export async function handler$UpdateActionPlan(db: Db, params: UpdateActionPlan$Params) {
+  return await handler$UpdateBusinessType(
+    db,
+    params,
+    BusisnessTypeCollection.actionPlans
+  );
+}
+
 export async function handler$UpdateRecommendation(
   db: Db,
-  params: UpdateUser$Params
+  params: UpdateRecommendation$Params
 ) {
   return await handler$UpdateBusinessType(
     db,

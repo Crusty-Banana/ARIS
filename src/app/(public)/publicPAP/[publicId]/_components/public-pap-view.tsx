@@ -10,7 +10,7 @@ import { httpGet$GetPublicPAP } from "@/modules/commands/GetPublicPAP/fetcher";
 import { useLocale, useTranslations } from "next-intl";
 import { Language, } from "@/modules/business-types";
 import { formatTimeFromContactToSymptom, getSeverityColor, getTypeColor } from "@/lib/client-side-utils";
-import LocaleDropdown from "@/app/(protected)/dashboard/_components/Header/_components/locale-change";
+import LocaleDropdown from "@/app/(protected)/_components/Header/_components/locale-change";
 
 interface PublicPAPViewProps {
   publicId: string;

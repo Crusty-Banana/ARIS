@@ -7,15 +7,13 @@ import {
   ActionPlan,
   Allergen,
   DiscoveryMethod,
-  Language,
   Symptom,
 } from "@/modules/business-types";
 import { PersonalAllergyProfile } from "./_components/PersonalAllergyProfile/page";
 import { httpGet$GetCrossAllergenFromUserID } from "@/modules/commands/GetCrossAllergenFromUserID/fetcher";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import {
   httpGet$GetActionPlans,
-  httpGet$GetAllergens,
   httpGet$GetSymptoms,
 } from "@/modules/commands/GetBusinessType/fetcher";
 import { toast } from "sonner";
@@ -28,10 +26,10 @@ import { httpPut$UpdatePAPWithUserId } from "@/modules/commands/UpdatePAPWithUse
 import { SymptomList } from "@/components/container/SymptomList/page";
 import { AllergenList } from "@/components/container/AllergenList/page";
 import { SymptomDetailProvider } from "@/app/context/symptom-detail-context";
+import { BriefAllergen } from "@/modules/commands/GetBriefAllergens/typing";
 
 export default function UserDashboard() {
   const t = useTranslations("userDashboard");
-  const localLanguage = useLocale() as Language;
 
   const [pAP, setPAP] = useState<DisplayPAP>({
     id: "000000000000000000000000",
@@ -44,29 +42,10 @@ export default function UserDashboard() {
     allergens: [],
   });
   const [symptoms, setSymptoms] = useState<Symptom[]>([]);
-  const [allergens, setAllergens] = useState<Allergen[]>([]);
   const [actionPlans, setActionPlans] = useState<ActionPlan[]>([]);
   const [potentialCrossAllergens, setPotentialCrossAllergens] = useState<
     Allergen[]
   >([]);
-
-  const [availableAllergens, setAvailableAllegerns] = useState<Allergen[]>([]);
-
-  const fetchAvailableAllergens = useCallback(async (papResult: DisplayPAP) => {
-    const excludedIds = papResult.allergens.map(
-      (pAPAllergen) => pAPAllergen.allergenId
-    );
-
-    const data = await httpGet$GetAllergens("/api/allergens", {
-      filters: { _id: { $nin: excludedIds } },
-    });
-
-    if (data.success) {
-      setAvailableAllegerns(data.result as Allergen[]);
-    } else {
-      toast.error(data.message);
-    }
-  }, []);
 
   const fetchPotentialCrossAllergens = async () => {
     const data = await httpGet$GetCrossAllergenFromUserID("/api/cross");
@@ -95,25 +74,15 @@ export default function UserDashboard() {
     }
   };
 
-  const fetchAllergens = async () => {
-    const data = await httpGet$GetAllergens("/api/allergens", {});
-    if (data.success) {
-      setAllergens(data.result as Allergen[]);
-    } else {
-      toast.error(data.message);
-    }
-  };
-
   const fetchPAP = useCallback(async () => {
     const data = await httpGet$GetPAPWithUserId("api/user-pap");
     if (data.success) {
       setPAP(data.result!);
       await fetchPotentialCrossAllergens();
-      await fetchAvailableAllergens(data.result!);
     } else {
       toast.error(data.message);
     }
-  }, [fetchAvailableAllergens]);
+  }, []);
 
   const handlePAPUpdate = async (
     updateData: UpdatePAPWithUserIdFetcher$Params
@@ -126,7 +95,7 @@ export default function UserDashboard() {
     }
   };
 
-  const handleQuickAddFromWiki = async (inputAllergen: Allergen) => {
+  const handleQuickAddFromWiki = async (inputAllergen: BriefAllergen) => {
     const allergens = [
       ...pAP.allergens.map((allergen) =>
         PAPAllergen.parse({
@@ -146,15 +115,12 @@ export default function UserDashboard() {
 
     await handlePAPUpdate({ allergens });
 
-    toast.success(
-      t("allergenAdded", { allergenName: inputAllergen.name[localLanguage] })
-    );
+    toast.success(t("allergenAdded", { allergenName: inputAllergen.name }));
   };
 
   useEffect(() => {
     fetchPAP();
     fetchSymptoms();
-    fetchAllergens();
     fetchActionPlans();
   }, [fetchPAP]);
 
@@ -191,8 +157,6 @@ export default function UserDashboard() {
                 availableSymptoms={symptoms}
                 actionPlans={actionPlans}
                 potentialCrossAllergens={potentialCrossAllergens}
-                availableAllergens={availableAllergens}
-                allergens={allergens}
                 onUpdate={handlePAPUpdate}
               />
             </SymptomDetailProvider>
@@ -215,17 +179,11 @@ export default function UserDashboard() {
               </TabsList>
 
               <TabsContent value="wiki-symptoms">
-                <SymptomList symptoms={symptoms} />
+                <SymptomList />
               </TabsContent>
 
               <TabsContent value="wiki-allergens">
-                <AllergenList
-                  allergens={allergens}
-                  onQuickAdd={handleQuickAddFromWiki}
-                  userAllergenIds={pAP.allergens.map(
-                    (allergen) => allergen.allergenId
-                  )}
-                />
+                <AllergenList onQuickAdd={handleQuickAddFromWiki} />
               </TabsContent>
             </Tabs>
           </TabsContent>

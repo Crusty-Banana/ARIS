@@ -14,7 +14,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import {
-  Allergen,
   AllergenType,
   DisplayString,
   Language,
@@ -22,16 +21,11 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { AddAllergen$Params } from "@/modules/commands/AddBusinessType/typing";
 import { AllergenForm } from "./allergen-form";
+import { useSWRConfig } from "swr";
+import { httpPost$AddAllergen } from "@/modules/commands/AddBusinessType/fetcher";
+import { toast } from "sonner";
 
-interface AddAllergenButtonProps {
-  onAddAllergen: (allergen: AddAllergen$Params) => void;
-  allergens: Allergen[];
-}
-
-export function AddAllergenButton({
-  onAddAllergen,
-  allergens,
-}: AddAllergenButtonProps) {
+export function AddAllergenButton() {
   const t = useTranslations("allergenModal");
   const localLanguage = useLocale() as Language;
 
@@ -41,7 +35,6 @@ export function AddAllergenButton({
   const [selectedCrossSentitivity, setSelectedCrossSentitivity] = useState<
     string[]
   >([]);
-  const [isWholeAllergen, setIsWholeAllergen] = useState(true);
   const [description, setDescription] = useState<DisplayString>({
     en: "",
     vi: "",
@@ -49,14 +42,27 @@ export function AddAllergenButton({
   const [selectedLanguage, setSelectedLanguage] =
     useState<Language>(localLanguage);
 
+  const { mutate } = useSWRConfig();
+
+  const addAllergen = async (allergen: AddAllergen$Params) => {
+    const data = await httpPost$AddAllergen("/api/allergens", allergen);
+    if (data.success) {
+      mutate(
+        (key) => Array.isArray(key) && key.includes("/api/allergens/brief")
+      );
+      toast.success(data.message);
+    } else {
+      toast.error(data.message);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (type && name && description) {
-      onAddAllergen({
+      addAllergen({
         type: type as AllergenType,
         name,
         crossSensitivityId: selectedCrossSentitivity,
-        isWholeAllergen: isWholeAllergen,
         description,
       });
       setType("");
@@ -64,7 +70,6 @@ export function AddAllergenButton({
       setDescription({ en: "", vi: "" });
       setOpen(false);
       setSelectedCrossSentitivity([]);
-      setIsWholeAllergen(true);
     }
   };
   const handleNameChange = (value: string) => {
@@ -107,11 +112,8 @@ export function AddAllergenButton({
               handleNameChange={handleNameChange}
               description={description}
               handleDescriptionChange={handleDescriptionChange}
-              allergens={allergens}
               selectedCrossSensitivity={selectedCrossSentitivity}
               setSelectedCrossSensitivity={setSelectedCrossSentitivity}
-              isWholeAllergen={isWholeAllergen}
-              setIsWholeAllergen={setIsWholeAllergen}
             />
             <Button
               type="submit"
