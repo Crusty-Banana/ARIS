@@ -14,12 +14,6 @@ async function handler$DeleteBusinessType(
   return { result: result.deletedCount };
 }
 
-export async function handler$DeleteUser(
-  db: Db,
-  params: DeleteBusinessType$Params
-) {
-  return handler$DeleteBusinessType(db, params, BusisnessTypeCollection.users);
-}
 
 export async function handler$DeleteAllergen(
   db: Db,

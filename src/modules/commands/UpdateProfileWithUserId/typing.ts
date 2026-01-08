@@ -19,3 +19,18 @@ export const UpdateProfileWithUserId$Result = FetcherResult;
 export type UpdateProfileWithUserId$Result = z.infer<
   typeof UpdateProfileWithUserId$Result
 >;
+
+export const personalInfoSchema = UserProfile.omit({ userId: true, publicId: true }).extend({
+    doB: z
+      .number()
+      .refine(
+        (dob) => {
+          if (dob == null) return true; // allow null or undefined
+          const date = new Date(dob);
+          return !isNaN(date.getTime());
+        },
+        { message: "Invalid date" }
+      )
+      .nullable(),
+  });;
+export type PersonalInfoData = z.infer<typeof personalInfoSchema>

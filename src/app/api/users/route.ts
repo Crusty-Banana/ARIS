@@ -71,7 +71,7 @@ export async function DELETE(req: NextRequest) {
     const { success, result, token } = await checkAuth(req);
     if (!success) return result;
     const userId = token?.id;
-    const parsedBody = DeleteUser$Params.safeParse({ userId });
+    const parsedBody = DeleteUser$Params.safeParse({ id: userId });
     if (!parsedBody.success) {
       return NextResponse.json(
         { message: parsedBody.error.message || "Invalid params" },

@@ -13,9 +13,6 @@ async function httpDelete$DeleteBusinessType(url: string) {
   return result;
 }
 
-export async function httpDelete$DeleteUser(url: string) {
-  return httpDelete$DeleteBusinessType(url);
-}
 
 export async function httpDelete$DeleteAllergen(url: string) {
   return httpDelete$DeleteBusinessType(url);
