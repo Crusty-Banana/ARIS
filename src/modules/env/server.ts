@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { CLIENT_ENV, ClientEnv } from "./client";
-import { Server } from "lucide-react";
+// import { Server } from "lucide-react";
 
 export const ServerEnv = ClientEnv.extend({
   MONGODB_URI: z.string().startsWith("mongodb"),
