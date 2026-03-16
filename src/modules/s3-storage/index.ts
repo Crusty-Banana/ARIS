@@ -1,12 +1,13 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { SERVER_ENV } from "@/modules/env/server";
+//import { SERVER_ENV } from "@/modules/env/server"; // True import
+import { AMPTEST_SERVER_ENV } from "@/modules/env/server"; // Amplify Deployment Test
 import { AddFileToS3$Params } from "../commands/AddFileToS3/typing";
 
 export const s3Client = new S3Client({
-  region: SERVER_ENV.AWS_REGION,
+  region: AMPTEST_SERVER_ENV.AMPTEST_AWS_REGION,
   credentials: {
-    accessKeyId: SERVER_ENV.AWS_ACCESS_KEY_ID,
-    secretAccessKey: SERVER_ENV.AWS_SECRET_ACCESS_KEY,
+    accessKeyId: AMPTEST_SERVER_ENV.AMPTEST_AWS_ACCESS_KEY_ID,
+    secretAccessKey: AMPTEST_SERVER_ENV.AMPTEST_AWS_SECRET_ACCESS_KEY,
   },
 });
 
