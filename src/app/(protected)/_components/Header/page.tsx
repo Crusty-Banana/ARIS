@@ -34,6 +34,14 @@ export default function Header() {
             <Blocks className="h-6 w-6" />
             <span>{t("dashboard")}</span>
           </Button>
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2 text-white hover:bg-white/30 text-lg px-6 py-2"
+            onClick={() => router.push("/beta")}
+          >
+            <Blocks className="h-6 w-6" />
+            <span>Beta</span>
+          </Button>
 
           <div className="flex items-center gap-4 ml-auto">
             {/* <Button */}
