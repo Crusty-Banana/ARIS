@@ -1,23 +1,38 @@
 "use client";
-import React, { useCallback } from "react";
-import { useDropzone } from "react-dropzone";
+import { ChangeEvent, useState } from "react";
 
-export default function TempImageUploader() {
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    console.log(acceptedFiles);
-  }, []);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+interface OCRFunctionProp {
+  onSubmit: () => void;
+}
+export default function OCRupload({ onSubmit }: OCRFunctionProp) {
+  const [file, setFile] = useState<File | null>(null);
+  const [imglink, setImgLink] = useState<string | null>(null);
+  function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setImgLink(URL.createObjectURL(selectedFile));
+    }
+  }
+
   return (
-    <div
-      className="bg-blue-600 w-full max-w-md p-8 rounded-2xl shadow-2xl text-white"
-      {...getRootProps()}
-    >
-      <input {...getInputProps()} />
-      {isDragActive ? (
-        <p>Drop the files here ...</p>
-      ) : (
-        <p>Drag 'n' drop some files here, or click to select files</p>
+    <div className="space-y-4">
+      <input type="file" onChange={handleFileChange}></input>
+      {file && (
+        <div className="mb-4 text-sm">
+          <p>{file.name}</p>
+          <p>{file.size / 1024} kb</p>
+          <p>{file.type}</p>
+        </div>
       )}
+      {imglink && (
+        <img
+          src={imglink}
+          style={{ width: "1000px", height: "auto", borderRadius: "8px" }}
+          alt="Preview"
+        />
+      )}
+      <button onClick={onSubmit}>submit</button>
     </div>
   );
 }

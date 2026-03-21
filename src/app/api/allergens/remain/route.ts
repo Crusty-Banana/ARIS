@@ -3,7 +3,6 @@ import { checkAuth, processError } from "@/lib/utils";
 import { getDb } from "@/modules/mongodb";
 import { GetRemainAllergens$Params } from "@/modules/commands/GetRemainAllergens/typing";
 import { handler$GetRemainAllergens } from "@/modules/commands/GetRemainAllergens/handler";
-
 export async function GET(req: NextRequest) {
   try {
     // Check Authentication
